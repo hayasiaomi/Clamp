@@ -1,0 +1,401 @@
+﻿<Window x:Class="Clamp.UIShell.WindowAuthority"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ext="clr-namespace:Clamp.UIShell.Localization"
+        xmlns:local="clr-namespace:Clamp.UIShell.Views"
+        xmlns:vm="clr-namespace:Clamp.UIShell.ViewModel"
+        xmlns:glow="clr-namespace:Clamp.UIShell.Glow"
+        IsVisibleChanged="UserControl_IsVisibleChanged"
+        WindowStartupLocation="CenterScreen"
+        IsTabStop="True"
+        Initialized="Window_Initialized"
+        Background="#3bac84"
+        Focusable="True"
+        Loaded="Window_Loaded"
+        WindowStyle="None"
+        ResizeMode="CanMinimize"
+        Width="376"
+        Height="560"
+        glow:GlowManager.EnableGlow="True"
+        glow:GlowManager.GlowBrush="Black"
+        >
+    <Window.Resources>
+        <Style x:Key="TxBorder" TargetType="Border">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D8D8D8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="TxTextBox" TargetType="TextBox">
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#D8D8D8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Padding" Value="0,0,3,0"/>
+        </Style>
+
+
+        <Style x:Key="TxTextBlock" TargetType="TextBlock">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="TxGrid" TargetType="Grid">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="16,16,0,16"/>
+        </Style>
+
+        <Style x:Key="TxButton" BasedOn="{StaticResource SystemButton}" TargetType="Button">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+        <Style x:Key="TxComboBox" BasedOn="{StaticResource HComboBox}" TargetType="ComboBox">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:AuthorityViewModel />
+    </Window.DataContext>
+    <Grid>
+        <!--************************************************************开始 登录界面************************************************************************-->
+        <Grid x:Name="gridAuthoriyView" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="gridHeader" Grid.Row="0" MouseLeftButtonDown="WindowHeader_MouseLeftButtonDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" x:Name="MainWindowTitle" VerticalAlignment="Center" Text="{ext:Localize Activtied_Title }" Margin="20,0,0,0" FontSize="18" Foreground="#FFFFFF" />
+
+                <Button Grid.Column="1"  Background="Transparent" VerticalAlignment="Center" Visibility="Visible"  HorizontalAlignment="Right" Margin="0,0,20,0" Click="BtnProxy_Click" Style="{StaticResource SystemButtonNoShadow }">
+                    <Button.Content>
+                        <Image Source="/SDShell;component/Resources/u6.png" Width="22" Height="22" Stretch="Uniform" VerticalAlignment="Center" ></Image>
+                    </Button.Content>
+                </Button>
+
+                <Button Grid.Column="2"  Background="Transparent" VerticalAlignment="Center"  HorizontalAlignment="Right" Margin="0,0,23,0" Click="BtnWindowClose_Click" Style="{StaticResource SystemButtonNoShadow }">
+                    <Button.Content>
+                        <Path Fill="#FFFFFF" Stroke="#FFFFFF"  Stretch="Uniform" StrokeThickness="0" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Path.Data>
+                                M9.99741302,8.65359326 L4.62213395,3.27831419 C4.25104837,2.9072286 3.64939977,2.9072286 3.27831419,3.27831419 L3.27831419,3.27831419 L3.27831419,3.27831419 C2.9072286,3.64939977 2.9072286,4.25104837 3.27831419,4.62213395 L3.27831419,4.62213395 L8.65359326,9.99741302 L3.27831419,15.3726921 C2.9072286,15.7437777 2.9072286,16.3454263 3.27831419,16.7165119 L3.27831419,16.7165119 C3.64939977,17.0875974 4.25104837,17.0875974 4.62213395,16.7165119 L4.62213395,16.7165119 L9.99741302,11.3412328 L15.3726921,16.7165119 C15.7437777,17.0875974 16.3454263,17.0875974 16.7165119,16.7165119 L16.7165119,16.7165119 C17.0875974,16.3454263 17.0875974,15.7437777 16.7165119,15.3726921 L16.7165119,15.3726921 L11.3412328,9.99741302 L16.7165119,4.62213395 C17.0875974,4.25104837 17.0875974,3.64939977 16.7165119,3.27831419 L16.7165119,3.27831419 L16.7165119,3.27831419 C16.3454263,2.9072286 15.7437777,2.9072286 15.3726921,3.27831419 L15.3726921,3.27831419 L9.99741302,8.65359326 Z
+                            </Path.Data>
+                        </Path>
+                    </Button.Content>
+                </Button>
+            </Grid>
+
+            <StackPanel Grid.Row="1"  Orientation="Vertical"  Background="#FFFFFF">
+                <Grid x:Name="gridMark"  Background="#3bac84" Height="150">
+                    <StackPanel Orientation="Vertical" Margin="0,35,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="60" Height="60">
+                            <Border  BorderBrush="#FFFFFF" BorderThickness="2" CornerRadius="5" Canvas.Left="0" Canvas.Top="0" Width="58" Height="58" />
+                            <Path Data="M47.4131387,28.7255474 L47.4131387,28.7255474 C47.2575277,28.4222711 47.0819593,28.1296572 46.8875912,27.849635 L46.8875912,27.849635 C46.7350012,27.6784938 46.5578957,27.5309058 46.3620438,27.4116788 C46.3136685,27.4116788 46.2744526,27.3724629 46.2744526,27.3240876 C46.1868613,27.3240876 46.1868613,27.2364964 46.0992701,27.2364964 C46.0116788,27.2364964 46.0116788,27.1489051 45.9240876,27.1489051 C45.8364964,27.1489051 45.8364964,27.0613139 45.7489051,27.0613139 C45.6613139,27.0613139 45.6613139,26.9737226 45.5737226,26.9737226 C45.550492,26.9737226 45.5282128,26.9644943 45.5117863,26.9480677 C45.4953597,26.9316412 45.4861314,26.909362 45.4861314,26.8861314 C45.4197305,26.8768749 45.3581946,26.8461069 45.3109489,26.7985401 L45.2233577,26.7985401 C45.1357664,26.7985401 45.0481752,26.7109489 44.9605839,26.7109489 L30.5518248,26.7109489 L30.5518248,23.6014599 L40.9313869,23.6014599 C41.0189781,23.6014599 41.1065693,23.5138686 41.1941606,23.5138686 L41.2817518,23.5138686 C41.3481527,23.5046121 41.4096886,23.4738441 41.4569343,23.4262774 C41.5053096,23.4262774 41.5445255,23.3870614 41.5445255,23.3386861 C41.6321168,23.3386861 41.6321168,23.2510949 41.719708,23.2510949 C41.7861089,23.2418384 41.8476448,23.2110704 41.8948905,23.1635036 C41.9824818,23.1635036 41.9824818,23.0759124 42.070073,23.0759124 C42.1576642,23.0759124 42.1576642,22.9883212 42.2452555,22.9883212 C42.2936308,22.9883212 42.3328467,22.9491052 42.3328467,22.9007299 C42.5080292,22.7255474 42.6832117,22.6379562 42.8583942,22.4627737 L42.8583942,22.4627737 C43.1137082,22.2270466 43.2960949,21.9230689 43.3839416,21.5868613 L43.3839416,21.5868613 C43.6239415,21.1121141 43.7442223,20.5858854 43.7343066,20.0540146 C43.7216513,19.5247203 43.6024924,19.0034003 43.3839416,18.5211679 L43.3839416,18.5211679 C43.2283306,18.2178915 43.0527623,17.9252776 42.8583942,17.6452555 L42.8583942,17.6452555 C42.7058042,17.4741142 42.5286986,17.3265263 42.3328467,17.2072993 C42.2844714,17.2072993 42.2452555,17.1680833 42.2452555,17.119708 C42.1576642,17.119708 42.1576642,17.0321168 42.070073,17.0321168 C41.9824818,17.0321168 41.9824818,16.9445255 41.8948905,16.9445255 C41.8072993,16.9445255 41.8072993,16.8569343 41.719708,16.8569343 C41.6321168,16.8569343 41.6321168,16.7693431 41.5445255,16.7693431 C41.4961502,16.7693431 41.4569343,16.7301271 41.4569343,16.6817518 C41.3905335,16.6724953 41.3289976,16.6417274 41.2817518,16.5941606 L41.1941606,16.5941606 C41.1065693,16.5941606 41.0189781,16.5065693 40.9313869,16.5065693 L21.8978102,16.5065693 C21.1545793,16.51733 20.4938489,16.0351754 20.2773723,15.3240876 L20.2773723,15.1489051 C20.2479425,14.6330936 20.4795935,14.1369967 20.8939693,13.8284189 C21.3083452,13.5198411 21.8500178,13.4400589 22.3357664,13.6160584 L27.6350365,15.6744526 C28.5515844,16.0249034 29.565204,16.0249034 30.4817518,15.6744526 L35.8686131,14.3167883 C36.1313869,14.2291971 36.5693431,14.0540146 36.8321168,13.9664234 C37.2169315,13.8366732 37.4907327,13.4944217 37.5328467,13.0905109 L37.5328467,12.9153285 C37.4690832,12.6236664 37.2857419,12.3721997 37.0275585,12.2222868 C36.7693751,12.0723738 36.4600947,12.0378022 36.1751825,12.1270073 L30.6131387,13.4846715 C29.7051829,13.878915 28.6743792,13.878915 27.7664234,13.4846715 L23.0364964,11.6890511 C22.0060148,11.2791977 20.8428278,11.3774458 19.8956913,11.954338 C18.9485549,12.5312302 18.3275895,13.5196931 18.2189781,14.6233577 L18.2189781,14.8905109 C18.2316334,15.4198052 18.3507923,15.9411252 18.5693431,16.4233577 L18.5693431,16.4233577 C18.7249541,16.726634 18.9005224,17.0192479 19.0948905,17.2992701 L19.0948905,17.2992701 C19.2474805,17.4704113 19.4245861,17.6179993 19.620438,17.7372263 C19.6688133,17.7372263 19.7080292,17.7764422 19.7080292,17.8248175 C19.7956204,17.8248175 19.7956204,17.9124088 19.8832117,17.9124088 C19.9708029,17.9124088 19.9708029,18 20.0583942,18 C20.1459854,18 20.1459854,18.0875912 20.2335766,18.0875912 C20.3211679,18.0875912 20.3211679,18.1751825 20.4087591,18.1751825 C20.4319898,18.1751825 20.4542689,18.1844108 20.4706955,18.2008374 C20.487122,18.2172639 20.4963504,18.2395431 20.4963504,18.2627737 C20.5627512,18.2720302 20.6242871,18.3027982 20.6715328,18.350365 L20.7591241,18.350365 C20.8467153,18.350365 20.9343066,18.4379562 21.0218978,18.4379562 L28.4233577,18.4379562 L28.4233577,21.5912409 L15.179562,21.5912409 C15.0919708,21.5912409 15.0043796,21.6788321 14.9167883,21.6788321 L14.8291971,21.6788321 C14.7627962,21.6880886 14.7012603,21.7188566 14.6540146,21.7664234 C14.6056393,21.7664234 14.5664234,21.8056393 14.5664234,21.8540146 C14.4788321,21.8540146 14.4788321,21.9416058 14.3912409,21.9416058 C14.32484,21.9508624 14.2633041,21.9816303 14.2160584,22.0291971 C14.1284672,22.0291971 14.1284672,22.1167883 14.0408759,22.1167883 C13.9532847,22.1167883 13.9532847,22.2043796 13.8656934,22.2043796 C13.8173181,22.2043796 13.7781022,22.2435955 13.7781022,22.2919708 C13.6029197,22.4671533 13.4277372,22.5547445 13.2525547,22.729927 L13.2525547,22.729927 C12.9972407,22.9656542 12.814854,23.2696319 12.7270073,23.6058394 L12.7270073,23.6058394 C12.4870075,24.0805866 12.3667266,24.6068154 12.3766423,25.1386861 C12.3598047,26.0386907 12.7072604,26.90733 13.340146,27.5474453 L13.340146,27.5474453 C13.492736,27.7185865 13.6698415,27.8661745 13.8656934,27.9854015 C13.9140687,27.9854015 13.9532847,28.0246174 13.9532847,28.0729927 C14.0408759,28.0729927 14.0408759,28.1605839 14.1284672,28.1605839 C14.2160584,28.1605839 14.2160584,28.2481752 14.3036496,28.2481752 C14.3912409,28.2481752 14.3912409,28.3357664 14.4788321,28.3357664 C14.5664234,28.3357664 14.5664234,28.4233577 14.6540146,28.4233577 C14.7023899,28.4233577 14.7416058,28.4625736 14.7416058,28.5109489 C14.8080067,28.5202054 14.8695426,28.5509734 14.9167883,28.5985401 L15.0043796,28.5985401 C15.0919708,28.5985401 15.179562,28.6861314 15.2671533,28.6861314 L28.5810219,28.6861314 L28.5810219,31.8394161 L22.5810219,31.8394161 L22.5810219,30.5693431 C22.5810219,29.9646517 22.0908227,29.4744526 21.4861314,29.4744526 C20.8814401,29.4744526 20.3912409,29.9646517 20.3912409,30.5693431 L20.3912409,31.8394161 L12.7007299,31.8394161 C12.406275,31.8520196 12.1303655,31.9866637 11.9392465,32.2110208 C11.7481275,32.4353778 11.6590607,32.7291842 11.6934307,33.0218978 L11.6934307,33.0218978 C11.7686597,33.5215496 12.1954725,33.8926911 12.7007299,33.8978102 L45.1532847,33.8978102 C45.2408759,33.8978102 45.3284672,33.810219 45.4160584,33.810219 L45.5036496,33.810219 C45.5700505,33.8009625 45.6315864,33.7701945 45.6788321,33.7226277 C45.7272074,33.7226277 45.7664234,33.6834118 45.7664234,33.6350365 C45.8540146,33.6350365 45.8540146,33.5474453 45.9416058,33.5474453 C46.0080067,33.5381887 46.0695426,33.5074208 46.1167883,33.459854 C46.2043796,33.459854 46.2043796,33.3722628 46.2919708,33.3722628 C46.379562,33.3722628 46.379562,33.2846715 46.4671533,33.2846715 C46.5155286,33.2846715 46.5547445,33.2454556 46.5547445,33.1970803 C46.729927,33.0218978 46.9051095,32.9343066 47.080292,32.7591241 L47.080292,32.7591241 C47.335606,32.5233969 47.5179927,32.2194192 47.6058394,31.8832117 L47.6058394,31.8832117 C47.8458393,31.4084645 47.9661201,30.8822357 47.9562044,30.350365 C47.8423199,29.788586 47.6599353,29.242903 47.4131387,28.7255474 Z M30.5956204,18.3459854 L40.0992701,18.3459854 C40.842501,18.3352247 41.5032314,18.8173793 41.719708,19.5284672 C41.8014435,19.9876097 41.6791626,20.4595838 41.3847623,20.8212757 C41.0903619,21.1829675 40.6530363,21.3985099 40.1868613,21.4116788 L30.5956204,21.4116788 L30.5956204,18.3459854 Z M15.9240876,26.6671533 L15.9240876,26.6671533 C15.4546103,26.6630763 15.0113738,26.4499821 14.714995,26.0858596 C14.4186162,25.7217371 14.2999325,25.2444721 14.3912409,24.7839416 C14.5740187,24.0495509 15.2565357,23.551498 16.0116788,23.6014599 L28.5372263,23.6014599 L28.5372263,26.7547445 L15.9240876,26.7547445 L15.9240876,26.6671533 Z M45.7051095,30.6087591 C45.5223316,31.3431498 44.8398147,31.8412027 44.0846715,31.7912409 L39.0043796,31.7912409 L39.0043796,30.5211679 C39.0043796,29.9164766 38.5141804,29.4262774 37.9094891,29.4262774 C37.3047977,29.4262774 36.8145985,29.9164766 36.8145985,30.5211679 L36.8145985,31.7912409 L30.5080292,31.7912409 L30.5080292,28.6379562 L44.1284672,28.6379562 C44.6153534,28.6491294 45.0723209,28.8752488 45.3765564,29.2555432 C45.6807919,29.6358376 45.8010863,30.1312955 45.7051095,30.6087591 L45.7051095,30.6087591 Z"  Fill="#FFFFFF"></Path>
+                            <Path Data="M45.6175182,38.6671533 C45.8153831,38.3721922 45.9633464,38.0466729 46.0554745,37.7036496 C46.0554745,37.6160584 46.0554745,37.6160584 46.1430657,37.5284672 L46.1430657,37.5284672 C46.2374805,37.3186544 46.2199515,37.0754112 46.0964286,36.8813039 C45.9729058,36.6871966 45.7599801,36.5682967 45.529927,36.5649635 L13.6467153,36.5649635 C13.423534,36.583984 13.222003,36.7060355 13.1017481,36.8950076 C12.9814931,37.0839796 12.9562831,37.3182354 13.0335766,37.5284672 L13.0335766,37.5284672 C13.0335766,37.6160584 13.0335766,37.6160584 13.1211679,37.7036496 C13.2963504,38.0540146 13.3839416,38.3167883 13.5591241,38.6671533 L13.5591241,38.6671533 C16.7644176,44.5255338 22.9104077,48.1686375 29.5883212,48.1686375 C36.2662346,48.1686375 42.4122247,44.5255338 45.6175182,38.6671533 L45.6175182,38.6671533 Z M29.5445255,46.2437956 C24.3908044,46.2203363 19.5387384,43.8104768 16.4058394,39.7182482 C16.2531855,39.5258887 16.228022,39.2617109 16.3416151,39.0439909 C16.4552082,38.8262708 16.686284,38.6957831 16.9313869,38.7109489 L42.070073,38.7109489 C42.313612,38.699649 42.5415742,38.8307083 42.6543483,39.0468586 C42.7671223,39.2630089 42.744209,39.5249598 42.5956204,39.7182482 C39.5183157,43.8305357 34.6807384,46.2493244 29.5445255,46.2437956 L29.5445255,46.2437956 Z"  Fill="#FFFFFF"></Path>
+                        </Canvas>
+                        <TextBlock  x:Name="txtbSoftVersion" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"  Foreground="#FFFFFF"  Text="" />
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel x:Name="spLoginZone" VerticalAlignment="Top">
+                    <Border x:Name="borderInputZone"  Margin="0,45,0,0"
+                                 CornerRadius="5"
+                                 BorderBrush="#999999"
+                                 HorizontalAlignment="Center" 
+                                 BorderThickness="1" 
+                                 Height="108" 
+                                 Width="320">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition  Height="*"/>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" x:Name="gridUserName">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Fill="#3bac84" Width="22" Height="22" Margin="15,3,3,3" Grid.Column="0" Stroke="#3bac84" Stretch="Uniform">
+                                    <Path.Data>
+                                        M36,31.084V32c0,1.084-0.916,2-2,2H18c-1.083,0-2-0.916-2-2v-0.916
+        c0-2.418,2.833-3.918,5.5-5.084l0.25-0.125c0.208-0.084,0.417-0.084,0.625,0.041C23.458,26.625,24.667,27,25.958,27
+        c1.292,0,2.542-0.416,3.583-1.084c0.209-0.125,0.418-0.125,0.625-0.041L30.416,26C33.166,27.166,36,28.625,36,31.084L36,31.084z
+         M26,14c2.75,0,4.959,2.458,4.959,5.5S28.75,25,26,25s-4.958-2.458-4.958-5.5S23.25,14,26,14z
+                                    </Path.Data>
+                                </Path>
+                                <TextBlock x:Name="txtbUsernameHint"  Grid.Column="1" FontSize="16" Text="{ext:Localize AuthorityView_UsernameHintText}" Margin="16,0,0,0" VerticalAlignment="Center" Background="Transparent" Foreground="#999999" />
+                                <TextBox x:Name="txtUsername"  Focusable="True" TabIndex="0" Grid.Column="1" Padding="3" BorderBrush="Transparent" BorderThickness="0" VerticalAlignment="Center" FontSize="16" Background="Transparent" ContextMenu="{x:Null}" FocusVisualStyle="{x:Null}" TextChanged="TxtUsername_TextChanged" LostFocus="TxtUsername_LostFocus" />
+                                <Button Grid.Column="2" Focusable="False" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" BorderThickness="0"  Margin="10" Style="{StaticResource SystemButtonNoShadow}" Click="BtnRememberUser_Click"  >
+                                    <Button.Content>
+                                        <Path Fill="#999999" 
+                                              Width="22"
+                                              RenderTransformOrigin="0.5,0.5"
+                                              Height="22" Margin="5,3,3,3" Grid.Column="0" Stroke="#999999" Stretch="Uniform">
+                                            <Path.Data>
+                                                M304,22 L297,29 C296.683135,29.0519231 296.342419,29.0519231 296,29 L289,22 C288.948893,21.4711538 288.948893,21.125 289,21 L290,20 C290.107325,19.9480769 290.448041,19.9480769 291,20 L296,26 C296.342419,26.0057692 296.683135,26.0057692 297,26 L302,20 C302.577513,19.9480769 302.918228,19.9480769 303,20 L304,21 C304.042589,21.1596154 304.042589,21.4711538 304,22 L304,22 Z
+                                            </Path.Data>
+                                            <Path.RenderTransform>
+                                                <RotateTransform x:Name="pathRememberUserAngle"  Angle="0"  />
+                                            </Path.RenderTransform>
+                                        </Path>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+
+                            <Border x:Name="borderRememberUserLine" Grid.Row="1" Height="1" Background="#999999" />
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Fill="#3bac84" Width="22" Height="22" Margin="15,3,3,3" Grid.Column="0" Stroke="#3bac84" Stretch="Uniform">
+                                    <Path.Data>
+                                        M22.4375,19 L24.1875,19 C24.45,19 24.625,18.8765845 24.625,18.6297535 L24.625,18.588615 C24.625,16.2437203 26.76875,14.3102106 29.30625,14.4747646 C31.625,14.6393186 33.375,16.5316898 33.375,18.753169 L33.375,18.6297535 C33.375,18.8765845 33.55,19 33.8125,19 L35.5625,19 C35.825,19 36,18.8765845 36,18.6297535 L36,18.588615 C36,14.8450111 32.675,11.8419004 28.65,12.0064544 C24.93125,12.1710084 22.0875,15.1329807 22,18.6297535 C22.04375,18.835446 22.21875,19 22.4375,19 L22.4375,19 Z M22,19 L22,19.1666122 L22,19 Z M37,22.6296296 C37,21.7333333 36.235,21 35.3,21 L21.7,21 C20.765,21 20,21.7333333 20,22.6296296 L20,30.3703704 C20,31.2666667 20.765,32 21.7,32 L35.3,32 C36.235,32 37,31.2666667 37,30.3703704 L37,22.6296296 Z M29.8794876,29.4310969 C29.9598292,29.6936676 29.7589752,30 29.4777795,30 L26.5453108,30 C26.2641152,30 26.103432,29.7374293 26.1436028,29.4310969 L26.8666773,26.8053904 C26.2641152,26.3677726 25.902578,25.5800607 26.0230904,24.7048252 C26.1837736,23.8733514 26.7863357,23.2169248 27.5897517,23.0418777 C28.8752175,22.7793071 30,23.7858279 30,25.0986812 C30,25.7988696 29.6786336,26.4552962 29.1564131,26.8053904 L29.8794876,29.4310969 L29.8794876,29.4310969 Z
+                                    </Path.Data>
+                                </Path>
+                                <TextBlock x:Name="txtbPasswordHint"   Grid.Column="1" FontSize="16" Text="{ext:Localize AuthorityView_PasswordHintText}" Margin="16,0,0,0" VerticalAlignment="Center" Background="Transparent" Foreground="#999999" />
+                                <PasswordBox x:Name="txtPassword"   Focusable="True" TabIndex="1"  Grid.Column="1" Padding="3" BorderBrush="Transparent" BorderThickness="0" VerticalAlignment="Center" FontSize="16" Background="Transparent" ContextMenu="{x:Null}"  FocusVisualStyle="{x:Null}" PasswordChanged="TxtPassword_PasswordChanged"    />
+                                <Button Grid.Column="2" Focusable="False" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" 
+                                        
+                                        BorderThickness="0"  Margin="10" Style="{StaticResource SystemButtonNoShadow }" Click="BtnKeyboard_Click" >
+                                    <Button.Content>
+                                        <Image x:Name="imgKeyboard" 
+                                               Width="24" 
+                                               Height="24" 
+                                               RenderTransformOrigin="0.5,0.5"
+                                               Stretch="Uniform" Source="/SDShell;component/Resources/Keyboard.png">
+                                            <Image.RenderTransform>
+                                                <RotateTransform x:Name="imgKeyboardAngle"  Angle="0"  />
+                                            </Image.RenderTransform>
+                                        </Image>
+                                    </Button.Content>
+
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Width="320" Orientation="Horizontal" Margin="0,15,0,0">
+                        <CheckBox x:Name="cbRememberMe" Style="{StaticResource HCheckBox}" TabIndex="2" FontSize="16" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                        <TextBlock Text="{ext:Localize AuthorityView_RememberMeText}"  FontSize="16"  VerticalAlignment="Center" ></TextBlock>
+                    </StackPanel>
+
+                    <Button Grid.Row="2"
+                            x:Name="btnLogin"
+                        Width="320"
+                        Height="48"
+                        TabIndex="3"
+                        Margin="0,15,0,0" 
+                        Style="{StaticResource SystemButton}"
+                        Foreground="#FFFFFF"
+                        Background="#3bac84"
+                        IsDefault="True"
+                            
+                        Focusable="False"
+                        FontSize="22"
+                        Click="BtnLogin_Click"    >
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="txtbLoginText" Text="{ext:Localize AuthorityView_LoginText}"  VerticalAlignment="Center" FontSize="22"  Foreground="#FFFFFF"></TextBlock>
+                                <Ellipse x:Name="Dot1"  Fill="#FFFFFF" Visibility="Collapsed" Width="5" Height="5" Margin="2"></Ellipse>
+                                <Ellipse x:Name="Dot2" Fill="#FFFFFF" Visibility="Collapsed" Width="5" Height="5" Margin="2"></Ellipse>
+                                <Ellipse x:Name="Dot3" Fill="#FFFFFF" Visibility="Collapsed" Width="5" Height="5" Margin="2"></Ellipse>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                    <TextBlock x:Name="txtbErrorMessage"  TextTrimming="WordEllipsis" 
+                             TextWrapping="Wrap" 
+                             Foreground="#e64340" 
+                             Margin="0,10,0,0"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             FontSize="16px"  />
+
+
+                </StackPanel>
+
+                <Grid x:Name="gridMainKeyboard" Grid.Row="2" 
+                              Margin="0,16,0,0"  
+                              Visibility="Hidden"
+                              HorizontalAlignment="Center" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition  Width="auto"/>
+                        <ColumnDefinition  Width="auto"/>
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition  Height="auto" />
+                        <RowDefinition  Height="auto" />
+                        <RowDefinition  Height="auto" />
+                        <RowDefinition  Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="0" Grid.Column="0" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="1" DataContext="1" FontSize="18" Foreground="#666666" Margin="0,0,10,10" HorizontalAlignment="Center"  Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+                    <Button Grid.Row="0" Grid.Column="1" Width="100" Height="48"  Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="2"  DataContext="2" FontSize="18" Foreground="#666666" Margin="0,0,10,10"  Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+                    <Button Grid.Row="0" Grid.Column="2" Width="100" Height="48"  Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="3"  DataContext="3" FontSize="18" Foreground="#666666" Margin="0,0,0,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+
+                    <Button Grid.Row="1" Grid.Column="0" Width="100" Height="48"  Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="4"  DataContext="4" FontSize="18" Foreground="#666666" Margin="0,0,10,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+                    <Button Grid.Row="1" Grid.Column="1" Width="100" Height="48"  Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="5"  DataContext="5" FontSize="18" Foreground="#666666" Margin="0,0,10,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+                    <Button Grid.Row="1" Grid.Column="2" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="6"  DataContext="6"  FontSize="18" Foreground="#666666" Margin="0,0,0,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+
+                    <Button Grid.Row="2" Grid.Column="0" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="7"  DataContext="7" FontSize="18" Foreground="#666666" Margin="0,0,10,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click" />
+                    <Button Grid.Row="2" Grid.Column="1" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="8"  DataContext="8" FontSize="18" Foreground="#666666" Margin="0,0,10,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click"  />
+                    <Button Grid.Row="2" Grid.Column="2" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="9"  DataContext="9" FontSize="18" Foreground="#666666" Margin="0,0,0,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click"  />
+
+                    <Button Grid.Row="3" Grid.Column="0" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="." DataContext="102" FontSize="18" Foreground="#666666" Margin="0,0,10,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click"  />
+                    <Button Grid.Row="3" Grid.Column="1" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" Content="0"   DataContext="0"  FontSize="18" Foreground="#666666" Margin="0,0,10,10"  Style="{StaticResource VirtualButton}"  Click="BtnMainVirtualKey_Click"/>
+                    <Button Grid.Row="3" Grid.Column="2" Width="100" Height="48" Focusable="False" BorderThickness="1" BorderBrush="#d9d9d9" Background="#f4f5f5" FontSize="18"  DataContext="100" Foreground="#666666" Margin="0,0,0,10" Style="{StaticResource VirtualButton}" Click="BtnMainVirtualKey_Click"  >
+                        <Button.Content>
+                            <Path Fill="#666666" Width="16" Height="14" Stretch="Uniform" Stroke="#666666" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Path.Data>
+                                    M6.04239911,13.6581667 L0.334483835,7.82483333 C-0.111304348,7.36925 -0.111304348,6.63075 0.334483835,6.17516667 L6.04239911,0.341833333 C6.48818729,-0.11375 7.21080936,-0.11375 7.65659755,0.341833333 C8.10238573,0.797416667 8.10238573,1.53591667 7.65659755,1.9915 L3.89736455,5.83333333 L14.8405797,5.83333333 C15.4713043,5.83333333 15.9821628,6.35541667 15.9821628,7 C15.9821628,7.64458333 15.4713043,8.16666667 14.8405797,8.16666667 L3.89736455,8.16666667 L7.65659755,12.0085 C7.87920624,12.236 7.99108138,12.5346667 7.99108138,12.8333333 C7.99108138,13.132 7.87977703,13.4306667 7.65659755,13.6581667 C7.21080936,14.11375 6.48818729,14.11375 6.04239911,13.6581667 Z
+                                </Path.Data>
+                            </Path>
+                        </Button.Content>
+                    </Button>
+
+                </Grid>
+
+            </StackPanel>
+
+
+        </Grid>
+        <!--************************************************************结束 登录界面************************************************************************-->
+        <local:ProxyPartial x:Name="gridProxyView" Visibility="Hidden" 
+                            OnProxyBackClick="ProxyPartial_OnProxyBackClick"
+                            OnProxyOkClick="ProxyPartial_OnProxyOkClick"/>
+
+        <!--************************************************************开始 代理界面************************************************************************-->
+
+        <!--************************************************************结束 代理界面************************************************************************-->
+        <Grid x:Name="gridRememberUsers" Visibility="Collapsed" Focusable="False" >
+            <Border Background="Transparent" MouseLeftButtonDown="Border_MouseLeftButtonDown" />
+            <Border 
+                x:Name="borderRememberUsersList"
+                CornerRadius="0,0,5,5"
+                Background="#FFFFFF" 
+                BorderBrush="#999999" 
+                VerticalAlignment="Top"
+                Margin="0,90,0,0" 
+                HorizontalAlignment="Center"
+                BorderThickness="1,0,1,1"
+                Padding="0" Width="320" >
+                <ListBox
+                    Name="ListDishesTypes"
+                    Grid.Column="1"
+                    Background="Transparent"
+                    SelectionMode="Single"
+                    Margin="0" 
+                    Padding="0"
+                    BorderThickness="0"
+                    ItemsSource="{Binding RememberUsers}"
+                    Focusable="False"
+                    FocusVisualStyle="{x:Null}"
+                    HorizontalAlignment="Center"
+                    SelectionChanged="ListDishesTypes_SelectionChanged"
+                    ScrollViewer.HorizontalScrollBarVisibility = "Disabled">
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="#a6a6a6" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FontSize" Value="17" />
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border 
+                                            Width="{TemplateBinding Width}"
+                                            Height="45"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="#999999"
+                                            BorderThickness="0,1,0,0"
+                                            Margin="0"
+                                            DataContext="{TemplateBinding Content}"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            Padding="10,0">
+                                            <Grid Width="320">
+                                                <Grid.ColumnDefinitions >
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"  Text="{Binding Username}" FontSize="{TemplateBinding FontSize}"    Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" />
+
+                                                <Button Grid.Column="1"  Background="Transparent" VerticalAlignment="Center" DataContext="{Binding . }"  Margin="0,0,23,0" Style="{StaticResource SystemButtonNoShadow }" Click="BtnDeleteRememberUser_Click">
+                                                    <Button.Content>
+                                                        <Path Fill="#a6a6a6" Stroke="#a6a6a6"  Stretch="Uniform" StrokeThickness="0" Width="16" Height="16" VerticalAlignment="Center">
+                                                            <Path.Data>
+                                                                M9.99741302,8.65359326 L4.62213395,3.27831419 C4.25104837,2.9072286 3.64939977,2.9072286 3.27831419,3.27831419 L3.27831419,3.27831419 L3.27831419,3.27831419 C2.9072286,3.64939977 2.9072286,4.25104837 3.27831419,4.62213395 L3.27831419,4.62213395 L8.65359326,9.99741302 L3.27831419,15.3726921 C2.9072286,15.7437777 2.9072286,16.3454263 3.27831419,16.7165119 L3.27831419,16.7165119 C3.64939977,17.0875974 4.25104837,17.0875974 4.62213395,16.7165119 L4.62213395,16.7165119 L9.99741302,11.3412328 L15.3726921,16.7165119 C15.7437777,17.0875974 16.3454263,17.0875974 16.7165119,16.7165119 L16.7165119,16.7165119 C17.0875974,16.3454263 17.0875974,15.7437777 16.7165119,15.3726921 L16.7165119,15.3726921 L11.3412328,9.99741302 L16.7165119,4.62213395 C17.0875974,4.25104837 17.0875974,3.64939977 16.7165119,3.27831419 L16.7165119,3.27831419 L16.7165119,3.27831419 C16.3454263,2.9072286 15.7437777,2.9072286 15.3726921,3.27831419 L15.3726921,3.27831419 L9.99741302,8.65359326 Z
+                                                            </Path.Data>
+                                                        </Path>
+                                                    </Button.Content>
+                                                </Button>
+                                            </Grid>
+
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel 
+                                                Margin="0"
+                                                Focusable="False"
+                                                FocusVisualStyle="{x:Null}"
+                                                Orientation="Vertical"
+                                                HorizontalAlignment="Center"
+                                                Background="{x:Null}" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

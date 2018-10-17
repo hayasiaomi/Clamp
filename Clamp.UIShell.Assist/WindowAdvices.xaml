@@ -1,0 +1,15 @@
+﻿<Window x:Class="Clamp.UIShell.Assist.WindowAdvices"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        IsVisibleChanged="Window_IsVisibleChanged"
+        Loaded="Window_Loaded"
+        WindowStyle="None"
+        ShowInTaskbar="False"
+        ResizeMode="CanMinimize"
+        Visibility="Hidden"
+        WindowStartupLocation="Manual"
+        Title="消息框" Height="522" Width="392">
+
+</Window>

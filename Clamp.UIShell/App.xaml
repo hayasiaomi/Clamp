@@ -1,0 +1,15 @@
+﻿<Application x:Class="Clamp.UIShell.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SDShell;component/Assets/Button.xaml" />
+                <ResourceDictionary Source="/SDShell;component/Assets/CheckBox.xaml" />
+                <ResourceDictionary Source="/SDShell;component/Assets/ComboBox.xaml" /> 
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>
