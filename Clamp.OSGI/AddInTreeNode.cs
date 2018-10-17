@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Clamp.AddIns.Properties;
+using Clamp.OSGI.Properties;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     public sealed class AddInTreeNode
     {

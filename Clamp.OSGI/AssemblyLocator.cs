@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     static class AssemblyLocator
     {

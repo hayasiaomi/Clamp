@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Text;
-using Clamp.AddIns.Properties;
-using Clamp.AddIns.DoozerImpl;
+using Clamp.OSGI.Properties;
+using Clamp.OSGI.DoozerImpl;
 using Clamp.SDK.Doozer;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     public class AddInTreeImpl : IAddInTree
     {

@@ -1,4 +1,4 @@
-﻿using Clamp.AddIns;
+﻿using Clamp.OSGI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

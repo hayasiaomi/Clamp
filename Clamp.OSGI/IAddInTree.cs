@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     public interface IAddInTree
     {

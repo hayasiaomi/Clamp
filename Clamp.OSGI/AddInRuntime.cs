@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using Clamp.AddIns.DoozerImpl;
-using Clamp.AddIns.ConditionEvaluatorImpl;
+using Clamp.OSGI.DoozerImpl;
+using Clamp.OSGI.ConditionEvaluatorImpl;
 using System.IO;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     public class AddInRuntime
     {

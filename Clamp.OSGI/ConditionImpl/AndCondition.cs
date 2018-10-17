@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Clamp.AddIns.ConditionImpl
+namespace Clamp.OSGI.ConditionImpl
 {
     public class AndCondition : ICondition
     {

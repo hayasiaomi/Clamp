@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     /// <summary>
     /// 插件管理类

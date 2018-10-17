@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     /// <summary>
     /// 插件类

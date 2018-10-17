@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Clamp.AddIns.Properties;
+using Clamp.OSGI.Properties;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     /// <summary>
     /// 引用的插件类

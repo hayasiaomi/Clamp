@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Clamp.AddIns.Properties {
+namespace Clamp.OSGI.Properties {
     using System;
     
     

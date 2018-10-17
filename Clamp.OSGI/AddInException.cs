@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Clamp.AddIns
+namespace Clamp.OSGI
 {
     [Serializable]
     public class AddInException : Exception
