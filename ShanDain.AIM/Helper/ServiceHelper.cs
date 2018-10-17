@@ -5,7 +5,7 @@ using System.ServiceProcess;
 using System.Text;
 using TimeoutException = System.TimeoutException;
 
-namespace ShanDain.AIM.Helper
+namespace Clamp.AIM.Helper
 {
     public class ServiceHelper
     {

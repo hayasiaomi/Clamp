@@ -1,4 +1,4 @@
-﻿namespace ShanDain.AIM
+﻿namespace Clamp.AIM
 {
     partial class MainForm
     {

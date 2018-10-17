@@ -1,11 +1,11 @@
-﻿using ShanDain.AIM.DTO;
+﻿using Clamp.AIM.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShanDain.AIM
+namespace Clamp.AIM
 {
     public interface IManagerGetter
     {

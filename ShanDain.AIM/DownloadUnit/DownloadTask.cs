@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ShanDain.AIM.Helper;
+using Clamp.AIM.Helper;
 
-namespace ShanDain.AIM.DownloadUnit
+namespace Clamp.AIM.DownloadUnit
 {
     public class DownloadTask
     {

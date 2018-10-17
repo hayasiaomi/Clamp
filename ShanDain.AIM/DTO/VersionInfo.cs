@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShanDain.AIM.DTO
+namespace Clamp.AIM.DTO
 {
     public class VersionInfo : IComparable<VersionInfo>
     {

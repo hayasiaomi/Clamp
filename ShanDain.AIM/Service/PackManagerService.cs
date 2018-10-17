@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using ShanDain.AIM.DTO;
+using Clamp.AIM.DTO;
 using System.Security.Cryptography;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace ShanDain.AIM.Service
+namespace Clamp.AIM.Service
 {
     public class PackManagerService
     {

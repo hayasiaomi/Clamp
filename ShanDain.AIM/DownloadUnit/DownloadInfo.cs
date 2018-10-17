@@ -1,11 +1,11 @@
-﻿using ShanDain.AIM.Exceptions;
+﻿using Clamp.AIM.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace ShanDain.AIM.DownloadUnit
+namespace Clamp.AIM.DownloadUnit
 {
 
     internal class DownloadInfo

@@ -11,11 +11,11 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using ShanDain.AIM;
-using ShanDain.AIM.DownloadUnit;
-using ShanDain.AIM.Exceptions;
+using Clamp.AIM;
+using Clamp.AIM.DownloadUnit;
+using Clamp.AIM.Exceptions;
 
-namespace ShanDain.AIM
+namespace Clamp.AIM
 {
     class Program
     {

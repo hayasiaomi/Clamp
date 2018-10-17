@@ -1,4 +1,4 @@
-﻿using ShanDain.AIM.DTO;
+﻿using Clamp.AIM.DTO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace ShanDain.AIM.Helper
+namespace Clamp.AIM.Helper
 {
     public class NetGetter : IManagerGetter
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ShanDain.AIM.Properties
+namespace Clamp.AIM.Properties
 {
 
 

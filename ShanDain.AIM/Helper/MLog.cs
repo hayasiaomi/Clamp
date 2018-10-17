@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NLog;
 
-namespace ShanDain.AIM.Helper
+namespace Clamp.AIM.Helper
 {
     public class MLog
     {

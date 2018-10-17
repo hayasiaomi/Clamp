@@ -13,14 +13,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using ShanDain.AIM.DTO;
+using Clamp.AIM.DTO;
 using ICSharpCode.SharpZipLib.Zip;
-using ShanDain.AIM.DownloadUnit;
+using Clamp.AIM.DownloadUnit;
 using System.Diagnostics;
-using ShanDain.AIM.Helper;
-using ShanDain.AIM.Service;
+using Clamp.AIM.Helper;
+using Clamp.AIM.Service;
 
-namespace ShanDain.AIM
+namespace Clamp.AIM
 {
     public partial class MainForm : Form
     {

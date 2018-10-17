@@ -6,9 +6,9 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
-using ShanDain.AIM.Exceptions;
+using Clamp.AIM.Exceptions;
 
-namespace ShanDain.AIM.DownloadUnit
+namespace Clamp.AIM.DownloadUnit
 {
 
     public class Downloader
