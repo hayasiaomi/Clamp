@@ -8,9 +8,9 @@ using System.IO;
 using System.IO.Compression;
 using System.ServiceProcess;
 using System.Windows.Forms;
-using ShanDian.Upgrader.Properties;
+using Clamp.Upgrader.Properties;
 
-namespace ShanDian.Upgrader
+namespace Clamp.Upgrader
 {
     public partial class FrmInstall : Form
     {

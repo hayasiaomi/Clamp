@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace ShanDian.Upgrader
+namespace Clamp.Upgrader
 {
     static class Program
     {

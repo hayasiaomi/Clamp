@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ShanDian.Upgrader
+namespace Clamp.Upgrader
 {
     public partial class FrmMain : Form
     {

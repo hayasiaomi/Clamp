@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ShanDian.Upgrader.Properties {
+namespace Clamp.Upgrader.Properties {
     using System;
     
     

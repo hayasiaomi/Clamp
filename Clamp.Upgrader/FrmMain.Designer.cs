@@ -1,4 +1,4 @@
-﻿namespace ShanDian.Upgrader
+﻿namespace Clamp.Upgrader
 {
     partial class FrmMain
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.blackStyleButton1 = new ShanDian.Upgrader.Controls.BlackStyleButton();
+            this.blackStyleButton1 = new Clamp.Upgrader.Controls.BlackStyleButton();
             this.SuspendLayout();
             // 
             // blackStyleButton1

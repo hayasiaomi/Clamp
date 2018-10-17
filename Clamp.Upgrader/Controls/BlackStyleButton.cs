@@ -5,7 +5,7 @@ using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace ShanDian.Upgrader.Controls
+namespace Clamp.Upgrader.Controls
 {
     [DefaultEvent("MouseClick")]
     public class BlackStyleButton : Control

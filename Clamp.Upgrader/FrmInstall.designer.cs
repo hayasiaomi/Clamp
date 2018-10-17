@@ -1,4 +1,4 @@
-﻿namespace ShanDian.Upgrader
+﻿namespace Clamp.Upgrader
 {
     partial class FrmInstall
     {
@@ -48,7 +48,7 @@
             // 
             this.pictureBoxIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBoxIcon.Image = global::ShanDian.Upgrader.Properties.Resources.ZipExtractor;
+            this.pictureBoxIcon.Image = global::Clamp.Upgrader.Properties.Resources.ZipExtractor;
             this.pictureBoxIcon.Location = new System.Drawing.Point(14, 14);
             this.pictureBoxIcon.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxIcon.Name = "pictureBoxIcon";
