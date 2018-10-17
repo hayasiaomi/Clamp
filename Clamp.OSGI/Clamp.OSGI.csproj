@@ -50,9 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddIn.cs" />
-    <Compile Include="AddInActivator.cs" />
-    <Compile Include="AddInContext.cs" />
+    <Compile Include="Bundle.cs" />
+    <Compile Include="BundleActivator.cs" />
+    <Compile Include="BundleContext.cs" />
     <Compile Include="AddInEngine.cs" />
     <Compile Include="AddInException.cs" />
     <Compile Include="AddInManager.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="DefaultAddInEngine.cs" />
     <Compile Include="DoozerImpl\ServiceDoozer.cs" />
     <Compile Include="DoozerImpl\WebworkDoozer.cs" />
-    <Compile Include="IAddInActivator.cs" />
+    <Compile Include="IBundleActivator.cs" />
     <Compile Include="IAddInEngine.cs" />
     <Compile Include="IAddInTree.cs" />
     <Compile Include="IBuildItemsModifier.cs" />

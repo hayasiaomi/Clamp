@@ -55,9 +55,9 @@ namespace Clamp.AddIns
         }
 
 
-        public bool Check(List<AddIn> addIns, out AddIn addInFound)
+        public bool Check(List<Bundle> addIns, out Bundle addInFound)
         {
-            AddIn addIn = addIns.FirstOrDefault(addin =>
+            Bundle addIn = addIns.FirstOrDefault(addin =>
            addin.Manifest.ArtifactId == this.ArtifactId
            && addin.Manifest.GroupId == this.GroupId
            && addin.Manifest.AddInId == this.AddInId

@@ -6,14 +6,14 @@ using System.Text;
 
 namespace Aomi.Authority
 {
-    public class AuthorityActivator: Clamp.AddIns.AddInActivator
+    public class AuthorityActivator: Clamp.AddIns.BundleActivator
     {
-        public override void Start(AddInContext addInContext)
+        public override void Start(BundleContext addInContext)
         {
             
         }
 
-        public override void Stop(AddInContext addInContext)
+        public override void Stop(BundleContext addInContext)
         {
            
         }

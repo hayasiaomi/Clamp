@@ -8,7 +8,7 @@ namespace Clamp.AddIns
 {
     public class Codon
     {
-        AddIn addIn;
+        Bundle addIn;
         string name;
         AddInProperties properties;
         ReadOnlyCollection<ICondition> conditions;
@@ -18,7 +18,7 @@ namespace Clamp.AddIns
             get { return name; }
         }
 
-        public AddIn AddIn
+        public Bundle AddIn
         {
             get { return addIn; }
         }
@@ -53,7 +53,7 @@ namespace Clamp.AddIns
             get { return conditions; }
         }
 
-        public Codon(AddIn addIn, string name, AddInProperties properties, ReadOnlyCollection<ICondition> conditions)
+        public Codon(Bundle addIn, string name, AddInProperties properties, ReadOnlyCollection<ICondition> conditions)
         {
             if (name == null)
                 throw new ArgumentNullException("name");

@@ -11,7 +11,7 @@ namespace Clamp.AddIns
     /// <summary>
     /// 插件类
     /// </summary>
-    public sealed class AddIn
+    public sealed class Bundle
     {
         private volatile bool dependenciesLoaded;
         private string addInFileName;
@@ -141,7 +141,7 @@ namespace Clamp.AddIns
             get { return features; }
         }
 
-        internal AddIn(IAddInTree addInTree)
+        internal Bundle(IAddInTree addInTree)
         {
             if (addInTree == null)
                 throw new ArgumentNullException("addInTree");
@@ -229,7 +229,7 @@ namespace Clamp.AddIns
                     if (r.RequirePreload)
                     {
                         bool found = false;
-                        foreach (AddIn addIn in AddInTree.AddIns)
+                        foreach (Bundle addIn in AddInTree.AddIns)
                         {
                             if (addIn.Manifest.IsMatch(r))
                             {
@@ -258,13 +258,13 @@ namespace Clamp.AddIns
         /// <param name="nameTable"></param>
         /// <returns></returns>
 
-        public static AddIn Load(IAddInTree addInTree, string fileName, XmlNameTable nameTable = null)
+        public static Bundle Load(IAddInTree addInTree, string fileName, XmlNameTable nameTable = null)
         {
             try
             {
                 using (TextReader textReader = File.OpenText(fileName))
                 {
-                    AddIn addIn = Load(addInTree, textReader, Path.GetDirectoryName(fileName), nameTable);
+                    Bundle addIn = Load(addInTree, textReader, Path.GetDirectoryName(fileName), nameTable);
                     addIn.FileName = fileName;
                     return addIn;
                 }
@@ -287,13 +287,13 @@ namespace Clamp.AddIns
         /// <param name="hintPath"></param>
         /// <param name="nameTable"></param>
         /// <returns></returns>
-        public static AddIn Load(IAddInTree addInTree, TextReader textReader, string hintPath = null, XmlNameTable nameTable = null)
+        public static Bundle Load(IAddInTree addInTree, TextReader textReader, string hintPath = null, XmlNameTable nameTable = null)
         {
             if (nameTable == null)
                 nameTable = new NameTable();
             try
             {
-                AddIn addIn = new AddIn(addInTree);
+                Bundle addIn = new Bundle(addInTree);
 
                 using (XmlTextReader reader = new XmlTextReader(textReader, nameTable))
                 {
@@ -328,7 +328,7 @@ namespace Clamp.AddIns
         /// <param name="reader"></param>
         /// <param name="addIn"></param>
         /// <param name="hintPath"></param>
-        static void SetupAddIn(XmlReader reader, AddIn addIn, string hintPath)
+        static void SetupAddIn(XmlReader reader, Bundle addIn, string hintPath)
         {
             while (reader.Read())
             {

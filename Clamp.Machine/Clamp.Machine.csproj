@@ -93,9 +93,9 @@
     <Compile Include="MachineCode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Clamp.AddIns\Clamp.AddIns.csproj">
+    <ProjectReference Include="..\Clamp.AddIns\Clamp.OSGI.csproj">
       <Project>{95A3B367-FEBB-4F9E-B2EB-ACED3565393E}</Project>
-      <Name>Clamp.AddIns</Name>
+      <Name>Clamp.OSGI</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Clamp.Common\Clamp.Common.csproj">

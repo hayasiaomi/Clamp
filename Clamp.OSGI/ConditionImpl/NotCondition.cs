@@ -41,7 +41,7 @@ namespace Clamp.AddIns.ConditionImpl
             return !condition.IsValid(parameter);
         }
 
-        public static ICondition Read(XmlReader reader, AddIn addIn)
+        public static ICondition Read(XmlReader reader, Bundle addIn)
         {
             return new NotCondition(AddInCondition.ReadConditionList(reader, "Not", addIn)[0]);
         }

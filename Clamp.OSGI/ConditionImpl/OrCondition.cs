@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Clamp.AddIns.ConditionImpl
 {
-    public class AndCondition : ICondition
+    public class OrCondition : ICondition
     {
         ICondition[] conditions;
 
@@ -20,7 +20,7 @@ namespace Clamp.AddIns.ConditionImpl
                     sb.Append(conditions[i].Name);
                     if (i + 1 < conditions.Length)
                     {
-                        sb.Append(" And ");
+                        sb.Append(" Or ");
                     }
                 }
                 return sb.ToString();
@@ -40,7 +40,7 @@ namespace Clamp.AddIns.ConditionImpl
             }
         }
 
-        public AndCondition(ICondition[] conditions)
+        public OrCondition(ICondition[] conditions)
         {
             this.conditions = conditions;
         }
@@ -49,18 +49,17 @@ namespace Clamp.AddIns.ConditionImpl
         {
             foreach (ICondition condition in conditions)
             {
-                if (!condition.IsValid(parameter))
+                if (condition.IsValid(parameter))
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
 
-        public static ICondition Read(XmlReader reader, AddIn addIn)
+        public static ICondition Read(XmlReader reader, Bundle addIn)
         {
-            return new AndCondition(AddInCondition.ReadConditionList(reader, "And", addIn));
+            return new OrCondition(AddInCondition.ReadConditionList(reader, "Or", addIn));
         }
     }
-
 }

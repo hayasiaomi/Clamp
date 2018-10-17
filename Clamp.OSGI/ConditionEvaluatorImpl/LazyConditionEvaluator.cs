@@ -7,7 +7,7 @@ namespace Clamp.AddIns.ConditionEvaluatorImpl
 {
     sealed class LazyConditionEvaluator : IConditionEvaluator
     {
-        AddIn addIn;
+        Bundle addIn;
         string name;
         string className;
 
@@ -19,7 +19,7 @@ namespace Clamp.AddIns.ConditionEvaluatorImpl
             }
         }
 
-        public LazyConditionEvaluator(AddIn addIn, AddInProperties properties)
+        public LazyConditionEvaluator(Bundle addIn, AddInProperties properties)
         {
             if (addIn == null)
                 throw new ArgumentNullException("addIn");

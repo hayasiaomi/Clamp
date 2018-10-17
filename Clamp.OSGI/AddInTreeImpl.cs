@@ -15,7 +15,7 @@ namespace Clamp.AddIns
     public class AddInTreeImpl : IAddInTree
     {
         private AddInTreeNode rootNode = new AddInTreeNode();
-        private List<AddIn> addIns = new List<AddIn>();
+        private List<Bundle> addIns = new List<Bundle>();
         private ConcurrentDictionary<string, IDoozer> doozers = new ConcurrentDictionary<string, IDoozer>();
         private ConcurrentDictionary<string, IConditionEvaluator> conditionEvaluators = new ConcurrentDictionary<string, IConditionEvaluator>();
 
@@ -27,7 +27,7 @@ namespace Clamp.AddIns
             }
         }
 
-        public ReadOnlyCollection<AddIn> AddIns
+        public ReadOnlyCollection<Bundle> AddIns
         {
             get
             {
@@ -74,7 +74,7 @@ namespace Clamp.AddIns
         }
 
 
-        public void InsertAddIn(AddIn addIn)
+        public void InsertAddIn(Bundle addIn)
         {
             if (addIn.Enabled)
             {
@@ -158,7 +158,7 @@ namespace Clamp.AddIns
             return curPath;
         }
 
-        private void DisableAddin(AddIn addIn, List<AddIn> enabledAddInsList, string mistake)
+        private void DisableAddin(Bundle addIn, List<Bundle> enabledAddInsList, string mistake)
         {
             addIn.Enabled = false;
 
@@ -174,23 +174,23 @@ namespace Clamp.AddIns
         /// <param name="disabledAddIns"></param>
         public void Load(List<string> addInFiles, List<string> disabledAddIns)
         {
-            List<AddIn> addInslist = new List<AddIn>();
-            List<AddIn> enabledAddInsList = new List<AddIn>();
-            Dictionary<string, AddIn> addInDict = new Dictionary<string, AddIn>();
+            List<Bundle> addInslist = new List<Bundle>();
+            List<Bundle> enabledAddInsList = new List<Bundle>();
+            Dictionary<string, Bundle> addInDict = new Dictionary<string, Bundle>();
 
             var nameTable = new System.Xml.NameTable();
 
             foreach (string fileName in addInFiles)
             {
-                AddIn addIn;
+                Bundle addIn;
 
                 try
                 {
-                    addIn = AddIn.Load(this, fileName, nameTable);
+                    addIn = Bundle.Load(this, fileName, nameTable);
                 }
                 catch (AddInException ex)
                 {
-                    addIn = new AddIn(this);
+                    addIn = new Bundle(this);
                     addIn.FileName = fileName;
                     addIn.Enabled = false;
                     addIn.Mistake = ex.Message;
@@ -225,12 +225,12 @@ namespace Clamp.AddIns
 
             for (int i = 0; i < addInslist.Count; i++)
             {
-                AddIn addIn = addInslist[i];
+                Bundle addIn = addInslist[i];
 
                 if (!addIn.Enabled)
                     continue;
 
-                AddIn addInFound;
+                Bundle addInFound;
 
                 foreach (AddInReference reference in addIn.Manifest.Conflicts)
                 {
@@ -257,7 +257,7 @@ namespace Clamp.AddIns
                 }
             }
 
-            foreach (AddIn addIn in addInslist)
+            foreach (Bundle addIn in addInslist)
             {
                 try
                 {

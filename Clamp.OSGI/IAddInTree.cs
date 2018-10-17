@@ -11,7 +11,7 @@ namespace Clamp.AddIns
     {
         ConcurrentDictionary<string, IDoozer> Doozers { get; }
 
-        ReadOnlyCollection<AddIn> AddIns { get; }
+        ReadOnlyCollection<Bundle> AddIns { get; }
 
         ConcurrentDictionary<string, IConditionEvaluator> ConditionEvaluators { get; }
 

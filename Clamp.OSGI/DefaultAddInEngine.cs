@@ -17,19 +17,19 @@ namespace Clamp.AddIns
         {
             if (this.AddInTree.AddIns != null && this.AddInTree.AddIns.Count > 0)
             {
-                List<AddIn> addIns = this.AddInTree.AddIns.OrderBy(addin => addin.StartLevel).ToList();
+                List<Bundle> addIns = this.AddInTree.AddIns.OrderBy(addin => addin.StartLevel).ToList();
 
-                foreach (AddIn addin in addIns)
+                foreach (Bundle addin in addIns)
                 {
                     if (addin.Enabled)
                     {
                         if (!string.IsNullOrWhiteSpace(addin.ActivatorClassName))
                         {
-                            IAddInActivator addInActivator = addin.CreateObject(addin.ActivatorClassName) as IAddInActivator;
+                            IBundleActivator addInActivator = addin.CreateObject(addin.ActivatorClassName) as IBundleActivator;
 
                             if (addInActivator != null)
                             {
-                                AddInContext addInContext = new AddInContext(addin, ObjectSingleton.ObjectProvider as SDContainer);
+                                BundleContext addInContext = new BundleContext(addin, ObjectSingleton.ObjectProvider as SDContainer);
 
                                 addInActivator.Start(addInContext);
                             }

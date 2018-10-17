@@ -42,7 +42,7 @@ namespace Clamp.AddIns
         /// <summary>
         /// The addin containing the codon.
         /// </summary>
-        public AddIn AddIn
+        public Bundle AddIn
         {
             get { return codon.AddIn; }
         }

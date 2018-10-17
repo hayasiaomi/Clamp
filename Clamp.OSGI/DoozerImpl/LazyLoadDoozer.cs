@@ -7,7 +7,7 @@ namespace Clamp.AddIns.DoozerImpl
 {
     sealed class LazyLoadDoozer : IDoozer
     {
-        AddIn addIn;
+        Bundle addIn;
         string name;
         string className;
 
@@ -19,7 +19,7 @@ namespace Clamp.AddIns.DoozerImpl
             }
         }
 
-        public LazyLoadDoozer(AddIn addIn, AddInProperties properties)
+        public LazyLoadDoozer(Bundle addIn, AddInProperties properties)
         {
             this.addIn = addIn;
             this.name = properties["name"];

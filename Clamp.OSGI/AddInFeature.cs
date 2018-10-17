@@ -9,10 +9,10 @@ namespace Clamp.AddIns
     public class AddInFeature
     {
         private string name;
-        private AddIn addIn;
+        private Bundle addIn;
         private List<List<Codon>> codons = new List<List<Codon>>();
 
-        public AddIn AddIn
+        public Bundle AddIn
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Clamp.AddIns
             }
         }
 
-        public AddInFeature(string name, AddIn addIn)
+        public AddInFeature(string name, Bundle addIn)
         {
             this.addIn = addIn;
             this.name = name;
@@ -58,7 +58,7 @@ namespace Clamp.AddIns
             addInPath.DoSetUp(reader, endElement, addInPath.addIn);
         }
 
-        void DoSetUp(XmlReader reader, string endElement, AddIn addIn)
+        void DoSetUp(XmlReader reader, string endElement, Bundle addIn)
         {
             Stack<ICondition> conditionStack = new Stack<ICondition>();
             List<Codon> innerCodons = new List<Codon>();

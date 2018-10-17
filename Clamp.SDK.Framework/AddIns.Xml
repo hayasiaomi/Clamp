@@ -1,4 +1,4 @@
-﻿<AddIn name        = "ShanDian"
+﻿<Bundle name        = "ShanDian"
        author      = "aomi"
        copyright   = "Copyright ©  2018 By ShanDian Team"
        url         = ""
@@ -34,4 +34,4 @@
     <Webwork id="MachineController" class="ShanDian.Machine.Modules.MachineController"   />
   </Feature>
 
-</AddIn>
+</Bundle>

@@ -6,16 +6,16 @@ using System.Text;
 
 namespace Clamp.AddIns
 {
-    public class AddInContext
+    public class BundleContext
     {
         private SDContainer container;
 
-        public AddIn AddIn { private set; get; }
+        public Bundle Bundle { private set; get; }
 
-        internal AddInContext(AddIn addIn, SDContainer container)
+        internal BundleContext(Bundle bundle, SDContainer container)
         {
             this.container = container;
-            this.AddIn = addIn;
+            this.Bundle = bundle;
         }
 
         public object GetService(Type sType,string name)

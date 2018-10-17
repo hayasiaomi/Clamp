@@ -14,7 +14,7 @@ namespace Clamp.AddIns
         AddInProperties properties;
         ConditionFailedAction action;
 
-        public AddIn AddIn { get; private set; }
+        public Bundle AddIn { get; private set; }
 
         public ConditionFailedAction Action
         {
@@ -49,7 +49,7 @@ namespace Clamp.AddIns
             }
         }
 
-        public AddInCondition(string name, AddInProperties properties, AddIn addIn)
+        public AddInCondition(string name, AddInProperties properties, Bundle addIn)
         {
             this.AddIn = addIn;
             this.name = name;
@@ -69,14 +69,14 @@ namespace Clamp.AddIns
             }
         }
 
-        public static ICondition Read(XmlReader reader, AddIn addIn)
+        public static ICondition Read(XmlReader reader, Bundle addIn)
         {
             AddInProperties properties = AddInProperties.ReadFromAttributes(reader);
             string conditionName = properties["name"];
             return new AddInCondition(conditionName, properties, addIn);
         }
 
-        public static ICondition ReadComplexCondition(XmlReader reader, AddIn addIn)
+        public static ICondition ReadComplexCondition(XmlReader reader, Bundle addIn)
         {
             AddInProperties properties = AddInProperties.ReadFromAttributes(reader);
             reader.Read();
@@ -111,7 +111,7 @@ namespace Clamp.AddIns
             return condition;
         }
 
-        public static ICondition[] ReadConditionList(XmlReader reader, string endElement, AddIn addIn)
+        public static ICondition[] ReadConditionList(XmlReader reader, string endElement, Bundle addIn)
         {
             List<ICondition> conditions = new List<ICondition>();
             while (reader.Read())

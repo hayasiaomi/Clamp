@@ -177,7 +177,7 @@ namespace Clamp.AddIns
             return asm.GetManifestResourceStream(resourceName);
         }
 
-        internal static List<AddInRuntime> ReadSection(XmlReader reader, AddIn addIn, string hintPath)
+        internal static List<AddInRuntime> ReadSection(XmlReader reader, Bundle addIn, string hintPath)
         {
             List<AddInRuntime> runtimes = new List<AddInRuntime>();
             Stack<ICondition> conditionStack = new Stack<ICondition>();
@@ -223,7 +223,7 @@ namespace Clamp.AddIns
             return runtimes;
         }
 
-        internal static AddInRuntime Read(AddIn addIn, XmlReader reader, string hintPath, Stack<ICondition> conditionStack)
+        internal static AddInRuntime Read(Bundle addIn, XmlReader reader, string hintPath, Stack<ICondition> conditionStack)
         {
             if (reader.AttributeCount != 1)
             {
