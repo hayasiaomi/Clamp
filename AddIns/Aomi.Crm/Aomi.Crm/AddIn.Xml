@@ -1,0 +1,28 @@
+﻿<AddIn name="Authority"
+       author="Aomi"
+       copyright=""
+       description="登录受权网页"
+       startLevel = "0">
+
+  <Activator class="Aomi.Authority.AuthorityActivator" />
+
+  <Manifest>
+    <ArtifactId>mike</ArtifactId>
+    <GroupId>com.aomi</GroupId>
+    <AddInId>com.aomi.crm</AddInId>
+    <Version>1.0.0.0</Version>
+  </Manifest>
+
+  <Runtime>
+    <Import assembly="Aomi.Crm.dll" />
+    <Import assembly="$Aomi.Common" />
+    <Import assembly=":ShanDian.Webwork" />
+    <Import assembly=":ShanDian.AddIns" />
+    <Import assembly=":ShanDian.Software.SDK" />
+  </Runtime>
+
+  <Feature name="/ShanDain/Webworks">
+    <Webwork id="HomeController" class="Aomi.Crm.Controllers.HomeController"   />
+  </Feature>
+
+</AddIn>

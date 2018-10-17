@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{76F59423-C48E-4E53-8A85-A011AF3D159B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShanDian.Common</RootNamespace>
+    <AssemblyName>ShanDian.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\CommandPacket.cs" />
+    <Compile Include="Commands\CommandResult.cs" />
+    <Compile Include="Commands\CommandType.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Exceptions\ShanDianException.cs" />
+    <Compile Include="Extensions\CommonExtensions.cs" />
+    <Compile Include="Extensions\JsonExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helpers\TaskHelper.cs" />
+    <Compile Include="HTTP\HttpContentTypes.cs" />
+    <Compile Include="HTTP\HttpExtension.cs" />
+    <Compile Include="HTTP\HttpMethod.cs" />
+    <Compile Include="HTTP\HttpRequest.cs" />
+    <Compile Include="HTTP\HttpResponse.cs" />
+    <Compile Include="Initial\ParserException.cs" />
+    <Compile Include="Initial\InitialProperty.cs" />
+    <Compile Include="Initial\InitialPropertyEnumerator.cs" />
+    <Compile Include="Initial\InitialPropertyCastException.cs" />
+    <Compile Include="Initial\InitialElement.cs" />
+    <Compile Include="Initial\InitialFile.cs" />
+    <Compile Include="Initial\InitialFile.Load.cs" />
+    <Compile Include="Initial\InitialFile.Properties.cs" />
+    <Compile Include="Initial\InitialReader.cs" />
+    <Compile Include="Initial\InitialWriter.cs" />
+    <Compile Include="Initial\TypeConverter\BoolStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\CharStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DateTimeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DecimalStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DoubleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\EnumStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\FallbackStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int64StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ITypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SingleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\StringStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\TypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt64StringConverter.cs" />
+    <Compile Include="Pipelines\IO\PipeStreamReader.cs" />
+    <Compile Include="Pipelines\IO\PipeStreamWrapper.cs" />
+    <Compile Include="Pipelines\IO\PipeStreamWriter.cs" />
+    <Compile Include="Pipelines\NamedPipeClient.cs" />
+    <Compile Include="Pipelines\NamedPipeConnection.cs" />
+    <Compile Include="Pipelines\NamedPipeServer.cs" />
+    <Compile Include="Pipelines\PipeClientFactory.cs" />
+    <Compile Include="Pipelines\PipeExceptionEventHandler.cs" />
+    <Compile Include="Pipelines\PipeServerFactory.cs" />
+    <Compile Include="Pipelines\Threading\Worker.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SDException.cs" />
+    <Compile Include="SDPipelineClient.cs" />
+    <Compile Include="Helpers\Helper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TaskEx\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

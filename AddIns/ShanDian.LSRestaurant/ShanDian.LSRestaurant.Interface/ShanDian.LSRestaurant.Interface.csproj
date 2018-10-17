@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E2C874A7-FE2F-4BF0-81F5-A2848811E43A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShanDian.LSRestaurant.Interface</RootNamespace>
+    <AssemblyName>ShanDian.LSRestaurant.Interface</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ShanDian.SDK.Framework">
+      <HintPath>..\..\..\Bin\ShanDian.SDK.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dto\Com\PageListDto.cs" />
+    <Compile Include="Dto\Dishes\CateDishSimlpeDto.cs" />
+    <Compile Include="Dto\Dishes\CategoryDishSummaryDto.cs" />
+    <Compile Include="Dto\Dishes\ChargingFoodDto.cs" />
+    <Compile Include="Dto\Dishes\ChildDishDto.cs" />
+    <Compile Include="Dto\Dishes\ChildDishSummaryDto.cs" />
+    <Compile Include="Dto\Dishes\DishDetailDto.cs" />
+    <Compile Include="Dto\Dishes\DishGroupDto.cs" />
+    <Compile Include="Dto\Dishes\DishGroupSummaryDto.cs" />
+    <Compile Include="Dto\Dishes\DishMenuDetailDto.cs" />
+    <Compile Include="Dto\Dishes\DishMenuPageDto.cs" />
+    <Compile Include="Dto\Dishes\DishQueryDto.cs" />
+    <Compile Include="Dto\Dishes\DishSimpleDto.cs" />
+    <Compile Include="Dto\Dishes\DishSummaryDto.cs" />
+    <Compile Include="Dto\Dishes\MenuChildDishDto.cs" />
+    <Compile Include="Dto\Dishes\MenuDishGroupDto.cs" />
+    <Compile Include="Dto\Dishes\PracticeDetailDto.cs" />
+    <Compile Include="Dto\Dishes\PracticeInfoDto.cs" />
+    <Compile Include="Dto\Dishes\PracticeSimpleDto.cs" />
+    <Compile Include="Dto\Dishes\PracticeSummaryDto.cs" />
+    <Compile Include="Dto\Dishes\SkusDishDto.cs" />
+    <Compile Include="Interface\IDishesServices.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

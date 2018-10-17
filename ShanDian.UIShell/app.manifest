@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<assembly manifestVersion="1.0" 
+          xmlns="urn:schemas-microsoft-com:asm.v1" 
+          xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
+  <assemblyIdentity version="1.0.0.0" name="Hydra.WpfDesktop.app"/>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
+    <security>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <requestedExecutionLevel level="requireAdministrator" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- Windows Vista -->
+      <supportedOS Id="{2A0B943B-ACDA-4B03-A889-D706B2B01A27}" />
+      <!-- Windows 7 -->
+      <supportedOS Id="{6FD89014-F04D-4542-B042-B00A12D1B41A}" />
+      <!-- Windows 8 -->
+      <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}" />
+      <!-- Windows 8.1 -->
+      <supportedOS Id="{33C0A2EA-D90C-4F19-84C4-CFC32A4578DF}" />
+      <!-- Windows 10 -->
+      <supportedOS Id="{B8E27CE7-43AB-428A-8554-40AC9FF083F2}" />
+    </application>
+  </compatibility>
+
+  <asmv3:application>
+    <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+      <dpiAware>true/PM</dpiAware>
+    </asmv3:windowsSettings>
+  </asmv3:application>
+
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type="Win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" processorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>
+    </dependentAssembly>
+  </dependency>
+  
+</assembly>

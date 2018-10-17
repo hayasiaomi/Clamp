@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="ShanDian.UIShell.Views.ProxyPartial"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ext="clr-namespace:ShanDian.UIShell.Localization"
+             xmlns:local="clr-namespace:ShanDian.UIShell.Views"
+             Width="376"
+             Loaded="UserControl_Loaded"
+             Height="560"
+            >
+
+    <UserControl.Resources>
+        <Style x:Key="TxBorder" TargetType="Border">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D8D8D8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="TxTextBox" TargetType="TextBox">
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#D8D8D8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Padding" Value="0,0,3,0"/>
+        </Style>
+
+
+        <Style x:Key="TxTextBlock" TargetType="TextBlock">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="TxGrid" TargetType="Grid">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="16,16,0,16"/>
+        </Style>
+
+        <Style x:Key="TxButton" BasedOn="{StaticResource SystemButton}" TargetType="Button">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+        <Style x:Key="TxComboBox" BasedOn="{StaticResource HComboBox}" TargetType="ComboBox">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" MouseLeftButtonDown="WindowHeader_MouseLeftButtonDown" Background="#3bac84">
+
+            <Button Grid.Column="1"  Background="Transparent" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="10,0,0,0" Click="BtnProxyBack_Click" Style="{StaticResource SystemButtonNoShadow }">
+                <Button.Content>
+                    <Image Source="/SDShell;component/Resources/u57.png" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" ></Image>
+                </Button.Content>
+            </Button>
+
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ext:Localize AuthorityView_ProxyText }" Margin="10,0,0,0" FontSize="18" Foreground="#FFFFFF" />
+        </StackPanel>
+
+        <Grid Grid.Row="1"  Background="#FFFFFF">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid  Grid.Row="0" Background="#F4F4F4">
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"  Margin="20">
+                    <Ellipse Fill="#999999" Width="6" Height="6" StrokeThickness="0"  Margin="0,0,5,0" />
+                    <TextBlock Text="如果本机不能上网，可设置网络代理" Foreground="#999999" FontSize="16" />
+                </StackPanel>
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,28,0,0">
+                <Border Style="{StaticResource TxBorder}" >
+                    <Grid Style="{StaticResource TxGrid}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{ext:Localize AuthorityView_ProxyTypeText}" Style="{StaticResource TxTextBlock}" />
+                        <TextBox x:Name="txtProxyProtocol" TextAlignment="Right" Grid.Column="1" Style="{StaticResource TxTextBox}"  Text="HTTP" />
+
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource TxBorder}" >
+                    <Grid Style="{StaticResource TxGrid}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{ext:Localize AuthorityView_ProxyAddressText}" Style="{StaticResource TxTextBlock}" />
+                        <TextBox Grid.Column="1" TextAlignment="Right" x:Name="txtProxyAddress" Style="{StaticResource TxTextBox}" />
+
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource TxBorder}" >
+                    <Grid Style="{StaticResource TxGrid}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{ext:Localize AuthorityView_ProxyPortText}" Style="{StaticResource TxTextBlock}" />
+                        <TextBox Grid.Column="1" TextAlignment="Right" x:Name="txtProxyPort" Text="15802" Style="{StaticResource TxTextBox}" />
+
+                    </Grid>
+                </Border>
+
+
+                <Grid Margin="0,39,0,0" >
+                    <Button Content="{ext:Localize AuthorityView_ProxyBtnTestText}" BorderBrush="#D8D8D8"
+                                BorderThickness="1" 
+                                HorizontalAlignment="Left"
+                                Style="{StaticResource TxButton}" Click="BtnProxyTest_Click" />
+                    <Button Content="{ext:Localize AuthorityView_ProxyBtnOkText}"
+                                HorizontalAlignment="Right" Style="{StaticResource TxButton}"
+                                Background="#3bac84" 
+                                Click="BtnProxyOk_Click"
+                                Foreground="#FFFFFF" />
+                </Grid>
+
+                <TextBlock x:Name="txtbProxyMessage" Margin="0,39,0,0" Width="300"  TextWrapping="Wrap" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"  />
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

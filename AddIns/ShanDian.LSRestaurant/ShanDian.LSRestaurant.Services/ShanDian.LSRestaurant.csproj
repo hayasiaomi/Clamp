@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{17296989-CE24-4CC0-AD8D-BB7E020B2346}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShanDian.LSRestaurant</RootNamespace>
+    <AssemblyName>ShanDian.LSRestaurant</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\..\..\packages\Dapper.1.50.0\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Contrib">
+      <HintPath>..\..\..\packages\Dapper.Contrib.1.50.0\lib\net40\Dapper.Contrib.dll</HintPath>
+    </Reference>
+    <Reference Include="ShanDian.AddIns">
+      <HintPath>..\..\..\Bin\ShanDian.AddIns.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ShanDian.Common">
+      <HintPath>..\..\..\Bin\ShanDian.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ShanDian.SDK.Framework">
+      <HintPath>..\..\..\Bin\ShanDian.SDK.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ShanDian.Webwork">
+      <HintPath>..\..\..\Bin\ShanDian.Webwork.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\..\packages\SQLite\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Com\DishRuleEnum.cs" />
+    <Compile Include="Com\DishTypeEnum.cs" />
+    <Compile Include="Controllers\DishesController.cs" />
+    <Compile Include="Com\DishKeyEnum.cs" />
+    <Compile Include="ErrorCode\DishesErrorCode.cs" />
+    <Compile Include="Factories\DishManageFactory.cs" />
+    <Compile Include="Factories\KeyFactory.cs" />
+    <Compile Include="Factories\SqlFactory.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="LSRestaurantActivator.cs" />
+    <Compile Include="Model\Dishes\CategoryDish.cs" />
+    <Compile Include="Model\Dishes\ChildDish.cs" />
+    <Compile Include="Model\Dishes\DbHistory.cs" />
+    <Compile Include="Model\Dishes\Dish.cs" />
+    <Compile Include="Model\Dishes\DishGroup.cs" />
+    <Compile Include="Model\Dishes\Estimate.cs" />
+    <Compile Include="Model\Dishes\PracticeDish.cs" />
+    <Compile Include="Model\Dishes\PracticeGroup.cs" />
+    <Compile Include="Model\Dishes\PracticeInfo.cs" />
+    <Compile Include="Model\Dishes\Remark.cs" />
+    <Compile Include="Model\Dishes\SkusDish.cs" />
+    <Compile Include="Model\Dishes\UnitDef.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DatabaseServices.cs" />
+    <Compile Include="Services\DishesServices.cs" />
+    <Compile Include="ViewModel\Dishes\CateDishCnt.cs" />
+    <Compile Include="ViewModel\Dishes\ChildDishDetail.cs" />
+    <Compile Include="ViewModel\Dishes\DishGroupChild.cs" />
+    <Compile Include="ViewModel\Dishes\DishPracticeDetail.cs" />
+    <Compile Include="ViewModel\Dishes\DishQuery.cs" />
+    <Compile Include="ViewModel\Dishes\DishSkusDetail.cs" />
+    <Compile Include="ViewModel\Dishes\PracticeDetail.cs" />
+    <Compile Include="ViewModel\Dishes\RelationDish.cs" />
+    <Compile Include="ViewModel\SqliteMaster.cs" />
+    <Compile Include="ViewModel\TableColumn.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AddIn.Xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <EmbeddedResource Include="Sql\Dishes.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ShanDian.LSRestaurant.Interface\ShanDian.LSRestaurant.Interface.csproj">
+      <Project>{e2c874a7-fe2f-4bf0-81f5-a2848811e43a}</Project>
+      <Name>ShanDian.LSRestaurant.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EDE06D3F-51DB-45A2-B0C6-E0E8D5B6D8AE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ShanDian.UIShell.Framework</RootNamespace>
+    <AssemblyName>ShanDian.UIShell.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.5.10\lib\net40-client\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="ShanDian.Common">
+      <HintPath>..\Bin\ShanDian.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Brower\CoreUserInfo.cs" />
+    <Compile Include="Brower\CoreUserPermission.cs" />
+    <Compile Include="Brower\LicenseNumber.cs" />
+    <Compile Include="DB\ChromiunDataHandler.cs" />
+    <Compile Include="DB\ConfigsDataHandler.cs" />
+    <Compile Include="DB\DataHandler.cs" />
+    <Compile Include="DB\DictionaryInfo.cs" />
+    <Compile Include="Helpers\CDBHelper.cs" />
+    <Compile Include="Helpers\ErrorHelper.cs" />
+    <Compile Include="Helpers\EssentialHelper.cs" />
+    <Compile Include="Helpers\NotcieHelper.cs" />
+    <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="Helpers\SDPipelineHelper.cs" />
+    <Compile Include="Helpers\SDShellHelper.cs" />
+    <Compile Include="InterProcess\ProcessBinder.cs" />
+    <Compile Include="InterProcess\ProcessCredential.cs" />
+    <Compile Include="InterProcess\ProcessEventHanlders.cs" />
+    <Compile Include="InterProcess\ProcessMonitor.cs" />
+    <Compile Include="InterProcess\ProcessWraper.cs" />
+    <Compile Include="Model\ActivitedInfo.cs" />
+    <Compile Include="Model\Command.cs" />
+    <Compile Include="Model\InitializedInfo.cs" />
+    <Compile Include="Model\InstallSubInfo.cs" />
+    <Compile Include="Model\MachineInfo.cs" />
+    <Compile Include="Model\MqttState.cs" />
+    <Compile Include="Model\MsgBubbleNotice.cs" />
+    <Compile Include="Model\Notice.cs" />
+    <Compile Include="Model\NoticeCategory.cs" />
+    <Compile Include="Model\PermissionInfo.cs" />
+    <Compile Include="Model\PrinterInfo.cs" />
+    <Compile Include="Model\RefuseInfo.cs" />
+    <Compile Include="Model\RoleInfo.cs" />
+    <Compile Include="Model\RolePermissionInfo.cs" />
+    <Compile Include="Model\Demand.cs" />
+    <Compile Include="Model\ServiceInfo.cs" />
+    <Compile Include="Model\SoftwareInfo.cs" />
+    <Compile Include="Model\SystemInfo.cs" />
+    <Compile Include="Model\TokenInfo.cs" />
+    <Compile Include="Model\SDShellSettings.cs" />
+    <Compile Include="Model\UISResponse.cs" />
+    <Compile Include="Model\UserInfo.cs" />
+    <Compile Include="Model\UserPermissionInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\UISResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UISResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SDResponse.cs" />
+    <Compile Include="Services\AuthorityService.cs" />
+    <Compile Include="Services\InstallService.cs" />
+    <Compile Include="Services\Log4netLoggingService.cs" />
+    <Compile Include="Services\MachineService.cs" />
+    <Compile Include="Services\SDService.cs" />
+    <Compile Include="UpgradeInfo.cs" />
+    <Compile Include="Vo\MsgBubbleNoticeDto.cs" />
+    <Compile Include="Vo\NoticeVo.cs" />
+    <Compile Include="Vo\TableVo.cs" />
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\UISResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UISResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

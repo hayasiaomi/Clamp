@@ -1,0 +1,8 @@
+﻿{
+	IconName:"icon-error",
+	NoticeCategory:10,
+	SerialNumber:"MSG_SO_0005",
+	Title:"下单失败",
+	ShutCount:-1,
+	Content:"<span class=\"font-color\">##TableCode##</span><span>扫码下单失败，已成功支付</span> <span class=\"font-color\">##Price##</span><span>元。</span>"
+}

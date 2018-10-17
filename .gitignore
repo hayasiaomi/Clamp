@@ -1,0 +1,11 @@
+﻿
+obj/
+bin/
+logs/
+.vs/
+logs/
+*.suo
+*.user
+ShanDian.Repertory/
+/Parts/Parts.Print/Hydra.Print.ServicesTests.Tests
+/DB

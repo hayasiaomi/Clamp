@@ -1,0 +1,8 @@
+﻿{
+	IconName:"icon-success",
+	NoticeCategory:14,
+	SerialNumber:"MSG_SD_0003",
+	Title:"结账成功",
+	ShutCount:3,
+	Content:"<span class=\"font-color\">##TableCode##</span><span >自动结账成功 。</span>"
+}

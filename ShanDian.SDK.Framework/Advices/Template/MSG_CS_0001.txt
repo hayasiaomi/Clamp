@@ -1,0 +1,8 @@
+﻿{
+    IconName:"icon-info",
+	NoticeCategory:13,
+	SerialNumber:"MSG_CS_0001",
+	Title:"呼叫服务",
+	ShutCount:-1,
+	Content:"<span class=\"font-color\">##TableCode##</span><span>呼叫</span><span class=\"font-color\">##ServiceName##</span>"
+}
