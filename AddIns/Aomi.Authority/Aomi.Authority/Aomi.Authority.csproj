@@ -61,24 +61,24 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ShanDian.AddIns\ShanDian.AddIns.csproj">
+    <ProjectReference Include="..\..\..\Clamp.AddIns\Clamp.AddIns.csproj">
       <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
-      <Name>ShanDian.AddIns</Name>
+      <Name>Clamp.AddIns</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\ShanDian.Common\ShanDian.Common.csproj">
+    <ProjectReference Include="..\..\..\Clamp.Common\Clamp.Common.csproj">
       <Project>{76f59423-c48e-4e53-8a85-a011af3d159b}</Project>
-      <Name>ShanDian.Common</Name>
+      <Name>Clamp.Common</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\ShanDian.SDK.Framework\ShanDian.SDK.Framework.csproj">
+    <ProjectReference Include="..\..\..\Clamp.SDK.Framework\Clamp.SDK.Framework.csproj">
       <Project>{bdca8f8e-d556-4bad-9c4d-2fa49fc66124}</Project>
-      <Name>ShanDian.SDK.Framework</Name>
+      <Name>Clamp.SDK.Framework</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\ShanDian.Webwork\ShanDian.Webwork.csproj">
+    <ProjectReference Include="..\..\..\Clamp.Webwork\Clamp.Webwork.csproj">
       <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
-      <Name>ShanDian.Webwork</Name>
+      <Name>Clamp.Webwork</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

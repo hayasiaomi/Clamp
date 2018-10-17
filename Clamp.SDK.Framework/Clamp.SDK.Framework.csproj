@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BDCA8F8E-D556-4BAD-9C4D-2FA49FC66124}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShanDian.SDK.Framework</RootNamespace>
+    <AssemblyName>ShanDian.SDK.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.0\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Contrib, Version=1.50.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Contrib.1.50.0\lib\net40\Dapper.Contrib.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.10\lib\net40-client\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Advices\Notice.cs" />
+    <Compile Include="Advices\NoticeCategory.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="DB\Library.cs" />
+    <Compile Include="Injection\AssemblyExtensions.cs" />
+    <Compile Include="Injection\DuplicateImplementationActions.cs" />
+    <Compile Include="Injection\Factories\CustomObjectLifetimeFactory.cs" />
+    <Compile Include="Injection\Factories\DelegateFactory.cs" />
+    <Compile Include="Injection\Factories\InstanceFactory.cs" />
+    <Compile Include="Injection\Factories\IObjectLifetimeProvider.cs" />
+    <Compile Include="Injection\Factories\MultiInstanceFactory.cs" />
+    <Compile Include="Injection\Factories\ObjectFactoryBase.cs" />
+    <Compile Include="Injection\Factories\SingletonFactory.cs" />
+    <Compile Include="Injection\Factories\WeakDelegateFactory.cs" />
+    <Compile Include="Injection\Factories\WeakInstanceFactory.cs" />
+    <Compile Include="ISDContainer.cs" />
+    <Compile Include="Injection\MultiRegisterOptions.cs" />
+    <Compile Include="Injection\NamedParameterOverloads.cs" />
+    <Compile Include="Injection\NamedResolutionFailureActions.cs" />
+    <Compile Include="Injection\RegisterOptions.cs" />
+    <Compile Include="Injection\ResolveOptions.cs" />
+    <Compile Include="Injection\ReverseTypeExtender.cs" />
+    <Compile Include="Injection\SafeDictionary.cs" />
+    <Compile Include="Injection\AutoRegistrationException.cs" />
+    <Compile Include="Injection\ConstructorAttribute.cs" />
+    <Compile Include="Injection\ConstructorResolutionException.cs" />
+    <Compile Include="Injection\Container.cs" />
+    <Compile Include="Injection\RegistrationException.cs" />
+    <Compile Include="Injection\RegistrationTypeException.cs" />
+    <Compile Include="Injection\ResolutionException.cs" />
+    <Compile Include="Injection\WeakReferenceException.cs" />
+    <Compile Include="Injection\TypeExtensions.cs" />
+    <Compile Include="Injection\TypeRegistration.cs" />
+    <Compile Include="Injection\UnregisteredResolutionActions.cs" />
+    <Compile Include="Model\Mark.cs" />
+    <Compile Include="Model\PrinterInfo.cs" />
+    <Compile Include="Model\Store.cs" />
+    <Compile Include="SDContainer.cs" />
+    <Compile Include="SDDemand.cs" />
+    <Compile Include="MediumConfiguration.cs" />
+    <Compile Include="SDAPI\SDApiDemand.cs" />
+    <Compile Include="SDAPI\SDApiResponse.cs" />
+    <Compile Include="ObjectNotFoundException.cs" />
+    <Compile Include="ObjectSingleton.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SDKException.cs" />
+    <Compile Include="SDResponse.cs" />
+    <Compile Include="Services\AbstractService.cs" />
+    <Compile Include="Services\ILoggingService.cs" />
+    <Compile Include="Services\IMarkService.cs" />
+    <Compile Include="Services\IPrinterService.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\IMachineService.cs" />
+    <Compile Include="Services\IWinFormService.cs" />
+    <Compile Include="Model\LocalPrinterInfo.cs" />
+    <Compile Include="Services\NLogLoggingService.cs" />
+    <Compile Include="Services\LoggingService.cs" />
+    <Compile Include="Model\Computer.cs" />
+    <Compile Include="Services\MarkService.cs" />
+    <Compile Include="Services\MachineService.cs" />
+    <Compile Include="Services\PrinterService.cs" />
+    <Compile Include="Services\WinFormService.cs" />
+    <Compile Include="DB\IRepositoryContext.cs" />
+    <Compile Include="DB\ReaderWriterLockWrapper.cs" />
+    <Compile Include="DB\RepositoryContext.cs" />
+    <Compile Include="RevisionClass.cs" />
+    <Compile Include="SystemError.cs" />
+    <Compile Include="Helpers\SDApiHelper.cs" />
+    <Compile Include="Helpers\SDHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Clamp.Common\Clamp.Common.csproj">
+      <Project>{76f59423-c48e-4e53-8a85-a011af3d159b}</Project>
+      <Name>Clamp.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="ViewModel\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Advices\Template\MSG_CS_0001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_CS_0002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_FI_0001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_FI_0002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_FI_0003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SC_0001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SC_0002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SD_0001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SD_0002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SD_0003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SO_0001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SO_0002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SO_0003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SO_0004.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Advices\Template\MSG_SO_0005.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIns.Xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="PostBuildEvent.proj" />
+</Project>

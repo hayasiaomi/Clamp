@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
-using ShanDian.AddIns;
-using ShanDian.SDK.Framework;
-using ShanDian.SDK.Framework.Model;
-using ShanDian.SDK.Framework.Services;
-using ShanDian.Webwork;
-using ShanDian.Webwork.Annotation;
+using Clamp.AddIns;
+using Clamp.SDK.Framework;
+using Clamp.SDK.Framework.Model;
+using Clamp.SDK.Framework.Services;
+using Clamp.Webwork;
+using Clamp.Webwork.Annotation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
