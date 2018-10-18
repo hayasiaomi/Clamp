@@ -50,11 +50,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Clamp.AddIns\Clamp.OSGI.csproj">
-      <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
-      <Name>Clamp.OSGI</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Clamp.SDK.Framework\Clamp.SDK.Framework.csproj">
       <Project>{BDCA8F8E-D556-4BAD-9C4D-2FA49FC66124}</Project>
       <Name>Clamp.SDK.Framework</Name>

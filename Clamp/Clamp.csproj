@@ -77,10 +77,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Clamp.AddIns\Clamp.OSGI.csproj">
-      <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
-      <Name>Clamp.OSGI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Clamp.Common\Clamp.Common.csproj">
       <Project>{76f59423-c48e-4e53-8a85-a011af3d159b}</Project>
       <Name>Clamp.Common</Name>

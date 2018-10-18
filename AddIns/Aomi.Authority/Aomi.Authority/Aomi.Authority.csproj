@@ -61,15 +61,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Clamp.AddIns\Clamp.OSGI.csproj">
-      <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
-      <Name>Clamp.OSGI</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Clamp.Common\Clamp.Common.csproj">
       <Project>{76f59423-c48e-4e53-8a85-a011af3d159b}</Project>
       <Name>Clamp.Common</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Clamp.OSGI\Clamp.OSGI.csproj">
+      <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
+      <Name>Clamp.OSGI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Clamp.SDK.Framework\Clamp.SDK.Framework.csproj">
       <Project>{bdca8f8e-d556-4bad-9c4d-2fa49fc66124}</Project>
