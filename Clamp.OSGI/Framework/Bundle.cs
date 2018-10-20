@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework
 {
     /// <summary>
     /// 插件类
     /// </summary>
-    public sealed class Bundle
+    internal class Bundle : IBundle
     {
         private volatile bool dependenciesLoaded;
         private string addInFileName;
@@ -399,6 +399,14 @@ namespace Clamp.OSGI
             }
         }
 
+        public virtual void Start()
+        {
+            throw new NotImplementedException();
+        }
 
+        public virtual void Stop()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

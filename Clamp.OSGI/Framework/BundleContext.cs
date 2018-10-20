@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework
 {
     public class BundleContext
     {
-        private SDContainer container;
+        private IClampFramework clampFramework;
 
-        public Bundle Bundle { private set; get; }
+        public IBundle Bundle { private set; get; }
 
-        internal BundleContext(Bundle bundle, SDContainer container)
+        internal BundleContext(Bundle bundle, IClampFramework clampFramework)
         {
-            this.container = container;
+            this.clampFramework = clampFramework;
             this.Bundle = bundle;
         }
 
-        public object GetService(Type sType,string name)
+        public object GetService(Type sType, string name)
         {
-            return this.container.GetService(sType,name);
+            return this.container.GetService(sType, name);
         }
 
         public object GetService(Type sType)

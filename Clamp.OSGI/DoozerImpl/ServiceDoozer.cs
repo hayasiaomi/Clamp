@@ -1,4 +1,4 @@
-﻿using Clamp.SDK.Framework.Injection;
+﻿using Clamp.OSGI.Injection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -16,7 +16,7 @@ namespace Clamp.OSGI.DoozerImpl
 
         public object BuildItem(BuildItemArgs args)
         {
-            var container = (Container)args.Parameter;
+            var container = (ObjectContainer)args.Parameter;
             if (container == null)
                 throw new InvalidOperationException("Expected the parameter to be a service container");
             string id = args.Codon.Properties["id"];
