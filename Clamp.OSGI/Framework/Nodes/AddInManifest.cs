@@ -9,7 +9,7 @@ using System.Text;
 using System.Xml;
 using Clamp.OSGI.Properties;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
     /// <summary>
     /// 插件清单类
@@ -59,11 +59,11 @@ namespace Clamp.OSGI
         {
             if (reader.AttributeCount != 0)
             {
-                throw new AddInException("the manifest attribute of addin is not empty.");
+                throw new FrameworkException("the manifest attribute of addin is not empty.");
             }
             if (reader.IsEmptyElement)
             {
-                throw new AddInException("the manifest content of addin is empty");
+                throw new FrameworkException("the manifest content of addin is empty");
             }
             while (reader.Read())
             {
@@ -96,7 +96,7 @@ namespace Clamp.OSGI
                                 conflicts.AddRange(this.ReadDependencyConflictSection(reader, hintPath, "Conflict"));
                                 break;
                             default:
-                                throw new AddInException("Unknown node in Manifest section:" + nodeName);
+                                throw new FrameworkException("Unknown node in Manifest section:" + nodeName);
                         }
                         break;
                 }
@@ -132,7 +132,7 @@ namespace Clamp.OSGI
         {
             if (reader.IsEmptyElement)
             {
-                throw new AddInException(string.Format("the {0} content of addin is empty", endElement));
+                throw new FrameworkException(string.Format("the {0} content of addin is empty", endElement));
             }
 
             List<AddInReference> addInReferences = new List<AddInReference>();
@@ -168,7 +168,7 @@ namespace Clamp.OSGI
         {
             if (reader.IsEmptyElement)
             {
-                throw new AddInException(string.Format("the {0} content of addin is empty", endElement));
+                throw new FrameworkException(string.Format("the {0} content of addin is empty", endElement));
             }
 
             AddInReference addInReference = new AddInReference();
@@ -200,7 +200,7 @@ namespace Clamp.OSGI
                                 addInReference.Version = this.ParseVersion(this.ReadElementContent(reader, "Version"), hintPath);
                                 break;
                             default:
-                                throw new AddInException(string.Format("Unknown node in {0} section:{1}", endElement, elementName));
+                                throw new FrameworkException(string.Format("Unknown node in {0} section:{1}", endElement, elementName));
                         }
                         break;
                 }
@@ -245,7 +245,7 @@ namespace Clamp.OSGI
                     }
                     catch (FileNotFoundException ex)
                     {
-                        throw new AddInException("Cannot get version '" + version + "': " + ex.Message);
+                        throw new FrameworkException("Cannot get version '" + version + "': " + ex.Message);
                     }
                 }
                 return new Version(0, 0, 0, 0);

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Clamp.OSGI.Framework.Conditions;
 using Clamp.OSGI.Properties;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
-    public sealed class AddInTreeNode
+    internal sealed class AddInTreeNode
     {
         private readonly object lockObj = new object();
         private Dictionary<string, AddInTreeNode> childNodes = new Dictionary<string, AddInTreeNode>();
         private ReadOnlyCollection<Codon> codons;
         private List<IEnumerable<Codon>> codonInput;
-
 
         public Dictionary<string, AddInTreeNode> ChildNodes
         {
@@ -72,19 +72,16 @@ namespace Clamp.OSGI
         /// <param name="additionalConditions">Additional conditions applied to the node.</param>
         public List<T> BuildChildItems<T>(object parameter, IEnumerable<ICondition> additionalConditions = null)
         {
-            var codons = this.Codons;
-            List<T> items = new List<T>(codons.Count);
-            foreach (Codon codon in codons)
+            List<T> items = new List<T>(this.Codons.Count);
+
+            foreach (Codon codon in this.Codons)
             {
                 object result = BuildChildItem(codon, parameter, additionalConditions);
+
                 if (result == null)
                     continue;
-                IBuildItemsModifier mod = result as IBuildItemsModifier;
-                if (mod != null)
-                {
-                    mod.Apply(items);
-                }
-                else if (result is T)
+
+                if (result is T)
                 {
                     items.Add((T)result);
                 }
@@ -138,7 +135,7 @@ namespace Clamp.OSGI
                     return BuildChildItem(codon, parameter, additionalConditions);
                 }
             }
-            throw new AddInException(string.Format(StringResources.AddIn_BuildItem_NotFoundPath, childItemID));
+            throw new FrameworkException(string.Format(StringResources.AddIn_BuildItem_NotFoundPath, childItemID));
         }
     }
 }

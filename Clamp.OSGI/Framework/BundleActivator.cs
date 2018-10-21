@@ -7,12 +7,12 @@ namespace Clamp.OSGI.Framework
 {
     public abstract class BundleActivator : IBundleActivator
     {
-        public virtual void Start(BundleContext addInContext)
+        public virtual void Start(IBundleContext context)
         {
 
         }
 
-        public virtual void Stop(BundleContext addInContext)
+        public virtual void Stop(IBundleContext context)
         {
 
         }

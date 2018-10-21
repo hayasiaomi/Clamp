@@ -9,7 +9,7 @@ using System.Xaml;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
     public class AddInProperties
     {

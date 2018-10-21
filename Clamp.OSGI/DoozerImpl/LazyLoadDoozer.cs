@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Clamp.OSGI.DoozerImpl
 {
-    sealed class LazyLoadDoozer : IDoozer
+    sealed class LazyLoadDoozer : ExtensionNode
     {
         Bundle addIn;
         string name;
@@ -34,7 +35,7 @@ namespace Clamp.OSGI.DoozerImpl
         {
             get
             {
-                IDoozer doozer = (IDoozer)addIn.CreateObject(className);
+                ExtensionNode doozer = (ExtensionNode)addIn.CreateObject(className);
 
                 if (doozer == null)
                 {
@@ -49,13 +50,13 @@ namespace Clamp.OSGI.DoozerImpl
 
         public object BuildItem(BuildItemArgs args)
         {
-            IDoozer doozer = (IDoozer)addIn.CreateObject(className);
+            ExtensionNode doozer = (ExtensionNode)addIn.CreateObject(className);
             if (doozer == null)
             {
                 return null;
             }
             addIn.AddInTree.Doozers[name] = doozer;
-            return doozer.BuildItem(args);
+            return doozer.GetInstance(args);
         }
 
         public override string ToString()

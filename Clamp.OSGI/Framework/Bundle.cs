@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -16,7 +17,6 @@ namespace Clamp.OSGI.Framework
         private volatile bool dependenciesLoaded;
         private string addInFileName;
         private string activatorClassName;
-        private IAddInTree addInTree;
         private string mistake;
         private AddInProperties properties = new AddInProperties();
         private AddInManifest manifest = new AddInManifest();
@@ -24,6 +24,7 @@ namespace Clamp.OSGI.Framework
         private List<string> bitmapResources = new List<string>();
         private List<string> stringResources = new List<string>();
         private Dictionary<string, AddInFeature> features = new Dictionary<string, AddInFeature>();
+        private ClampFramework framework;
 
         /// <summary>
         /// 
@@ -64,6 +65,11 @@ namespace Clamp.OSGI.Framework
                     return 0;
                 return Convert.ToInt32(vStartLevel);
             }
+        }
+
+        public ClampFramework Framework
+        {
+            get { return this.framework; }
         }
 
 
@@ -113,12 +119,6 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-
-        public IAddInTree AddInTree
-        {
-            get { return addInTree; }
-        }
-
         public List<string> BitmapResources
         {
             get { return bitmapResources; }
@@ -141,12 +141,18 @@ namespace Clamp.OSGI.Framework
             get { return features; }
         }
 
-        internal Bundle(IAddInTree addInTree)
-        {
-            if (addInTree == null)
-                throw new ArgumentNullException("addInTree");
+        public Guid BundleId { set; get; }
 
-            this.addInTree = addInTree;
+        public Version Version { private set; get; }
+
+        internal Bundle()
+        {
+
+        }
+
+        internal Bundle(ClampFramework clampFramework)
+        {
+            this.framework = clampFramework;
             this.Enabled = true;
         }
 
@@ -229,7 +235,7 @@ namespace Clamp.OSGI.Framework
                     if (r.RequirePreload)
                     {
                         bool found = false;
-                        foreach (Bundle addIn in AddInTree.AddIns)
+                        foreach (Bundle addIn in this.framework.AddIns)
                         {
                             if (addIn.Manifest.IsMatch(r))
                             {
@@ -240,7 +246,7 @@ namespace Clamp.OSGI.Framework
                         }
                         if (!found)
                         {
-                            throw new AddInException("Cannot load run-time dependency for " + r.ToString());
+                            throw new FrameworkException("Cannot load run-time dependency for " + r.ToString());
                         }
                     }
                 }
@@ -258,24 +264,24 @@ namespace Clamp.OSGI.Framework
         /// <param name="nameTable"></param>
         /// <returns></returns>
 
-        public static Bundle Load(IAddInTree addInTree, string fileName, XmlNameTable nameTable = null)
+        public static Bundle Load(ClampFramework framework, string fileName, XmlNameTable nameTable = null)
         {
             try
             {
                 using (TextReader textReader = File.OpenText(fileName))
                 {
-                    Bundle addIn = Load(addInTree, textReader, Path.GetDirectoryName(fileName), nameTable);
+                    Bundle addIn = Load(framework, textReader, Path.GetDirectoryName(fileName), nameTable);
                     addIn.FileName = fileName;
                     return addIn;
                 }
             }
-            catch (AddInException)
+            catch (FrameworkException)
             {
                 throw;
             }
             catch (Exception e)
             {
-                throw new AddInException("Can't load " + fileName, e);
+                throw new FrameworkException("Can't load " + fileName, e);
             }
         }
 
@@ -287,13 +293,13 @@ namespace Clamp.OSGI.Framework
         /// <param name="hintPath"></param>
         /// <param name="nameTable"></param>
         /// <returns></returns>
-        public static Bundle Load(IAddInTree addInTree, TextReader textReader, string hintPath = null, XmlNameTable nameTable = null)
+        public static Bundle Load(ClampFramework framework, TextReader textReader, string hintPath = null, XmlNameTable nameTable = null)
         {
             if (nameTable == null)
                 nameTable = new NameTable();
             try
             {
-                Bundle addIn = new Bundle(addInTree);
+                Bundle addIn = new Bundle(framework);
 
                 using (XmlTextReader reader = new XmlTextReader(textReader, nameTable))
                 {
@@ -308,7 +314,7 @@ namespace Clamp.OSGI.Framework
                                     SetupAddIn(reader, addIn, hintPath);
                                     break;
                                 default:
-                                    throw new AddInException("Unknown add-in file.");
+                                    throw new FrameworkException("Unknown add-in file.");
                             }
                         }
                     }
@@ -318,7 +324,7 @@ namespace Clamp.OSGI.Framework
             }
             catch (XmlException ex)
             {
-                throw new AddInException(ex.Message, ex);
+                throw new FrameworkException(ex.Message, ex);
             }
         }
 
@@ -340,7 +346,7 @@ namespace Clamp.OSGI.Framework
                         case "BitmapResources":
                             if (reader.AttributeCount != 1)
                             {
-                                throw new AddInException("BitmapResources requires ONE attribute.");
+                                throw new FrameworkException("BitmapResources requires ONE attribute.");
                             }
 
                             string filename = reader.GetAttribute("file");
@@ -364,12 +370,12 @@ namespace Clamp.OSGI.Framework
 
                             if (reader.AttributeCount != 1)
                             {
-                                throw new AddInException("Include requires ONE attribute.");
+                                throw new FrameworkException("Include requires ONE attribute.");
                             }
 
                             if (!reader.IsEmptyElement)
                             {
-                                throw new AddInException("Include nodes must be empty!");
+                                throw new FrameworkException("Include nodes must be empty!");
                             }
 
                             AddInProperties addInProperties = AddInProperties.ReadFromAttributes(reader);
@@ -380,7 +386,7 @@ namespace Clamp.OSGI.Framework
                         case "Feature":
                             if (reader.AttributeCount != 1)
                             {
-                                throw new AddInException("Import node requires ONE attribute.");
+                                throw new FrameworkException("Import node requires ONE attribute.");
                             }
                             string pathName = reader.GetAttribute(0);
                             AddInFeature addInPath = addIn.GetExtensionPath(pathName);
@@ -393,7 +399,7 @@ namespace Clamp.OSGI.Framework
                             addIn.Manifest.ReadManifestSection(reader, hintPath);
                             break;
                         default:
-                            throw new AddInException("Unknown root path node:" + reader.LocalName);
+                            throw new FrameworkException("Unknown root path node:" + reader.LocalName);
                     }
                 }
             }

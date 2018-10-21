@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
@@ -13,12 +14,19 @@ namespace Clamp
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+            //ServiceBase[] ServicesToRun;
+            //ServicesToRun = new ServiceBase[]
+            //{
+            //    new ShanDianService()
+            //};
+            //ServiceBase.Run(ServicesToRun);
+
+            using (IClampFramework clampFramework = ClampFrameworkFactory.NewClampFramework())
             {
-                new ShanDianService()
-            };
-            ServiceBase.Run(ServicesToRun);
+                clampFramework.Initialize();
+
+                clampFramework.Start();
+            }
         }
     }
 }

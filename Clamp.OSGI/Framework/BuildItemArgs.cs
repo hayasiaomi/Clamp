@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Conditions;
+using Clamp.OSGI.Framework.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework
 {
-    public class BuildItemArgs
+    internal class BuildItemArgs
     {
         object parameter;
         Codon codon;
@@ -44,15 +46,7 @@ namespace Clamp.OSGI
         /// </summary>
         public Bundle AddIn
         {
-            get { return codon.AddIn; }
-        }
-
-        /// <summary>
-        /// The whole AddIn tree.
-        /// </summary>
-        public IAddInTree AddInTree
-        {
-            get { return codon.AddIn.AddInTree; }
+            get { return codon.Bundle; }
         }
 
         /// <summary>

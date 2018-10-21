@@ -1,4 +1,5 @@
 ﻿using Clamp.OSGI;
+using Clamp.OSGI.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Aomi.Authority
     {
         public override void Start(BundleContext addInContext)
         {
-
+            
         }
 
         public override void Stop(BundleContext addInContext)

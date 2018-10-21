@@ -6,56 +6,45 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework
 {
-    public class BundleContext
+    public class BundleContext : IBundleContext
     {
-        private IClampFramework clampFramework;
+        private ClampFramework framework;
 
         public IBundle Bundle { private set; get; }
 
-        internal BundleContext(Bundle bundle, IClampFramework clampFramework)
+        internal BundleContext(Bundle bundle, ClampFramework framework)
         {
-            this.clampFramework = clampFramework;
+            this.framework = framework;
             this.Bundle = bundle;
         }
 
-        public object GetService(Type sType, string name)
+        public IBundle GetBundle(long id)
         {
-            return this.container.GetService(sType, name);
+            throw new NotImplementedException();
         }
 
-        public object GetService(Type sType)
+        public IBundle[] GetBundles()
         {
-            return this.container.GetService(sType);
+            return this.framework.AddIns.ToArray();
         }
 
-        public void AddService(Type sType)
+        public void AddServiceListener(IServiceListener listener)
         {
-            this.container.AddService(sType);
         }
 
-        public void AddService(Type sType, string name)
+        public void RemoveServiceListener(IServiceListener listener)
         {
-            this.container.AddService(sType, name);
+
         }
 
-        public void AddService(Type sType, object sInstance)
+        public List<T> GetInstance<T>(string path, object parameter)
         {
-            this.container.AddService(sType, sInstance);
+            return this.framework.GetInstance<T>(path, parameter);
         }
 
-        public void AddService(Type sType, object sInstance, string name)
+        public object[] GetInstance(string path, object parameter)
         {
-            this.container.Register(sType, sInstance, name);
-        }
-
-        public void RemoveService(Type sType)
-        {
-            this.container.RemoveService(sType);
-        }
-
-        public void RemoveService(Type sType, string name)
-        {
-            this.container.RemoveService(sType, name);
+            return this.framework.GetInstance(path, parameter);
         }
     }
 }

@@ -8,7 +8,7 @@ using Clamp.OSGI.DoozerImpl;
 using Clamp.OSGI.ConditionEvaluatorImpl;
 using System.IO;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
     public class AddInRuntime
     {
@@ -141,11 +141,11 @@ namespace Clamp.OSGI
             }
         }
 
-        public IEnumerable<KeyValuePair<string, IDoozer>> DefinedDoozers
+        public IEnumerable<KeyValuePair<string, ExtensionNode>> DefinedDoozers
         {
             get
             {
-                return definedDoozers.Select(d => new KeyValuePair<string, IDoozer>(d.Name, d));
+                return definedDoozers.Select(d => new KeyValuePair<string, ExtensionNode>(d.Name, d));
             }
         }
 
@@ -215,7 +215,7 @@ namespace Clamp.OSGI
                                 }
                                 break;
                             default:
-                                throw new AddInException("Unknown node in runtime section :" + reader.LocalName);
+                                throw new FrameworkException("Unknown node in runtime section :" + reader.LocalName);
                         }
                         break;
                 }
@@ -227,7 +227,7 @@ namespace Clamp.OSGI
         {
             if (reader.AttributeCount != 1)
             {
-                throw new AddInException("Import node requires ONE attribute.");
+                throw new FrameworkException("Import node requires ONE attribute.");
             }
 
             AddInRuntime runtime = new AddInRuntime(addIn.AddInTree, reader.GetAttribute(0), hintPath);
@@ -257,19 +257,19 @@ namespace Clamp.OSGI
                                 case "Doozer":
                                     if (!reader.IsEmptyElement)
                                     {
-                                        throw new AddInException("Doozer nodes must be empty!");
+                                        throw new FrameworkException("Doozer nodes must be empty!");
                                     }
                                     runtime.definedDoozers.Add(new LazyLoadDoozer(addIn, properties));
                                     break;
                                 case "ConditionEvaluator":
                                     if (!reader.IsEmptyElement)
                                     {
-                                        throw new AddInException("ConditionEvaluator nodes must be empty!");
+                                        throw new FrameworkException("ConditionEvaluator nodes must be empty!");
                                     }
                                     runtime.definedConditionEvaluators.Add(new LazyConditionEvaluator(addIn, properties));
                                     break;
                                 default:
-                                    throw new AddInException("Unknown node in Import section:" + nodeName);
+                                    throw new FrameworkException("Unknown node in Import section:" + nodeName);
                             }
                             break;
                     }

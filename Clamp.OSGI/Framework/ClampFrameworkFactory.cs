@@ -9,9 +9,13 @@ namespace Clamp.OSGI.Framework
     public sealed class ClampFrameworkFactory
     {
 
-        public IClampFramework NewClampFramework()
+        public static IClampFramework NewClampFramework()
         {
-            return new ClampFramework(null);
+            ClampFramework clampFramework = new ClampFramework();
+
+            clampFramework.Initialize();
+
+            return clampFramework;
         }
     }
 }

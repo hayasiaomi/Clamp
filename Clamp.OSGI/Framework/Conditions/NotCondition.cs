@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Clamp.OSGI.ConditionImpl
+namespace Clamp.OSGI.Framework.Conditions
 {
     public class NotCondition : ICondition
     {
@@ -41,7 +42,7 @@ namespace Clamp.OSGI.ConditionImpl
             return !condition.IsValid(parameter);
         }
 
-        public static ICondition Read(XmlReader reader, Bundle addIn)
+        public static ICondition Read(XmlReader reader, IBundle addIn)
         {
             return new NotCondition(AddInCondition.ReadConditionList(reader, "Not", addIn)[0]);
         }

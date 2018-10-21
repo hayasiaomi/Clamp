@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
     public class AddInFeature
     {
@@ -90,7 +90,7 @@ namespace Clamp.OSGI
                         }
                         else
                         {
-                            Codon newCodon = new Codon(this.AddIn, elementName, AddInProperties.ReadFromAttributes(reader), conditionStack.ToList().AsReadOnly());
+                            Codon newCodon = new Codon(this.AddIn, elementName, this.Name, AddInProperties.ReadFromAttributes(reader), conditionStack.ToList().AsReadOnly());
 
                             innerCodons.Add(newCodon);
 

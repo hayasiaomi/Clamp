@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Clamp.OSGI.ConditionImpl;
+using Clamp.OSGI.Framework.Conditions;
 using Clamp.OSGI.Properties;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
-    public class AddInCondition : ICondition
+    internal class AddInCondition : ICondition
     {
         string name;
         AddInProperties properties;
@@ -61,11 +62,11 @@ namespace Clamp.OSGI
         {
             try
             {
-                return this.AddIn.AddInTree.ConditionEvaluators[name].IsValid(parameter, this);
+                return this.AddIn.Framework.ConditionEvaluators[name].IsValid(parameter, this);
             }
             catch (KeyNotFoundException)
             {
-                throw new AddInException(StringResources.AddIn_Condition_Evaluator_NotFound);
+                throw new FrameworkException(StringResources.AddIn_Condition_Evaluator_NotFound);
             }
         }
 
@@ -98,7 +99,7 @@ namespace Clamp.OSGI
                                 condition = NotCondition.Read(reader, addIn);
                                 goto exit;
                             default:
-                                throw new AddInException(string.Format(StringResources.AddIn_Xml_ComplexCondition_InValidate, reader.LocalName));
+                                throw new FrameworkException(string.Format(StringResources.AddIn_Xml_ComplexCondition_InValidate, reader.LocalName));
                         }
                 }
             }
@@ -140,7 +141,7 @@ namespace Clamp.OSGI
                                 conditions.Add(AddInCondition.Read(reader, addIn));
                                 break;
                             default:
-                                throw new AddInException(string.Format(StringResources.AddIn_Xml_Condition_InValidate, reader.LocalName));
+                                throw new FrameworkException(string.Format(StringResources.AddIn_Xml_Condition_InValidate, reader.LocalName));
                         }
                         break;
                 }

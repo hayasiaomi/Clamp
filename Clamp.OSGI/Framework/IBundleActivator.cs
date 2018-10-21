@@ -13,13 +13,13 @@ namespace Clamp.OSGI.Framework
         /// <summary>
         /// 开始
         /// </summary>
-        /// <param name="addInContext"></param>
-        void Start(BundleContext addInContext);
+        /// <param name="context"></param>
+        void Start(IBundleContext context);
 
         /// <summary>
         /// 结束
         /// </summary>
-        /// <param name="addInContext"></param>
-        void Stop(BundleContext addInContext);
+        /// <param name="context"></param>
+        void Stop(IBundleContext context);
     }
 }

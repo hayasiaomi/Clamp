@@ -7,7 +7,14 @@ namespace Clamp.OSGI.Framework
 {
     public interface IBundle
     {
+        Guid BundleId { get; }
+
+        string Name { get; }
+
+        Version Version { get; }
+
         void Start();
+
         void Stop();
     }
 }

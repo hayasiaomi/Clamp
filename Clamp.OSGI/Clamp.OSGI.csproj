@@ -53,43 +53,39 @@
     <Compile Include="Framework\Bundle.cs" />
     <Compile Include="Framework\BundleActivator.cs" />
     <Compile Include="Framework\BundleContext.cs" />
-    <Compile Include="AddInEngine.cs" />
-    <Compile Include="AddInException.cs" />
+    <Compile Include="Framework\Nodes\AddInEngine.cs" />
+    <Compile Include="Framework\FrameworkException.cs" />
     <Compile Include="AddInManager.cs" />
-    <Compile Include="AddInManifest.cs" />
-    <Compile Include="AddInFeature.cs" />
-    <Compile Include="AddInProperties.cs" />
-    <Compile Include="AddInReference.cs" />
-    <Compile Include="AddInTreeImpl.cs" />
-    <Compile Include="AddInTreeNode.cs" />
-    <Compile Include="AssemblyLocator.cs" />
-    <Compile Include="BuildItemArgs.cs" />
+    <Compile Include="Framework\Nodes\AddInManifest.cs" />
+    <Compile Include="Framework\Nodes\AddInFeature.cs" />
+    <Compile Include="Framework\Nodes\AddInProperties.cs" />
+    <Compile Include="Framework\Nodes\AddInReference.cs" />
+    <Compile Include="Framework\Nodes\AddInTreeNode.cs" />
+    <Compile Include="Framework\AssemblyLocator.cs" />
+    <Compile Include="Framework\BuildItemArgs.cs" />
     <Compile Include="Framework\ClampFramework.cs" />
     <Compile Include="Framework\ClampFrameworkFactory.cs" />
-    <Compile Include="Codon.cs" />
-    <Compile Include="AddInCondition.cs" />
-    <Compile Include="ConditionEvaluatorImpl\LazyConditionEvaluator.cs" />
-    <Compile Include="ConditionFailedAction.cs" />
-    <Compile Include="ConditionImpl\AndCondition.cs" />
-    <Compile Include="ConditionImpl\NotCondition.cs" />
-    <Compile Include="ConditionImpl\OrCondition.cs" />
+    <Compile Include="Framework\Codon.cs" />
+    <Compile Include="Framework\Nodes\AddInCondition.cs" />
+    <Compile Include="Framework\Conditions\Evaluators\LazyConditionEvaluator.cs" />
+    <Compile Include="Framework\ConditionFailedAction.cs" />
+    <Compile Include="Framework\Conditions\AndCondition.cs" />
+    <Compile Include="Framework\Conditions\NotCondition.cs" />
+    <Compile Include="Framework\Conditions\OrCondition.cs" />
     <Compile Include="DoozerImpl\ClassDoozer.cs" />
     <Compile Include="DoozerImpl\LazyLoadDoozer.cs" />
-    <Compile Include="DefaultAddInEngine.cs" />
     <Compile Include="DoozerImpl\ServiceDoozer.cs" />
     <Compile Include="DoozerImpl\WebworkDoozer.cs" />
     <Compile Include="Framework\IBundle.cs" />
     <Compile Include="Framework\IBundleActivator.cs" />
     <Compile Include="Framework\IServiceListener.cs" />
+    <Compile Include="Framework\Nodes\ExtensionNodeList.cs" />
     <Compile Include="Framework\ServiceEvent.cs" />
-    <Compile Include="IAddInEngine.cs" />
-    <Compile Include="IAddInTree.cs" />
-    <Compile Include="IBuildItemsModifier.cs" />
     <Compile Include="Framework\IBundleContext.cs" />
     <Compile Include="Framework\IClampFramework.cs" />
-    <Compile Include="ICondition.cs" />
-    <Compile Include="IConditionEvaluator.cs" />
-    <Compile Include="IDoozer.cs" />
+    <Compile Include="Framework\Conditions\ICondition.cs" />
+    <Compile Include="Framework\Conditions\Evaluators\IConditionEvaluator.cs" />
+    <Compile Include="Framework\Nodes\ExtensionNode.cs" />
     <Compile Include="Injection\AssemblyExtensions.cs" />
     <Compile Include="Injection\AutoRegistrationException.cs" />
     <Compile Include="Injection\ConstructorAttribute.cs" />
@@ -125,8 +121,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="AddInRuntime.cs" />
-    <Compile Include="TopologicalSort.cs" />
+    <Compile Include="Framework\Nodes\AddInRuntime.cs" />
+    <Compile Include="Framework\TopologicalSort.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\StringResources.resx">
@@ -144,5 +140,6 @@
       <Name>Clamp.SDK.Framework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,7 +7,7 @@ using System.Text;
 using System.Xml;
 using Clamp.OSGI.Properties;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework.Nodes
 {
     /// <summary>
     /// 引用的插件类

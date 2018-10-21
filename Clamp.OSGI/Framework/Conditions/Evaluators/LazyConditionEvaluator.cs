@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.ConditionEvaluatorImpl
+namespace Clamp.OSGI.Framework.Conditions.Evaluators
 {
     sealed class LazyConditionEvaluator : IConditionEvaluator
     {

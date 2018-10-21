@@ -1,26 +1,31 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Conditions;
+using Clamp.OSGI.Framework.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI
+namespace Clamp.OSGI.Framework
 {
-    public class Codon
+    internal class Codon
     {
-        Bundle addIn;
-        string name;
-        AddInProperties properties;
-        ReadOnlyCollection<ICondition> conditions;
+        private Bundle bundle;
+        private string name;
+        private AddInProperties properties;
+        private ReadOnlyCollection<ICondition> conditions;
+        private string path;
+
+        public string Path { get { return path; } }
 
         public string Name
         {
             get { return name; }
         }
 
-        public Bundle AddIn
+        public Bundle Bundle
         {
-            get { return addIn; }
+            get { return bundle; }
         }
 
         public string Id
@@ -53,25 +58,27 @@ namespace Clamp.OSGI
             get { return conditions; }
         }
 
-        public Codon(Bundle addIn, string name, AddInProperties properties, ReadOnlyCollection<ICondition> conditions)
+        public Codon(Bundle bundle, string name, string path, AddInProperties properties, ReadOnlyCollection<ICondition> conditions)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (properties == null)
                 throw new ArgumentNullException("properties");
-            this.addIn = addIn;
+            this.bundle = bundle;
             this.name = name;
+            this.path = path;
             this.properties = properties;
             this.conditions = conditions;
         }
 
         internal object BuildItem(BuildItemArgs args)
         {
-            IDoozer doozer;
-            if (!addIn.AddInTree.Doozers.TryGetValue(Name, out doozer))
-                throw new AddInException("Doozer " + Name + " not found! " + ToString());
+            ExtensionNode extensionNode = this.Bundle.Framework.GetExtensionNode(this.path, this.name);
 
-            if (!doozer.HandleConditions)
+            if (extensionNode == null)
+                throw new FrameworkException("Doozer " + Name + " not found! " + ToString());
+
+            if (!extensionNode.HandleConditions)
             {
                 ConditionFailedAction action = AddInCondition.GetFailedAction(args.Conditions, args.Parameter);
                 if (action != ConditionFailedAction.Nothing)
@@ -80,13 +87,12 @@ namespace Clamp.OSGI
                 }
             }
 
-
-            return doozer.BuildItem(args);
+            return extensionNode.GetInstance(args.Parameter);
         }
 
         public override string ToString()
         {
-            return String.Format("[Codon: name = {0}, id = {1}, addIn={2}]",  name,  Id,  addIn.FileName);
+            return String.Format("[Codon: name = {0}, id = {1}, addIn={2}]", name, Id, bundle.FileName);
         }
     }
 }

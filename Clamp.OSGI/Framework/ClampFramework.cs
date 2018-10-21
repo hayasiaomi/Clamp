@@ -1,17 +1,54 @@
-﻿using Clamp.OSGI.Injection;
+﻿using Clamp.OSGI.DoozerImpl;
+using Clamp.OSGI.Framework.Conditions;
+using Clamp.OSGI.Framework.Nodes;
+using Clamp.OSGI.Injection;
+using Clamp.SDK.Doozer;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 
 namespace Clamp.OSGI.Framework
 {
-    internal class ClampFramework : Bundle, IClampFramework,IDisposable
+    internal class ClampFramework : Bundle, IClampFramework
     {
-        private List<string> addInFiles = new List<string>();
+        private AddInTreeNode rootNode = new AddInTreeNode();
+        private List<Bundle> addIns = new List<Bundle>();
+        private ConcurrentDictionary<string, ExtensionNode> extensionNodes = new ConcurrentDictionary<string, ExtensionNode>();
+        private ConcurrentDictionary<string, IConditionEvaluator> conditionEvaluators = new ConcurrentDictionary<string, IConditionEvaluator>();
+        private List<string> bundleFiles = new List<string>();
         private List<string> disabledAddIns = new List<string>();
-        private AddInTreeImpl addInTree;
         private ObjectContainer objectContainer;
+
+        public ConcurrentDictionary<string, IConditionEvaluator> ConditionEvaluators
+        {
+            get
+            {
+                return conditionEvaluators;
+            }
+        }
+
+        public ReadOnlyCollection<Bundle> AddIns
+        {
+            get
+            {
+                return addIns.AsReadOnly();
+            }
+        }
+
+        public ConcurrentDictionary<string, ExtensionNode> ExtensionNodes
+        {
+            get
+            {
+                return extensionNodes;
+            }
+        }
+
+
         /// <summary>
         /// 禁止的插件文件
         /// </summary>
@@ -23,34 +60,28 @@ namespace Clamp.OSGI.Framework
         /// <summary>
         /// 插件文件集合
         /// </summary>
-        public List<string> AddInFiles
+        public List<string> BundleFiles
         {
-            get { return this.addInFiles; }
+            get { return this.bundleFiles; }
         }
 
-        /// <summary>
-        /// 插件树
-        /// </summary>
-        public AddInTreeImpl AddInTree
+        internal ClampFramework()
         {
-            get { return addInTree; }
-        }
-
-
-        internal ClampFramework(IAddInTree addInTree) : base(addInTree)
-        {
-            this.addInTree = new AddInTreeImpl();
             this.objectContainer = new ObjectContainer();
         }
 
 
-        public void Initailize()
+        public void Initialize()
         {
-            this.AddInTree.Load(this.AddInFiles, this.DisableAddIns);
+            this.Load(this.BundleFiles, this.DisableAddIns);
+        }
 
-            if (this.AddInTree.AddIns != null && this.AddInTree.AddIns.Count > 0)
+
+        public override void Start()
+        {
+            if (this.AddIns != null && this.AddIns.Count > 0)
             {
-                List<Bundle> addIns = this.AddInTree.AddIns.OrderBy(addin => addin.StartLevel).ToList();
+                List<Bundle> addIns = this.AddIns.OrderBy(addin => addin.StartLevel).ToList();
 
                 foreach (Bundle addin in addIns)
                 {
@@ -62,24 +93,300 @@ namespace Clamp.OSGI.Framework
 
                             if (addInActivator != null)
                             {
-                                BundleContext addInContext = new BundleContext(addin, ObjectSingleton.ObjectProvider as SDContainer);
+                                BundleContext context = new BundleContext(addin, this);
 
-                                addInActivator.Start(addInContext);
+                                addInActivator.Start(context);
                             }
                         }
                     }
                 }
             }
-        }
 
-
-        public override void Start()
-        {
-           
         }
 
         public override void Stop()
         {
+        }
+
+        #region 实现接口
+        /// <summary>
+        /// 获得实例对象集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="parameter"></param>
+        /// <param name="throwOnNotFound"></param>
+        /// <returns></returns>
+        public List<T> GetInstance<T>(string path, object parameter)
+        {
+            return this.BuildItems<T>(path, parameter);
+        }
+        /// <summary>
+        /// 获得实例对象集合
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="parameter"></param>
+        /// <param name="throwOnNotFound"></param>
+        /// <returns></returns>
+        public object[] GetInstance(string path, object parameter)
+        {
+            return this.BuildItems<object>(path, parameter).ToArray();
+        }
+
+        #endregion
+
+        public ExtensionNode GetExtensionNode(string path, string name)
+        {
+            return null;
+        }
+
+        public T GetExtensionNode<T>(string path, string name) where T : ExtensionNode
+        {
+            return null;
+        }
+
+        public ExtensionNodeList GetExtensionNodes(string path)
+        {
+            return null;
+        }
+
+        public ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode
+        {
+            return null;
+        }
+
+        public AddInTreeNode GetTreeNode(string path)
+        {
+            if (path == null || path.Length == 0)
+            {
+                return rootNode;
+            }
+            string[] splittedPath = path.Split('/');
+            AddInTreeNode curPath = rootNode;
+            for (int i = 0; i < splittedPath.Length; i++)
+            {
+                if (!curPath.ChildNodes.TryGetValue(splittedPath[i].ToUpper(), out curPath))
+                {
+                    return null;
+                }
+            }
+            return curPath;
+        }
+
+
+        public void InsertAddIn(Bundle bundle)
+        {
+            if (bundle.Enabled)
+            {
+                foreach (AddInFeature addInFeature in bundle.Features.Values)
+                {
+                    AddExtensionPath(addInFeature);
+                }
+
+                foreach (AddInRuntime runtime in bundle.Runtimes)
+                {
+                    if (runtime.IsActive)
+                    {
+                        foreach (var pair in runtime.DefinedDoozers)
+                        {
+                            if (!extensionNodes.TryAdd(pair.Key, pair.Value))
+                                throw new FrameworkException("Duplicate doozer: " + pair.Key);
+                        }
+                        foreach (var pair in runtime.DefinedConditionEvaluators)
+                        {
+                            if (!conditionEvaluators.TryAdd(pair.Key, pair.Value))
+                                throw new FrameworkException("Duplicate condition evaluator: " + pair.Key);
+                        }
+                    }
+                }
+
+                string addInRoot = Path.GetDirectoryName(bundle.FileName);
+
+                foreach (string bitmapResource in bundle.BitmapResources)
+                {
+                    string path = Path.Combine(addInRoot, bitmapResource);
+                    ResourceManager resourceManager = ResourceManager.CreateFileBasedResourceManager(Path.GetFileNameWithoutExtension(path), Path.GetDirectoryName(path), null);
+                    //ServiceSingleton.GetRequiredService<IResourceService>().RegisterNeutralImages(resourceManager);
+                }
+
+                foreach (string stringResource in bundle.StringResources)
+                {
+                    string path = Path.Combine(addInRoot, stringResource);
+                    ResourceManager resourceManager = ResourceManager.CreateFileBasedResourceManager(Path.GetFileNameWithoutExtension(path), Path.GetDirectoryName(path), null);
+                    //ServiceSingleton.GetRequiredService<IResourceService>().RegisterNeutralStrings(resourceManager);
+                }
+            }
+
+            addIns.Add(bundle);
+        }
+
+        private void AddExtensionPath(AddInFeature path)
+        {
+            AddInTreeNode treePath = CreatePath(rootNode, path.Name);
+
+            foreach (IEnumerable<Codon> innerCodons in path.GroupedCodons)
+                treePath.AddCodons(innerCodons);
+        }
+
+        AddInTreeNode CreatePath(AddInTreeNode localRoot, string path)
+        {
+            if (path == null || path.Length == 0)
+            {
+                return localRoot;
+            }
+
+            string[] splittedPath = path.Split('/');
+
+            AddInTreeNode curPath = localRoot;
+
+            int i = 0;
+
+            while (i < splittedPath.Length)
+            {
+                string keyValue = splittedPath[i]?.ToUpper();
+
+                if (!curPath.ChildNodes.ContainsKey(keyValue))
+                {
+                    curPath.ChildNodes[keyValue] = new AddInTreeNode();
+                }
+
+                curPath = curPath.ChildNodes[keyValue];
+
+                ++i;
+            }
+
+            return curPath;
+        }
+
+        private void DisableAddin(Bundle addIn, List<Bundle> enabledAddInsList, string mistake)
+        {
+            addIn.Enabled = false;
+
+            addIn.Mistake = mistake;
+
+            enabledAddInsList.Remove(addIn);
+        }
+
+        /// <summary>
+        /// 加载插件树
+        /// </summary>
+        /// <param name="addInFiles"></param>
+        /// <param name="disabledAddIns"></param>
+        public void Load(List<string> addInFiles, List<string> disabledAddIns)
+        {
+            List<Bundle> addInslist = new List<Bundle>();
+            List<Bundle> enabledAddInsList = new List<Bundle>();
+            Dictionary<string, Bundle> addInDict = new Dictionary<string, Bundle>();
+
+            var nameTable = new System.Xml.NameTable();
+
+            foreach (string fileName in addInFiles)
+            {
+                Bundle bundle;
+
+                try
+                {
+                    bundle = Bundle.Load(this, fileName, nameTable);
+                }
+                catch (FrameworkException ex)
+                {
+                    bundle = new Bundle(this);
+                    bundle.FileName = fileName;
+                    bundle.Enabled = false;
+                    bundle.Mistake = ex.Message;
+                }
+
+                if (!bundle.Enabled)
+                {
+                    addInslist.Add(bundle);
+                    continue;
+                }
+
+                bundle.Enabled = true;
+
+                if (disabledAddIns != null && disabledAddIns.Count > 0)
+                {
+                    if (disabledAddIns.Contains(bundle.Name))
+                    {
+                        bundle.Enabled = false;
+                        break;
+                    }
+                }
+
+                if (bundle.Enabled)
+                {
+                    enabledAddInsList.Add(bundle);
+                }
+
+                addInslist.Add(bundle);
+            }
+
+        checkDependencies:
+
+            for (int i = 0; i < addInslist.Count; i++)
+            {
+                Bundle addIn = addInslist[i];
+
+                if (!addIn.Enabled)
+                    continue;
+
+                Bundle addInFound;
+
+                foreach (AddInReference reference in addIn.Manifest.Conflicts)
+                {
+                    if (reference.Check(enabledAddInsList, out addInFound))
+                    {
+                        DisableAddin(addIn, enabledAddInsList, $"插件[{addIn.Name}]和插件[{addInFound.Name}]存在冲突");
+
+                        //TODO 提示冲突的插件消息
+
+                        goto checkDependencies;
+                    }
+                }
+
+                foreach (AddInReference reference in addIn.Manifest.Dependencies)
+                {
+                    if (!reference.Check(enabledAddInsList, out addInFound))
+                    {
+                        DisableAddin(addIn, enabledAddInsList, $"插件[{addIn.Name}]的依赖插件[{reference.AddInId}]不存在");
+
+                        //TODO 提示不可用的插件消息
+
+                        goto checkDependencies;
+                    }
+                }
+            }
+
+            foreach (Bundle addIn in addInslist)
+            {
+                try
+                {
+                    InsertAddIn(addIn);
+                }
+                catch (FrameworkException ex)
+                {
+                }
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// 生成对象集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="parameter"></param>
+        /// <param name="throwOnNotFound"></param>
+        /// <returns></returns>
+        private List<T> BuildItems<T>(string path, object parameter)
+        {
+            AddInTreeNode node = this.GetTreeNode(path);
+            if (node == null)
+                return new List<T>();
+            else
+                return node.BuildChildItems<T>(parameter);
         }
 
 

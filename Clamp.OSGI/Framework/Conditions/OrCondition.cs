@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Clamp.OSGI.ConditionImpl
+namespace Clamp.OSGI.Framework.Conditions
 {
     public class OrCondition : ICondition
     {
