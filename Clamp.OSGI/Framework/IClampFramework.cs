@@ -8,22 +8,40 @@ namespace Clamp.OSGI.Framework
 {
     public interface IClampFramework : IBundle, IDisposable
     {
-        /// <summary>
-        /// 获得实例对象集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="path"></param>
-        /// <param name="parameter"></param>
-        /// <param name="throwOnNotFound"></param>
-        /// <returns></returns>
-        List<T> GetInstance<T>(string path, object parameter);
-        /// <summary>
-        /// 获得实例对象集合
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="parameter"></param>
-        /// <param name="throwOnNotFound"></param>
-        /// <returns></returns>
-        object[] GetInstance(string path, object parameter);
+        ExtensionNode GetExtensionNode(string path);
+
+        T GetExtensionNode<T>(string path) where T : ExtensionNode;
+
+        ExtensionNodeList GetExtensionNodes(string path);
+
+        ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType);
+
+        ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode;
+
+        ExtensionNodeList GetExtensionNodes(Type instanceType);
+
+        ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType);
+
+        ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode;
+
+        object[] GetInstance(Type instanceType);
+
+        T[] GetInstance<T>();
+
+        object[] GetInstance(Type instanceType, bool reuseCachedInstance);
+
+        T[] GetInstance<T>(bool reuseCachedInstance);
+
+        object[] GetInstance(string path);
+
+        object[] GetInstance(string path, bool reuseCachedInstance);
+
+        object[] GetInstance(string path, Type arrayElementType);
+
+        T[] GetInstance<T>(string path);
+
+        object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance);
+
+        T[] GetInstance<T>(string path, bool reuseCachedInstance);
     }
 }

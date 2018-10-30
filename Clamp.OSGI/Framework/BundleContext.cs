@@ -1,4 +1,5 @@
-﻿using Clamp.SDK.Framework;
+﻿using Clamp.OSGI.Framework.Nodes;
+using Clamp.SDK.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +38,94 @@ namespace Clamp.OSGI.Framework
 
         }
 
-        public List<T> GetInstance<T>(string path, object parameter)
+        public ExtensionNode GetExtensionNode(string path)
         {
-            return this.framework.GetInstance<T>(path, parameter);
+            throw new NotImplementedException();
         }
 
-        public object[] GetInstance(string path, object parameter)
+        public T GetExtensionNode<T>(string path) where T : ExtensionNode
         {
-            return this.framework.GetInstance(path, parameter);
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList GetExtensionNodes(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList GetExtensionNodes(Type instanceType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(Type instanceType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(Type instanceType, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>(bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path, Type arrayElementType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>(string path, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
         }
     }
 }

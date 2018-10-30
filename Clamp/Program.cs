@@ -21,10 +21,8 @@ namespace Clamp
             //};
             //ServiceBase.Run(ServicesToRun);
 
-            using (IClampFramework clampFramework = ClampFrameworkFactory.NewClampFramework())
+            using (IClampFramework clampFramework = ClampFrameworkFactory.GetClampFramework())
             {
-                clampFramework.Initialize();
-
                 clampFramework.Start();
             }
         }

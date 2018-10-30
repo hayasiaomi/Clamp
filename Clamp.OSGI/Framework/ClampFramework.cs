@@ -19,18 +19,9 @@ namespace Clamp.OSGI.Framework
         private AddInTreeNode rootNode = new AddInTreeNode();
         private List<Bundle> addIns = new List<Bundle>();
         private ConcurrentDictionary<string, ExtensionNode> extensionNodes = new ConcurrentDictionary<string, ExtensionNode>();
-        private ConcurrentDictionary<string, IConditionEvaluator> conditionEvaluators = new ConcurrentDictionary<string, IConditionEvaluator>();
         private List<string> bundleFiles = new List<string>();
         private List<string> disabledAddIns = new List<string>();
         private ObjectContainer objectContainer;
-
-        public ConcurrentDictionary<string, IConditionEvaluator> ConditionEvaluators
-        {
-            get
-            {
-                return conditionEvaluators;
-            }
-        }
 
         public ReadOnlyCollection<Bundle> AddIns
         {
@@ -76,7 +67,7 @@ namespace Clamp.OSGI.Framework
             this.Load(this.BundleFiles, this.DisableAddIns);
         }
 
-
+        #region 重写 Bundle有方法
         public override void Start()
         {
             if (this.AddIns != null && this.AddIns.Count > 0)
@@ -107,53 +98,101 @@ namespace Clamp.OSGI.Framework
         public override void Stop()
         {
         }
-
-        #region 实现接口
-        /// <summary>
-        /// 获得实例对象集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="path"></param>
-        /// <param name="parameter"></param>
-        /// <param name="throwOnNotFound"></param>
-        /// <returns></returns>
-        public List<T> GetInstance<T>(string path, object parameter)
-        {
-            return this.BuildItems<T>(path, parameter);
-        }
-        /// <summary>
-        /// 获得实例对象集合
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="parameter"></param>
-        /// <param name="throwOnNotFound"></param>
-        /// <returns></returns>
-        public object[] GetInstance(string path, object parameter)
-        {
-            return this.BuildItems<object>(path, parameter).ToArray();
-        }
-
         #endregion
 
-        public ExtensionNode GetExtensionNode(string path, string name)
+        #region 实现接口
+        public ExtensionNode GetExtensionNode(string path)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public T GetExtensionNode<T>(string path, string name) where T : ExtensionNode
+        public T GetExtensionNode<T>(string path) where T : ExtensionNode
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public ExtensionNodeList GetExtensionNodes(string path)
         {
-            return null;
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType)
+        {
+            throw new NotImplementedException();
         }
 
         public ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode
         {
-            return null;
+            throw new NotImplementedException();
         }
+
+        public ExtensionNodeList GetExtensionNodes(Type instanceType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(Type instanceType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(Type instanceType, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>(bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path, Type arrayElementType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T[] GetInstance<T>(string path, bool reuseCachedInstance)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
 
         public AddInTreeNode GetTreeNode(string path)
         {
@@ -191,11 +230,6 @@ namespace Clamp.OSGI.Framework
                         {
                             if (!extensionNodes.TryAdd(pair.Key, pair.Value))
                                 throw new FrameworkException("Duplicate doozer: " + pair.Key);
-                        }
-                        foreach (var pair in runtime.DefinedConditionEvaluators)
-                        {
-                            if (!conditionEvaluators.TryAdd(pair.Key, pair.Value))
-                                throw new FrameworkException("Duplicate condition evaluator: " + pair.Key);
                         }
                     }
                 }
@@ -371,7 +405,6 @@ namespace Clamp.OSGI.Framework
         }
 
 
-
         /// <summary>
         /// 生成对象集合
         /// </summary>
@@ -394,6 +427,5 @@ namespace Clamp.OSGI.Framework
         {
 
         }
-
     }
 }
