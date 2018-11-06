@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework
+namespace Clamp.OSGI.Framework.Localization
 {
     public class AddinLocalizer
     {

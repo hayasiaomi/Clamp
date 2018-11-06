@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AddinErrorEventArgs.cs" />
+    <Compile Include="Framework\AddinEventArgs.cs" />
+    <Compile Include="Framework\ConditionType.cs" />
+    <Compile Include="Framework\Data\Description\ConditionTypeDescription.cs" />
+    <Compile Include="Framework\Data\Description\ConditionTypeDescriptionCollection.cs" />
+    <Compile Include="Framework\Localization\AddinLocalizer.cs" />
     <Compile Include="Framework\AddinSearchFlags.cs" />
     <Compile Include="Framework\Annotation\AddinAttribute.cs" />
     <Compile Include="Framework\Annotation\BundleDependencyAttribute.cs" />
@@ -78,14 +84,22 @@
     <Compile Include="Framework\Data\Description\AddinPropertyCollection.cs" />
     <Compile Include="Framework\Data\DefaultClampAnalyzer.cs" />
     <Compile Include="Framework\Data\DefaultClampDetector.cs" />
+    <Compile Include="Framework\Data\Description\ContentType.cs" />
     <Compile Include="Framework\Data\Description\Dependency.cs" />
     <Compile Include="Framework\Data\Description\DependencyCollection.cs" />
     <Compile Include="Framework\Data\Description\Extension.cs" />
     <Compile Include="Framework\Data\Description\ExtensionCollection.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeDescription.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeDescriptionCollection.cs" />
     <Compile Include="Framework\Data\Description\ExtensionNodeSet.cs" />
     <Compile Include="Framework\Data\Description\ExtensionNodeSetCollection.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeType.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeTypeCollection.cs" />
     <Compile Include="Framework\Data\Description\ExtensionPoint.cs" />
     <Compile Include="Framework\Data\Description\ExtensionPointCollection.cs" />
+    <Compile Include="Framework\Data\Description\NodeElement.cs" />
+    <Compile Include="Framework\Data\Description\NodeTypeAttribute.cs" />
+    <Compile Include="Framework\Data\Description\NodeTypeAttributeCollection.cs" />
     <Compile Include="Framework\Data\PersistentObject.cs" />
     <Compile Include="Framework\Data\Description\ModuleCollection.cs" />
     <Compile Include="Framework\Data\FileDatabase.cs" />
@@ -95,6 +109,15 @@
     <Compile Include="Framework\Data\IAssemblyLocator.cs" />
     <Compile Include="Framework\Data\IAssemblyReflector.cs" />
     <Compile Include="Framework\Data\Util.cs" />
+    <Compile Include="Framework\GettextCatalog.cs" />
+    <Compile Include="Framework\Localization\IAddinLocalizer.cs" />
+    <Compile Include="Framework\Localization\IPluralAddinLocalizer.cs" />
+    <Compile Include="Framework\Localization\IAddinLocalizerFactory.cs" />
+    <Compile Include="Framework\MissingDependencyException.cs" />
+    <Compile Include="Framework\Nodes\ExtensionContext.cs" />
+    <Compile Include="Framework\Nodes\ExtensionNode.cs" />
+    <Compile Include="Framework\Nodes\ExtensionNodeList.cs" />
+    <Compile Include="Framework\Nodes\ExtensionTree.cs" />
     <Compile Include="Framework\FrameworkException.cs" />
     <Compile Include="AddInManager.cs" />
     <Compile Include="Framework\AssemblyLocator.cs" />
@@ -111,10 +134,12 @@
     <Compile Include="Framework\IBundleActivator.cs" />
     <Compile Include="Framework\Data\IClampAnalyzer.cs" />
     <Compile Include="Framework\IServiceListener.cs" />
+    <Compile Include="Framework\RuntimeAddin.cs" />
     <Compile Include="Framework\ServiceEvent.cs" />
     <Compile Include="Framework\IBundleContext.cs" />
     <Compile Include="Framework\IClampBundle.cs" />
-    <Compile Include="Framework\TreeNode.cs" />
+    <Compile Include="Framework\Nodes\TreeNode.cs" />
+    <Compile Include="Framework\Nodes\TreeNodeCollection.cs" />
     <Compile Include="Injection\AssemblyExtensions.cs" />
     <Compile Include="Injection\AutoRegistrationException.cs" />
     <Compile Include="Injection\ConstructorAttribute.cs" />
