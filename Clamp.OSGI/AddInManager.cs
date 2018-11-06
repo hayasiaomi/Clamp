@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Nodes
+namespace Clamp.OSGI.Framework.Description
 {
     /// <summary>
     /// 插件管理类

@@ -36,9 +36,8 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\开发\ShanDian.Src\ShanDian\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="LiteDB">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,42 +49,72 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AddinSearchFlags.cs" />
+    <Compile Include="Framework\Annotation\AddinAttribute.cs" />
+    <Compile Include="Framework\Annotation\BundleDependencyAttribute.cs" />
+    <Compile Include="Framework\Annotation\BundleAttribute.cs" />
     <Compile Include="Framework\Bundle.cs" />
     <Compile Include="Framework\BundleActivator.cs" />
     <Compile Include="Framework\BundleContext.cs" />
-    <Compile Include="Framework\Nodes\AddInEngine.cs" />
+    <Compile Include="Framework\BundleInfo.cs" />
+    <Compile Include="Framework\BundleRegistry.cs" />
+    <Compile Include="Framework\ClampConstants.cs" />
+    <Compile Include="Framework\Data\AddinFlags.cs" />
+    <Compile Include="Framework\Data\AddinIndex.cs" />
+    <Compile Include="Framework\Data\AddinSearchFlagsInternal.cs" />
+    <Compile Include="Framework\Data\AddinUpdateData.cs" />
+    <Compile Include="Framework\Data\DatabaseConfiguration.cs" />
+    <Compile Include="Framework\Data\DefaultAssemblyReflector.cs" />
+    <Compile Include="Framework\Data\Description\AddinDependency.cs" />
+    <Compile Include="Framework\Data\Description\AddinDescription.cs" />
+    <Compile Include="Framework\Data\AddinFileInfo.cs" />
+    <Compile Include="Framework\Data\AddinFileSystemExtension.cs" />
+    <Compile Include="Framework\Data\AddinHostIndex.cs" />
+    <Compile Include="Framework\Data\AddinScanner.cs" />
+    <Compile Include="Framework\Data\AddinScanResult.cs" />
+    <Compile Include="Framework\Data\BundleScanFolderInfo.cs" />
+    <Compile Include="Framework\Data\BundleDatabase.cs" />
+    <Compile Include="Framework\Data\Description\AddinProperty.cs" />
+    <Compile Include="Framework\Data\Description\AddinPropertyCollection.cs" />
+    <Compile Include="Framework\Data\DefaultClampAnalyzer.cs" />
+    <Compile Include="Framework\Data\DefaultClampDetector.cs" />
+    <Compile Include="Framework\Data\Description\Dependency.cs" />
+    <Compile Include="Framework\Data\Description\DependencyCollection.cs" />
+    <Compile Include="Framework\Data\Description\Extension.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionCollection.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeSet.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeSetCollection.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionPoint.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionPointCollection.cs" />
+    <Compile Include="Framework\Data\PersistentObject.cs" />
+    <Compile Include="Framework\Data\Description\ModuleCollection.cs" />
+    <Compile Include="Framework\Data\FileDatabase.cs" />
+    <Compile Include="Framework\Data\Description\ModuleDescription.cs" />
+    <Compile Include="Framework\Data\Description\ObjectDescription.cs" />
+    <Compile Include="Framework\Data\Description\ObjectDescriptionCollection.cs" />
+    <Compile Include="Framework\Data\IAssemblyLocator.cs" />
+    <Compile Include="Framework\Data\IAssemblyReflector.cs" />
+    <Compile Include="Framework\Data\Util.cs" />
     <Compile Include="Framework\FrameworkException.cs" />
     <Compile Include="AddInManager.cs" />
-    <Compile Include="Framework\Nodes\AddInManifest.cs" />
-    <Compile Include="Framework\Nodes\AddInFeature.cs" />
-    <Compile Include="Framework\Nodes\AddInProperties.cs" />
-    <Compile Include="Framework\Nodes\AddInReference.cs" />
-    <Compile Include="Framework\Nodes\AddInTreeNode.cs" />
     <Compile Include="Framework\AssemblyLocator.cs" />
     <Compile Include="Framework\BuildItemArgs.cs" />
-    <Compile Include="Framework\ClampFramework.cs" />
-    <Compile Include="Framework\ClampFrameworkFactory.cs" />
+    <Compile Include="Framework\ClampBundle.cs" />
+    <Compile Include="Framework\ClampBundleFactory.cs" />
     <Compile Include="Framework\Codon.cs" />
-    <Compile Include="Framework\Nodes\AddInCondition.cs" />
-    <Compile Include="Framework\Conditions\Evaluators\LazyConditionEvaluator.cs" />
     <Compile Include="Framework\ConditionFailedAction.cs" />
-    <Compile Include="Framework\Conditions\AndCondition.cs" />
-    <Compile Include="Framework\Conditions\NotCondition.cs" />
-    <Compile Include="Framework\Conditions\OrCondition.cs" />
     <Compile Include="DoozerImpl\ClassDoozer.cs" />
     <Compile Include="DoozerImpl\LazyLoadDoozer.cs" />
     <Compile Include="DoozerImpl\ServiceDoozer.cs" />
     <Compile Include="DoozerImpl\WebworkDoozer.cs" />
     <Compile Include="Framework\IBundle.cs" />
     <Compile Include="Framework\IBundleActivator.cs" />
+    <Compile Include="Framework\Data\IClampAnalyzer.cs" />
     <Compile Include="Framework\IServiceListener.cs" />
-    <Compile Include="Framework\Nodes\ExtensionNodeList.cs" />
     <Compile Include="Framework\ServiceEvent.cs" />
     <Compile Include="Framework\IBundleContext.cs" />
-    <Compile Include="Framework\IClampFramework.cs" />
-    <Compile Include="Framework\Conditions\ICondition.cs" />
-    <Compile Include="Framework\Conditions\Evaluators\IConditionEvaluator.cs" />
-    <Compile Include="Framework\Nodes\ExtensionNode.cs" />
+    <Compile Include="Framework\IClampBundle.cs" />
+    <Compile Include="Framework\TreeNode.cs" />
     <Compile Include="Injection\AssemblyExtensions.cs" />
     <Compile Include="Injection\AutoRegistrationException.cs" />
     <Compile Include="Injection\ConstructorAttribute.cs" />
@@ -121,7 +150,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Framework\Nodes\AddInRuntime.cs" />
     <Compile Include="Framework\TopologicalSort.cs" />
   </ItemGroup>
   <ItemGroup>

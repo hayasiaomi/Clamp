@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework
+namespace Clamp.OSGI.Framework.Data
 {
-    public interface IBundle
+    public class PersistentObject
     {
-        void Start();
 
-        void Stop();
     }
 }

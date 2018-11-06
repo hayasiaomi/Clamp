@@ -1,5 +1,5 @@
 ﻿using Clamp.OSGI.Framework.Conditions;
-using Clamp.OSGI.Framework.Nodes;
+using Clamp.OSGI.Framework.Description;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

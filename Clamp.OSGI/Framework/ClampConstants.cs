@@ -5,10 +5,8 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework
 {
-    public interface IBundle
+    public class ClampConstants
     {
-        void Start();
 
-        void Stop();
     }
 }

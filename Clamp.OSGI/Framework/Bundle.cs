@@ -1,4 +1,6 @@
-﻿using Clamp.OSGI.Framework.Nodes;
+﻿using Clamp.OSGI.Framework.Data;
+using Clamp.OSGI.Framework.Data.Description;
+using Clamp.OSGI.Framework.Description;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,397 +14,244 @@ namespace Clamp.OSGI.Framework
     /// <summary>
     /// 插件类
     /// </summary>
-    internal class Bundle : IBundle
+    public class Bundle : IBundle
     {
-        private volatile bool dependenciesLoaded;
-        private string addInFileName;
-        private string activatorClassName;
-        private string mistake;
-        private AddInProperties properties = new AddInProperties();
-        private AddInManifest manifest = new AddInManifest();
-        private List<AddInRuntime> runtimes = new List<AddInRuntime>();
-        private List<string> bitmapResources = new List<string>();
-        private List<string> stringResources = new List<string>();
-        private Dictionary<string, AddInFeature> features = new Dictionary<string, AddInFeature>();
-        private ClampFramework framework;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Copyright
-        {
-            get { return properties["copyright"]; }
-        }
-        /// <summary>
-        /// 说明
-        /// </summary>
-        public string Description
-        {
-            get { return properties["description"]; }
-        }
-        /// <summary>
-        /// 作者
-        /// </summary>
-        public string Author
-        {
-            get { return properties["author"]; }
-        }
-        /// <summary>
-        /// 插件名称
-        /// </summary>
-        public string Name
-        {
-            get { return properties["name"]; }
-        }
-
-        public int StartLevel
-        {
-            get
-            {
-                string vStartLevel = properties["startLevel"];
-
-                if (string.IsNullOrWhiteSpace(vStartLevel))
-                    return 0;
-                return Convert.ToInt32(vStartLevel);
-            }
-        }
-
-        public ClampFramework Framework
-        {
-            get { return this.framework; }
-        }
-
-
-        public bool Enabled { set; get; }
-
-        public string Mistake
-        {
-            get { return this.mistake; }
-            internal set
-            {
-                if (value != null)
-                {
-                    Enabled = false;
-                }
-
-                this.mistake = value;
-            }
-        }
-
-        public string AddInDirectory
-        {
-            get { return Path.GetDirectoryName(this.FileName); }
-        }
-
-        public string FileName
-        {
-            get { return addInFileName; }
-            set { addInFileName = value; }
-        }
-
-        public AddInManifest Manifest
-        {
-            get { return manifest; }
-        }
-
-        public AddInProperties Properties
-        {
-            set { this.properties = value; }
-            get { return this.properties; }
-        }
-
-        public string ActivatorClassName
-        {
-            get
-            {
-                return this.activatorClassName;
-            }
-        }
-
-        public List<string> BitmapResources
-        {
-            get { return bitmapResources; }
-            set { bitmapResources = value; }
-        }
-
-        public List<string> StringResources
-        {
-            get { return stringResources; }
-            set { stringResources = value; }
-        }
-
-        public ReadOnlyCollection<AddInRuntime> Runtimes
-        {
-            get { return runtimes.AsReadOnly(); }
-        }
-
-        public Dictionary<string, AddInFeature> Features
-        {
-            get { return features; }
-        }
-
-        public Guid BundleId { set; get; }
-
-        public Version Version { private set; get; }
+        private BundleInfo addin;
+        private string sourceFile;
+        private WeakReference desc;
+        private BundleDatabase database;
+        private bool? isLatestVersion;
+        private bool? isUserAddin;
+        private string id;
+        private string domain;
+        private BundleRegistry registry;
+        private ClampBundle clampBundle;
 
         internal Bundle()
         {
-
+            this.addin = null;
+            this.sourceFile = null;
+            this.desc = null;
+            this.domain = null;
+            this.clampBundle = null;
+            this.database = null;
+            this.registry = null;
         }
 
-        internal Bundle(ClampFramework clampFramework)
+        internal Bundle(ClampBundle clampBundle, BundleDatabase database, string domain, string id)
         {
-            this.framework = clampFramework;
-            this.Enabled = true;
+            this.clampBundle = clampBundle;
+            this.database = database;
+            this.id = id;
+            this.domain = domain;
+            LoadAddinInfo();
         }
 
-        public AddInFeature GetExtensionPath(string pathName)
+        private void LoadAddinInfo()
         {
-            if (!features.ContainsKey(pathName))
+            if (addin == null)
             {
-                return features[pathName] = new AddInFeature(pathName, this);
-            }
-            return features[pathName];
-        }
-
-        public object CreateObject(string className)
-        {
-            Type t = FindType(className);
-
-            if (t != null)
-                return System.Activator.CreateInstance(t);
-            else
-                return null;
-        }
-
-        public Type FindType(string className)
-        {
-            foreach (AddInRuntime runtime in runtimes)
-            {
-                if (!runtime.IsHostApplicationAssembly)
+                try
                 {
-                    LoadDependencies();
+                    BundleDescription m = Description;
+                    sourceFile = m.AddinFile;
+                    addin = BundleInfo.ReadFromDescription(m);
                 }
-
-                Type t = runtime.FindType(className);
-
-                if (t != null)
+                catch (Exception ex)
                 {
-                    return t;
+                    throw new InvalidOperationException("Could not read add-in file: " + database.GetDescriptionPath(domain, id), ex);
                 }
             }
-            return null;
         }
-
-        public Stream FindResources(string resourceName)
-        {
-            foreach (AddInRuntime runtime in runtimes)
-            {
-                if (!runtime.IsHostApplicationAssembly)
-                {
-                    LoadDependencies();
-                }
-
-                Stream stream = runtime.FindResources(resourceName);
-
-                if (stream != null)
-                {
-                    return stream;
-                }
-            }
-            return null;
-        }
-
-        public void LoadRuntimeAssemblies()
-        {
-            LoadDependencies();
-
-            foreach (AddInRuntime runtime in runtimes)
-            {
-                if (runtime.IsActive)
-                    runtime.Load();
-            }
-        }
-
-        private void LoadDependencies()
-        {
-            if (!dependenciesLoaded)
-            {
-                AssemblyLocator.Init();
-
-                foreach (AddInReference r in manifest.Dependencies)
-                {
-                    if (r.RequirePreload)
-                    {
-                        bool found = false;
-                        foreach (Bundle addIn in this.framework.AddIns)
-                        {
-                            if (addIn.Manifest.IsMatch(r))
-                            {
-                                found = true;
-
-                                addIn.LoadRuntimeAssemblies();
-                            }
-                        }
-                        if (!found)
-                        {
-                            throw new FrameworkException("Cannot load run-time dependency for " + r.ToString());
-                        }
-                    }
-                }
-                dependenciesLoaded = true;
-            }
-        }
-
-
-
+        #region public Property
         /// <summary>
-        /// 通一个文件来加载插件信息
+        /// Full identifier of the add-in, including namespace and version.
         /// </summary>
-        /// <param name="addInTree"></param>
-        /// <param name="fileName"></param>
-        /// <param name="nameTable"></param>
-        /// <returns></returns>
-
-        public static Bundle Load(ClampFramework framework, string fileName, XmlNameTable nameTable = null)
+        public string Id
         {
-            try
-            {
-                using (TextReader textReader = File.OpenText(fileName))
-                {
-                    Bundle addIn = Load(framework, textReader, Path.GetDirectoryName(fileName), nameTable);
-                    addIn.FileName = fileName;
-                    return addIn;
-                }
-            }
-            catch (FrameworkException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new FrameworkException("Can't load " + fileName, e);
-            }
+            get { return id; }
         }
 
         /// <summary>
-        /// 通过一个流来加载插件信息
+        /// Namespace of the add-in.
         /// </summary>
-        /// <param name="addInTree"></param>
-        /// <param name="textReader"></param>
-        /// <param name="hintPath"></param>
-        /// <param name="nameTable"></param>
-        /// <returns></returns>
-        public static Bundle Load(ClampFramework framework, TextReader textReader, string hintPath = null, XmlNameTable nameTable = null)
+        public string Namespace
         {
-            if (nameTable == null)
-                nameTable = new NameTable();
-            try
-            {
-                Bundle addIn = new Bundle(framework);
-
-                using (XmlTextReader reader = new XmlTextReader(textReader, nameTable))
-                {
-                    while (reader.Read())
-                    {
-                        if (reader.IsStartElement())
-                        {
-                            switch (reader.LocalName)
-                            {
-                                case "AddIn":
-                                    addIn.Properties = AddInProperties.ReadFromAttributes(reader);
-                                    SetupAddIn(reader, addIn, hintPath);
-                                    break;
-                                default:
-                                    throw new FrameworkException("Unknown add-in file.");
-                            }
-                        }
-                    }
-                }
-
-                return addIn;
-            }
-            catch (XmlException ex)
-            {
-                throw new FrameworkException(ex.Message, ex);
-            }
+            get { return this.AddinInfo.Namespace; }
         }
 
         /// <summary>
-        /// 装载插件内容
+        /// Identifier of the add-in (without namespace)
         /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="addIn"></param>
-        /// <param name="hintPath"></param>
-        static void SetupAddIn(XmlReader reader, Bundle addIn, string hintPath)
+        public string LocalId
         {
-            while (reader.Read())
+            get { return this.AddinInfo.LocalId; }
+        }
+
+        /// <summary>
+        /// Version of the add-in
+        /// </summary>
+        public string Version
+        {
+            get { return this.AddinInfo.Version; }
+        }
+
+        /// <summary>
+        /// Display name of the add-in
+        /// </summary>
+        public string Name
+        {
+            get { return this.AddinInfo.Name; }
+        }
+
+        /// <summary>
+        /// Custom properties specified in the add-in header
+        /// </summary>
+        public AddinPropertyCollection Properties
+        {
+            get { return this.AddinInfo.Properties; }
+        }
+
+     
+        public bool Enabled
+        {
+            get
             {
-                if (reader.NodeType == XmlNodeType.Element && reader.IsStartElement())
+                if (!IsLatestVersion)
+                    return false;
+                return AddinInfo.IsRoot ? true : database.IsAddinEnabled(Description.Domain, AddinInfo.Id, true);
+            }
+            set
+            {
+                if (value)
+                    database.EnableAddin(Description.Domain, AddinInfo.Id, true);
+                else
+                    database.DisableAddin(Description.Domain, AddinInfo.Id);
+            }
+        }
+
+        public BundleDescription Description
+        {
+            get
+            {
+                if (desc != null)
                 {
-                    switch (reader.LocalName)
+                    BundleDescription d = desc.Target as BundleDescription;
+                    if (d != null)
+                        return d;
+                }
+
+                var configFile = database.GetDescriptionPath(domain, id);
+
+                BundleDescription m;
+
+                database.ReadAddinDescription(configFile, out m);
+
+                if (m == null)
+                {
+                    try
                     {
-                        case "StringResources":
-                        case "BitmapResources":
-                            if (reader.AttributeCount != 1)
-                            {
-                                throw new FrameworkException("BitmapResources requires ONE attribute.");
-                            }
+                        if (File.Exists(configFile))
+                        {
+                            // The file is corrupted. Remove it.
+                            File.Delete(configFile);
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore
+                    }
+                    throw new InvalidOperationException("Could not read add-in description");
+                }
+                if (addin == null)
+                {
+                    addin = BundleInfo.ReadFromDescription(m);
+                    sourceFile = m.AddinFile;
+                }
+                SetIsUserAddin(m);
+                if (!isUserAddin.Value)
+                    m.Flags |= AddinFlags.CantUninstall;
+                desc = new WeakReference(m);
+                return m;
+            }
+        }
+        #endregion
+        #region internal Property
 
-                            string filename = reader.GetAttribute("file");
+        internal BundleRegistry Registry
+        {
+            get
+            {
+                //CheckInitialized();
+                return registry;
+            }
+        }
 
-                            if (reader.LocalName == "BitmapResources")
-                            {
-                                addIn.BitmapResources.Add(filename);
-                            }
-                            else
-                            {
-                                addIn.StringResources.Add(filename);
-                            }
-                            break;
-                        case "Runtime":
-                            if (!reader.IsEmptyElement)
-                            {
-                                addIn.runtimes.AddRange(AddInRuntime.ReadSection(reader, addIn, hintPath));
-                            }
-                            break;
-                        case "Activator":
+        internal bool IsLatestVersion
+        {
+            get
+            {
+                if (isLatestVersion == null)
+                {
+                    string id, version;
+                    Bundle.GetIdParts(AddinInfo.Id, out id, out version);
+                    var addins = database.GetInstalledAddins(null, AddinSearchFlagsInternal.IncludeAll | AddinSearchFlagsInternal.LatestVersionsOnly);
+                    isLatestVersion = addins.Any(a => Bundle.GetIdName(a.Id) == id && a.Version == version);
+                }
+                return isLatestVersion.Value;
+            }
+            set
+            {
+                isLatestVersion = value;
+            }
+        }
+        internal string PrivateDataPath
+        {
+            get { return Path.Combine(database.AddinPrivateDataPath, Path.GetFileNameWithoutExtension(Description.FileName)); }
+        }
 
-                            if (reader.AttributeCount != 1)
-                            {
-                                throw new FrameworkException("Include requires ONE attribute.");
-                            }
-
-                            if (!reader.IsEmptyElement)
-                            {
-                                throw new FrameworkException("Include nodes must be empty!");
-                            }
-
-                            AddInProperties addInProperties = AddInProperties.ReadFromAttributes(reader);
-
-                            addIn.activatorClassName = addInProperties["class"];
-
-                            break;
-                        case "Feature":
-                            if (reader.AttributeCount != 1)
-                            {
-                                throw new FrameworkException("Import node requires ONE attribute.");
-                            }
-                            string pathName = reader.GetAttribute(0);
-                            AddInFeature addInPath = addIn.GetExtensionPath(pathName);
-                            if (!reader.IsEmptyElement)
-                            {
-                                AddInFeature.SetUp(addInPath, reader, "Feature");
-                            }
-                            break;
-                        case "Manifest":
-                            addIn.Manifest.ReadManifestSection(reader, hintPath);
-                            break;
-                        default:
-                            throw new FrameworkException("Unknown root path node:" + reader.LocalName);
+        internal BundleInfo AddinInfo
+        {
+            get
+            {
+                if (addin == null)
+                {
+                    try
+                    {
+                        addin = BundleInfo.ReadFromDescription(Description);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException("Could not read add-in file: " + database.GetDescriptionPath(domain, id), ex);
                     }
                 }
+                return addin;
             }
+        }
+        #endregion
+        #region public method
+
+        /// <summary>
+        /// Checks version compatibility.
+        /// </summary>
+        /// <param name="version">
+        /// An add-in version.
+        /// </param>
+        /// <returns>
+        /// True if the provided version is compatible with this add-in.
+        /// </returns>
+        /// <remarks>
+        /// This method checks the CompatVersion property to know if the provided version is compatible with the version of this add-in.
+        /// </remarks>
+        public bool SupportsVersion(string version)
+        {
+            return AddinInfo.SupportsVersion(version);
+        }
+
+
+        public ClampBundle ClampBundle
+        {
+            get { return this.clampBundle; }
         }
 
         public virtual void Start()
@@ -414,5 +263,104 @@ namespace Clamp.OSGI.Framework
         {
             throw new NotImplementedException();
         }
+        #endregion
+
+        #region private method
+        private void SetIsUserAddin(BundleDescription adesc)
+        {
+            string installPath = database.Registry.DefaultAddinsFolder;
+
+            if (installPath[installPath.Length - 1] != Path.DirectorySeparatorChar)
+                installPath += Path.DirectorySeparatorChar;
+            isUserAddin = adesc != null && Path.GetFullPath(adesc.AddinFile).StartsWith(installPath);
+        }
+        #endregion
+
+        #region public static method
+
+        public static string GetFullId(string ns, string id, string version)
+        {
+            string res;
+            if (id.StartsWith("::"))
+                res = id.Substring(2);
+            else if (ns != null && ns.Length > 0)
+                res = ns + "." + id;
+            else
+                res = id;
+
+            if (version != null && version.Length > 0)
+                return res + "," + version;
+            else
+                return res;
+        }
+
+        public static string GetIdName(string addinId)
+        {
+            int i = addinId.IndexOf(',');
+            if (i != -1)
+                return addinId.Substring(0, i);
+            else
+                return addinId;
+        }
+
+        public static string GetIdVersion(string addinId)
+        {
+            int i = addinId.IndexOf(',');
+            if (i != -1)
+                return addinId.Substring(i + 1).Trim();
+            else
+                return string.Empty;
+        }
+
+        public static int CompareVersions(string v1, string v2)
+        {
+            string[] a1 = v1.Split('.');
+            string[] a2 = v2.Split('.');
+
+            for (int n = 0; n < a1.Length; n++)
+            {
+                if (n >= a2.Length)
+                    return -1;
+                if (a1[n].Length == 0)
+                {
+                    if (a2[n].Length != 0)
+                        return 1;
+                    continue;
+                }
+                try
+                {
+                    int n1 = int.Parse(a1[n]);
+                    int n2 = int.Parse(a2[n]);
+                    if (n1 < n2)
+                        return 1;
+                    else if (n1 > n2)
+                        return -1;
+                }
+                catch
+                {
+                    return 1;
+                }
+            }
+            if (a2.Length > a1.Length)
+                return 1;
+            return 0;
+        }
+        public static void GetIdParts(string addinId, out string name, out string version)
+        {
+            int i = addinId.IndexOf(',');
+            if (i != -1)
+            {
+                name = addinId.Substring(0, i);
+                version = addinId.Substring(i + 1).Trim();
+            }
+            else
+            {
+                name = addinId;
+                version = string.Empty;
+            }
+        }
+        #endregion
+
+
     }
 }

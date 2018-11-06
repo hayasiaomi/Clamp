@@ -1,5 +1,5 @@
 ﻿using Clamp.OSGI.Framework.Conditions;
-using Clamp.OSGI.Framework.Nodes;
+using Clamp.OSGI.Framework.Description;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -73,7 +73,7 @@ namespace Clamp.OSGI.Framework
 
         internal object BuildItem(BuildItemArgs args)
         {
-            ExtensionNode extensionNode = this.Bundle.Framework.GetExtensionNode(this.path, this.name);
+            ExtensionNode extensionNode = this.Bundle.ClampBundle.GetExtensionNode(this.path, this.name);
 
             if (extensionNode == null)
                 throw new FrameworkException("Doozer " + Name + " not found! " + ToString());

@@ -6,16 +6,8 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework
 {
-    public interface IBundleContext
+    public interface IClampBundle : IBundle, IDisposable
     {
-        IBundle GetBundle(long id);
-
-        IBundle[] GetBundles();
-
-        void AddServiceListener(IServiceListener listener);
-
-        void RemoveServiceListener(IServiceListener listener);
-
         ExtensionNode GetExtensionNode(string path);
 
         T GetExtensionNode<T>(string path) where T : ExtensionNode;
@@ -51,6 +43,5 @@ namespace Clamp.OSGI.Framework
         object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance);
 
         T[] GetInstance<T>(string path, bool reuseCachedInstance);
-
     }
 }
