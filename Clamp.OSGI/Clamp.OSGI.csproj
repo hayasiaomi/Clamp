@@ -54,6 +54,9 @@
     <Compile Include="Framework\ConditionType.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescription.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescriptionCollection.cs" />
+    <Compile Include="Framework\Data\ProcessFailedException.cs" />
+    <Compile Include="Framework\Data\SetupDomain.cs" />
+    <Compile Include="Framework\ISetupHandler.cs" />
     <Compile Include="Framework\Localization\AddinLocalizer.cs" />
     <Compile Include="Framework\AddinSearchFlags.cs" />
     <Compile Include="Framework\Annotation\AddinAttribute.cs" />

@@ -74,6 +74,11 @@ namespace Clamp.OSGI.Framework.Data
             return File.OpenRead(path);
         }
 
+        public virtual bool RequiresIsolation
+        {
+            get { return true; }
+        }
+
         public virtual IAssemblyReflector GetReflectorForFile(IAssemblyLocator locator, string path)
         {
             if (reflector != null)

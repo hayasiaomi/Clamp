@@ -108,6 +108,13 @@ namespace Clamp.OSGI.Framework
         }
 
         #region internal method
+        internal void NotifyDatabaseUpdated()
+        {
+            if (startupDirectory != null)
+                currentDomain = database.GetFolderDomain(startupDirectory);
+        }
+
+
         /// <summary>
         /// 新建一个组件宿主
         /// </summary>
@@ -174,6 +181,8 @@ namespace Clamp.OSGI.Framework
         #endregion
 
         #region  public method
+
+
 
         public bool IsAddinEnabled(string id)
         {

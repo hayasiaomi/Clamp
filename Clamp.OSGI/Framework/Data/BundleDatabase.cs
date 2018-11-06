@@ -301,8 +301,6 @@ namespace Clamp.OSGI.Framework.Data
                 registry.NotifyDatabaseUpdated();
             }
 
-            if (fatalDatabseError)
-                monitor.ReportError("The add-in database could not be updated. It may be due to file corruption. Try running the setup repair utility", null);
 
             // Update the currently loaded add-ins
             if (changesFound && domain != null && clampBundle != null && clampBundle.IsInitialized)
@@ -1046,6 +1044,112 @@ namespace Clamp.OSGI.Framework.Data
         }
         #endregion
         #region private method
+
+        private void RunScannerProcess(IProgressStatus monitor)
+        {
+            ISetupHandler setup = GetSetupHandler();
+
+            IProgressStatus scanMonitor = monitor;
+            ArrayList pparams = new ArrayList();
+
+            bool retry = false;
+            do
+            {
+                try
+                {
+                    if (monitor.LogLevel > 1)
+                        monitor.Log("Looking for addins");
+                    setup.Scan(scanMonitor, registry, null, (string[])pparams.ToArray(typeof(string)));
+                    retry = false;
+                }
+                catch (Exception ex)
+                {
+                    ProcessFailedException pex = ex as ProcessFailedException;
+                    if (pex != null)
+                    {
+                        // Get the last logged operation.
+                        if (pex.LastLog.StartsWith("scan:"))
+                        {
+                            // It crashed while scanning a file. Add the file to the ignore list and try again.
+                            string file = pex.LastLog.Substring(5);
+                            pparams.Add(file);
+                            monitor.ReportWarning("Could not scan file: " + file);
+                            retry = true;
+                            continue;
+                        }
+                    }
+                    fatalDatabseError = true;
+                    // If the process has crashed, try to do a new scan, this time using verbose log,
+                    // to give the user more information about the origin of the crash.
+                    if (pex != null && !retry)
+                    {
+                        monitor.ReportError("Add-in scan operation failed. The runtime may have encountered an error while trying to load an assembly.", null);
+                        if (monitor.LogLevel <= 1)
+                        {
+                            // Re-scan again using verbose log, to make it easy to find the origin of the error.
+                            retry = true;
+                            scanMonitor = new ConsoleProgressStatus(true);
+                        }
+                    }
+                    else
+                        retry = false;
+
+                    if (!retry)
+                    {
+                        var pfex = ex as ProcessFailedException;
+                        monitor.ReportError("Add-in scan operation failed", pfex != null ? pfex.InnerException : ex);
+                        monitor.Cancel();
+                        return;
+                    }
+                }
+            }
+            while (retry);
+        }
+
+        private bool DatabaseInfrastructureCheck(IProgressStatus monitor)
+        {
+            // Do some sanity check, to make sure the basic database infrastructure can be created
+
+            bool hasChanges = false;
+
+            try
+            {
+
+                if (!Directory.Exists(AddinCachePath))
+                {
+                    Directory.CreateDirectory(AddinCachePath);
+                    hasChanges = true;
+                }
+
+                if (!Directory.Exists(AddinFolderCachePath))
+                {
+                    Directory.CreateDirectory(AddinFolderCachePath);
+                    hasChanges = true;
+                }
+
+                // Make sure we can write in those folders
+
+                Util.CheckWrittableFloder(AddinCachePath);
+                Util.CheckWrittableFloder(AddinFolderCachePath);
+
+                fatalDatabseError = false;
+            }
+            catch (Exception ex)
+            {
+                monitor.ReportError("Add-in cache directory could not be created", ex);
+                fatalDatabseError = true;
+                monitor.Cancel();
+            }
+            return hasChanges;
+        }
+
+        private ISetupHandler GetSetupHandler()
+        {
+            if (fs.RequiresIsolation)
+                return new SetupDomain();
+            else
+                return new SetupLocal();
+        }
 
         private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, AddinSearchFlagsInternal type)
         {
