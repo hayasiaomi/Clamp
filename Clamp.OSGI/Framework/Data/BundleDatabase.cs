@@ -29,6 +29,9 @@ namespace Clamp.OSGI.Framework.Data
         private List<Bundle> addinSetupInfos;
         private List<Bundle> rootSetupInfos;
 
+
+        internal static bool RunningSetupProcess;
+
         #region public Property
 
         public string AddinDbDir
@@ -146,6 +149,31 @@ namespace Clamp.OSGI.Framework.Data
             return Configuration.IsRegisteredForUninstall(addinId);
         }
 
+        public Bundle GetAddinForHostAssembly(string domain, string assemblyLocation)
+        {
+            InternalCheck(domain);
+            Bundle ainfo = null;
+
+            object ob = cachedAddinSetupInfos[assemblyLocation];
+            if (ob != null)
+                return ob as Bundle; // Don't use a cast here is ob may not be an Addin.
+
+            AddinHostIndex index = GetAddinHostIndex();
+            string addin, addinFile, rdomain;
+            if (index.GetAddinForAssembly(assemblyLocation, out addin, out addinFile, out rdomain))
+            {
+                string sid = addin + " " + rdomain;
+                ainfo = cachedAddinSetupInfos[sid] as Bundle;
+                if (ainfo == null)
+                    ainfo = new Bundle(this.clampBundle, this, rdomain, addin);
+                cachedAddinSetupInfos[assemblyLocation] = ainfo;
+                cachedAddinSetupInfos[addin + " " + rdomain] = ainfo;
+            }
+
+            return ainfo;
+        }
+
+
 
         public IEnumerable<Bundle> GetInstalledAddins(string domain, AddinSearchFlagsInternal flags)
         {
@@ -157,39 +185,41 @@ namespace Clamp.OSGI.Framework.Data
 
             IEnumerable<Bundle> result = null;
 
-            //if ((flags & AddinSearchFlagsInternal.IncludeAll) == AddinSearchFlagsInternal.IncludeAll)
-            //{
-            //    if (allSetupInfos != null)
-            //        result = allSetupInfos;
-            //}
-            //else if ((flags & AddinSearchFlagsInternal.IncludeAddins) == AddinSearchFlagsInternal.IncludeAddins)
-            //{
-            //    if (addinSetupInfos != null)
-            //        result = addinSetupInfos;
-            //}
-            //else
-            //{
-            //    if (rootSetupInfos != null)
-            //        result = rootSetupInfos;
-            //}
+            if ((flags & AddinSearchFlagsInternal.IncludeAll) == AddinSearchFlagsInternal.IncludeAll)
+            {
+                if (allSetupInfos != null)
+                    result = allSetupInfos;
+            }
+            else if ((flags & AddinSearchFlagsInternal.IncludeAddins) == AddinSearchFlagsInternal.IncludeAddins)
+            {
+                if (addinSetupInfos != null)
+                    result = addinSetupInfos;
+            }
+            else
+            {
+                if (rootSetupInfos != null)
+                    result = rootSetupInfos;
+            }
 
-            //if (result == null)
-            //{
-            //    InternalCheck(domain);
-            //    using (fileDatabase.LockRead())
-            //    {
-            //        result = InternalGetInstalledAddins(domain, null, flags & ~AddinSearchFlagsInternal.LatestVersionsOnly);
-            //    }
-            //}
+            if (result == null)
+            {
+                InternalCheck(domain);
+                using (fileDatabase.LockRead())
+                {
+                    result = InternalGetInstalledAddins(domain, null, flags & ~AddinSearchFlagsInternal.LatestVersionsOnly);
+                }
+            }
 
-            //if ((flags & AddinSearchFlagsInternal.LatestVersionsOnly) == AddinSearchFlagsInternal.LatestVersionsOnly)
-            //    result = result.Where(a => a.IsLatestVersion);
+            if ((flags & AddinSearchFlagsInternal.LatestVersionsOnly) == AddinSearchFlagsInternal.LatestVersionsOnly)
+                result = result.Where(a => a.IsLatestVersion);
 
-            //if ((flags & AddinSearchFlagsInternal.ExcludePendingUninstall) == AddinSearchFlagsInternal.ExcludePendingUninstall)
-            //    result = result.Where(a => !IsRegisteredForUninstall(a.Description.Domain, a.Id));
+            if ((flags & AddinSearchFlagsInternal.ExcludePendingUninstall) == AddinSearchFlagsInternal.ExcludePendingUninstall)
+                result = result.Where(a => !IsRegisteredForUninstall(a.Description.Domain, a.Id));
 
             return result;
         }
+
+
 
         public bool ReadFolderInfo(string file, out BundleScanFolderInfo folderInfo)
         {
@@ -299,7 +329,7 @@ namespace Clamp.OSGI.Framework.Data
                     {
                         Bundle addin = clampBundle.Registry.GetAddin(aid);
                         if (addin != null)
-                            addinEngine.ActivateAddin(aid);
+                            this.clampBundle.ActivateAddin(aid);
                     }
                 }
             }
@@ -460,7 +490,6 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-
         public bool IsAddinEnabled(string domain, string id)
         {
             Bundle ainfo = GetInstalledAddin(domain, id);
@@ -548,6 +577,10 @@ namespace Clamp.OSGI.Framework.Data
                 this.clampBundle.UnloadAddin(id);
         }
 
+        public void Shutdown()
+        {
+            ResetCachedData();
+        }
         #endregion
 
         #region internal Method
@@ -615,7 +648,6 @@ namespace Clamp.OSGI.Framework.Data
             }
             return name;
         }
-
 
         internal bool RemoveAddinDescriptionFile(string file)
         {
@@ -1014,6 +1046,105 @@ namespace Clamp.OSGI.Framework.Data
         }
         #endregion
         #region private method
+
+        private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, AddinSearchFlagsInternal type)
+        {
+            return InternalGetInstalledAddins(domain, null, type);
+        }
+
+        private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, string idFilter, AddinSearchFlagsInternal type)
+        {
+            if ((type & AddinSearchFlagsInternal.LatestVersionsOnly) != 0)
+                throw new InvalidOperationException("LatestVersionsOnly flag not supported here");
+
+            if (allSetupInfos == null)
+            {
+                Dictionary<string, Bundle> adict = new Dictionary<string, Bundle>();
+
+                // Global add-ins are valid for any private domain
+                if (domain != BundleDatabase.GlobalDomain)
+                    FindInstalledAddins(adict, BundleDatabase.GlobalDomain, idFilter);
+
+                FindInstalledAddins(adict, domain, idFilter);
+                List<Bundle> alist = new List<Bundle>(adict.Values);
+                UpdateLastVersionFlags(alist);
+                if (idFilter != null)
+                    return alist;
+                allSetupInfos = alist;
+            }
+            if ((type & AddinSearchFlagsInternal.IncludeAll) == AddinSearchFlagsInternal.IncludeAll)
+                return FilterById(allSetupInfos, idFilter);
+
+            if ((type & AddinSearchFlagsInternal.IncludeAddins) == AddinSearchFlagsInternal.IncludeAddins)
+            {
+                if (addinSetupInfos == null)
+                {
+                    addinSetupInfos = new List<Bundle>();
+                    foreach (Bundle adn in allSetupInfos)
+                        if (!adn.Description.IsRoot)
+                            addinSetupInfos.Add(adn);
+                }
+                return FilterById(addinSetupInfos, idFilter);
+            }
+            else
+            {
+                if (rootSetupInfos == null)
+                {
+                    rootSetupInfos = new List<Bundle>();
+                    foreach (Bundle adn in allSetupInfos)
+                        if (adn.Description.IsRoot)
+                            rootSetupInfos.Add(adn);
+                }
+                return FilterById(rootSetupInfos, idFilter);
+            }
+        }
+
+        private IEnumerable<Bundle> FilterById(List<Bundle> addins, string id)
+        {
+            if (id == null)
+                return addins;
+            return addins.Where(a => Bundle.GetIdName(a.Id) == id);
+        }
+
+        private void FindInstalledAddins(Dictionary<string, Bundle> result, string domain, string idFilter)
+        {
+            if (idFilter == null)
+                idFilter = "*";
+            string dir = Path.Combine(AddinCachePath, domain);
+            if (Directory.Exists(dir))
+            {
+                foreach (string file in fileDatabase.GetDirectoryFiles(dir, idFilter + ",*.maddin"))
+                {
+                    string id = Path.GetFileNameWithoutExtension(file);
+                    if (!result.ContainsKey(id))
+                    {
+                        var adesc = GetInstalledDomainAddin(domain, id, true, false, false);
+                        if (adesc != null)
+                            result.Add(id, adesc);
+                    }
+                }
+            }
+        }
+
+        private void UpdateLastVersionFlags(List<Bundle> addins)
+        {
+            Dictionary<string, string> versions = new Dictionary<string, string>();
+            foreach (Bundle a in addins)
+            {
+                string last;
+                string id, version;
+                Bundle.GetIdParts(a.Id, out id, out version);
+                if (!versions.TryGetValue(id, out last) || Bundle.CompareVersions(last, version) > 0)
+                    versions[id] = version;
+            }
+            foreach (Bundle a in addins)
+            {
+                string id, version;
+                Bundle.GetIdParts(a.Id, out id, out version);
+                a.IsLatestVersion = versions[id] == version;
+            }
+        }
+
 
         private void SaveConfiguration()
         {

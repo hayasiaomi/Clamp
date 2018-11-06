@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework
 {
-    internal class BundleRegistry
+    internal class BundleRegistry : IDisposable
     {
         private List<string> addinDirs;
         private BundleDatabase database;
@@ -107,6 +107,7 @@ namespace Clamp.OSGI.Framework
                 currentDomain = BundleDatabase.GlobalDomain;
         }
 
+        #region internal method
         /// <summary>
         /// 新建一个组件宿主
         /// </summary>
@@ -163,6 +164,23 @@ namespace Clamp.OSGI.Framework
             return true;
         }
 
+
+        internal Bundle GetAddinForHostAssembly(string filePath)
+        {
+            if (currentDomain == BundleDatabase.UnknownDomain)
+                return null;
+            return database.GetAddinForHostAssembly(currentDomain, filePath);
+        }
+        #endregion
+
+        #region  public method
+
+        public bool IsAddinEnabled(string id)
+        {
+            if (currentDomain == BundleDatabase.UnknownDomain)
+                return false;
+            return database.IsAddinEnabled(currentDomain, id);
+        }
         /// <summary>
         /// 更新组件注册表
         /// </summary>
@@ -200,6 +218,17 @@ namespace Clamp.OSGI.Framework
             return database.GetInstalledAddins(currentDomain, f | AddinSearchFlagsInternal.ExcludePendingUninstall).ToArray();
         }
 
+        public void Dispose()
+        {
+            database.Shutdown();
+        }
+
+        #endregion
+
+
+
+        #region internal static method
+
         internal static string GlobalRegistryPath
         {
             get
@@ -214,5 +243,12 @@ namespace Clamp.OSGI.Framework
             }
 
         }
+        #endregion
+
+        #region private method
+
+        #endregion
+
+
     }
 }

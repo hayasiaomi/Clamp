@@ -31,5 +31,27 @@ namespace Clamp.OSGI.Framework.Data
         {
             fileDatabase.WriteObject(file, this);
         }
+
+        public bool GetAddinForAssembly(string assemblyLocation, out string addinId, out string addinLocation, out string domain)
+        {
+            assemblyLocation = NormalizeFileName(assemblyLocation);
+            string s = index[Path.GetFullPath(assemblyLocation)] as string;
+            if (s == null)
+            {
+                addinId = null;
+                addinLocation = null;
+                domain = null;
+                return false;
+            }
+            else
+            {
+                int i = s.IndexOf(' ');
+                int j = s.LastIndexOf(' ');
+                addinId = s.Substring(0, i);
+                addinLocation = s.Substring(i + 1, j - i - 1);
+                domain = s.Substring(j + 1);
+                return true;
+            }
+        }
     }
 }

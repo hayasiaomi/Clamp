@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework
+namespace Clamp.OSGI.Framework.Nodes
 {
     class TreeNode
     {
@@ -30,7 +30,7 @@ namespace Clamp.OSGI.Framework
                 childrenLoaded = true;
         }
 
-        public AddinEngine AddinEngine
+        public ClampBundle AddinEngine
         {
             get { return addinEngine; }
         }

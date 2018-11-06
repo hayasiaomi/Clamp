@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Data
+namespace Clamp.OSGI.Framework.Data.Description
 {
     public class BundleDescription : ObjectDescription
     {
@@ -20,8 +20,9 @@ namespace Clamp.OSGI.Framework.Data
         private AddinPropertyCollectionImpl properties;
         private ExtensionPointCollection extensionPoints;
         private ExtensionNodeSetCollection nodeSets;
+        private ConditionTypeDescriptionCollection conditionTypes;
+        private ExtensionNodeDescription localizer;
         private bool canWrite = true;
-
         private string id;
         private string name;
         private string version;
@@ -156,6 +157,12 @@ namespace Clamp.OSGI.Framework.Data
             get { return (flags & AddinFlags.Hidden) != 0; }
         }
 
+        public ExtensionNodeDescription Localizer
+        {
+            get { return localizer; }
+            set { localizer = value; }
+        }
+
 
         public List<string> AllFiles
         {
@@ -288,6 +295,18 @@ namespace Clamp.OSGI.Framework.Data
             set { category = value; }
         }
 
+        public ConditionTypeDescriptionCollection ConditionTypes
+        {
+            get
+            {
+                if (conditionTypes == null)
+                {
+                    conditionTypes = new ConditionTypeDescriptionCollection(this);
+                }
+                return conditionTypes;
+            }
+        }
+
         #endregion
 
         #region internal Property
@@ -316,6 +335,25 @@ namespace Clamp.OSGI.Framework.Data
         #endregion
 
         #region internal method
+
+        internal bool FilesChanged()
+        {
+            // Checks if the files of the add-in have changed.
+            if (fileInfo == null)
+                return true;
+
+            foreach (AddinFileInfo f in fileInfo)
+            {
+                string file = Path.Combine(this.BasePath, f.FileName);
+                if (!File.Exists(file))
+                    return true;
+                if (f.Timestamp != File.GetLastWriteTime(file))
+                    return true;
+            }
+
+            return false;
+        }
+
 
         internal bool SupportsVersion(string ver)
         {

@@ -14,6 +14,22 @@ namespace Clamp.OSGI.Framework.Data.Description
             parent = ob;
         }
 
+
+        internal string ParseString(string s)
+        {
+            var desc = ParentAddinDescription;
+            if (desc != null)
+                return desc.ParseString(s);
+            else
+                return s;
+        }
+
+        /// <summary>
+        /// Gets the parent add-in description.
+        /// </summary>
+        /// <value>
+        /// The parent add-in description.
+        /// </value>
         public BundleDescription ParentAddinDescription
         {
             get
@@ -27,14 +43,6 @@ namespace Clamp.OSGI.Framework.Data.Description
             }
         }
 
-        internal string ParseString(string s)
-        {
-            var desc = ParentAddinDescription;
-            if (desc != null)
-                return desc.ParseString(s);
-            else
-                return s;
-        }
 
     }
 }
