@@ -131,11 +131,10 @@
     <Compile Include="Framework\ClampBundleFactory.cs" />
     <Compile Include="Framework\IBundle.cs" />
     <Compile Include="Framework\IBundleActivator.cs" />
-    <Compile Include="Framework\Data\IClampAnalyzer.cs" />
     <Compile Include="Framework\IServiceListener.cs" />
     <Compile Include="Framework\Nodes\InstanceExtensionNode.cs" />
     <Compile Include="Framework\Nodes\TypeExtensionNode.cs" />
-    <Compile Include="Framework\RuntimeAddin.cs" />
+    <Compile Include="Framework\RuntimeBundle.cs" />
     <Compile Include="Framework\IBundleContext.cs" />
     <Compile Include="Framework\IClampBundle.cs" />
     <Compile Include="Framework\Nodes\TreeNode.cs" />
