@@ -18,19 +18,22 @@ namespace Clamp.OSGI.Framework
 {
     internal class ClampBundle : Bundle, IClampBundle
     {
+        private object LocalLock = new object();
         private Hashtable autoExtensionTypes = new Hashtable();
-        private Dictionary<string, RuntimeAddin> loadedAddins = new Dictionary<string, RuntimeAddin>();
-        private Dictionary<Assembly, RuntimeAddin> loadedAssemblies = new Dictionary<Assembly, RuntimeAddin>();
+        private Dictionary<string, RuntimeBundle> loadedBundles = new Dictionary<string, RuntimeBundle>();
+        private Dictionary<Assembly, RuntimeBundle> loadedAssemblies = new Dictionary<Assembly, RuntimeBundle>();
         private Dictionary<string, ExtensionNodeSet> nodeSets = new Dictionary<string, ExtensionNodeSet>();
         private List<Assembly> pendingRootChecks = new List<Assembly>();
         private BundleRegistry registry;
         private ExtensionContext extensionContext;
         private bool initialized;
         private string startupDirectory;
-        private AddinLocalizer defaultLocalizer;
-        public static event AddinErrorEventHandler AddinLoadError;
+        private BundleLocalizer defaultLocalizer;
+        public static event AddinErrorEventHandler BundleLoadError;
 
-        public static event AddinEventHandler AddinLoaded;
+        public static event BundleEventHandler BundleLoaded;
+
+        public static event BundleEventHandler BundleUnloaded;
 
         public bool IsInitialized
         {
@@ -38,16 +41,11 @@ namespace Clamp.OSGI.Framework
         }
 
         /// <summary>
-        /// 禁止的插件文件
-        /// </summary>
-        public string[] FilesToIgnore { private set; get; }
-
-        /// <summary>
         /// 插件的根目录
         /// </summary>
-        public string StartupDirectory { private set; get; }
+        public string StartupDirectory { get { return this.startupDirectory; } }
 
-        public AddinLocalizer DefaultLocalizer
+        public BundleLocalizer DefaultLocalizer
         {
             get
             {
@@ -59,68 +57,61 @@ namespace Clamp.OSGI.Framework
 
         public ClampBundle()
         {
-
+            this.extensionContext = new ExtensionContext(this);
         }
 
         #region public method
 
-        public void Initialize()
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="startupAsm"></param>
+        /// <param name="bundlesDirectory"></param>
+        /// <param name="filesToIgnore"></param>
+        public void Initialize(Assembly startupAsm, string addinsDir, string databaseDir)
         {
-            Assembly asm = Assembly.GetEntryAssembly();
-
-            if (asm == null)
-                asm = Assembly.GetCallingAssembly();
-
-            this.Initialize(asm, "Bundles", null);
-        }
-
-        public void Initialize(Assembly startupAsm, string bundlesDirectory, string[] filesToIgnore)
-        {
-            string asmFile = new Uri(startupAsm.CodeBase).LocalPath;
-
-            this.StartupDirectory = Path.GetDirectoryName(asmFile);
-
-            string customBundleDir = Environment.GetEnvironmentVariable("CLAMP_BUNDLES_DIR");
-
-            string finalBundlesDirectory = string.Empty;
-
-            if (!string.IsNullOrWhiteSpace(customBundleDir))
+            lock (this.LocalLock)
             {
-                if (Path.IsPathRooted(customBundleDir))
-                    finalBundlesDirectory = customBundleDir;
-                else
-                    finalBundlesDirectory = Path.Combine(this.StartupDirectory, customBundleDir);
+                if (initialized)
+                    return;
+
+                string asmFile = new Uri(startupAsm.CodeBase).LocalPath;
+
+                this.startupDirectory = Path.GetDirectoryName(asmFile);
+
+                this.registry = new BundleRegistry(this, this.startupDirectory, addinsDir, databaseDir);
+
+                if (registry.CreateHostAddinsFile(asmFile) || registry.UnknownDomain)
+                    registry.Update();
+
+                initialized = true;
+
+                ActivateRoots();
+
+                OnAssemblyLoaded(null, null);
+                AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(OnAssemblyLoaded);
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
             }
-            else
-            {
-                if (!Path.IsPathRooted(bundlesDirectory))
-                    finalBundlesDirectory = Path.Combine(this.StartupDirectory, bundlesDirectory);
-                else
-                    finalBundlesDirectory = bundlesDirectory;
-            }
-
-            this.registry = new BundleRegistry(this, this.StartupDirectory, this.StartupDirectory, finalBundlesDirectory, this.StartupDirectory);
-
-            if (this.registry.CreateHostBundlesFile(asmFile) || this.registry.UnknownDomain)
-                this.registry.Update();
-
-            initialized = true;
-
-            ActivateRoots();
-
-            OnAssemblyLoaded(null, null);
-
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(OnAssemblyLoaded);
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
         }
 
         public bool IsAddinLoaded(string id)
         {
             CheckInitialized();
             ValidateAddinRoots();
-            return loadedAddins.ContainsKey(Bundle.GetIdName(id));
+            return loadedBundles.ContainsKey(Bundle.GetIdName(id));
         }
 
+        public void InitializeDefaultLocalizer(IBundleLocalizer localizer)
+        {
+            CheckInitialized();
+            lock (LocalLock)
+            {
+                if (localizer != null)
+                    defaultLocalizer = new BundleLocalizer(localizer);
+                else
+                    defaultLocalizer = null;
+            }
+        }
 
         #endregion
 
@@ -154,13 +145,13 @@ namespace Clamp.OSGI.Framework
 
         public override void Stop()
         {
-            lock (extensionContext.LocalLock)
+            lock (this.LocalLock)
             {
                 initialized = false;
                 AppDomain.CurrentDomain.AssemblyLoad -= new AssemblyLoadEventHandler(OnAssemblyLoaded);
                 AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomainAssemblyResolve;
-                loadedAddins = new Dictionary<string, RuntimeAddin>();
-                loadedAssemblies = new Dictionary<Assembly, RuntimeAddin>();
+                loadedBundles = new Dictionary<string, RuntimeBundle>();
+                loadedAssemblies = new Dictionary<Assembly, RuntimeBundle>();
                 registry.Dispose();
                 registry = null;
                 startupDirectory = null;
@@ -271,7 +262,7 @@ namespace Clamp.OSGI.Framework
 
         internal void UnregisterAddinNodeSets(string addinId)
         {
-            lock (extensionContext.LocalLock)
+            lock (this.LocalLock)
             {
                 var nodeSetsCopy = new Dictionary<string, ExtensionNodeSet>(nodeSets);
                 foreach (var nset in nodeSetsCopy.Values.Where(n => n.SourceAddinId == addinId).ToArray())
@@ -307,22 +298,22 @@ namespace Clamp.OSGI.Framework
             return null;
         }
 
-        internal void RegisterAssemblies(RuntimeAddin addin)
+        internal void RegisterAssemblies(RuntimeBundle addin)
         {
-            lock (extensionContext.LocalLock)
+            lock (this.LocalLock)
             {
-                var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeAddin>(loadedAssemblies);
+                var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeBundle>(loadedAssemblies);
                 foreach (Assembly asm in addin.Assemblies)
                     loadedAssembliesCopy[asm] = addin;
                 loadedAssemblies = loadedAssembliesCopy;
             }
         }
 
-        internal RuntimeAddin GetAddin(string id)
+        internal RuntimeBundle GetAddin(string id)
         {
             ValidateAddinRoots();
-            RuntimeAddin a;
-            loadedAddins.TryGetValue(Bundle.GetIdName(id), out a);
+            RuntimeBundle a;
+            loadedBundles.TryGetValue(Bundle.GetIdName(id), out a);
             return a;
         }
 
@@ -342,7 +333,7 @@ namespace Clamp.OSGI.Framework
         }
 
 
-        internal void InsertExtensionPoint(RuntimeAddin addin, ExtensionPoint ep)
+        internal void InsertExtensionPoint(RuntimeBundle addin, ExtensionPoint ep)
         {
             extensionContext.CreateExtensionPoint(ep);
             foreach (ExtensionNodeType nt in ep.NodeSet.NodeTypes)
@@ -389,27 +380,27 @@ namespace Clamp.OSGI.Framework
 
         internal void UnloadAddin(string id)
         {
-            //    RemoveAddinExtensions(id);
+            this.extensionContext.RemoveAddinExtensions(id);
 
-            //    RuntimeAddin addin = GetAddin(id);
-            //    if (addin != null)
-            //    {
-            //        addin.UnloadExtensions();
-            //        lock (LocalLock)
-            //        {
-            //            var loadedAddinsCopy = new Dictionary<string, RuntimeAddin>(loadedAddins);
-            //            loadedAddinsCopy.Remove(Addin.GetIdName(id));
-            //            loadedAddins = loadedAddinsCopy;
-            //            if (addin.AssembliesLoaded)
-            //            {
-            //                var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeAddin>(loadedAssemblies);
-            //                foreach (Assembly asm in addin.Assemblies)
-            //                    loadedAssembliesCopy.Remove(asm);
-            //                loadedAssemblies = loadedAssembliesCopy;
-            //            }
-            //        }
-            //        ReportAddinUnload(id);
-            //    }
+            RuntimeBundle addin = GetAddin(id);
+            if (addin != null)
+            {
+                addin.UnloadExtensions();
+                lock (LocalLock)
+                {
+                    var loadedAddinsCopy = new Dictionary<string, RuntimeBundle>(loadedBundles);
+                    loadedAddinsCopy.Remove(Bundle.GetIdName(id));
+                    loadedBundles = loadedAddinsCopy;
+                    if (addin.AssembliesLoaded)
+                    {
+                        var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeBundle>(loadedAssemblies);
+                        foreach (Assembly asm in addin.Assemblies)
+                            loadedAssembliesCopy.Remove(asm);
+                        loadedAssemblies = loadedAssembliesCopy;
+                    }
+                }
+                ReportAddinUnload(id);
+            }
         }
 
         internal void ActivateAddin(string id)
@@ -421,7 +412,7 @@ namespace Clamp.OSGI.Framework
         {
             try
             {
-                lock (extensionContext.LocalLock)
+                lock (this.LocalLock)
                 {
                     if (IsAddinLoaded(id))
                         return true;
@@ -461,9 +452,9 @@ namespace Clamp.OSGI.Framework
         }
         internal void ReportError(string message, string addinId, Exception exception, bool fatal)
         {
-            var handler = AddinLoadError;
+            var handler = BundleLoadError;
             if (handler != null)
-                handler(null, new AddinErrorEventArgs(message, addinId, exception));
+                handler(null, new BundleErrorEventArgs(message, addinId, exception));
             else
             {
                 Console.WriteLine(message);
@@ -473,12 +464,28 @@ namespace Clamp.OSGI.Framework
         }
         internal void ReportAddinLoad(string id)
         {
-            var handler = AddinLoaded;
+            var handler = BundleLoaded;
             if (handler != null)
             {
                 try
                 {
-                    handler(null, new AddinEventArgs(id));
+                    handler(null, new BundleEventArgs(id));
+                }
+                catch
+                {
+                    // Ignore subscriber exceptions
+                }
+            }
+        }
+
+        internal void ReportAddinUnload(string id)
+        {
+            var handler = BundleUnloaded;
+            if (handler != null)
+            {
+                try
+                {
+                    handler(null, new BundleEventArgs(id));
                 }
                 catch
                 {
@@ -495,15 +502,15 @@ namespace Clamp.OSGI.Framework
         {
             try
             {
-                RuntimeAddin p = new RuntimeAddin(this);
+                RuntimeBundle p = new RuntimeBundle(this);
 
                 // Read the config file and load the add-in assemblies
                 BundleDescription description = p.Load(iad);
 
                 // Register the add-in
-                var loadedAddinsCopy = new Dictionary<string, RuntimeAddin>(loadedAddins);
+                var loadedAddinsCopy = new Dictionary<string, RuntimeBundle>(loadedBundles);
                 loadedAddinsCopy[Bundle.GetIdName(p.Id)] = p;
-                loadedAddins = loadedAddinsCopy;
+                loadedBundles = loadedAddinsCopy;
 
                 if (!BundleDatabase.RunningSetupProcess)
                 {
@@ -536,7 +543,7 @@ namespace Clamp.OSGI.Framework
 
         private void RegisterNodeSets(string addinId, ExtensionNodeSetCollection nsets)
         {
-            lock (extensionContext.LocalLock)
+            lock (this.LocalLock)
             {
                 var nodeSetsCopy = new Dictionary<string, ExtensionNodeSet>(nodeSets);
                 foreach (ExtensionNodeSet nset in nsets)
@@ -626,9 +633,9 @@ namespace Clamp.OSGI.Framework
 
         private Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            lock (extensionContext.LocalLock)
+            lock (this.LocalLock)
             {
-                return loadedAddins.Values.Where(a => a.AssembliesLoaded).SelectMany(a => a.Assemblies).FirstOrDefault(a => a.FullName.ToString() == args.Name);
+                return loadedBundles.Values.Where(a => a.AssembliesLoaded).SelectMany(a => a.Assemblies).FirstOrDefault(a => a.FullName.ToString() == args.Name);
             }
         }
 
@@ -684,6 +691,34 @@ namespace Clamp.OSGI.Framework
                 }
                 LoadAddin(ainfo.Id, false);
             }
+        }
+
+        #endregion
+
+        #region internal static
+        internal static bool CheckAssembliesLoaded(HashSet<string> files)
+        {
+            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (asm is System.Reflection.Emit.AssemblyBuilder)
+                    continue;
+                try
+                {
+                    Uri u;
+                    if (!Uri.TryCreate(asm.CodeBase, UriKind.Absolute, out u))
+                        continue;
+
+                    string asmFile = u.LocalPath;
+
+                    if (files.Contains(Path.GetFullPath(asmFile)))
+                        return true;
+                }
+                catch
+                {
+                    // Ignore
+                }
+            }
+            return false;
         }
 
         #endregion

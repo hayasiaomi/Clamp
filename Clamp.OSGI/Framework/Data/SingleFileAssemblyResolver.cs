@@ -8,11 +8,11 @@ namespace Clamp.OSGI.Framework.Data
 {
     class SingleFileAssemblyResolver
     {
-        AddinScanResult scanResult;
-        AddinScanner scanner;
+        BundleScanResult scanResult;
+        BundleScanner scanner;
         BundleRegistry registry;
 
-        public SingleFileAssemblyResolver(BundleRegistry registry, AddinScanner scanner)
+        public SingleFileAssemblyResolver(BundleRegistry registry, BundleScanner scanner)
         {
             this.scanner = scanner;
             this.registry = registry;
@@ -22,7 +22,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             if (scanResult == null)
             {
-                scanResult = new AddinScanResult();
+                scanResult = new BundleScanResult();
                 scanResult.LocateAssembliesOnly = true;
 
                 if (registry.StartupDirectory != null)

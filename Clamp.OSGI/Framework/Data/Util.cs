@@ -47,7 +47,7 @@ namespace Clamp.OSGI.Framework.Data
             File.Delete(testFile);
         }
 
-        public static void AddDependencies(BundleDescription desc, AddinScanResult scanResult)
+        public static void AddDependencies(BundleDescription desc, BundleScanResult scanResult)
         {
             // Not implemented in AddinScanResult to avoid making AddinDescription remotable
             foreach (ModuleDescription mod in desc.AllModules)

@@ -12,7 +12,7 @@ namespace Clamp.OSGI.Framework.Nodes
         bool childrenLoaded;
         TreeNode treeNode;
         ExtensionNodeList childNodes;
-        RuntimeAddin addin;
+        RuntimeBundle addin;
         string addinId;
         ExtensionNodeType nodeType;
         ModuleDescription module;
@@ -110,7 +110,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// <remarks>
         /// This property provides access to the resources and types of the add-in that created this extension node.
         /// </remarks>
-        public RuntimeAddin Addin
+        public RuntimeBundle Addin
         {
             get
             {

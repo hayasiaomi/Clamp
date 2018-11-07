@@ -49,9 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Framework\AddinErrorEventArgs.cs" />
-    <Compile Include="Framework\AddinEventArgs.cs" />
+    <Compile Include="Framework\BundleErrorEventArgs.cs" />
+    <Compile Include="Framework\BundleEventArgs.cs" />
     <Compile Include="Framework\ConditionType.cs" />
+    <Compile Include="Framework\Data\Description\BundleRootAttribute.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescription.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescriptionCollection.cs" />
     <Compile Include="Framework\Data\Description\CustomExtensionAttribute.cs" />
@@ -62,33 +63,32 @@
     <Compile Include="Framework\Data\SetupLocal.cs" />
     <Compile Include="Framework\Data\SingleFileAssemblyResolver.cs" />
     <Compile Include="Framework\ISetupHandler.cs" />
-    <Compile Include="Framework\Localization\AddinLocalizer.cs" />
-    <Compile Include="Framework\AddinSearchFlags.cs" />
-    <Compile Include="Framework\Data\Description\AddinAttribute.cs" />
-    <Compile Include="Framework\Data\Description\BundleDependencyAttribute.cs" />
+    <Compile Include="Framework\Localization\BundleLocalizer.cs" />
+    <Compile Include="Framework\BundleSearchFlags.cs" />
     <Compile Include="Framework\Data\Description\BundleAttribute.cs" />
+    <Compile Include="Framework\Data\Description\BundleDependencyAttribute.cs" />
     <Compile Include="Framework\Bundle.cs" />
     <Compile Include="Framework\BundleActivator.cs" />
     <Compile Include="Framework\BundleContext.cs" />
     <Compile Include="Framework\BundleInfo.cs" />
     <Compile Include="Framework\BundleRegistry.cs" />
-    <Compile Include="Framework\Data\AddinFlags.cs" />
-    <Compile Include="Framework\Data\AddinIndex.cs" />
-    <Compile Include="Framework\Data\AddinSearchFlagsInternal.cs" />
-    <Compile Include="Framework\Data\AddinUpdateData.cs" />
+    <Compile Include="Framework\Data\BundleFlags.cs" />
+    <Compile Include="Framework\Data\BundleIndex.cs" />
+    <Compile Include="Framework\Data\BundleSearchFlagsInternal.cs" />
+    <Compile Include="Framework\Data\BundleUpdateData.cs" />
     <Compile Include="Framework\Data\DatabaseConfiguration.cs" />
     <Compile Include="Framework\Data\DefaultAssemblyReflector.cs" />
-    <Compile Include="Framework\Data\Description\AddinDependency.cs" />
-    <Compile Include="Framework\Data\Description\AddinDescription.cs" />
-    <Compile Include="Framework\Data\AddinFileInfo.cs" />
-    <Compile Include="Framework\Data\AddinFileSystemExtension.cs" />
-    <Compile Include="Framework\Data\AddinHostIndex.cs" />
-    <Compile Include="Framework\Data\AddinScanner.cs" />
-    <Compile Include="Framework\Data\AddinScanResult.cs" />
+    <Compile Include="Framework\Data\Description\BundleDependency.cs" />
+    <Compile Include="Framework\Data\Description\BundleDescription.cs" />
+    <Compile Include="Framework\Data\BundleFileInfo.cs" />
+    <Compile Include="Framework\Data\BundleFileSystemExtension.cs" />
+    <Compile Include="Framework\Data\BundleHostIndex.cs" />
+    <Compile Include="Framework\Data\BundleScanner.cs" />
+    <Compile Include="Framework\Data\BundleScanResult.cs" />
     <Compile Include="Framework\Data\BundleScanFolderInfo.cs" />
     <Compile Include="Framework\Data\BundleDatabase.cs" />
-    <Compile Include="Framework\Data\Description\AddinProperty.cs" />
-    <Compile Include="Framework\Data\Description\AddinPropertyCollection.cs" />
+    <Compile Include="Framework\Data\Description\BundleProperty.cs" />
+    <Compile Include="Framework\Data\Description\BundlePropertyCollection.cs" />
     <Compile Include="Framework\Data\Description\ContentType.cs" />
     <Compile Include="Framework\Data\Description\Dependency.cs" />
     <Compile Include="Framework\Data\Description\DependencyCollection.cs" />
@@ -115,9 +115,9 @@
     <Compile Include="Framework\Data\IAssemblyReflector.cs" />
     <Compile Include="Framework\Data\Util.cs" />
     <Compile Include="Framework\GettextCatalog.cs" />
-    <Compile Include="Framework\Localization\IAddinLocalizer.cs" />
+    <Compile Include="Framework\Localization\IBundleLocalizer.cs" />
     <Compile Include="Framework\Localization\IPluralAddinLocalizer.cs" />
-    <Compile Include="Framework\Localization\IAddinLocalizerFactory.cs" />
+    <Compile Include="Framework\Localization\IBundleLocalizerFactory.cs" />
     <Compile Include="Framework\Localization\NullLocalizer.cs" />
     <Compile Include="Framework\Localization\StringResourceLocalizer.cs" />
     <Compile Include="Framework\Localization\StringTableLocalizer.cs" />
@@ -141,6 +141,35 @@
     <Compile Include="Framework\Nodes\TreeNode.cs" />
     <Compile Include="Framework\Nodes\TreeNodeCollection.cs" />
     <Compile Include="Framework\ServiceEvent.cs" />
+    <Compile Include="Initial\InitialElement.cs" />
+    <Compile Include="Initial\InitialFile.cs" />
+    <Compile Include="Initial\InitialFile.Load.cs" />
+    <Compile Include="Initial\InitialFile.Properties.cs" />
+    <Compile Include="Initial\InitialProperty.cs" />
+    <Compile Include="Initial\InitialPropertyCastException.cs" />
+    <Compile Include="Initial\InitialPropertyEnumerator.cs" />
+    <Compile Include="Initial\InitialReader.cs" />
+    <Compile Include="Initial\InitialWriter.cs" />
+    <Compile Include="Initial\ParserException.cs" />
+    <Compile Include="Initial\TypeConverter\BoolStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\CharStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DateTimeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DecimalStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DoubleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\EnumStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\FallbackStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int64StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ITypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SingleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\StringStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\TypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt64StringConverter.cs" />
     <Compile Include="Injection\AssemblyExtensions.cs" />
     <Compile Include="Injection\AutoRegistrationException.cs" />
     <Compile Include="Injection\ConstructorAttribute.cs" />
@@ -182,16 +211,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Clamp.Common\Clamp.Common.csproj">
-      <Project>{76F59423-C48E-4E53-8A85-A011AF3D159B}</Project>
-      <Name>Clamp.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.SDK.Framework\Clamp.SDK.Framework.csproj">
-      <Project>{bdca8f8e-d556-4bad-9c4d-2fa49fc66124}</Project>
-      <Name>Clamp.SDK.Framework</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

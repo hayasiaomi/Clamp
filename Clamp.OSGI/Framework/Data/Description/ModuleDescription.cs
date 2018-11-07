@@ -15,7 +15,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         private ExtensionCollection extensions;
         private object parent;
 
-        internal RuntimeAddin RuntimeAddin;
+        internal RuntimeBundle RuntimeAddin;
 
         public DependencyCollection Dependencies
         {

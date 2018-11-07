@@ -71,7 +71,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// <remarks>
         /// This property provides access to the resources and types of the add-in that created this extension node.
         /// </remarks>
-        public RuntimeAddin Addin
+        public RuntimeBundle Addin
         {
             get { return ExtensionNode?.Addin; }
         }

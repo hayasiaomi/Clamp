@@ -194,7 +194,7 @@ namespace Clamp.OSGI.Framework.Nodes
         #region private mehtod
         bool InitializeNodeType(ExtensionNodeType ntype)
         {
-            RuntimeAddin p = addinEngine.GetAddin(ntype.AddinId);
+            RuntimeBundle p = addinEngine.GetAddin(ntype.AddinId);
             if (p == null)
             {
                 if (!addinEngine.IsAddinLoaded(ntype.AddinId))

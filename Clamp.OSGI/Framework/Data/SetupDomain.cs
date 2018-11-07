@@ -16,7 +16,7 @@ namespace Clamp.OSGI.Framework.Data
             try
             {
                 RemoteSetupDomain rsd = GetDomain();
-                rsd.Scan(registry.RegistryPath, registry.StartupDirectory, registry.DefaultAddinsFolder, registry.AddinCachePath, scanFolder, filesToIgnore);
+                rsd.Scan(registry.BasePath, registry.DefaultAddinsFolder, registry.BundleCachePath, scanFolder, filesToIgnore);
             }
             catch (Exception ex)
             {
@@ -33,7 +33,7 @@ namespace Clamp.OSGI.Framework.Data
             try
             {
                 RemoteSetupDomain rsd = GetDomain();
-                rsd.GetAddinDescription(registry.RegistryPath, registry.StartupDirectory, registry.DefaultAddinsFolder, registry.AddinCachePath, file, outFile);
+                rsd.GetAddinDescription(registry.BasePath, registry.DefaultAddinsFolder, registry.BundleCachePath, file, outFile);
             }
             catch (Exception ex)
             {
@@ -101,21 +101,21 @@ namespace Clamp.OSGI.Framework.Data
             return null;
         }
 
-        public void Scan(string registryPath, string startupDir, string addinsDir, string databaseDir, string scanFolder, string[] filesToIgnore)
+        public void Scan(string basePath, string addinsDir, string databaseDir, string scanFolder, string[] filesToIgnore)
         {
             BundleDatabase.RunningSetupProcess = true;
-            BundleRegistry reg = new BundleRegistry(registryPath, startupDir, addinsDir, databaseDir);
+            BundleRegistry reg = new BundleRegistry(basePath, addinsDir, databaseDir);
             List<string> files = new List<string>();
             for (int n = 0; n < filesToIgnore.Length; n++)
                 files.Add(filesToIgnore[n]);
             reg.ScanFolders(scanFolder, files);
         }
 
-        public void GetAddinDescription(string registryPath, string startupDir, string addinsDir, string databaseDir, string file, string outFile)
+        public void GetAddinDescription(string basePath, string addinsDir, string databaseDir, string file, string outFile)
         {
             BundleDatabase.RunningSetupProcess = true;
 
-            BundleRegistry reg = new BundleRegistry(registryPath, startupDir, addinsDir, databaseDir);
+            BundleRegistry reg = new BundleRegistry(basePath, addinsDir, databaseDir);
 
             reg.ParseAddin(file, outFile);
         }

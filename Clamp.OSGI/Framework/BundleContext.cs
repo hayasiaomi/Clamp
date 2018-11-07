@@ -1,5 +1,4 @@
 ﻿using Clamp.OSGI.Framework.Nodes;
-using Clamp.SDK.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +8,13 @@ namespace Clamp.OSGI.Framework
 {
     public class BundleContext : IBundleContext
     {
-        private ClampBundle framework;
+        private ClampBundle clampBundle;
 
         public IBundle Bundle { private set; get; }
 
-        internal BundleContext(Bundle bundle, ClampBundle framework)
+        internal BundleContext(Bundle bundle, ClampBundle clampBundle)
         {
-            this.framework = framework;
+            this.clampBundle = clampBundle;
             this.Bundle = bundle;
         }
 
@@ -26,7 +25,7 @@ namespace Clamp.OSGI.Framework
 
         public IBundle[] GetBundles()
         {
-            return this.framework.Registry.GetAddins();
+            return this.clampBundle.Registry.GetAddins();
         }
 
         public void AddServiceListener(IServiceListener listener)

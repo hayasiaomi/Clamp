@@ -7,12 +7,12 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Localization
 {
-    class StringTableLocalizer : IAddinLocalizerFactory, IAddinLocalizer
+    class StringTableLocalizer : IBundleLocalizerFactory, IBundleLocalizer
     {
         Hashtable locales = new Hashtable();
         static Hashtable nullLocale = new Hashtable();
 
-        public IAddinLocalizer CreateLocalizer(RuntimeAddin addin, NodeElement element)
+        public IBundleLocalizer CreateLocalizer(RuntimeBundle addin, NodeElement element)
         {
             foreach (NodeElement nloc in element.ChildNodes)
             {

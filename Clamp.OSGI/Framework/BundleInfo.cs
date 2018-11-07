@@ -26,7 +26,7 @@ namespace Clamp.OSGI.Framework
        private bool isroot;
        private DependencyCollection dependencies;
        private DependencyCollection optionalDependencies;
-       private AddinPropertyCollection properties;
+       private BundlePropertyCollection properties;
 
         private BundleInfo()
         {
@@ -162,7 +162,7 @@ namespace Clamp.OSGI.Framework
             get { return optionalDependencies; }
         }
 
-        public AddinPropertyCollection Properties
+        public BundlePropertyCollection Properties
         {
             get { return properties; }
         }

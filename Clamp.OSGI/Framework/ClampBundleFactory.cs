@@ -8,12 +8,16 @@ namespace Clamp.OSGI.Framework
 {
     public sealed class ClampBundleFactory
     {
-
         public static IClampBundle GetClampBundle()
         {
+            Assembly asm = Assembly.GetEntryAssembly();
+
+            if (asm == null)
+                asm = Assembly.GetCallingAssembly();
+
             ClampBundle clampBundle = new ClampBundle();
 
-            clampBundle.Initialize();
+            clampBundle.Initialize(asm, "bundles", null);
 
             return clampBundle;
         }

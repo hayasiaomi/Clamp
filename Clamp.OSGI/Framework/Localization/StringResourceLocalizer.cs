@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Localization
 {
-    class StringResourceLocalizer : IAddinLocalizerFactory, IAddinLocalizer
+    class StringResourceLocalizer : IBundleLocalizerFactory, IBundleLocalizer
     {
-        RuntimeAddin addin;
+        RuntimeBundle addin;
 
-        public IAddinLocalizer CreateLocalizer(RuntimeAddin addin, NodeElement element)
+        public IBundleLocalizer CreateLocalizer(RuntimeBundle addin, NodeElement element)
         {
             this.addin = addin;
             return this;

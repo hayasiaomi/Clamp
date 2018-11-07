@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Localization
 {
-    class NullLocalizer : IAddinLocalizer
+    class NullLocalizer : IBundleLocalizer
     {
-        public static AddinLocalizer Instance = new AddinLocalizer(new NullLocalizer());
+        public static BundleLocalizer Instance = new BundleLocalizer(new NullLocalizer());
 
         public string GetString(string msgid)
         {

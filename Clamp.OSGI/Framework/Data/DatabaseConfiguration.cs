@@ -9,16 +9,16 @@ namespace Clamp.OSGI.Framework.Data
 {
     internal class DatabaseConfiguration
     {
-        private Dictionary<string, AddinStatus> addinStatus = new Dictionary<string, AddinStatus>();
+        private Dictionary<string, BundleStatus> bundleStatus = new Dictionary<string, BundleStatus>();
 
-        internal class AddinStatus
+        internal class BundleStatus
         {
-            public AddinStatus(string addinId)
+            public BundleStatus(string bundleId)
             {
-                this.AddinId = addinId;
+                this.BundleId = bundleId;
             }
 
-            public string AddinId;
+            public string BundleId;
             public bool Enabled;
             public bool Uninstalled;
             public List<string> Files;
@@ -28,16 +28,16 @@ namespace Clamp.OSGI.Framework.Data
         {
             var addinName = Bundle.GetIdName(addinId);
 
-            AddinStatus s;
+            BundleStatus s;
 
             // If the add-in is globaly disabled, it is disabled no matter what the version specific status is
-            if (addinStatus.TryGetValue(addinName, out s))
+            if (bundleStatus.TryGetValue(addinName, out s))
             {
                 if (!s.Enabled)
                     return false;
             }
 
-            if (addinStatus.TryGetValue(addinId, out s))
+            if (bundleStatus.TryGetValue(addinId, out s))
                 return s.Enabled && !IsRegisteredForUninstall(addinId);
             else
                 return defaultValue;
@@ -48,13 +48,13 @@ namespace Clamp.OSGI.Framework.Data
             if (IsRegisteredForUninstall(addinId))
                 return;
 
-            var addinName = exactVersionMatch ? addinId : Bundle.GetIdName(addinId);
+            var bundleName = exactVersionMatch ? addinId : Bundle.GetIdName(addinId);
 
-            AddinStatus s;
-            addinStatus.TryGetValue(addinName, out s);
+            BundleStatus s;
+            bundleStatus.TryGetValue(bundleName, out s);
 
             if (s == null)
-                s = addinStatus[addinName] = new AddinStatus(addinName);
+                s = bundleStatus[bundleName] = new BundleStatus(bundleName);
             s.Enabled = enabled;
 
             // If enabling a specific version of an add-in, make sure the add-in is enabled as a whole
@@ -64,9 +64,9 @@ namespace Clamp.OSGI.Framework.Data
 
         public void RegisterForUninstall(string addinId, IEnumerable<string> files)
         {
-            AddinStatus s;
-            if (!addinStatus.TryGetValue(addinId, out s))
-                s = addinStatus[addinId] = new AddinStatus(addinId);
+            BundleStatus s;
+            if (!bundleStatus.TryGetValue(addinId, out s))
+                s = bundleStatus[addinId] = new BundleStatus(addinId);
 
             s.Enabled = false;
             s.Uninstalled = true;
@@ -75,13 +75,13 @@ namespace Clamp.OSGI.Framework.Data
 
         public void UnregisterForUninstall(string addinId)
         {
-            addinStatus.Remove(addinId);
+            bundleStatus.Remove(addinId);
         }
 
         public bool IsRegisteredForUninstall(string addinId)
         {
-            AddinStatus s;
-            if (addinStatus.TryGetValue(addinId, out s))
+            BundleStatus s;
+            if (bundleStatus.TryGetValue(addinId, out s))
                 return s.Uninstalled;
             else
                 return false;
@@ -89,12 +89,12 @@ namespace Clamp.OSGI.Framework.Data
 
         public bool HasPendingUninstalls
         {
-            get { return addinStatus.Values.Where(s => s.Uninstalled).Any(); }
+            get { return bundleStatus.Values.Where(s => s.Uninstalled).Any(); }
         }
 
-        public AddinStatus[] GetPendingUninstalls()
+        public BundleStatus[] GetPendingUninstalls()
         {
-            return addinStatus.Values.Where(s => s.Uninstalled).ToArray();
+            return bundleStatus.Values.Where(s => s.Uninstalled).ToArray();
         }
 
         public static DatabaseConfiguration Read(string file)
@@ -107,8 +107,8 @@ namespace Clamp.OSGI.Framework.Data
                 return config;
 
             // Overwrite app config values with user config values
-            foreach (var entry in config.addinStatus)
-                appConfig.addinStatus[entry.Key] = entry.Value;
+            foreach (var entry in config.bundleStatus)
+                appConfig.bundleStatus[entry.Key] = entry.Value;
 
             return appConfig;
         }
@@ -145,11 +145,11 @@ namespace Clamp.OSGI.Framework.Data
             {
                 foreach (XmlElement elem in statusElem.SelectNodes("Addin"))
                 {
-                    AddinStatus status = new AddinStatus(elem.GetAttribute("id"));
+                    BundleStatus status = new BundleStatus(elem.GetAttribute("id"));
                     string senabled = elem.GetAttribute("enabled");
                     status.Enabled = senabled.Length == 0 || senabled == "True";
                     status.Uninstalled = elem.GetAttribute("uninstalled") == "True";
-                    config.addinStatus[status.AddinId] = status;
+                    config.bundleStatus[status.BundleId] = status;
                     foreach (XmlElement fileElem in elem.SelectNodes("File"))
                     {
                         if (status.Files == null)
@@ -171,10 +171,10 @@ namespace Clamp.OSGI.Framework.Data
                 tw.WriteStartElement("Configuration");
 
                 tw.WriteStartElement("AddinStatus");
-                foreach (AddinStatus e in addinStatus.Values)
+                foreach (BundleStatus e in bundleStatus.Values)
                 {
                     tw.WriteStartElement("Addin");
-                    tw.WriteAttributeString("id", e.AddinId);
+                    tw.WriteAttributeString("id", e.BundleId);
                     tw.WriteAttributeString("enabled", e.Enabled.ToString());
                     if (e.Uninstalled)
                         tw.WriteAttributeString("uninstalled", "True");

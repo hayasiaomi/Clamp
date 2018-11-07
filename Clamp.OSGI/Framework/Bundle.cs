@@ -15,7 +15,7 @@ namespace Clamp.OSGI.Framework
     /// </summary>
     public class Bundle : IBundle
     {
-        private BundleInfo addin;
+        private BundleInfo bundleInfo;
         private string sourceFile;
         private WeakReference desc;
         private BundleDatabase database;
@@ -28,7 +28,7 @@ namespace Clamp.OSGI.Framework
 
         internal Bundle()
         {
-            this.addin = null;
+            this.bundleInfo = null;
             this.sourceFile = null;
             this.desc = null;
             this.domain = null;
@@ -48,13 +48,13 @@ namespace Clamp.OSGI.Framework
 
         private void LoadAddinInfo()
         {
-            if (addin == null)
+            if (bundleInfo == null)
             {
                 try
                 {
                     BundleDescription m = Description;
                     sourceFile = m.AddinFile;
-                    addin = BundleInfo.ReadFromDescription(m);
+                    bundleInfo = BundleInfo.ReadFromDescription(m);
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +106,7 @@ namespace Clamp.OSGI.Framework
         /// <summary>
         /// Custom properties specified in the add-in header
         /// </summary>
-        public AddinPropertyCollection Properties
+        public BundlePropertyCollection Properties
         {
             get { return this.AddinInfo.Properties; }
         }
@@ -162,14 +162,14 @@ namespace Clamp.OSGI.Framework
                     }
                     throw new InvalidOperationException("Could not read add-in description");
                 }
-                if (addin == null)
+                if (bundleInfo == null)
                 {
-                    addin = BundleInfo.ReadFromDescription(m);
+                    bundleInfo = BundleInfo.ReadFromDescription(m);
                     sourceFile = m.AddinFile;
                 }
                 SetIsUserAddin(m);
                 if (!isUserAddin.Value)
-                    m.Flags |= AddinFlags.CantUninstall;
+                    m.Flags |= BundleFlags.CantUninstall;
                 desc = new WeakReference(m);
                 return m;
             }
@@ -198,7 +198,7 @@ namespace Clamp.OSGI.Framework
                 {
                     string id, version;
                     Bundle.GetIdParts(AddinInfo.Id, out id, out version);
-                    var addins = database.GetInstalledAddins(null, AddinSearchFlagsInternal.IncludeAll | AddinSearchFlagsInternal.LatestVersionsOnly);
+                    var addins = database.GetInstalledAddins(null, BundleSearchFlagsInternal.IncludeAll | BundleSearchFlagsInternal.LatestVersionsOnly);
                     isLatestVersion = addins.Any(a => Bundle.GetIdName(a.Id) == id && a.Version == version);
                 }
                 return isLatestVersion.Value;
@@ -210,25 +210,25 @@ namespace Clamp.OSGI.Framework
         }
         internal string PrivateDataPath
         {
-            get { return Path.Combine(database.AddinPrivateDataPath, Path.GetFileNameWithoutExtension(Description.FileName)); }
+            get { return Path.Combine(database.BundlePrivateDataPath, Path.GetFileNameWithoutExtension(Description.FileName)); }
         }
 
         internal BundleInfo AddinInfo
         {
             get
             {
-                if (addin == null)
+                if (bundleInfo == null)
                 {
                     try
                     {
-                        addin = BundleInfo.ReadFromDescription(Description);
+                        bundleInfo = BundleInfo.ReadFromDescription(Description);
                     }
                     catch (Exception ex)
                     {
                         throw new InvalidOperationException("Could not read add-in file: " + database.GetDescriptionPath(domain, id), ex);
                     }
                 }
-                return addin;
+                return bundleInfo;
             }
         }
         #endregion

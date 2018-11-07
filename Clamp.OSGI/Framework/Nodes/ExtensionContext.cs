@@ -9,7 +9,7 @@ namespace Clamp.OSGI.Framework.Nodes
 {
     public class ExtensionContext
     {
-        internal object LocalLock = new object();
+       
 
         Hashtable conditionTypes = new Hashtable();
         Hashtable conditionsToNodes = new Hashtable();
@@ -33,10 +33,16 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </remarks>
         public event ExtensionEventHandler ExtensionChanged;
 
-        internal void Initialize(ClampBundle addinEngine)
+        internal ExtensionContext(ClampBundle addinEngine) : this(addinEngine, null)
         {
-            fireEvents = false;
-            tree = new ExtensionTree(addinEngine, this);
+
+        }
+
+        internal ExtensionContext(ClampBundle addinEngine, ExtensionContext parent)
+        {
+            this.fireEvents = false;
+            this.tree = new ExtensionTree(addinEngine, this);
+            this.parentContext = parent;
         }
 
 #pragma warning disable 1591
@@ -45,7 +51,6 @@ namespace Clamp.OSGI.Framework.Nodes
         {
         }
 #pragma warning restore 1591
-
 
         internal void ClearContext()
         {
@@ -91,9 +96,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     childContexts = new List<WeakReference>();
                 else
                     CleanDisposedChildContexts();
-                ExtensionContext ctx = new ExtensionContext();
-                ctx.Initialize(AddinEngine);
-                ctx.parentContext = this;
+                ExtensionContext ctx = new ExtensionContext(this.AddinEngine, this);
                 WeakReference wref = new WeakReference(ctx);
                 childContexts.Add(wref);
                 return ctx;
@@ -799,7 +802,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 ExtensionChanged(this, args);
         }
 
-        internal void NotifyAddinLoaded(RuntimeAddin ad)
+        internal void NotifyAddinLoaded(RuntimeBundle ad)
         {
             tree.NotifyAddinLoaded(ad, true);
 
@@ -951,7 +954,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 // event without first getting the list of nodes that may change).
 
                 // We get the runtime add-in because the add-in may already have been deleted from the registry
-                RuntimeAddin addin = AddinEngine.GetAddin(id);
+                RuntimeBundle addin = AddinEngine.GetAddin(id);
                 if (addin != null)
                 {
                     ArrayList paths = new ArrayList();
@@ -1098,7 +1101,7 @@ namespace Clamp.OSGI.Framework.Nodes
             Bundle pinfo = null;
 
             // Root add-ins are not returned by GetInstalledAddin.
-            RuntimeAddin addin = AddinEngine.GetAddin(id);
+            RuntimeBundle addin = AddinEngine.GetAddin(id);
             if (addin != null)
                 pinfo = addin.Addin;
             else
@@ -1154,7 +1157,7 @@ namespace Clamp.OSGI.Framework.Nodes
             ArrayList addedNodes = new ArrayList();
             tree.LoadExtension(addinId, extension, addedNodes);
 
-            RuntimeAddin ad = AddinEngine.GetAddin(addinId);
+            RuntimeBundle ad = AddinEngine.GetAddin(addinId);
             if (ad != null)
             {
                 foreach (TreeNode nod in addedNodes)

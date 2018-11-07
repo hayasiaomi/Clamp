@@ -235,7 +235,7 @@ namespace Clamp.OSGI.Framework.Nodes
             return string.Join("/", ids);
         }
 
-        public void NotifyAddinLoaded(RuntimeAddin ad, bool recursive)
+        public void NotifyAddinLoaded(RuntimeBundle ad, bool recursive)
         {
             if (extensionNode != null && extensionNode.AddinId == ad.Addin.Id)
                 extensionNode.OnAddinLoaded();
@@ -299,7 +299,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 {
                     if (nt.ObjectTypeName.Length > 0 && (nodeName.Length == 0 || nodeName == nt.Id))
                     {
-                        RuntimeAddin addin = addinEngine.GetAddin(extensionPoint.RootAddin);
+                        RuntimeBundle addin = addinEngine.GetAddin(extensionPoint.RootAddin);
                         Type ot = addin.GetType(nt.ObjectTypeName);
                         if (ot != null)
                         {
@@ -351,7 +351,7 @@ namespace Clamp.OSGI.Framework.Nodes
             if (extensionPoint != null)
             {
                 string aid = Bundle.GetIdName(extensionPoint.ParentAddinDescription.AddinId);
-                RuntimeAddin ad = addinEngine.GetAddin(aid);
+                RuntimeBundle ad = addinEngine.GetAddin(aid);
                 if (ad != null)
                     extensionPoint = ad.Addin.Description.ExtensionPoints[GetPath()];
             }

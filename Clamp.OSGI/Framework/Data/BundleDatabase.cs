@@ -13,21 +13,21 @@ namespace Clamp.OSGI.Framework.Data
     {
         public const string GlobalDomain = "global";
         public const string UnknownDomain = "unknown";
-        public const string VersionTag = "002";
+        public const string VersionTag = "001";
 
         private Hashtable cachedAddinSetupInfos = new Hashtable();
-        private AddinFileSystemExtension fs = new AddinFileSystemExtension();
-        private AddinScanResult currentScanResult;
+        private BundleFileSystemExtension fs = new BundleFileSystemExtension();
+        private BundleScanResult currentScanResult;
         private bool fatalDatabseError;
         private FileDatabase fileDatabase;
         private string addinDbDir;
-        private AddinHostIndex hostIndex;
+        private BundleHostIndex hostIndex;
         private BundleRegistry registry;
         private ClampBundle clampBundle;
         private int lastDomainId;
         private DatabaseConfiguration config = null;
         private List<Bundle> allSetupInfos;
-        private List<Bundle> addinSetupInfos;
+        private List<Bundle> bundleSetupInfos;
         private List<Bundle> rootSetupInfos;
 
         private List<object> extensions = new List<object>();
@@ -35,7 +35,7 @@ namespace Clamp.OSGI.Framework.Data
 
         #region public Property
 
-        public string AddinDbDir
+        public string BundleDbDir
         {
             get { return addinDbDir; }
         }
@@ -43,35 +43,35 @@ namespace Clamp.OSGI.Framework.Data
 
         public string HostsPath
         {
-            get { return Path.Combine(AddinDbDir, "hosts"); }
+            get { return Path.Combine(BundleDbDir, "hosts"); }
         }
 
-        public string AddinFolderCachePath
+        public string BundleFolderCachePath
         {
-            get { return Path.Combine(AddinDbDir, "bundle-dir-data"); }
+            get { return Path.Combine(BundleDbDir, "bundle-dir-data"); }
         }
 
-        public string AddinPrivateDataPath
+        public string BundlePrivateDataPath
         {
-            get { return Path.Combine(AddinDbDir, "addin-priv-data"); }
+            get { return Path.Combine(BundleDbDir, "bundle-priv-data"); }
         }
 
-        public string AddinCachePath
+        public string BundleCachePath
         {
-            get { return Path.Combine(AddinDbDir, "addin-data"); }
+            get { return Path.Combine(BundleDbDir, "bundle-data"); }
         }
 
         public string HostIndexFile
         {
-            get { return Path.Combine(AddinDbDir, "host-index"); }
+            get { return Path.Combine(BundleDbDir, "host-index"); }
         }
 
         public string ConfigFile
         {
-            get { return Path.Combine(AddinDbDir, "config.xml"); }
+            get { return Path.Combine(BundleDbDir, "config.xml"); }
         }
 
-        public AddinFileSystemExtension FileSystem
+        public BundleFileSystemExtension FileSystem
         {
             get { return fs; }
         }
@@ -79,7 +79,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             get
             {
-                return registry.RegistryPath == BundleRegistry.GlobalRegistryPath;
+                return registry.BasePath == BundleRegistry.GlobalRegistryPath;
             }
         }
 
@@ -115,8 +115,8 @@ namespace Clamp.OSGI.Framework.Data
         {
             this.clampBundle = clampBundle;
             this.registry = registry;
-            this.addinDbDir = Path.Combine(registry.AddinCachePath, "addin-db-" + VersionTag);
-            fileDatabase = new FileDatabase(AddinDbDir);
+            this.addinDbDir = Path.Combine(registry.BundleCachePath, "bundle-db-" + VersionTag);
+            fileDatabase = new FileDatabase(BundleDbDir);
         }
 
         #region public method
@@ -131,8 +131,8 @@ namespace Clamp.OSGI.Framework.Data
         public void RegisterExtension(object extension)
         {
             extensions.Add(extension);
-            if (extension is AddinFileSystemExtension)
-                fs = (AddinFileSystemExtension)extension;
+            if (extension is BundleFileSystemExtension)
+                fs = (BundleFileSystemExtension)extension;
             else
                 throw new NotSupportedException();
         }
@@ -153,12 +153,12 @@ namespace Clamp.OSGI.Framework.Data
 
                 if (GetFolderInfoForPath(Path.GetDirectoryName(file), out finfo) && finfo != null)
                 {
-                    AddinFileInfo afi = finfo.GetAddinFileInfo(file);
-                    if (afi != null && afi.IsAddin)
+                    BundleFileInfo afi = finfo.GetAddinFileInfo(file);
+                    if (afi != null && afi.IsBundle)
                     {
                         BundleDescription adesc;
 
-                        GetAddinDescription(afi.Domain, afi.AddinId, file, out adesc);
+                        GetAddinDescription(afi.Domain, afi.BundleId, file, out adesc);
 
                         if (adesc != null)
                             adesc.Save(outFile);
@@ -166,9 +166,9 @@ namespace Clamp.OSGI.Framework.Data
                     }
                 }
 
-                AddinScanResult sr = new AddinScanResult();
+                BundleScanResult sr = new BundleScanResult();
                 sr.Domain = domain;
-                AddinScanner scanner = new AddinScanner(this, sr);
+                BundleScanner scanner = new BundleScanner(this, sr);
 
                 SingleFileAssemblyResolver res = new SingleFileAssemblyResolver(registry, scanner);
                 ResolveEventHandler resolver = new ResolveEventHandler(res.Resolve);
@@ -199,10 +199,10 @@ namespace Clamp.OSGI.Framework.Data
 
         public void Clear()
         {
-            if (Directory.Exists(AddinCachePath))
-                Directory.Delete(AddinCachePath, true);
-            if (Directory.Exists(AddinFolderCachePath))
-                Directory.Delete(AddinFolderCachePath, true);
+            if (Directory.Exists(BundleCachePath))
+                Directory.Delete(BundleCachePath, true);
+            if (Directory.Exists(BundleFolderCachePath))
+                Directory.Delete(BundleFolderCachePath, true);
         }
 
         public void Write(FileDatabase fileDatabase, string file)
@@ -235,7 +235,7 @@ namespace Clamp.OSGI.Framework.Data
             if (ob != null)
                 return ob as Bundle; // Don't use a cast here is ob may not be an Addin.
 
-            AddinHostIndex index = GetAddinHostIndex();
+            BundleHostIndex index = GetAddinHostIndex();
             string addin, addinFile, rdomain;
             if (index.GetAddinForAssembly(assemblyLocation, out addin, out addinFile, out rdomain))
             {
@@ -252,7 +252,7 @@ namespace Clamp.OSGI.Framework.Data
 
 
 
-        public IEnumerable<Bundle> GetInstalledAddins(string domain, AddinSearchFlagsInternal flags)
+        public IEnumerable<Bundle> GetInstalledAddins(string domain, BundleSearchFlagsInternal flags)
         {
             if (domain == null)
                 domain = registry.CurrentDomain;
@@ -262,15 +262,15 @@ namespace Clamp.OSGI.Framework.Data
 
             IEnumerable<Bundle> result = null;
 
-            if ((flags & AddinSearchFlagsInternal.IncludeAll) == AddinSearchFlagsInternal.IncludeAll)
+            if ((flags & BundleSearchFlagsInternal.IncludeAll) == BundleSearchFlagsInternal.IncludeAll)
             {
                 if (allSetupInfos != null)
                     result = allSetupInfos;
             }
-            else if ((flags & AddinSearchFlagsInternal.IncludeAddins) == AddinSearchFlagsInternal.IncludeAddins)
+            else if ((flags & BundleSearchFlagsInternal.IncludeAddins) == BundleSearchFlagsInternal.IncludeAddins)
             {
-                if (addinSetupInfos != null)
-                    result = addinSetupInfos;
+                if (bundleSetupInfos != null)
+                    result = bundleSetupInfos;
             }
             else
             {
@@ -283,14 +283,14 @@ namespace Clamp.OSGI.Framework.Data
                 InternalCheck(domain);
                 using (fileDatabase.LockRead())
                 {
-                    result = InternalGetInstalledAddins(domain, null, flags & ~AddinSearchFlagsInternal.LatestVersionsOnly);
+                    result = InternalGetInstalledAddins(domain, null, flags & ~BundleSearchFlagsInternal.LatestVersionsOnly);
                 }
             }
 
-            if ((flags & AddinSearchFlagsInternal.LatestVersionsOnly) == AddinSearchFlagsInternal.LatestVersionsOnly)
+            if ((flags & BundleSearchFlagsInternal.LatestVersionsOnly) == BundleSearchFlagsInternal.LatestVersionsOnly)
                 result = result.Where(a => a.IsLatestVersion);
 
-            if ((flags & AddinSearchFlagsInternal.ExcludePendingUninstall) == AddinSearchFlagsInternal.ExcludePendingUninstall)
+            if ((flags & BundleSearchFlagsInternal.ExcludePendingUninstall) == BundleSearchFlagsInternal.ExcludePendingUninstall)
                 result = result.Where(a => !IsRegisteredForUninstall(a.Description.Domain, a.Id));
 
             return result;
@@ -333,7 +333,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             try
             {
-                folderInfo = BundleScanFolderInfo.Read(fileDatabase, AddinFolderCachePath, path);
+                folderInfo = BundleScanFolderInfo.Read(fileDatabase, BundleFolderCachePath, path);
                 return true;
             }
             catch (Exception ex)
@@ -349,7 +349,7 @@ namespace Clamp.OSGI.Framework.Data
 
             DateTime tim = DateTime.Now;
 
-            //RunPendingUninstalls(monitor);
+            RunPendingUninstalls();
 
             Hashtable installed = new Hashtable();
 
@@ -364,9 +364,9 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     using (fileDatabase.LockRead())
                     {
-                        foreach (Bundle ainfo in InternalGetInstalledAddins(domain, AddinSearchFlagsInternal.IncludeAddins))
+                        foreach (Bundle bundle in InternalGetInstalledAddins(domain, BundleSearchFlagsInternal.IncludeAddins))
                         {
-                            installed[ainfo.Id] = ainfo.Id;
+                            installed[bundle.Id] = bundle.Id;
                         }
                     }
                 }
@@ -384,41 +384,41 @@ namespace Clamp.OSGI.Framework.Data
             {
                 Hashtable newInstalled = new Hashtable();
 
-                foreach (Bundle ainfo in GetInstalledAddins(domain, AddinSearchFlagsInternal.IncludeAddins))
+                foreach (Bundle bundle in GetInstalledAddins(domain, BundleSearchFlagsInternal.IncludeAddins))
                 {
-                    newInstalled[ainfo.Id] = ainfo.Id;
+                    newInstalled[bundle.Id] = bundle.Id;
                 }
 
-                foreach (string aid in installed.Keys)
+                foreach (string bid in installed.Keys)
                 {
                     // Always try to unload, event if the add-in was not currently loaded.
                     // Required since the add-ins has to be marked as 'disabled', to avoid
                     // extensions from this add-in to be loaded
-                    if (!newInstalled.Contains(aid))
-                        clampBundle.UnloadAddin(aid);
+                    if (!newInstalled.Contains(bid))
+                        clampBundle.UnloadAddin(bid);
                 }
 
-                foreach (string aid in newInstalled.Keys)
+                foreach (string bid in newInstalled.Keys)
                 {
-                    if (!installed.Contains(aid))
+                    if (!installed.Contains(bid))
                     {
-                        Bundle addin = clampBundle.Registry.GetAddin(aid);
-                        if (addin != null)
-                            this.clampBundle.ActivateAddin(aid);
+                        Bundle bundle = clampBundle.Registry.GetAddin(bid);
+                        if (bundle != null)
+                            this.clampBundle.ActivateAddin(bid);
                     }
                 }
             }
         }
 
-        public bool GetAddinDescription(string domain, string addinId, string addinFile, out BundleDescription description)
+        public bool GetAddinDescription(string domain, string bundleId, string bundleFile, out BundleDescription description)
         {
             // If the same add-in is installed in different folders (in the same domain) there will be several .maddin files for it,
             // using the suffix "_X" where X is a number > 1 (for example: someAddin,1.0.maddin, someAddin,1.0.maddin_2, someAddin,1.0.maddin_3, ...)
             // We need to return the .maddin whose AddinFile matches the one being requested
 
-            addinFile = Path.GetFullPath(addinFile);
+            bundleFile = Path.GetFullPath(bundleFile);
             int altNum = 1;
-            string baseFile = GetDescriptionPath(domain, addinId);
+            string baseFile = GetDescriptionPath(domain, bundleId);
             string file = baseFile;
             bool failed = false;
 
@@ -436,7 +436,7 @@ namespace Clamp.OSGI.Framework.Data
                 if (description == null)
                     break;
 
-                if (Path.GetFullPath(description.AddinFile) == addinFile)
+                if (Path.GetFullPath(description.AddinFile) == bundleFile)
                     return true;
                 file = baseFile + "_" + (++altNum);
             }
@@ -497,7 +497,7 @@ namespace Clamp.OSGI.Framework.Data
                 return lastDomainId.ToString();
             }
             lastDomainId = 1;
-            foreach (string s in fileDatabase.GetDirectories(AddinCachePath))
+            foreach (string s in fileDatabase.GetDirectories(BundleCachePath))
             {
                 string dn = Path.GetFileName(s);
                 if (dn == GlobalDomain)
@@ -515,9 +515,9 @@ namespace Clamp.OSGI.Framework.Data
             return lastDomainId.ToString();
         }
 
-        public ExtensionNodeSet FindNodeSet(string domain, string addinId, string id)
+        public ExtensionNodeSet FindNodeSet(string domain, string bundleId, string id)
         {
-            return FindNodeSet(domain, addinId, id, new Hashtable());
+            return FindNodeSet(domain, bundleId, id, new Hashtable());
         }
 
         /// <summary>
@@ -561,7 +561,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             try
             {
-                folderInfo.Write(fileDatabase, AddinFolderCachePath);
+                folderInfo.Write(fileDatabase, BundleFolderCachePath);
                 return true;
             }
             catch (Exception ex)
@@ -619,7 +619,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 string idName = Bundle.GetIdName(id);
 
-                foreach (Bundle ainfo in GetInstalledAddins(domain, AddinSearchFlagsInternal.IncludeAddins))
+                foreach (Bundle ainfo in GetInstalledAddins(domain, BundleSearchFlagsInternal.IncludeAddins))
                 {
                     foreach (Dependency dep in ainfo.AddinInfo.Dependencies)
                     {
@@ -672,7 +672,7 @@ namespace Clamp.OSGI.Framework.Data
 
         internal void ScanFolders(string currentDomain, string folderToScan, List<string> filesToIgnore)
         {
-            AddinScanResult res = new AddinScanResult();
+            BundleScanResult res = new BundleScanResult();
             res.Domain = currentDomain;
             res.AddPathsToIgnore(filesToIgnore);
             ScanFolders(res);
@@ -781,7 +781,7 @@ namespace Clamp.OSGI.Framework.Data
             if (dversion == 2)
             {
                 // All versions of the add-in removed.
-                SafeDeleteDir(Path.Combine(AddinPrivateDataPath, Path.GetFileNameWithoutExtension(file)));
+                SafeDeleteDir(Path.Combine(BundlePrivateDataPath, Path.GetFileNameWithoutExtension(file)));
             }
 
             return true;
@@ -789,10 +789,10 @@ namespace Clamp.OSGI.Framework.Data
 
         internal string GetDescriptionPath(string domain, string id)
         {
-            return Path.Combine(Path.Combine(AddinCachePath, domain), id + ".maddin");
+            return Path.Combine(Path.Combine(BundleCachePath, domain), id + ".maddin");
         }
 
-        internal void UninstallAddin(string domain, string addinId, string addinFile, AddinScanResult scanResult)
+        internal void UninstallAddin(string domain, string addinId, string addinFile, BundleScanResult scanResult)
         {
             BundleDescription desc;
 
@@ -824,7 +824,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             using (fileDatabase.LockRead())
             {
-                AddinScanResult scanResult = new AddinScanResult();
+                BundleScanResult scanResult = new BundleScanResult();
                 scanResult.CheckOnly = true;
                 scanResult.Domain = domain;
                 InternalScanFolders(scanResult);
@@ -833,7 +833,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
 
-        internal void InternalScanFolders(AddinScanResult scanResult)
+        internal void InternalScanFolders(BundleScanResult scanResult)
         {
             try
             {
@@ -846,7 +846,7 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        internal void InternalScanFolders2(AddinScanResult scanResult)
+        internal void InternalScanFolders2(BundleScanResult scanResult)
         {
             DateTime tim = DateTime.Now;
 
@@ -866,11 +866,11 @@ namespace Clamp.OSGI.Framework.Data
                 scanResult.RegenerateAllData = true;
             }
 
-            AddinScanner scanner = new AddinScanner(this, scanResult);
+            BundleScanner scanner = new BundleScanner(this, scanResult);
 
             // Check if any of the previously scanned folders has been deleted
 
-            foreach (string file in Directory.GetFiles(AddinFolderCachePath, "*.data"))
+            foreach (string file in Directory.GetFiles(BundleFolderCachePath, "*.data"))
             {
                 BundleScanFolderInfo folderInfo;
                 bool res = ReadFolderInfo(file, out folderInfo);
@@ -957,14 +957,14 @@ namespace Clamp.OSGI.Framework.Data
 
         void GenerateAddinExtensionMapsInternal(string domain, List<string> addinsToUpdate, List<string> addinsToUpdateRelations, List<string> removedAddins)
         {
-            AddinUpdateData updateData = new AddinUpdateData(this);
+            BundleUpdateData updateData = new BundleUpdateData(this);
 
             // Clear cached data
             cachedAddinSetupInfos.Clear();
 
             // Collect all information
 
-            AddinIndex addinHash = new AddinIndex();
+            BundleIndex addinHash = new BundleIndex();
 
             Hashtable changedAddins = null;
             ArrayList descriptionsToSave = new ArrayList();
@@ -1013,7 +1013,7 @@ namespace Clamp.OSGI.Framework.Data
             else
             {
                 foreach (var dom in domains)
-                    files.AddRange(fileDatabase.GetDirectoryFiles(Path.Combine(AddinCachePath, dom), "*.maddin"));
+                    files.AddRange(fileDatabase.GetDirectoryFiles(Path.Combine(BundleCachePath, dom), "*.maddin"));
             }
 
             // Load the descriptions.
@@ -1083,11 +1083,11 @@ namespace Clamp.OSGI.Framework.Data
         internal void ResetBasicCachedData()
         {
             allSetupInfos = null;
-            addinSetupInfos = null;
+            bundleSetupInfos = null;
             rootSetupInfos = null;
         }
 
-        internal AddinHostIndex GetAddinHostIndex()
+        internal BundleHostIndex GetAddinHostIndex()
         {
             if (hostIndex != null)
                 return hostIndex;
@@ -1095,9 +1095,9 @@ namespace Clamp.OSGI.Framework.Data
             using (fileDatabase.LockRead())
             {
                 if (fileDatabase.Exists(HostIndexFile))
-                    hostIndex = AddinHostIndex.Read(fileDatabase, HostIndexFile);
+                    hostIndex = BundleHostIndex.Read(fileDatabase, HostIndexFile);
                 else
-                    hostIndex = new AddinHostIndex();
+                    hostIndex = new BundleHostIndex();
             }
             return hostIndex;
         }
@@ -1111,22 +1111,22 @@ namespace Clamp.OSGI.Framework.Data
 
             try
             {
-                if (!Directory.Exists(AddinCachePath))
+                if (!Directory.Exists(BundleCachePath))
                 {
-                    Directory.CreateDirectory(AddinCachePath);
+                    Directory.CreateDirectory(BundleCachePath);
                     hasChanges = true;
                 }
 
-                if (!Directory.Exists(AddinFolderCachePath))
+                if (!Directory.Exists(BundleFolderCachePath))
                 {
-                    Directory.CreateDirectory(AddinFolderCachePath);
+                    Directory.CreateDirectory(BundleFolderCachePath);
                     hasChanges = true;
                 }
 
                 // Make sure we can write in those folders
 
-                Util.CheckWrittableFloder(AddinCachePath);
-                Util.CheckWrittableFloder(AddinFolderCachePath);
+                Util.CheckWrittableFloder(BundleCachePath);
+                Util.CheckWrittableFloder(BundleFolderCachePath);
 
                 fatalDatabseError = false;
             }
@@ -1141,6 +1141,59 @@ namespace Clamp.OSGI.Framework.Data
 
         #endregion
         #region private method
+
+        private void RunPendingUninstalls()
+        {
+            bool changesDone = false;
+
+            foreach (var adn in Configuration.GetPendingUninstalls())
+            {
+                HashSet<string> files = new HashSet<string>(adn.Files);
+                if (ClampBundle.CheckAssembliesLoaded(files))
+                    continue;
+
+                // Make sure all files can be deleted before doing so
+                bool canUninstall = true;
+                foreach (string f in adn.Files)
+                {
+                    if (!File.Exists(f))
+                        continue;
+                    try
+                    {
+                        File.OpenWrite(f).Close();
+                    }
+                    catch
+                    {
+                        canUninstall = false;
+                        break;
+                    }
+                }
+
+                if (!canUninstall)
+                    continue;
+
+                foreach (string f in adn.Files)
+                {
+                    try
+                    {
+                        if (File.Exists(f))
+                            File.Delete(f);
+                    }
+                    catch
+                    {
+                        canUninstall = false;
+                    }
+                }
+
+                if (canUninstall)
+                {
+                    Configuration.UnregisterForUninstall(adn.BundleId);
+                    changesDone = true;
+                }
+            }
+            if (changesDone)
+                SaveConfiguration();
+        }
 
         private bool AddinDependsOn(Hashtable visited, string domain, string id1, string id2)
         {
@@ -1199,7 +1252,7 @@ namespace Clamp.OSGI.Framework.Data
             }
             return null;
         }
-        private void ScanFolders(AddinScanResult scanResult)
+        private void ScanFolders(BundleScanResult scanResult)
         {
             IDisposable checkLock = null;
 
@@ -1470,14 +1523,14 @@ namespace Clamp.OSGI.Framework.Data
                 return new SetupLocal();
         }
 
-        private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, AddinSearchFlagsInternal type)
+        private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, BundleSearchFlagsInternal type)
         {
             return InternalGetInstalledAddins(domain, null, type);
         }
 
-        private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, string idFilter, AddinSearchFlagsInternal type)
+        private IEnumerable<Bundle> InternalGetInstalledAddins(string domain, string idFilter, BundleSearchFlagsInternal type)
         {
-            if ((type & AddinSearchFlagsInternal.LatestVersionsOnly) != 0)
+            if ((type & BundleSearchFlagsInternal.LatestVersionsOnly) != 0)
                 throw new InvalidOperationException("LatestVersionsOnly flag not supported here");
 
             if (allSetupInfos == null)
@@ -1495,19 +1548,19 @@ namespace Clamp.OSGI.Framework.Data
                     return alist;
                 allSetupInfos = alist;
             }
-            if ((type & AddinSearchFlagsInternal.IncludeAll) == AddinSearchFlagsInternal.IncludeAll)
+            if ((type & BundleSearchFlagsInternal.IncludeAll) == BundleSearchFlagsInternal.IncludeAll)
                 return FilterById(allSetupInfos, idFilter);
 
-            if ((type & AddinSearchFlagsInternal.IncludeAddins) == AddinSearchFlagsInternal.IncludeAddins)
+            if ((type & BundleSearchFlagsInternal.IncludeAddins) == BundleSearchFlagsInternal.IncludeAddins)
             {
-                if (addinSetupInfos == null)
+                if (bundleSetupInfos == null)
                 {
-                    addinSetupInfos = new List<Bundle>();
+                    bundleSetupInfos = new List<Bundle>();
                     foreach (Bundle adn in allSetupInfos)
                         if (!adn.Description.IsRoot)
-                            addinSetupInfos.Add(adn);
+                            bundleSetupInfos.Add(adn);
                 }
-                return FilterById(addinSetupInfos, idFilter);
+                return FilterById(bundleSetupInfos, idFilter);
             }
             else
             {
@@ -1533,7 +1586,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             if (idFilter == null)
                 idFilter = "*";
-            string dir = Path.Combine(AddinCachePath, domain);
+            string dir = Path.Combine(BundleCachePath, domain);
             if (Directory.Exists(dir))
             {
                 foreach (string file in fileDatabase.GetDirectoryFiles(dir, idFilter + ",*.maddin"))
@@ -1627,7 +1680,7 @@ namespace Clamp.OSGI.Framework.Data
                     string version, name, bestVersion = null;
                     Bundle.GetIdParts(id, out name, out version);
 
-                    foreach (Bundle ia in InternalGetInstalledAddins(domain, name, AddinSearchFlagsInternal.IncludeAll))
+                    foreach (Bundle ia in InternalGetInstalledAddins(domain, name, BundleSearchFlagsInternal.IncludeAll))
                     {
                         if ((!enabledOnly || ia.Enabled) &&
                             (version.Length == 0 || ia.SupportsVersion(version)) &&
@@ -1661,7 +1714,7 @@ namespace Clamp.OSGI.Framework.Data
             bool update = false;
             using (fileDatabase.LockRead())
             {
-                if (!Directory.Exists(AddinCachePath))
+                if (!Directory.Exists(BundleCachePath))
                 {
                     update = true;
                 }
@@ -1672,7 +1725,7 @@ namespace Clamp.OSGI.Framework.Data
 
         private bool AddinIdExists(string id)
         {
-            foreach (string d in fileDatabase.GetDirectories(AddinCachePath))
+            foreach (string d in fileDatabase.GetDirectories(BundleCachePath))
             {
                 if (fileDatabase.Exists(Path.Combine(d, id + ".addin")))
                     return true;
@@ -1687,7 +1740,7 @@ namespace Clamp.OSGI.Framework.Data
 
         private string[] GetDomains()
         {
-            string[] dirs = fileDatabase.GetDirectories(AddinCachePath);
+            string[] dirs = fileDatabase.GetDirectories(BundleCachePath);
             string[] ids = new string[dirs.Length];
             for (int n = 0; n < dirs.Length; n++)
                 ids[n] = Path.GetFileName(dirs[n]);
@@ -1715,7 +1768,7 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        private void CollectExtensionPointData(BundleDescription conf, AddinUpdateData updateData)
+        private void CollectExtensionPointData(BundleDescription conf, BundleUpdateData updateData)
         {
             foreach (ExtensionNodeSet nset in conf.ExtensionNodeSets)
             {
@@ -1744,7 +1797,7 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        private void CollectExtensionData(AddinIndex addinHash, BundleDescription conf, AddinUpdateData updateData)
+        private void CollectExtensionData(BundleIndex addinHash, BundleDescription conf, BundleUpdateData updateData)
         {
             IEnumerable<string> missingDeps = addinHash.GetMissingDependencies(conf, conf.MainModule);
             if (missingDeps.Any())
@@ -1770,7 +1823,7 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        private string BuildMissingAddinsList(AddinIndex addinHash, BundleDescription conf, IEnumerable<string> missingDeps)
+        private string BuildMissingAddinsList(BundleIndex addinHash, BundleDescription conf, IEnumerable<string> missingDeps)
         {
             string w = "";
             foreach (string dep in missingDeps)
@@ -1784,7 +1837,7 @@ namespace Clamp.OSGI.Framework.Data
             return w;
         }
 
-        private void CollectModuleExtensionData(BundleDescription conf, ModuleDescription module, AddinUpdateData updateData, AddinIndex index)
+        private void CollectModuleExtensionData(BundleDescription conf, ModuleDescription module, BundleUpdateData updateData, BundleIndex index)
         {
             foreach (Extension ext in module.Extensions)
             {
@@ -1794,7 +1847,7 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        private void AddChildExtensions(BundleDescription conf, ModuleDescription module, AddinUpdateData updateData, AddinIndex index, string path, ExtensionNodeDescriptionCollection nodes, bool conditionChildren)
+        private void AddChildExtensions(BundleDescription conf, ModuleDescription module, BundleUpdateData updateData, BundleIndex index, string path, ExtensionNodeDescriptionCollection nodes, bool conditionChildren)
         {
             // Don't register conditions as extension nodes.
             if (!conditionChildren)

@@ -1,5 +1,4 @@
-﻿using Clamp.SDK.Framework;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -23,5 +22,5 @@ using System.Runtime.InteropServices;
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
 [assembly: Guid("4e6d8ac5-ead5-4eda-8983-979aa346d705")]
 
-[assembly: AssemblyVersion(RevisionClass.Major + "." + RevisionClass.Minor + "." + RevisionClass.Build + "." + RevisionClass.Revision)]
-[assembly: AssemblyInformationalVersion(RevisionClass.FullVersion + "-00000000")]
+//[assembly: AssemblyVersion(RevisionClass.Major + "." + RevisionClass.Minor + "." + RevisionClass.Build + "." + RevisionClass.Revision)]
+//[assembly: AssemblyInformationalVersion(RevisionClass.FullVersion + "-00000000")]

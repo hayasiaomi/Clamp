@@ -81,17 +81,17 @@ namespace Clamp.OSGI.Framework.Data
             filedb.WriteSharedObject(basePath, GetDomain(folder), ".data", Path.GetFullPath(folder), fileName, this);
         }
 
-        public AddinFileInfo SetLastScanTime(string file, string addinId, bool isRoot, DateTime time, bool scanError)
+        public BundleFileInfo SetLastScanTime(string file, string addinId, bool isRoot, DateTime time, bool scanError)
         {
-            AddinFileInfo info = (AddinFileInfo)files[file];
+            BundleFileInfo info = (BundleFileInfo)files[file];
             if (info == null)
             {
-                info = new AddinFileInfo();
+                info = new BundleFileInfo();
                 info.File = file;
                 files[file] = info;
             }
             info.LastScan = time;
-            info.AddinId = addinId;
+            info.BundleId = addinId;
             info.IsRoot = isRoot;
             info.ScanError = scanError;
             if (addinId != null)
@@ -101,21 +101,21 @@ namespace Clamp.OSGI.Framework.Data
             return info;
         }
 
-        public AddinFileInfo GetAddinFileInfo(string file)
+        public BundleFileInfo GetAddinFileInfo(string file)
         {
-            return (AddinFileInfo)files[file];
+            return (BundleFileInfo)files[file];
         }
 
-        public ArrayList GetMissingAddins(AddinFileSystemExtension fs)
+        public ArrayList GetMissingAddins(BundleFileSystemExtension fs)
         {
             ArrayList missing = new ArrayList();
 
             if (!fs.DirectoryExists(folder))
             {
                 // All deleted
-                foreach (AddinFileInfo info in files.Values)
+                foreach (BundleFileInfo info in files.Values)
                 {
-                    if (info.IsAddin)
+                    if (info.IsBundle)
                         missing.Add(info);
                 }
                 files.Clear();
@@ -123,16 +123,16 @@ namespace Clamp.OSGI.Framework.Data
             }
             ArrayList toDelete = new ArrayList();
 
-            foreach (AddinFileInfo info in files.Values)
+            foreach (BundleFileInfo info in files.Values)
             {
                 if (!fs.FileExists(info.File))
                 {
-                    if (info.IsAddin)
+                    if (info.IsBundle)
                         missing.Add(info);
 
                     toDelete.Add(info.File);
                 }
-                else if (info.IsAddin && info.Domain != GetDomain(info.IsRoot))
+                else if (info.IsBundle && info.Domain != GetDomain(info.IsRoot))
                 {
                     missing.Add(info);
                 }
