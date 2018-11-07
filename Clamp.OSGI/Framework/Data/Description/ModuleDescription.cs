@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace Clamp.OSGI.Framework.Data.Description
 {
     public class ModuleDescription : ObjectDescription
     {
+        private StringCollection ignorePaths;
         private List<string> dataFiles;
         private List<string> assemblies;
         private DependencyCollection dependencies;
@@ -75,6 +77,16 @@ namespace Clamp.OSGI.Framework.Data.Description
                     extensions = new ExtensionCollection(this);
                 }
                 return extensions;
+            }
+        }
+
+        public StringCollection IgnorePaths
+        {
+            get
+            {
+                if (ignorePaths == null)
+                    ignorePaths = new StringCollection();
+                return ignorePaths;
             }
         }
 

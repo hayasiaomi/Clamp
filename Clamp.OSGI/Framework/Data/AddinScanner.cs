@@ -1,4 +1,4 @@
-﻿using Clamp.OSGI.Framework.Annotation;
+﻿using Clamp.OSGI.Framework.Data.Description;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ namespace Clamp.OSGI.Framework.Data
 {
     internal class AddinScanner
     {
+        private Dictionary<IAssemblyReflector, object> coreAssemblies = new Dictionary<IAssemblyReflector, object>();
         private BundleDatabase database;
         private AddinFileSystemExtension fs;
         public AddinScanner(BundleDatabase database, AddinScanResult scanResult)
@@ -168,6 +169,44 @@ namespace Clamp.OSGI.Framework.Data
             UpdateDeletedAddins(folderInfo, scanResult);
         }
 
+        public BundleDescription ScanSingleFile(string file, AddinScanResult scanResult)
+        {
+            BundleDescription config = null;
+
+            try
+            {
+                string ext = Path.GetExtension(file).ToLower();
+                bool scanSuccessful;
+
+                if (ext == ".dll" || ext == ".exe")
+                    scanSuccessful = ScanAssembly(file, scanResult, out config);
+                else
+                    scanSuccessful = ScanConfigAssemblies(file, scanResult, out config);
+
+                if (scanSuccessful && config != null)
+                {
+
+                    config.Domain = "global";
+                    if (config.Version.Length == 0)
+                        config.Version = "0.0.0.0";
+
+                    if (config.LocalId.Length == 0)
+                    {
+                        // Generate an internal id for this add-in
+                        config.LocalId = database.GetUniqueAddinId(file, "", config.Namespace, config.Version);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+
+            }
+            return config;
+        }
         public void ScanAddinsFile(string file, string domain, AddinScanResult scanResult)
         {
             XmlTextReader r = null;
@@ -555,8 +594,6 @@ namespace Clamp.OSGI.Framework.Data
             object coreAssembly;
             if (!coreAssemblies.TryGetValue(reflector, out coreAssembly))
             {
-                if (monitor.LogLevel > 1)
-                    monitor.Log("Using assembly reflector: " + reflector.GetType());
                 coreAssemblies[reflector] = coreAssembly = reflector.LoadAssembly(GetType().Assembly.Location);
             }
             return reflector;

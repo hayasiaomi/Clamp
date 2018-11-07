@@ -18,3 +18,4 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
         }
     }
+}

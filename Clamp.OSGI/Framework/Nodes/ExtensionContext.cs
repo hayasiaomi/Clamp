@@ -837,7 +837,7 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 fireEvents = true;
 
-                Addin addin = AddinEngine.Registry.GetAddin(id);
+                Bundle addin = AddinEngine.Registry.GetAddin(id);
                 if (addin == null)
                 {
                     AddinEngine.ReportError("Required add-in not found", id, null, false);
@@ -1095,7 +1095,7 @@ namespace Clamp.OSGI.Framework.Nodes
 
         ExtensionLoadData GetAddinExtensions(string id, ExtensionPoint ep)
         {
-            Addin pinfo = null;
+            Bundle pinfo = null;
 
             // Root add-ins are not returned by GetInstalledAddin.
             RuntimeAddin addin = AddinEngine.GetAddin(id);
@@ -1109,13 +1109,13 @@ namespace Clamp.OSGI.Framework.Nodes
                 AddinEngine.ReportError("Required add-in not found", id, null, false);
                 return null;
             }
-            if (!pinfo.Enabled || pinfo.Version != Addin.GetIdVersion(id))
+            if (!pinfo.Enabled || pinfo.Version != Bundle.GetIdVersion(id))
                 return null;
 
             // Loads extensions defined in each module
 
             ExtensionLoadData data = null;
-            AddinDescription conf = pinfo.Description;
+            BundleDescription conf = pinfo.Description;
             GetAddinExtensions(conf.MainModule, id, ep, ref data);
 
             foreach (ModuleDescription module in conf.OptionalModules)
@@ -1166,14 +1166,14 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        bool CheckOptionalAddinDependencies(AddinDescription conf, ModuleDescription module)
+        bool CheckOptionalAddinDependencies(BundleDescription conf, ModuleDescription module)
         {
             foreach (Dependency dep in module.Dependencies)
             {
-                AddinDependency pdep = dep as AddinDependency;
+                BundleDependency pdep = dep as BundleDependency;
                 if (pdep != null)
                 {
-                    Addin pinfo = AddinEngine.Registry.GetAddin(Addin.GetFullId(conf.Namespace, pdep.AddinId, pdep.Version));
+                    Bundle pinfo = AddinEngine.Registry.GetAddin(Bundle.GetFullId(conf.Namespace, pdep.AddinId, pdep.Version));
                     if (pinfo == null || !pinfo.Enabled)
                         return false;
                 }
@@ -1237,9 +1237,9 @@ namespace Clamp.OSGI.Framework.Nodes
             return dstNode;
         }
 
-        internal bool FindExtensionPathByType(IProgressStatus monitor, Type type, string nodeName, out string path, out string pathNodeName)
+        internal bool FindExtensionPathByType(Type type, string nodeName, out string path, out string pathNodeName)
         {
-            return tree.FindExtensionPathByType(monitor, type, nodeName, out path, out pathNodeName);
+            return tree.FindExtensionPathByType(type, nodeName, out path, out pathNodeName);
         }
     }
 

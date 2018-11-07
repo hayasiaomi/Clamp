@@ -22,6 +22,19 @@ namespace Clamp.OSGI.Framework.Data
             index[Path.GetFullPath(assemblyLocation)] = addinId + " " + addinLocation + " " + domain;
         }
 
+
+        public void RemoveHostData(string addinId, string addinLocation)
+        {
+            string loc = addinId + " " + Path.GetFullPath(addinLocation) + " ";
+            ArrayList todelete = new ArrayList();
+            foreach (DictionaryEntry e in index)
+            {
+                if (((string)e.Value).StartsWith(loc))
+                    todelete.Add(e.Key);
+            }
+            foreach (string s in todelete)
+                index.Remove(s);
+        }
         string NormalizeFileName(string name)
         {
             return name.ToLower();

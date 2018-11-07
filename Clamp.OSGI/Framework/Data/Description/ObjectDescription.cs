@@ -9,19 +9,9 @@ namespace Clamp.OSGI.Framework.Data.Description
     {
         private object parent;
 
-        internal void SetParent(object ob)
+        public object Parent
         {
-            parent = ob;
-        }
-
-
-        internal string ParseString(string s)
-        {
-            var desc = ParentAddinDescription;
-            if (desc != null)
-                return desc.ParseString(s);
-            else
-                return s;
+            get { return parent; }
         }
 
         /// <summary>
@@ -43,6 +33,22 @@ namespace Clamp.OSGI.Framework.Data.Description
             }
         }
 
+        internal void SetParent(object ob)
+        {
+            parent = ob;
+        }
+      
+
+        internal string ParseString(string s)
+        {
+            var desc = ParentAddinDescription;
+            if (desc != null)
+                return desc.ParseString(s);
+            else
+                return s;
+        }
+
+      
 
     }
 }

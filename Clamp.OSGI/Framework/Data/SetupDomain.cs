@@ -11,7 +11,7 @@ namespace Clamp.OSGI.Framework.Data
         RemoteSetupDomain remoteSetupDomain;
         int useCount;
 
-        public void Scan( BundleRegistry registry, string scanFolder, string[] filesToIgnore)
+        public void Scan(BundleRegistry registry, string scanFolder, string[] filesToIgnore)
         {
             try
             {
@@ -20,30 +20,27 @@ namespace Clamp.OSGI.Framework.Data
             }
             catch (Exception ex)
             {
-                throw new ProcessFailedException(remMonitor.ProgessLog, ex);
+                throw new ProcessFailedException(null, ex);
             }
             finally
             {
-                System.Runtime.Remoting.RemotingServices.Disconnect(remMonitor);
                 ReleaseDomain();
             }
         }
 
-        public void GetAddinDescription(IProgressStatus monitor, AddinRegistry registry, string file, string outFile)
+        public void GetAddinDescription(BundleRegistry registry, string file, string outFile)
         {
-            RemoteProgressStatus remMonitor = new RemoteProgressStatus(monitor);
             try
             {
                 RemoteSetupDomain rsd = GetDomain();
-                rsd.GetAddinDescription(remMonitor, registry.RegistryPath, registry.StartupDirectory, registry.DefaultAddinsFolder, registry.AddinCachePath, file, outFile);
+                rsd.GetAddinDescription(registry.RegistryPath, registry.StartupDirectory, registry.DefaultAddinsFolder, registry.AddinCachePath, file, outFile);
             }
             catch (Exception ex)
             {
-                throw new ProcessFailedException(remMonitor.ProgessLog, ex);
+                throw new ProcessFailedException(null, ex);
             }
             finally
             {
-                System.Runtime.Remoting.RemotingServices.Disconnect(remMonitor);
                 ReleaseDomain();
             }
         }
@@ -92,7 +89,8 @@ namespace Clamp.OSGI.Framework.Data
         {
             // ensure types from this assembly passed to this domain from the main domain
             // can be resolved even though we're in the LoadFrom context
-            AppDomain.CurrentDomain.AssemblyResolve += (o, a) => {
+            AppDomain.CurrentDomain.AssemblyResolve += (o, a) =>
+            {
                 var asm = typeof(RemoteSetupDomain).Assembly;
                 return a.Name == asm.FullName ? asm : null;
             };
@@ -103,21 +101,23 @@ namespace Clamp.OSGI.Framework.Data
             return null;
         }
 
-        public void Scan(IProgressStatus monitor, string registryPath, string startupDir, string addinsDir, string databaseDir, string scanFolder, string[] filesToIgnore)
+        public void Scan(string registryPath, string startupDir, string addinsDir, string databaseDir, string scanFolder, string[] filesToIgnore)
         {
-            AddinDatabase.RunningSetupProcess = true;
-            AddinRegistry reg = new AddinRegistry(registryPath, startupDir, addinsDir, databaseDir);
-            StringCollection files = new StringCollection();
+            BundleDatabase.RunningSetupProcess = true;
+            BundleRegistry reg = new BundleRegistry(registryPath, startupDir, addinsDir, databaseDir);
+            List<string> files = new List<string>();
             for (int n = 0; n < filesToIgnore.Length; n++)
                 files.Add(filesToIgnore[n]);
-            reg.ScanFolders(monitor, scanFolder, files);
+            reg.ScanFolders(scanFolder, files);
         }
 
-        public void GetAddinDescription(IProgressStatus monitor, string registryPath, string startupDir, string addinsDir, string databaseDir, string file, string outFile)
+        public void GetAddinDescription(string registryPath, string startupDir, string addinsDir, string databaseDir, string file, string outFile)
         {
-            AddinDatabase.RunningSetupProcess = true;
-            AddinRegistry reg = new AddinRegistry(registryPath, startupDir, addinsDir, databaseDir);
-            reg.ParseAddin(monitor, file, outFile);
+            BundleDatabase.RunningSetupProcess = true;
+
+            BundleRegistry reg = new BundleRegistry(registryPath, startupDir, addinsDir, databaseDir);
+
+            reg.ParseAddin(file, outFile);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Annotation
+namespace Clamp.OSGI.Framework.Data.Description
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class BundleDependencyAttribute : Attribute
@@ -15,7 +15,7 @@ namespace Clamp.OSGI.Framework.Annotation
         }
 
         public string Id { private set; get; }
-      
+
         public string Version { private set; get; }
 
     }

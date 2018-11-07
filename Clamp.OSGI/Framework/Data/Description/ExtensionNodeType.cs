@@ -121,39 +121,11 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (attributes == null)
                 {
                     attributes = new NodeTypeAttributeCollection(this);
-                    if (Element != null)
-                    {
-                        XmlElement atts = Element["Attributes"];
-                        if (atts != null)
-                        {
-                            foreach (XmlNode node in atts.ChildNodes)
-                            {
-                                XmlElement e = node as XmlElement;
-                                if (e != null)
-                                    attributes.Add(new NodeTypeAttribute(e));
-                            }
-                        }
-                    }
                 }
                 return attributes;
             }
         }
 
-        internal ExtensionNodeType(XmlElement element) : base(element)
-        {
-            XmlAttribute at = element.Attributes["type"];
-            if (at != null)
-                typeName = at.Value;
-            at = element.Attributes["objectType"];
-            if (at != null)
-                objectTypeName = at.Value;
-            at = element.Attributes["customAttributeType"];
-            if (at != null)
-                customAttributeTypeName = at.Value;
-            XmlElement de = element["Description"];
-            if (de != null)
-                description = de.InnerText;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionNodeType"/> class.
@@ -186,75 +158,5 @@ namespace Clamp.OSGI.Framework.Data.Description
             get { return "name"; }
         }
 
-        internal override void Verify(string location, StringCollection errors)
-        {
-            base.Verify(location, errors);
-        }
-
-        internal override void SaveXml(XmlElement parent, string nodeName)
-        {
-            base.SaveXml(parent, "ExtensionNode");
-
-            XmlElement atts = Element["Attributes"];
-            if (Attributes.Count > 0)
-            {
-                if (atts == null)
-                {
-                    atts = parent.OwnerDocument.CreateElement("Attributes");
-                    Element.AppendChild(atts);
-                }
-                Attributes.SaveXml(atts);
-            }
-            else
-            {
-                if (atts != null)
-                    Element.RemoveChild(atts);
-            }
-
-            if (TypeName.Length > 0)
-                Element.SetAttribute("type", TypeName);
-            else
-                Element.RemoveAttribute("type");
-
-            if (ObjectTypeName.Length > 0)
-                Element.SetAttribute("objectType", ObjectTypeName);
-            else
-                Element.RemoveAttribute("objectType");
-
-            if (ExtensionAttributeTypeName.Length > 0)
-                Element.SetAttribute("customAttributeType", ExtensionAttributeTypeName);
-            else
-                Element.RemoveAttribute("customAttributeType");
-
-            SaveXmlDescription(Description);
-        }
-
-        internal override void Write(BinaryXmlWriter writer)
-        {
-            base.Write(writer);
-            if (Id.Length == 0)
-                Id = "Type";
-            if (TypeName.Length == 0)
-                typeName = "Mono.Addins.TypeExtensionNode";
-            writer.WriteValue("typeName", typeName);
-            writer.WriteValue("objectTypeName", objectTypeName);
-            writer.WriteValue("description", description);
-            writer.WriteValue("addinId", addinId);
-            writer.WriteValue("Attributes", attributes);
-            writer.WriteValue("customAttributeType", customAttributeTypeName);
-        }
-
-        internal override void Read(BinaryXmlReader reader)
-        {
-            base.Read(reader);
-            typeName = reader.ReadStringValue("typeName");
-            objectTypeName = reader.ReadStringValue("objectTypeName");
-            if (!reader.IgnoreDescriptionData)
-                description = reader.ReadStringValue("description");
-            addinId = reader.ReadStringValue("addinId");
-            if (!reader.IgnoreDescriptionData)
-                attributes = (NodeTypeAttributeCollection)reader.ReadValue("Attributes", new NodeTypeAttributeCollection(this));
-            customAttributeTypeName = reader.ReadStringValue("customAttributeType");
-        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
@@ -29,7 +30,7 @@ namespace Clamp.OSGI.Framework.Data
         private List<Bundle> addinSetupInfos;
         private List<Bundle> rootSetupInfos;
 
-
+        private List<object> extensions = new List<object>();
         internal static bool RunningSetupProcess;
 
         #region public Property
@@ -119,6 +120,82 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         #region public method
+
+
+        public void CopyExtensions(BundleDatabase other)
+        {
+            foreach (object o in other.extensions)
+                RegisterExtension(o);
+        }
+
+        public void RegisterExtension(object extension)
+        {
+            extensions.Add(extension);
+            if (extension is AddinFileSystemExtension)
+                fs = (AddinFileSystemExtension)extension;
+            else
+                throw new NotSupportedException();
+        }
+
+        public void ParseAddin(string domain, string file, string outFile, bool inProcess)
+        {
+            if (!inProcess)
+            {
+                ISetupHandler setup = GetSetupHandler();
+                setup.GetAddinDescription(registry, Path.GetFullPath(file), outFile);
+                return;
+            }
+
+            using (fileDatabase.LockRead())
+            {
+                // First of all, check if the file belongs to a registered add-in
+                BundleScanFolderInfo finfo;
+
+                if (GetFolderInfoForPath(Path.GetDirectoryName(file), out finfo) && finfo != null)
+                {
+                    AddinFileInfo afi = finfo.GetAddinFileInfo(file);
+                    if (afi != null && afi.IsAddin)
+                    {
+                        BundleDescription adesc;
+
+                        GetAddinDescription(afi.Domain, afi.AddinId, file, out adesc);
+
+                        if (adesc != null)
+                            adesc.Save(outFile);
+                        return;
+                    }
+                }
+
+                AddinScanResult sr = new AddinScanResult();
+                sr.Domain = domain;
+                AddinScanner scanner = new AddinScanner(this, sr);
+
+                SingleFileAssemblyResolver res = new SingleFileAssemblyResolver(registry, scanner);
+                ResolveEventHandler resolver = new ResolveEventHandler(res.Resolve);
+
+                EventInfo einfo = typeof(AppDomain).GetEvent("ReflectionOnlyAssemblyResolve");
+
+                try
+                {
+                    AppDomain.CurrentDomain.AssemblyResolve += resolver;
+                    if (einfo != null) einfo.AddEventHandler(AppDomain.CurrentDomain, resolver);
+
+                    BundleDescription desc = scanner.ScanSingleFile(file, sr);
+
+                    if (desc != null)
+                    {
+                        // Reset the xml doc so that it is not reused when saving. We want a brand new document
+                        desc.ResetXmlDoc();
+                        desc.Save(outFile);
+                    }
+                }
+                finally
+                {
+                    AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+                    if (einfo != null) einfo.RemoveEventHandler(AppDomain.CurrentDomain, resolver);
+                }
+            }
+        }
 
         public void Clear()
         {
@@ -294,7 +371,7 @@ namespace Clamp.OSGI.Framework.Data
                     }
                 }
 
-                RunScannerProcess(monitor);
+                RunScannerProcess();
 
                 ResetCachedData();
 
@@ -436,6 +513,11 @@ namespace Clamp.OSGI.Framework.Data
                 }
             }
             return lastDomainId.ToString();
+        }
+
+        public ExtensionNodeSet FindNodeSet(string domain, string addinId, string id)
+        {
+            return FindNodeSet(domain, addinId, id, new Hashtable());
         }
 
         /// <summary>
@@ -582,6 +664,19 @@ namespace Clamp.OSGI.Framework.Data
         #endregion
 
         #region internal Method
+        public bool AddinDependsOn(string domain, string id1, string id2)
+        {
+            Hashtable visited = new Hashtable();
+            return AddinDependsOn(visited, domain, id1, id2);
+        }
+
+        internal void ScanFolders(string currentDomain, string folderToScan, List<string> filesToIgnore)
+        {
+            AddinScanResult res = new AddinScanResult();
+            res.Domain = currentDomain;
+            res.AddPathsToIgnore(filesToIgnore);
+            ScanFolders(res);
+        }
 
         internal void EnableAddin(string domain, string id, bool exactVersionMatch)
         {
@@ -722,7 +817,7 @@ namespace Clamp.OSGI.Framework.Data
             if (desc.IsRoot)
                 scanResult.HostIndex.RemoveHostData(desc.AddinId, desc.AddinFile);
 
-            RemoveAddinDescriptionFile(monitor, desc.FileName);
+            RemoveAddinDescriptionFile(desc.FileName);
         }
 
         internal bool CheckFolders(string domain)
@@ -963,7 +1058,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (changedAddins == null || changedAddins.ContainsKey(conf.AddinId))
                 {
-                    CollectExtensionData(monitor, addinHash, conf, updateData);
+                    CollectExtensionData(addinHash, conf, updateData);
                 }
             }
 
@@ -1042,14 +1137,275 @@ namespace Clamp.OSGI.Framework.Data
             }
             return hasChanges;
         }
+
+
         #endregion
         #region private method
 
-        private void RunScannerProcess(IProgressStatus monitor)
+        private bool AddinDependsOn(Hashtable visited, string domain, string id1, string id2)
+        {
+            if (visited.Contains(id1))
+                return false;
+
+            visited.Add(id1, id1);
+
+            Bundle addin1 = GetInstalledAddin(domain, id1, false);
+
+            // We can assume that if the add-in is not returned here, it may be a root addin.
+            if (addin1 == null)
+                return false;
+
+            id2 = Bundle.GetIdName(id2);
+            foreach (Dependency dep in addin1.AddinInfo.Dependencies)
+            {
+                BundleDependency adep = dep as BundleDependency;
+                if (adep == null)
+                    continue;
+                string depid = Bundle.GetFullId(addin1.AddinInfo.Namespace, adep.AddinId, null);
+                if (depid == id2)
+                    return true;
+                else if (AddinDependsOn(visited, domain, depid, id2))
+                    return true;
+            }
+            return false;
+        }
+
+        private ExtensionNodeSet FindNodeSet(string domain, string addinId, string id, Hashtable visited)
+        {
+            if (visited.Contains(addinId))
+                return null;
+            visited.Add(addinId, addinId);
+            Bundle addin = GetInstalledAddin(domain, addinId, true, false);
+            if (addin == null)
+                return null;
+            BundleDescription desc = addin.Description;
+            if (desc == null)
+                return null;
+            foreach (ExtensionNodeSet nset in desc.ExtensionNodeSets)
+                if (nset.Id == id)
+                    return nset;
+
+            // Not found in the add-in. Look on add-ins on which it depends
+
+            foreach (Dependency dep in desc.MainModule.Dependencies)
+            {
+                BundleDependency adep = dep as BundleDependency;
+                if (adep == null) continue;
+
+                string aid = Bundle.GetFullId(desc.Namespace, adep.AddinId, adep.Version);
+                ExtensionNodeSet nset = FindNodeSet(domain, aid, id, visited);
+                if (nset != null)
+                    return nset;
+            }
+            return null;
+        }
+        private void ScanFolders(AddinScanResult scanResult)
+        {
+            IDisposable checkLock = null;
+
+            if (scanResult.CheckOnly)
+                checkLock = fileDatabase.LockRead();
+            else
+            {
+                // All changes are done in a transaction, which won't be committed until
+                // all files have been updated.
+
+                if (!fileDatabase.BeginTransaction())
+                {
+                    // The database is already being updated. Can't do anything for now.
+                    return;
+                }
+            }
+
+            EventInfo einfo = typeof(AppDomain).GetEvent("ReflectionOnlyAssemblyResolve");
+            ResolveEventHandler resolver = new ResolveEventHandler(OnResolveAddinAssembly);
+
+            try
+            {
+                // Perform the add-in scan
+
+                if (!scanResult.CheckOnly)
+                {
+                    AppDomain.CurrentDomain.AssemblyResolve += resolver;
+                    if (einfo != null) einfo.AddEventHandler(AppDomain.CurrentDomain, resolver);
+                }
+
+                InternalScanFolders(scanResult);
+
+                if (!scanResult.CheckOnly)
+                    fileDatabase.CommitTransaction();
+            }
+            catch
+            {
+                if (!scanResult.CheckOnly)
+                    fileDatabase.RollbackTransaction();
+                throw;
+            }
+            finally
+            {
+                currentScanResult = null;
+
+                if (scanResult.CheckOnly)
+                    checkLock.Dispose();
+                else
+                {
+                    AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+                    if (einfo != null) einfo.RemoveEventHandler(AppDomain.CurrentDomain, resolver);
+                }
+            }
+        }
+        private Assembly OnResolveAddinAssembly(object s, ResolveEventArgs args)
+        {
+            string file = currentScanResult != null ? currentScanResult.GetAssemblyLocation(args.Name) : null;
+            if (file != null)
+                return Util.LoadAssemblyForReflection(file);
+            else
+            {
+                if (!args.Name.StartsWith("Mono.Addins.CecilReflector"))
+                    Console.WriteLine("Assembly not found: " + args.Name);
+                return null;
+            }
+        }
+
+        private void ConsolidateExtensions(BundleDescription conf)
+        {
+            // Merges extensions with the same path
+
+            foreach (ModuleDescription module in conf.AllModules)
+            {
+                Dictionary<string, Extension> extensions = new Dictionary<string, Extension>();
+                foreach (Extension ext in module.Extensions)
+                {
+                    Extension mainExt;
+                    if (extensions.TryGetValue(ext.Path, out mainExt))
+                    {
+                        ArrayList list = new ArrayList();
+                        EnsureInsertionsSorted(ext.ExtensionNodes);
+                        list.AddRange(ext.ExtensionNodes);
+                        int pos = -1;
+                        foreach (ExtensionNodeDescription node in list)
+                        {
+                            ext.ExtensionNodes.Remove(node);
+                            AddNodeSorted(mainExt.ExtensionNodes, node, ref pos);
+                        }
+                    }
+                    else
+                    {
+                        extensions[ext.Path] = ext;
+                        EnsureInsertionsSorted(ext.ExtensionNodes);
+                    }
+                }
+
+                // Sort the nodes
+            }
+        }
+
+        private void EnsureInsertionsSorted(ExtensionNodeDescriptionCollection list)
+        {
+            // Makes sure that the nodes in the collections are properly sorted wrt insertafter and insertbefore attributes
+            Dictionary<string, ExtensionNodeDescription> added = new Dictionary<string, ExtensionNodeDescription>();
+            List<ExtensionNodeDescription> halfSorted = new List<ExtensionNodeDescription>();
+            bool orderChanged = false;
+
+            for (int n = list.Count - 1; n >= 0; n--)
+            {
+                ExtensionNodeDescription node = list[n];
+                if (node.Id.Length > 0)
+                    added[node.Id] = node;
+                if (node.InsertAfter.Length > 0)
+                {
+                    ExtensionNodeDescription relNode;
+                    if (added.TryGetValue(node.InsertAfter, out relNode))
+                    {
+                        // Out of order. Move it before the referenced node
+                        int i = halfSorted.IndexOf(relNode);
+                        halfSorted.Insert(i, node);
+                        orderChanged = true;
+                    }
+                    else
+                    {
+                        halfSorted.Add(node);
+                    }
+                }
+                else
+                    halfSorted.Add(node);
+            }
+            halfSorted.Reverse();
+            List<ExtensionNodeDescription> fullSorted = new List<ExtensionNodeDescription>();
+            added.Clear();
+
+            foreach (ExtensionNodeDescription node in halfSorted)
+            {
+                if (node.Id.Length > 0)
+                    added[node.Id] = node;
+                if (node.InsertBefore.Length > 0)
+                {
+                    ExtensionNodeDescription relNode;
+                    if (added.TryGetValue(node.InsertBefore, out relNode))
+                    {
+                        // Out of order. Move it before the referenced node
+                        int i = fullSorted.IndexOf(relNode);
+                        fullSorted.Insert(i, node);
+                        orderChanged = true;
+                    }
+                    else
+                    {
+                        fullSorted.Add(node);
+                    }
+                }
+                else
+                    fullSorted.Add(node);
+            }
+            if (orderChanged)
+            {
+                list.Clear();
+                foreach (ExtensionNodeDescription node in fullSorted)
+                    list.Add(node);
+            }
+        }
+
+        private void AddNodeSorted(ExtensionNodeDescriptionCollection list, ExtensionNodeDescription node, ref int curPos)
+        {
+            // Adds the node at the correct position, taking into account insertbefore and insertafter
+
+            if (node.InsertAfter.Length > 0)
+            {
+                string afterId = node.InsertAfter;
+                for (int n = 0; n < list.Count; n++)
+                {
+                    if (list[n].Id == afterId)
+                    {
+                        list.Insert(n + 1, node);
+                        curPos = n + 2;
+                        return;
+                    }
+                }
+            }
+            else if (node.InsertBefore.Length > 0)
+            {
+                string beforeId = node.InsertBefore;
+                for (int n = 0; n < list.Count; n++)
+                {
+                    if (list[n].Id == beforeId)
+                    {
+                        list.Insert(n, node);
+                        curPos = n + 1;
+                        return;
+                    }
+                }
+            }
+            if (curPos == -1)
+                list.Add(node);
+            else
+                list.Insert(curPos++, node);
+        }
+
+
+
+        private void RunScannerProcess()
         {
             ISetupHandler setup = GetSetupHandler();
 
-            IProgressStatus scanMonitor = monitor;
             ArrayList pparams = new ArrayList();
 
             bool retry = false;
@@ -1057,90 +1413,53 @@ namespace Clamp.OSGI.Framework.Data
             {
                 try
                 {
-                    if (monitor.LogLevel > 1)
-                        monitor.Log("Looking for addins");
-                    setup.Scan(scanMonitor, registry, null, (string[])pparams.ToArray(typeof(string)));
+                    setup.Scan(registry, null, (string[])pparams.ToArray(typeof(string)));
                     retry = false;
                 }
                 catch (Exception ex)
                 {
-                    ProcessFailedException pex = ex as ProcessFailedException;
-                    if (pex != null)
-                    {
-                        // Get the last logged operation.
-                        if (pex.LastLog.StartsWith("scan:"))
-                        {
-                            // It crashed while scanning a file. Add the file to the ignore list and try again.
-                            string file = pex.LastLog.Substring(5);
-                            pparams.Add(file);
-                            monitor.ReportWarning("Could not scan file: " + file);
-                            retry = true;
-                            continue;
-                        }
-                    }
-                    fatalDatabseError = true;
-                    // If the process has crashed, try to do a new scan, this time using verbose log,
-                    // to give the user more information about the origin of the crash.
-                    if (pex != null && !retry)
-                    {
-                        monitor.ReportError("Add-in scan operation failed. The runtime may have encountered an error while trying to load an assembly.", null);
-                        if (monitor.LogLevel <= 1)
-                        {
-                            // Re-scan again using verbose log, to make it easy to find the origin of the error.
-                            retry = true;
-                            scanMonitor = new ConsoleProgressStatus(true);
-                        }
-                    }
-                    else
-                        retry = false;
+                    //ProcessFailedException pex = ex as ProcessFailedException;
 
-                    if (!retry)
-                    {
-                        var pfex = ex as ProcessFailedException;
-                        monitor.ReportError("Add-in scan operation failed", pfex != null ? pfex.InnerException : ex);
-                        monitor.Cancel();
-                        return;
-                    }
+                    //if (pex != null)
+                    //{
+                    //    // Get the last logged operation.
+                    //    if (pex.LastLog.StartsWith("scan:"))
+                    //    {
+                    //        // It crashed while scanning a file. Add the file to the ignore list and try again.
+                    //        string file = pex.LastLog.Substring(5);
+                    //        pparams.Add(file);
+                    //        monitor.ReportWarning("Could not scan file: " + file);
+                    //        retry = true;
+                    //        continue;
+                    //    }
+                    //}
+
+                    //fatalDatabseError = true;
+                    //// If the process has crashed, try to do a new scan, this time using verbose log,
+                    //// to give the user more information about the origin of the crash.
+                    //if (pex != null && !retry)
+                    //{
+                    //    monitor.ReportError("Add-in scan operation failed. The runtime may have encountered an error while trying to load an assembly.", null);
+                    //    if (monitor.LogLevel <= 1)
+                    //    {
+                    //        // Re-scan again using verbose log, to make it easy to find the origin of the error.
+                    //        retry = true;
+                    //        scanMonitor = new ConsoleProgressStatus(true);
+                    //    }
+                    //}
+                    //else
+                    //    retry = false;
+
+                    //if (!retry)
+                    //{
+                    //    var pfex = ex as ProcessFailedException;
+                    //    monitor.ReportError("Add-in scan operation failed", pfex != null ? pfex.InnerException : ex);
+                    //    monitor.Cancel();
+                    //    return;
+                    //}
                 }
             }
             while (retry);
-        }
-
-        private bool DatabaseInfrastructureCheck(IProgressStatus monitor)
-        {
-            // Do some sanity check, to make sure the basic database infrastructure can be created
-
-            bool hasChanges = false;
-
-            try
-            {
-
-                if (!Directory.Exists(AddinCachePath))
-                {
-                    Directory.CreateDirectory(AddinCachePath);
-                    hasChanges = true;
-                }
-
-                if (!Directory.Exists(AddinFolderCachePath))
-                {
-                    Directory.CreateDirectory(AddinFolderCachePath);
-                    hasChanges = true;
-                }
-
-                // Make sure we can write in those folders
-
-                Util.CheckWrittableFloder(AddinCachePath);
-                Util.CheckWrittableFloder(AddinFolderCachePath);
-
-                fatalDatabseError = false;
-            }
-            catch (Exception ex)
-            {
-                monitor.ReportError("Add-in cache directory could not be created", ex);
-                fatalDatabseError = true;
-                monitor.Cancel();
-            }
-            return hasChanges;
         }
 
         private ISetupHandler GetSetupHandler()
@@ -1438,13 +1757,13 @@ namespace Clamp.OSGI.Framework.Data
             foreach (ModuleDescription module in conf.OptionalModules)
             {
                 missingDeps = addinHash.GetMissingDependencies(conf, module);
+
                 if (missingDeps.Any())
                 {
-                    if (monitor.LogLevel > 1)
-                    {
-                        string w = "An optional module of the add-in '" + conf.AddinId + "' could not be updated because some of its dependencies are missing or not compatible:";
-                        w += BuildMissingAddinsList(addinHash, conf, missingDeps);
-                    }
+                    string w = "An optional module of the add-in '" + conf.AddinId + "' could not be updated because some of its dependencies are missing or not compatible:";
+                    w += BuildMissingAddinsList(addinHash, conf, missingDeps);
+
+                    //TODO 日志记录
                 }
                 else
                     CollectModuleExtensionData(conf, module, updateData, addinHash);
@@ -1474,6 +1793,36 @@ namespace Clamp.OSGI.Framework.Data
                 AddChildExtensions(conf, module, updateData, index, ext.Path, ext.ExtensionNodes, false);
             }
         }
+
+        private void AddChildExtensions(BundleDescription conf, ModuleDescription module, AddinUpdateData updateData, AddinIndex index, string path, ExtensionNodeDescriptionCollection nodes, bool conditionChildren)
+        {
+            // Don't register conditions as extension nodes.
+            if (!conditionChildren)
+                updateData.RegisterExtension(conf, module, path);
+
+            foreach (ExtensionNodeDescription node in nodes)
+            {
+                if (node.NodeName == "ComplexCondition")
+                    continue;
+                updateData.RelExtensionNodes++;
+                string id = node.GetAttribute("id");
+                if (id.Length != 0)
+                {
+                    bool isCondition = node.NodeName == "Condition";
+                    if (isCondition)
+                    {
+                        // Find the add-in that provides the implementation for this condition.
+                        // Store that id in the condition. The add-in engine will ensure the add-in
+                        // is loaded when it tries to evaluate this condition.
+                        var condAsm = index.FindCondition(conf, module, id);
+                        if (condAsm != null)
+                            node.SetAttribute(Condition.SourceAddinAttribute, condAsm);
+                    }
+                    AddChildExtensions(conf, module, updateData, index, path + "/" + id, node.ChildNodes, isCondition);
+                }
+            }
+        }
+
         #endregion
 
 

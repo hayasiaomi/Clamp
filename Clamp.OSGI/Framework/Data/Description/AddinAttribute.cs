@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Annotation
+namespace Clamp.OSGI.Framework.Data.Description
 {
     /// <summary>
     /// Marks an assembly as being an add-in.

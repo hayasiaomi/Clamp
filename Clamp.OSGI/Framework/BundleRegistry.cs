@@ -1,5 +1,7 @@
 ﻿using Clamp.OSGI.Framework.Data;
+using Clamp.OSGI.Framework.Data.Description;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -69,7 +71,6 @@ namespace Clamp.OSGI.Framework
         {
         }
 
-
         public BundleRegistry(ClampBundle clampBundle, string registryPath, string startupDirectory, string addinsDir, string databaseDir)
         {
             basePath = Path.GetFullPath(registryPath);
@@ -107,13 +108,28 @@ namespace Clamp.OSGI.Framework
                 currentDomain = BundleDatabase.GlobalDomain;
         }
 
+
         #region internal method
+
+        internal bool AddinDependsOn(string id1, string id2)
+        {
+            return database.AddinDependsOn(currentDomain, id1, id2);
+        }
+
+        internal void ParseAddin(string file, string outFile)
+        {
+            database.ParseAddin(currentDomain, file, outFile, true);
+        }
+
         internal void NotifyDatabaseUpdated()
         {
             if (startupDirectory != null)
                 currentDomain = database.GetFolderDomain(startupDirectory);
         }
-
+        internal void CopyExtensionsFrom(BundleRegistry other)
+        {
+            database.CopyExtensions(other.database);
+        }
 
         /// <summary>
         /// 新建一个组件宿主
@@ -183,7 +199,6 @@ namespace Clamp.OSGI.Framework
         #region  public method
 
 
-
         public bool IsAddinEnabled(string id)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
@@ -238,6 +253,12 @@ namespace Clamp.OSGI.Framework
 
         #region internal static method
 
+        internal void ScanFolders(string folderToScan, List<string> filesToIgnore)
+        {
+            database.ScanFolders(currentDomain, folderToScan, filesToIgnore);
+        }
+
+
         internal static string GlobalRegistryPath
         {
             get
@@ -255,6 +276,10 @@ namespace Clamp.OSGI.Framework
         #endregion
 
         #region private method
+
+      
+
+
 
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -16,11 +17,7 @@ namespace Clamp.OSGI.Framework.Data.Description
 
         internal string SourceAddinId { get; set; }
 
-        internal ExtensionNodeSet(XmlElement element)
-        {
-            Element = element;
-            id = element.GetAttribute(IdAttribute);
-        }
+
 
         /// <summary>
         /// Copies data from another node set
@@ -44,51 +41,6 @@ namespace Clamp.OSGI.Framework.Data.Description
             missingNodeSetId = nset.missingNodeSetId;
         }
 
-        internal override void Verify(string location, StringCollection errors)
-        {
-            if (missingNodeSetId)
-                errors.Add(location + "Missing id attribute in extension set reference");
-
-            NodeTypes.Verify(location + "ExtensionNodeSet (" + Id + ")/", errors);
-        }
-
-        internal override void SaveXml(XmlElement parent)
-        {
-            SaveXml(parent, "ExtensionNodeSet");
-        }
-
-        internal virtual void SaveXml(XmlElement parent, string nodeName)
-        {
-            if (Element == null)
-            {
-                Element = parent.OwnerDocument.CreateElement(nodeName);
-                parent.AppendChild(Element);
-            }
-            if (Id.Length > 0)
-                Element.SetAttribute(IdAttribute, Id);
-            if (nodeTypes != null)
-                nodeTypes.SaveXml(Element);
-            if (nodeSets != null)
-            {
-                foreach (string s in nodeSets)
-                {
-                    if (Element.SelectSingleNode("ExtensionNodeSet[@id='" + s + "']") == null)
-                    {
-                        XmlElement e = Element.OwnerDocument.CreateElement("ExtensionNodeSet");
-                        e.SetAttribute("id", s);
-                        Element.AppendChild(e);
-                    }
-                }
-                ArrayList list = new ArrayList();
-                foreach (XmlElement e in Element.SelectNodes("ExtensionNodeSet"))
-                {
-                    if (!nodeSets.Contains(e.GetAttribute("id")))
-                        list.Add(e);
-                }
-                foreach (XmlElement e in list)
-                    Element.RemoveChild(e);
-            }
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionNodeSet"/> class.
@@ -126,10 +78,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             {
                 if (nodeTypes == null)
                 {
-                    if (Element != null)
-                        InitCollections();
-                    else
-                        nodeTypes = new ExtensionNodeTypeCollection(this);
+                    nodeTypes = new ExtensionNodeTypeCollection(this);
                 }
                 return nodeTypes;
             }
@@ -147,10 +96,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             {
                 if (nodeSets == null)
                 {
-                    if (Element != null)
-                        InitCollections();
-                    else
-                        nodeSets = new NodeSetIdCollection();
+                    nodeSets = new NodeSetIdCollection();
                 }
                 return nodeSets;
             }
@@ -191,7 +137,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             foreach (ExtensionNodeType nt in NodeTypes)
                 col.Add(nt);
 
-            AddinDescription desc = ParentAddinDescription;
+            BundleDescription desc = ParentAddinDescription;
             if (desc == null || desc.OwnerDatabase == null)
                 return;
 
@@ -208,7 +154,6 @@ namespace Clamp.OSGI.Framework.Data.Description
 
         internal void Clear()
         {
-            Element = null;
             nodeSets = null;
             nodeTypes = null;
         }
@@ -247,46 +192,6 @@ namespace Clamp.OSGI.Framework.Data.Description
                 NodeTypes.Remove(nt);
 
             NodeSets.UnmergeExternalData(thisAddinId, addinsToUnmerge);
-        }
-
-        void InitCollections()
-        {
-            nodeTypes = new ExtensionNodeTypeCollection(this);
-            nodeSets = new NodeSetIdCollection();
-
-            foreach (XmlNode n in Element.ChildNodes)
-            {
-                XmlElement nt = n as XmlElement;
-                if (nt == null)
-                    continue;
-                if (nt.LocalName == "ExtensionNode")
-                {
-                    ExtensionNodeType etype = new ExtensionNodeType(nt);
-                    nodeTypes.Add(etype);
-                }
-                else if (nt.LocalName == "ExtensionNodeSet")
-                {
-                    string id = nt.GetAttribute("id");
-                    if (id.Length > 0)
-                        nodeSets.Add(id);
-                    else
-                        missingNodeSetId = true;
-                }
-            }
-        }
-
-        internal override void Write(BinaryXmlWriter writer)
-        {
-            writer.WriteValue("Id", id);
-            writer.WriteValue("NodeTypes", NodeTypes);
-            writer.WriteValue("NodeSets", NodeSets.InternalList);
-        }
-
-        internal override void Read(BinaryXmlReader reader)
-        {
-            id = reader.ReadStringValue("Id");
-            nodeTypes = (ExtensionNodeTypeCollection)reader.ReadValue("NodeTypes", new ExtensionNodeTypeCollection(this));
-            reader.ReadValue("NodeSets", NodeSets.InternalList);
         }
     }
 

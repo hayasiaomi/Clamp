@@ -1,4 +1,4 @@
-﻿using Clamp.OSGI.Framework.Description;
+﻿using Clamp.OSGI.Framework.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

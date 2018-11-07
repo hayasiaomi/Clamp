@@ -54,20 +54,24 @@
     <Compile Include="Framework\ConditionType.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescription.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescriptionCollection.cs" />
+    <Compile Include="Framework\Data\Description\CustomExtensionAttribute.cs" />
+    <Compile Include="Framework\Data\Description\ExtensionNodeAttribute.cs" />
+    <Compile Include="Framework\Data\Description\NodeAttributeAttribute.cs" />
     <Compile Include="Framework\Data\ProcessFailedException.cs" />
     <Compile Include="Framework\Data\SetupDomain.cs" />
+    <Compile Include="Framework\Data\SetupLocal.cs" />
+    <Compile Include="Framework\Data\SingleFileAssemblyResolver.cs" />
     <Compile Include="Framework\ISetupHandler.cs" />
     <Compile Include="Framework\Localization\AddinLocalizer.cs" />
     <Compile Include="Framework\AddinSearchFlags.cs" />
-    <Compile Include="Framework\Annotation\AddinAttribute.cs" />
-    <Compile Include="Framework\Annotation\BundleDependencyAttribute.cs" />
-    <Compile Include="Framework\Annotation\BundleAttribute.cs" />
+    <Compile Include="Framework\Data\Description\AddinAttribute.cs" />
+    <Compile Include="Framework\Data\Description\BundleDependencyAttribute.cs" />
+    <Compile Include="Framework\Data\Description\BundleAttribute.cs" />
     <Compile Include="Framework\Bundle.cs" />
     <Compile Include="Framework\BundleActivator.cs" />
     <Compile Include="Framework\BundleContext.cs" />
     <Compile Include="Framework\BundleInfo.cs" />
     <Compile Include="Framework\BundleRegistry.cs" />
-    <Compile Include="Framework\ClampConstants.cs" />
     <Compile Include="Framework\Data\AddinFlags.cs" />
     <Compile Include="Framework\Data\AddinIndex.cs" />
     <Compile Include="Framework\Data\AddinSearchFlagsInternal.cs" />
@@ -85,8 +89,6 @@
     <Compile Include="Framework\Data\BundleDatabase.cs" />
     <Compile Include="Framework\Data\Description\AddinProperty.cs" />
     <Compile Include="Framework\Data\Description\AddinPropertyCollection.cs" />
-    <Compile Include="Framework\Data\DefaultClampAnalyzer.cs" />
-    <Compile Include="Framework\Data\DefaultClampDetector.cs" />
     <Compile Include="Framework\Data\Description\ContentType.cs" />
     <Compile Include="Framework\Data\Description\Dependency.cs" />
     <Compile Include="Framework\Data\Description\DependencyCollection.cs" />
@@ -116,33 +118,29 @@
     <Compile Include="Framework\Localization\IAddinLocalizer.cs" />
     <Compile Include="Framework\Localization\IPluralAddinLocalizer.cs" />
     <Compile Include="Framework\Localization\IAddinLocalizerFactory.cs" />
+    <Compile Include="Framework\Localization\NullLocalizer.cs" />
+    <Compile Include="Framework\Localization\StringResourceLocalizer.cs" />
+    <Compile Include="Framework\Localization\StringTableLocalizer.cs" />
     <Compile Include="Framework\MissingDependencyException.cs" />
     <Compile Include="Framework\Nodes\ExtensionContext.cs" />
     <Compile Include="Framework\Nodes\ExtensionNode.cs" />
     <Compile Include="Framework\Nodes\ExtensionNodeList.cs" />
     <Compile Include="Framework\Nodes\ExtensionTree.cs" />
     <Compile Include="Framework\FrameworkException.cs" />
-    <Compile Include="AddInManager.cs" />
-    <Compile Include="Framework\AssemblyLocator.cs" />
-    <Compile Include="Framework\BuildItemArgs.cs" />
     <Compile Include="Framework\ClampBundle.cs" />
     <Compile Include="Framework\ClampBundleFactory.cs" />
-    <Compile Include="Framework\Codon.cs" />
-    <Compile Include="Framework\ConditionFailedAction.cs" />
-    <Compile Include="DoozerImpl\ClassDoozer.cs" />
-    <Compile Include="DoozerImpl\LazyLoadDoozer.cs" />
-    <Compile Include="DoozerImpl\ServiceDoozer.cs" />
-    <Compile Include="DoozerImpl\WebworkDoozer.cs" />
     <Compile Include="Framework\IBundle.cs" />
     <Compile Include="Framework\IBundleActivator.cs" />
     <Compile Include="Framework\Data\IClampAnalyzer.cs" />
     <Compile Include="Framework\IServiceListener.cs" />
+    <Compile Include="Framework\Nodes\InstanceExtensionNode.cs" />
+    <Compile Include="Framework\Nodes\TypeExtensionNode.cs" />
     <Compile Include="Framework\RuntimeAddin.cs" />
-    <Compile Include="Framework\ServiceEvent.cs" />
     <Compile Include="Framework\IBundleContext.cs" />
     <Compile Include="Framework\IClampBundle.cs" />
     <Compile Include="Framework\Nodes\TreeNode.cs" />
     <Compile Include="Framework\Nodes\TreeNodeCollection.cs" />
+    <Compile Include="Framework\ServiceEvent.cs" />
     <Compile Include="Injection\AssemblyExtensions.cs" />
     <Compile Include="Injection\AutoRegistrationException.cs" />
     <Compile Include="Injection\ConstructorAttribute.cs" />
@@ -178,7 +176,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Framework\TopologicalSort.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\StringResources.resx">

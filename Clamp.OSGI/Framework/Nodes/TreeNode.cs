@@ -291,7 +291,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 nodes.Add(this);
         }
 
-        public bool FindExtensionPathByType(IProgressStatus monitor, Type type, string nodeName, out string path, out string pathNodeName)
+        public bool FindExtensionPathByType(Type type, string nodeName, out string path, out string pathNodeName)
         {
             if (extensionPoint != null)
             {
@@ -310,8 +310,7 @@ namespace Clamp.OSGI.Framework.Nodes
                                 return true;
                             }
                         }
-                        else
-                            monitor.ReportError("Type '" + nt.ObjectTypeName + "' not found in add-in '" + Id + "'", null);
+
                     }
                 }
             }
@@ -319,7 +318,7 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 foreach (TreeNode node in Children)
                 {
-                    if (node.FindExtensionPathByType(monitor, type, nodeName, out path, out pathNodeName))
+                    if (node.FindExtensionPathByType(type, nodeName, out path, out pathNodeName))
                         return true;
                 }
             }

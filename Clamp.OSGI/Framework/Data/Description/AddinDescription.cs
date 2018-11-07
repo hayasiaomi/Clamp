@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -114,6 +115,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 return optionalModules;
             }
         }
+
         public ModuleCollection AllModules
         {
             get
@@ -125,6 +127,23 @@ namespace Clamp.OSGI.Framework.Data.Description
                 foreach (ModuleDescription mod in OptionalModules)
                     col.Add(mod);
 
+                return col;
+            }
+        }
+
+        public StringCollection AllIgnorePaths
+        {
+            get
+            {
+                StringCollection col = new StringCollection();
+                foreach (string s in MainModule.IgnorePaths)
+                    col.Add(s);
+
+                foreach (ModuleDescription mod in OptionalModules)
+                {
+                    foreach (string s in mod.IgnorePaths)
+                        col.Add(s);
+                }
                 return col;
             }
         }
@@ -483,6 +502,33 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
         #endregion
 
+        #region public mehtod
+        public void Save(string fileName)
+        {
+            configFile = fileName;
+            Save();
+        }
+
+        public void Save()
+        {
+            if (configFile == null)
+                throw new InvalidOperationException("File name not specified.");
+
+            //SaveXml();
+
+            //using (StreamWriter sw = new StreamWriter(configFile))
+            //{
+            //    XmlTextWriter tw = new XmlTextWriter(sw);
+            //    tw.Formatting = Formatting.Indented;
+            //    configDoc.Save(tw);
+            //}
+        }
+
+
+
+
+        #endregion
+
         #region private method
 
         private bool TryGetVariableValue(string name, out string value)
@@ -511,6 +557,10 @@ namespace Clamp.OSGI.Framework.Data.Description
         #endregion
 
         #region internal static method
+        internal void ResetXmlDoc()
+        {
+            //configDoc = null;
+        }
 
         internal static BundleDescription Merge(BundleDescription desc1, BundleDescription desc2)
         {
@@ -530,6 +580,50 @@ namespace Clamp.OSGI.Framework.Data.Description
             //            desc1.MainModule.DataFiles.Add(s);
             //        desc1.MainModule.MergeWith(desc2.MainModule);
             return desc1;
+        }
+
+        internal ExtensionNodeDescription FindExtensionNode(string path, bool lookInDeps)
+        {
+            // Look in the extensions of this add-in
+
+            foreach (Extension ext in MainModule.Extensions)
+            {
+                if (path.StartsWith(ext.Path + "/"))
+                {
+                    string subp = path.Substring(ext.Path.Length).Trim('/');
+                    ExtensionNodeDescriptionCollection nodes = ext.ExtensionNodes;
+                    ExtensionNodeDescription node = null;
+                    foreach (string p in subp.Split('/'))
+                    {
+                        if (p.Length == 0) continue;
+                        node = nodes[p];
+                        if (node == null)
+                            break;
+                        nodes = node.ChildNodes;
+                    }
+                    if (node != null)
+                        return node;
+                }
+            }
+
+            if (!lookInDeps || OwnerDatabase == null)
+                return null;
+
+            // Look in dependencies
+
+            foreach (Dependency dep in MainModule.Dependencies)
+            {
+                BundleDependency adep = dep as BundleDependency;
+                if (adep == null) continue;
+                Bundle ad = OwnerDatabase.GetInstalledAddin(Domain, adep.FullAddinId);
+                if (ad != null && ad.Description != null)
+                {
+                    ExtensionNodeDescription node = ad.Description.FindExtensionNode(path, false);
+                    if (node != null)
+                        return node;
+                }
+            }
+            return null;
         }
 
         internal static BundleDescription ReadBinary(FileDatabase fdb, string configFile)

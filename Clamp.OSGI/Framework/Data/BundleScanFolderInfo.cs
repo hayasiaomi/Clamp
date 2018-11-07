@@ -161,7 +161,7 @@ namespace Clamp.OSGI.Framework.Data
         public static BundleScanFolderInfo Read(FileDatabase filedb, string basePath, string folderPath)
         {
             string fileName;
-            BundleScanFolderInfo finfo = (BundleScanFolderInfo)filedb.ReadSharedObject(basePath, GetDomain(folderPath), ".data", Path.GetFullPath(folderPath), typeMap, out fileName);
+            BundleScanFolderInfo finfo = (BundleScanFolderInfo)filedb.ReadSharedObject(basePath, GetDomain(folderPath), ".data", Path.GetFullPath(folderPath), out fileName);
             if (finfo != null)
                 finfo.fileName = fileName;
             return finfo;

@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Description;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Clamp.OSGI.Framework.Nodes
@@ -188,7 +191,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 return null;
             }
         }
-
+        #region private mehtod
         bool InitializeNodeType(ExtensionNodeType ntype)
         {
             RuntimeAddin p = addinEngine.GetAddin(ntype.AddinId);
@@ -196,7 +199,7 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 if (!addinEngine.IsAddinLoaded(ntype.AddinId))
                 {
-                    if (!addinEngine.LoadAddin(null, ntype.AddinId, false))
+                    if (!addinEngine.LoadAddin(ntype.AddinId, false))
                         return false;
                     p = addinEngine.GetAddin(ntype.AddinId);
                     if (p == null)
@@ -320,5 +323,7 @@ namespace Clamp.OSGI.Framework.Nodes
 
             return fdata;
         }
+
+        #endregion
     }
 }

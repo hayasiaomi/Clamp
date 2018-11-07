@@ -1,6 +1,5 @@
 ﻿using Clamp.OSGI.Framework.Data;
 using Clamp.OSGI.Framework.Data.Description;
-using Clamp.OSGI.Framework.Description;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -112,7 +111,7 @@ namespace Clamp.OSGI.Framework
             get { return this.AddinInfo.Properties; }
         }
 
-     
+
         public bool Enabled
         {
             get
@@ -177,6 +176,10 @@ namespace Clamp.OSGI.Framework
         }
         #endregion
         #region internal Property
+        internal ClampBundle ClampBundle
+        {
+            get { return this.clampBundle; }
+        }
 
         internal BundleRegistry Registry
         {
@@ -249,11 +252,6 @@ namespace Clamp.OSGI.Framework
         }
 
 
-        public ClampBundle ClampBundle
-        {
-            get { return this.clampBundle; }
-        }
-
         public virtual void Start()
         {
             throw new NotImplementedException();
@@ -263,6 +261,8 @@ namespace Clamp.OSGI.Framework
         {
             throw new NotImplementedException();
         }
+
+
         #endregion
 
         #region private method

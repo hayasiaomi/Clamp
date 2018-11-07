@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Annotation
+namespace Clamp.OSGI.Framework.Data.Description
 {
 
     [AttributeUsage(AttributeTargets.Assembly)]
     public class BundleAttribute : Attribute
     {
-     
+
         public BundleAttribute()
         {
         }
@@ -28,7 +28,7 @@ namespace Clamp.OSGI.Framework.Annotation
         public string Id { set; get; }
 
         public string Version { set; get; }
-   
+
         public string CompatVersion { set; get; }
 
         public string Namespace { set; get; }

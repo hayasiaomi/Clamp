@@ -1,8 +1,10 @@
 ﻿using Clamp.OSGI.Framework.Data;
 using Clamp.OSGI.Framework.Data.Description;
+using Clamp.OSGI.Framework.Localization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -63,7 +65,7 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public string Id
         {
-            get { return Addin.GetIdName(id); }
+            get { return Bundle.GetIdName(id); }
         }
 
         /// <summary>
@@ -71,10 +73,10 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public string Version
         {
-            get { return Addin.GetIdVersion(id); }
+            get { return Bundle.GetIdVersion(id); }
         }
 
-        internal Addin Addin
+        internal Bundle Addin
         {
             get { return ainfo; }
         }
@@ -695,7 +697,7 @@ namespace Clamp.OSGI.Framework
         {
             foreach (Dependency dep in module.Dependencies)
             {
-                AddinDependency pdep = dep as AddinDependency;
+                BundleDependency pdep = dep as BundleDependency;
                 if (pdep == null)
                     continue;
                 if (!addinEngine.IsAddinLoaded(pdep.FullAddinId))

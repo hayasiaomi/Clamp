@@ -1,8 +1,5 @@
-﻿using Clamp.OSGI.DoozerImpl;
-using Clamp.OSGI.Framework.Description;
-using Clamp.OSGI.Framework.Data;
+﻿using Clamp.OSGI.Framework.Data;
 using Clamp.OSGI.Injection;
-using Clamp.SDK.Doozer;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,6 +12,7 @@ using System.Text;
 using System.Collections;
 using Clamp.OSGI.Framework.Data.Description;
 using Clamp.OSGI.Framework.Nodes;
+using Clamp.OSGI.Framework.Localization;
 
 namespace Clamp.OSGI.Framework
 {
@@ -29,7 +27,7 @@ namespace Clamp.OSGI.Framework
         private ExtensionContext extensionContext;
         private bool initialized;
         private string startupDirectory;
-
+        private AddinLocalizer defaultLocalizer;
         public static event AddinErrorEventHandler AddinLoadError;
 
         public static event AddinEventHandler AddinLoaded;
@@ -48,6 +46,16 @@ namespace Clamp.OSGI.Framework
         /// 插件的根目录
         /// </summary>
         public string StartupDirectory { private set; get; }
+
+        public AddinLocalizer DefaultLocalizer
+        {
+            get
+            {
+                CheckInitialized();
+                var loc = defaultLocalizer;
+                return loc ?? NullLocalizer.Instance;
+            }
+        }
 
         public ClampBundle()
         {
@@ -260,6 +268,64 @@ namespace Clamp.OSGI.Framework
 
         #region internal method
 
+
+        internal void UnregisterAddinNodeSets(string addinId)
+        {
+            lock (extensionContext.LocalLock)
+            {
+                var nodeSetsCopy = new Dictionary<string, ExtensionNodeSet>(nodeSets);
+                foreach (var nset in nodeSetsCopy.Values.Where(n => n.SourceAddinId == addinId).ToArray())
+                    nodeSetsCopy.Remove(nset.Id);
+                nodeSets = nodeSetsCopy;
+            }
+        }
+
+
+        internal ExtensionNodeType FindType(ExtensionNodeSet nset, string name, string callingAddinId)
+        {
+            if (nset == null)
+                return null;
+
+            foreach (ExtensionNodeType nt in nset.NodeTypes)
+            {
+                if (nt.Id == name)
+                    return nt;
+            }
+
+            foreach (string ns in nset.NodeSets)
+            {
+                ExtensionNodeSet regSet;
+                if (!nodeSets.TryGetValue(ns, out regSet))
+                {
+                    ReportError("Unknown node set: " + ns, callingAddinId, null, false);
+                    return null;
+                }
+                ExtensionNodeType nt = FindType(regSet, name, callingAddinId);
+                if (nt != null)
+                    return nt;
+            }
+            return null;
+        }
+
+        internal void RegisterAssemblies(RuntimeAddin addin)
+        {
+            lock (extensionContext.LocalLock)
+            {
+                var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeAddin>(loadedAssemblies);
+                foreach (Assembly asm in addin.Assemblies)
+                    loadedAssembliesCopy[asm] = addin;
+                loadedAssemblies = loadedAssembliesCopy;
+            }
+        }
+
+        internal RuntimeAddin GetAddin(string id)
+        {
+            ValidateAddinRoots();
+            RuntimeAddin a;
+            loadedAddins.TryGetValue(Bundle.GetIdName(id), out a);
+            return a;
+        }
+
         internal void RegisterAutoTypeExtensionPoint(Type type, string path)
         {
             autoExtensionTypes[type] = path;
@@ -299,7 +365,7 @@ namespace Clamp.OSGI.Framework
         internal void CheckInitialized()
         {
             if (!initialized)
-                throw new InvalidOperationException("Add-in engine not initialized.");
+                throw new InvalidOperationException("Clamp框架没有初始化过");
         }
 
         internal void ValidateAddinRoots()

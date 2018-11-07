@@ -21,10 +21,10 @@ namespace Clamp
             //};
             //ServiceBase.Run(ServicesToRun);
 
-            using (IClampBundle clampBundle = ClampBundleFactory.GetClampBundle())
-            {
-                clampBundle.Start();
-            }
+            IClampBundle clampBundle = ClampBundleFactory.GetClampBundle();
+
+            clampBundle.Start();
+
         }
     }
 }

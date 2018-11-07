@@ -32,6 +32,11 @@ namespace Clamp.OSGI.Framework.Data
             set { ignoreDesc = value; }
         }
 
+        internal string UpdateDatabaseLockFile
+        {
+            get { return Path.Combine(rootDirectory, "fdb-update-lock"); }
+        }
+
 
         #region public mehtod
 
@@ -123,6 +128,90 @@ namespace Clamp.OSGI.Framework.Data
             return file;
         }
 
+        public bool BeginTransaction()
+        {
+            if (inTransaction)
+                throw new InvalidOperationException("Already in a transaction");
+
+            transactionLock = LockWrite();
+            try
+            {
+                updatingLock = new FileStream(UpdateDatabaseLockFile, System.IO.FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                // The database is already being updated. Can't do anything for now.
+                return false;
+            }
+            finally
+            {
+                transactionLock.Dispose();
+            }
+
+            // Delete .new files that could have been left by an aborted database update
+
+            transactionLock = LockRead();
+            CleanDirectory(rootDirectory);
+
+            inTransaction = true;
+            foldersToUpdate = new Hashtable();
+            deletedFiles = new Hashtable();
+            deletedDirs = new Hashtable();
+            return true;
+        }
+
+        public void CommitTransaction()
+        {
+            if (!inTransaction)
+                return;
+
+            try
+            {
+                transactionLock.Dispose();
+                transactionLock = LockWrite();
+                foreach (string dir in foldersToUpdate.Keys)
+                {
+                    foreach (string file in Directory.GetFiles(dir, "*.new"))
+                    {
+                        string dst = file.Substring(0, file.Length - 4);
+                        File.Delete(dst);
+                        File.Move(file, dst);
+                    }
+                }
+                foreach (string file in deletedFiles.Keys)
+                    File.Delete(file);
+                foreach (string dir in deletedDirs.Keys)
+                    Directory.Delete(dir, true);
+            }
+            finally
+            {
+                transactionLock.Dispose();
+                EndTransaction();
+            }
+        }
+
+
+        public void RollbackTransaction()
+        {
+            if (!inTransaction)
+                return;
+
+            try
+            {
+                // There is no need for write lock since existing files won't be updated.
+
+                foreach (string dir in foldersToUpdate.Keys)
+                {
+                    foreach (string file in Directory.GetFiles(dir, "*.new"))
+                        File.Delete(file);
+                }
+            }
+            finally
+            {
+                transactionLock.Dispose();
+                EndTransaction();
+            }
+        }
         public object ReadSharedObject(string fullFileName)
         {
             object result;
@@ -237,6 +326,26 @@ namespace Clamp.OSGI.Framework.Data
         #endregion
 
         #region private Method
+
+        private void EndTransaction()
+        {
+            inTransaction = false;
+            deletedFiles = null;
+            foldersToUpdate = null;
+            updatingLock.Close();
+            updatingLock = null;
+            transactionLock = null;
+        }
+
+        private void CleanDirectory(string dir)
+        {
+            foreach (string file in Directory.GetFiles(dir, "*.new"))
+                File.Delete(file);
+
+            foreach (string sdir in Directory.GetDirectories(dir))
+                CleanDirectory(sdir);
+        }
+
 
         private object ReadSharedObject(string directory, string sharedFileName, string extension, string objectId, bool checkOnly, out string fileName)
         {

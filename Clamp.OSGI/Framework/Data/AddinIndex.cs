@@ -47,6 +47,27 @@ namespace Clamp.OSGI.Framework.Data
             return null;
         }
 
+        public string FindCondition(BundleDescription desc, ModuleDescription mod, string conditionId)
+        {
+            if (desc.ConditionTypes.Any(c => c.Id == conditionId))
+                return desc.AddinId;
+
+            foreach (Dependency dep in mod.Dependencies)
+            {
+                BundleDependency adep = dep as BundleDependency;
+
+                if (adep == null)
+                    continue;
+                var descs = FindDescriptions(desc.Domain, adep.FullAddinId);
+                foreach (var d in descs)
+                {
+                    var c = FindCondition(d, d.MainModule, conditionId);
+                    if (c != null)
+                        return c;
+                }
+            }
+            return null;
+        }
 
         public List<BundleDescription> GetSortedAddins()
         {

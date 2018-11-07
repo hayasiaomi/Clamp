@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Description;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +16,7 @@ namespace Clamp.OSGI.Framework.Nodes
         string addinId;
         ExtensionNodeType nodeType;
         ModuleDescription module;
-        AddinEngine addinEngine;
+        ClampBundle addinEngine;
         event ExtensionNodeEventHandler extensionNodeChanged;
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace Clamp.OSGI.Framework.Nodes
             treeNode = node;
         }
 
-        internal void SetData(AddinEngine addinEngine, string plugid, ExtensionNodeType nodeType, ModuleDescription module)
+        internal void SetData(ClampBundle addinEngine, string plugid, ExtensionNodeType nodeType, ModuleDescription module)
         {
             this.addinEngine = addinEngine;
             this.addinId = plugid;
@@ -115,7 +117,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 if (addin == null && addinId != null)
                 {
                     if (!addinEngine.IsAddinLoaded(addinId))
-                        addinEngine.LoadAddin(null, addinId, true);
+                        addinEngine.LoadAddin(addinId, true);
                     addin = addinEngine.GetAddin(addinId);
                     if (addin != null)
                         addin = addin.GetModule(module);

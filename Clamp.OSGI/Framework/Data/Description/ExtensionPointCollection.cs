@@ -14,5 +14,27 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal ExtensionPointCollection(object owner) : base(owner)
         {
         }
+
+        public ExtensionPoint this[int n]
+        {
+            get { return (ExtensionPoint)List[n]; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Mono.Addins.Description.ExtensionPoint"/> with the specified path.
+        /// </summary>
+        /// <param name='path'>
+        /// Path.
+        /// </param>
+        public ExtensionPoint this[string path]
+        {
+            get
+            {
+                for (int n = 0; n < List.Count; n++)
+                    if (((ExtensionPoint)List[n]).Path == path)
+                        return (ExtensionPoint)List[n];
+                return null;
+            }
+        }
     }
 }

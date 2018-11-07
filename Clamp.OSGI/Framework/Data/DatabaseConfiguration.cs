@@ -9,7 +9,7 @@ namespace Clamp.OSGI.Framework.Data
 {
     internal class DatabaseConfiguration
     {
-        Dictionary<string, AddinStatus> addinStatus = new Dictionary<string, AddinStatus>();
+        private Dictionary<string, AddinStatus> addinStatus = new Dictionary<string, AddinStatus>();
 
         internal class AddinStatus
         {
@@ -190,5 +190,4 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
     }
-}
 }

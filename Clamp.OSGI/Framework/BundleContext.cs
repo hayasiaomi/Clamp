@@ -1,4 +1,4 @@
-﻿using Clamp.OSGI.Framework.Description;
+﻿using Clamp.OSGI.Framework.Nodes;
 using Clamp.SDK.Framework;
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace Clamp.OSGI.Framework
 
         public IBundle[] GetBundles()
         {
-            return this.framework.Bundles.ToArray();
+            return this.framework.Registry.GetAddins();
         }
 
         public void AddServiceListener(IServiceListener listener)
