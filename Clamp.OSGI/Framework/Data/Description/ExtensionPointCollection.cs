@@ -21,7 +21,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.ExtensionPoint"/> with the specified path.
+        /// Gets the <see cref="Mono.Bundles.Description.ExtensionPoint"/> with the specified path.
         /// </summary>
         /// <param name='path'>
         /// Path.

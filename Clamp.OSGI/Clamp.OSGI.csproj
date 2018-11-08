@@ -36,9 +36,6 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteDB">
-      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -52,21 +49,44 @@
     <Compile Include="Framework\BundleErrorEventArgs.cs" />
     <Compile Include="Framework\BundleEventArgs.cs" />
     <Compile Include="Framework\ConditionType.cs" />
-    <Compile Include="Framework\Data\Description\BundleRootAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinAuthorAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinCategoryAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinDescriptionAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinFlagsAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinLocalizerGettextAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinModuleAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinNameAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinPropertyAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\AddinUrlAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleRootAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ExtensionAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ExtensionAttributeAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ExtensionNodeChildAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ExtensionPointAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ImportAddinAssemblyAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ImportAddinFileAttribute.cs" />
+    <Compile Include="Framework\Data\CustomAttribute.cs" />
+    <Compile Include="Framework\Data\Description\AssemblyDependency.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescription.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescriptionCollection.cs" />
-    <Compile Include="Framework\Data\Description\CustomExtensionAttribute.cs" />
-    <Compile Include="Framework\Data\Description\ExtensionNodeAttribute.cs" />
-    <Compile Include="Framework\Data\Description\NodeAttributeAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\CustomExtensionAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\ExtensionNodeAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\NodeAttributeAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\TypeExtensionPointAttribute.cs" />
+    <Compile Include="Framework\Data\Description\NodeSetIdCollection.cs" />
     <Compile Include="Framework\Data\ProcessFailedException.cs" />
+    <Compile Include="Framework\Data\Serialization\BinaryXmlReader.cs" />
+    <Compile Include="Framework\Data\Serialization\BinaryXmlTypeMap.cs" />
+    <Compile Include="Framework\Data\Serialization\BinaryXmlWriter.cs" />
+    <Compile Include="Framework\Data\Serialization\IBinaryXmlElement.cs" />
     <Compile Include="Framework\Data\SetupDomain.cs" />
     <Compile Include="Framework\Data\SetupLocal.cs" />
     <Compile Include="Framework\Data\SingleFileAssemblyResolver.cs" />
     <Compile Include="Framework\ISetupHandler.cs" />
     <Compile Include="Framework\Localization\BundleLocalizer.cs" />
     <Compile Include="Framework\BundleSearchFlags.cs" />
-    <Compile Include="Framework\Data\Description\BundleAttribute.cs" />
-    <Compile Include="Framework\Data\Description\BundleDependencyAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleDependencyAttribute.cs" />
     <Compile Include="Framework\Bundle.cs" />
     <Compile Include="Framework\BundleActivator.cs" />
     <Compile Include="Framework\BundleContext.cs" />
@@ -80,7 +100,6 @@
     <Compile Include="Framework\Data\DefaultAssemblyReflector.cs" />
     <Compile Include="Framework\Data\Description\BundleDependency.cs" />
     <Compile Include="Framework\Data\Description\BundleDescription.cs" />
-    <Compile Include="Framework\Data\BundleFileInfo.cs" />
     <Compile Include="Framework\Data\BundleFileSystemExtension.cs" />
     <Compile Include="Framework\Data\BundleHostIndex.cs" />
     <Compile Include="Framework\Data\BundleScanner.cs" />

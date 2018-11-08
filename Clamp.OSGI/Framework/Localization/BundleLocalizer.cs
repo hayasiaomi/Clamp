@@ -8,12 +8,12 @@ namespace Clamp.OSGI.Framework.Localization
     public class BundleLocalizer
     {
         IBundleLocalizer localizer;
-        IPluralAddinLocalizer pluralLocalizer;
+        IPluralBundleLocalizer pluralLocalizer;
 
         internal BundleLocalizer(IBundleLocalizer localizer)
         {
             this.localizer = localizer;
-            pluralLocalizer = localizer as IPluralAddinLocalizer;
+            pluralLocalizer = localizer as IPluralBundleLocalizer;
         }
 
         /// <summary>

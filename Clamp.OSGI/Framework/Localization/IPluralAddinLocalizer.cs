@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Localization
 {
-    public interface IPluralAddinLocalizer
+    public interface IPluralBundleLocalizer
     {
         /// <summary>
         /// Gets a localized message which may contain plural forms.

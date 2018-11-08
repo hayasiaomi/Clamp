@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Serialization;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
@@ -13,10 +16,17 @@ namespace Clamp.OSGI.Framework.Data.Description
         string description;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.ConditionTypeDescription"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ConditionTypeDescription"/> class.
         /// </summary>
         public ConditionTypeDescription()
         {
+        }
+
+        internal ConditionTypeDescription(XmlElement elem) : base(elem)
+        {
+            id = elem.GetAttribute("id");
+            typeName = elem.GetAttribute("type");
+            description = ReadXmlDescription();
         }
 
         /// <summary>
@@ -29,10 +39,15 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
             id = cond.id;
             typeName = cond.typeName;
-            addinId = cond.AddinId;
+            addinId = cond.BundleId;
             description = cond.description;
         }
 
+        internal override void Verify(string location, StringCollection errors)
+        {
+            VerifyNotEmpty(location + "ConditionType", errors, Id, "id");
+            VerifyNotEmpty(location + "ConditionType (" + Id + ")", errors, TypeName, "type");
+        }
 
         /// <summary>
         /// Gets or sets the identifier of the condition type
@@ -70,10 +85,35 @@ namespace Clamp.OSGI.Framework.Data.Description
             set { description = value; }
         }
 
-        internal string AddinId
+        internal string BundleId
         {
             get { return addinId; }
             set { addinId = value; }
+        }
+
+        internal override void SaveXml(XmlElement parent)
+        {
+            CreateElement(parent, "ConditionType");
+            Element.SetAttribute("id", id);
+            Element.SetAttribute("type", typeName);
+            SaveXmlDescription(description);
+        }
+
+        internal override void Write(BinaryXmlWriter writer)
+        {
+            writer.WriteValue("Id", Id);
+            writer.WriteValue("TypeName", TypeName);
+            writer.WriteValue("Description", Description);
+            writer.WriteValue("BundleId", BundleId);
+        }
+
+        internal override void Read(BinaryXmlReader reader)
+        {
+            Id = reader.ReadStringValue("Id");
+            TypeName = reader.ReadStringValue("TypeName");
+            if (!reader.IgnoreDescriptionData)
+                Description = reader.ReadStringValue("Description");
+            BundleId = reader.ReadStringValue("BundleId");
         }
     }
 }

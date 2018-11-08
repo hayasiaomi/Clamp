@@ -8,7 +8,7 @@ namespace Clamp.OSGI.Framework.Data.Description
     public class ExtensionCollection : ObjectDescriptionCollection<Extension>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionCollection"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ExtensionCollection"/> class.
         /// </summary>
         public ExtensionCollection()
         {
@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.Extension"/> at the specified index.
+        /// Gets the <see cref="Mono.Bundles.Description.Extension"/> at the specified index.
         /// </summary>
         /// <param name='n'>
         /// The index.

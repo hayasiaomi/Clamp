@@ -8,7 +8,7 @@ namespace Clamp.OSGI.Framework.Data.Description
     public class DependencyCollection : ObjectDescriptionCollection<Dependency>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.DependencyCollection"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.DependencyCollection"/> class.
         /// </summary>
         public DependencyCollection()
         {
@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.Dependency"/> at the specified index.
+        /// Gets the <see cref="Mono.Bundles.Description.Dependency"/> at the specified index.
         /// </summary>
         /// <param name='n'>
         /// The idnex.

@@ -1,4 +1,5 @@
-﻿using Clamp.OSGI.Framework.Data.Description;
+﻿using Clamp.OSGI.Framework.Data.Annotation;
+using Clamp.OSGI.Framework.Data.Description;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 {
                     if (typeName.Length == 0)
                         throw new InvalidOperationException("Type name not specified.");
-                    type = Addin.GetType(typeName, true);
+                    type = Bundle.GetType(typeName, true);
                 }
                 return type;
             }

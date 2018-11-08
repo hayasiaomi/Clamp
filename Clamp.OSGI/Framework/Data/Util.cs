@@ -49,15 +49,15 @@ namespace Clamp.OSGI.Framework.Data
 
         public static void AddDependencies(BundleDescription desc, BundleScanResult scanResult)
         {
-            // Not implemented in AddinScanResult to avoid making AddinDescription remotable
+            // Not implemented in BundleScanResult to avoid making BundleDescription remotable
             foreach (ModuleDescription mod in desc.AllModules)
             {
                 foreach (Dependency dep in mod.Dependencies)
                 {
                     BundleDependency adep = dep as BundleDependency;
                     if (adep == null) continue;
-                    string depid = Bundle.GetFullId(desc.Namespace, adep.AddinId, adep.Version);
-                    scanResult.AddAddinToUpdateRelations(depid);
+                    string depid = Bundle.GetFullId(desc.Namespace, adep.BundleId, adep.Version);
+                    scanResult.AddBundleToUpdateRelations(depid);
                 }
             }
         }

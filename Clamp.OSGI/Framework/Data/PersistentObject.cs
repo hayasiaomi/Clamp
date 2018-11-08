@@ -7,6 +7,8 @@ namespace Clamp.OSGI.Framework.Data
 {
     public class PersistentObject
     {
+        public string ObjectId { set; get; }
+
 
     }
 }

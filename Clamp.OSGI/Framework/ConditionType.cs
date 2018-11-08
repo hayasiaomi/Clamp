@@ -157,13 +157,13 @@ namespace Clamp.OSGI.Framework
         ClampBundle addinEngine;
         string addin;
 
-        internal const string SourceAddinAttribute = "__sourceAddin";
+        internal const string SourceBundleAttribute = "__sourceBundle";
 
         internal Condition(ClampBundle addinEngine, ExtensionNodeDescription element, BaseCondition parent) : base(parent)
         {
             this.addinEngine = addinEngine;
             typeId = element.GetAttribute("id");
-            addin = element.GetAttribute(SourceAddinAttribute);
+            addin = element.GetAttribute(SourceBundleAttribute);
             node = element;
         }
 
@@ -175,7 +175,7 @@ namespace Clamp.OSGI.Framework
             if (!string.IsNullOrEmpty(addin))
             {
                 // Make sure the add-in that implements the condition is loaded
-                addinEngine.LoadAddin(addin, true);
+                addinEngine.LoadBundle(addin, true);
                 addin = null; // Don't try again
             }
 

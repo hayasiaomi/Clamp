@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework
 {
-    public delegate void AddinErrorEventHandler(object sender, BundleErrorEventArgs args);
+    public delegate void BundleErrorEventHandler(object sender, BundleErrorEventArgs args);
 
     /// <summary>
     /// Provides information about an add-in loading error.
@@ -16,7 +16,7 @@ namespace Clamp.OSGI.Framework
         string message;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.AddinErrorEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.BundleErrorEventArgs"/> class.
         /// </summary>
         /// <param name='message'>
         /// Error message

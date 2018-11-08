@@ -240,6 +240,7 @@
     <Compile Include="ModelBinding\ModuleExtensions.cs" />
     <Compile Include="ModelBinding\PropertyBindingException.cs" />
     <Compile Include="NamedPipelineBase.cs" />
+    <Compile Include="Properties\BundleInfo.cs" />
     <Compile Include="WebworkContext.cs" />
     <Compile Include="WebworkEngine.cs" />
     <Compile Include="WebworkEngineExtensions.cs" />
@@ -537,6 +538,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Clamp.OSGI\Clamp.OSGI.csproj">
+      <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
+      <Name>Clamp.OSGI</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

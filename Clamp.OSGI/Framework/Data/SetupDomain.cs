@@ -16,7 +16,7 @@ namespace Clamp.OSGI.Framework.Data
             try
             {
                 RemoteSetupDomain rsd = GetDomain();
-                rsd.Scan(registry.BasePath, registry.DefaultAddinsFolder, registry.BundleCachePath, scanFolder, filesToIgnore);
+                rsd.Scan(registry.BasePath, registry.DefaultBundlesFolder, registry.BundleCachePath, scanFolder, filesToIgnore);
             }
             catch (Exception ex)
             {
@@ -28,12 +28,12 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        public void GetAddinDescription(BundleRegistry registry, string file, string outFile)
+        public void GetBundleDescription(BundleRegistry registry, string file, string outFile)
         {
             try
             {
                 RemoteSetupDomain rsd = GetDomain();
-                rsd.GetAddinDescription(registry.BasePath, registry.DefaultAddinsFolder, registry.BundleCachePath, file, outFile);
+                rsd.GetBundleDescription(registry.BasePath, registry.DefaultBundlesFolder, registry.BundleCachePath, file, outFile);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace Clamp.OSGI.Framework.Data
 
         // ensure types from this assembly returned to this domain from the remote domain can
         // be resolved even if we're in the LoadFrom context
-        static System.Reflection.Assembly MonoAddinsAssemblyResolve(object sender, ResolveEventArgs args)
+        static System.Reflection.Assembly MonoBundlesAssemblyResolve(object sender, ResolveEventArgs args)
         {
             var asm = typeof(SetupDomain).Assembly;
             return args.Name == asm.FullName ? asm : null;
@@ -59,7 +59,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (useCount++ == 0)
                 {
-                    AppDomain.CurrentDomain.AssemblyResolve += MonoAddinsAssemblyResolve;
+                    AppDomain.CurrentDomain.AssemblyResolve += MonoBundlesAssemblyResolve;
                     domain = AppDomain.CreateDomain("SetupDomain", null, AppDomain.CurrentDomain.SetupInformation);
                     var type = typeof(RemoteSetupDomain);
                     remoteSetupDomain = (RemoteSetupDomain)domain.CreateInstanceFromAndUnwrap(type.Assembly.Location, type.FullName);
@@ -77,7 +77,7 @@ namespace Clamp.OSGI.Framework.Data
                     AppDomain.Unload(domain);
                     domain = null;
                     remoteSetupDomain = null;
-                    AppDomain.CurrentDomain.AssemblyResolve -= MonoAddinsAssemblyResolve;
+                    AppDomain.CurrentDomain.AssemblyResolve -= MonoBundlesAssemblyResolve;
                 }
             }
         }
@@ -111,13 +111,13 @@ namespace Clamp.OSGI.Framework.Data
             reg.ScanFolders(scanFolder, files);
         }
 
-        public void GetAddinDescription(string basePath, string addinsDir, string databaseDir, string file, string outFile)
+        public void GetBundleDescription(string basePath, string addinsDir, string databaseDir, string file, string outFile)
         {
             BundleDatabase.RunningSetupProcess = true;
 
             BundleRegistry reg = new BundleRegistry(basePath, addinsDir, databaseDir);
 
-            reg.ParseAddin(file, outFile);
+            reg.ParseBundle(file, outFile);
         }
     }
 }

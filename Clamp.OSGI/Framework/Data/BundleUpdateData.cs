@@ -37,7 +37,7 @@ namespace Clamp.OSGI.Framework.Data
             //RootExtensionPoint rep = new RootExtensionPoint();
             //rep.ExtensionPoint = new ExtensionPoint();
             //rep.ExtensionPoint.SetNodeSet(nset);
-            //rep.ExtensionPoint.RootAddin = description.AddinId;
+            //rep.ExtensionPoint.RootBundle = description.BundleId;
             //rep.ExtensionPoint.Path = nset.Id;
             //rep.Description = description;
             //if (extensions == null)
@@ -66,7 +66,7 @@ namespace Clamp.OSGI.Framework.Data
             //// Create a new extension
             //RootExtensionPoint rep = new RootExtensionPoint();
             //rep.ExtensionPoint = ep;
-            //rep.ExtensionPoint.RootAddin = description.AddinId;
+            //rep.ExtensionPoint.RootBundle = description.BundleId;
             //rep.Description = description;
             //if (extensions == null)
             //{
@@ -91,7 +91,7 @@ namespace Clamp.OSGI.Framework.Data
             //            found = true;
             //            foreach (ExtensionPoint ep in list)
             //            {
-            //                if (IsAddinCompatible(ep.ParentAddinDescription, description, module))
+            //                if (IsBundleCompatible(ep.ParentBundleDescription, description, module))
             //                {
             //                    extension.Path = ep.Path;
             //                    RegisterExtension(description, module, ep.Path);
@@ -100,7 +100,7 @@ namespace Clamp.OSGI.Framework.Data
             //        }
             //    }
             //    if (!found)
-            //        monitor.ReportWarning("The add-in '" + description.AddinId + "' is trying to register the class '" + extension.Path.Substring(1) + "', but there isn't any add-in defining a suitable extension point");
+            //        monitor.ReportWarning("The add-in '" + description.BundleId + "' is trying to register the class '" + extension.Path.Substring(1) + "', but there isn't any add-in defining a suitable extension point");
             //}
             //else if (extension.Path.StartsWith("%"))
             //{
@@ -115,7 +115,7 @@ namespace Clamp.OSGI.Framework.Data
             //            foreach (ExtensionNodeType nt in list)
             //            {
             //                ExtensionPoint ep = (ExtensionPoint)((ExtensionNodeSet)nt.Parent).Parent;
-            //                if (IsAddinCompatible(ep.ParentAddinDescription, description, module))
+            //                if (IsBundleCompatible(ep.ParentBundleDescription, description, module))
             //                {
             //                    extension.Path = ep.Path;
             //                    foreach (ExtensionNodeDescription node in extension.ExtensionNodes)
@@ -126,7 +126,7 @@ namespace Clamp.OSGI.Framework.Data
             //        }
             //    }
             //    if (!found)
-            //        monitor.ReportWarning("The add-in '" + description.AddinId + "' is trying to register the class '" + extension.Path.Substring(1) + "', but there isn't any add-in defining a suitable extension point");
+            //        monitor.ReportWarning("The add-in '" + description.BundleId + "' is trying to register the class '" + extension.Path.Substring(1) + "', but there isn't any add-in defining a suitable extension point");
             //}
         }
 
@@ -141,29 +141,29 @@ namespace Clamp.OSGI.Framework.Data
             //}
             //if (extensions == null)
             //{
-            //    monitor.ReportWarning("The add-in '" + description.AddinId + "' is trying to extend '" + path + "', but there isn't any add-in defining this extension point");
+            //    monitor.ReportWarning("The add-in '" + description.BundleId + "' is trying to extend '" + path + "', but there isn't any add-in defining this extension point");
             //    return;
             //}
 
             //bool found = false;
             //foreach (RootExtensionPoint einfo in extensions)
             //{
-            //    if (IsAddinCompatible(einfo.Description, description, module))
+            //    if (IsBundleCompatible(einfo.Description, description, module))
             //    {
-            //        if (!einfo.ExtensionPoint.Addins.Contains(description.AddinId))
-            //            einfo.ExtensionPoint.Addins.Add(description.AddinId);
+            //        if (!einfo.ExtensionPoint.Bundles.Contains(description.BundleId))
+            //            einfo.ExtensionPoint.Bundles.Add(description.BundleId);
             //        found = true;
             //        if (monitor.LogLevel > 2)
             //        {
-            //            monitor.Log("  * " + einfo.Description.AddinId + "(" + einfo.Description.Domain + ") <- " + path);
+            //            monitor.Log("  * " + einfo.Description.BundleId + "(" + einfo.Description.Domain + ") <- " + path);
             //        }
             //    }
             //}
             //if (!found)
-            //    monitor.ReportWarning("The add-in '" + description.AddinId + "' is trying to extend '" + path + "', but there isn't any compatible add-in defining this extension point");
+            //    monitor.ReportWarning("The add-in '" + description.BundleId + "' is trying to extend '" + path + "', but there isn't any compatible add-in defining this extension point");
         }
 
-        bool IsAddinCompatible(BundleDescription installedDescription, BundleDescription description, ModuleDescription module)
+        bool IsBundleCompatible(BundleDescription installedDescription, BundleDescription description, ModuleDescription module)
         {
             if (installedDescription == description)
                 return true;
@@ -191,7 +191,7 @@ namespace Clamp.OSGI.Framework.Data
             foreach (object dep in deps)
             {
                 BundleDependency adep = dep as BundleDependency;
-                if (adep != null && Bundle.GetFullId(description.Namespace, adep.AddinId, null) == addinId)
+                if (adep != null && Bundle.GetFullId(description.Namespace, adep.BundleId, null) == addinId)
                 {
                     requiredVersion = adep.Version;
                     break;

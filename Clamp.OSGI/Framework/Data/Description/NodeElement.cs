@@ -70,7 +70,7 @@ namespace Clamp.OSGI.Framework.Data.Description
     public interface NodeElementCollection : IList, ICollection, IEnumerable
     {
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.NodeElement"/> at the specified index
+        /// Gets the <see cref="Mono.Bundles.NodeElement"/> at the specified index
         /// </summary>
         /// <param name='n'>
         /// Index

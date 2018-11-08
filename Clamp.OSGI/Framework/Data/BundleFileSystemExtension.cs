@@ -86,17 +86,17 @@ namespace Clamp.OSGI.Framework.Data
 
             // If there is a local copy of the cecil reflector, use it instead of the one in the gac
             Type t;
-            string asmFile = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "Mono.Addins.CecilReflector.dll");
+            string asmFile = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "Mono.Bundles.CecilReflector.dll");
             if (File.Exists(asmFile))
             {
                 Assembly asm = Assembly.LoadFrom(asmFile);
-                t = asm.GetType("Mono.Addins.CecilReflector.Reflector");
+                t = asm.GetType("Mono.Bundles.CecilReflector.Reflector");
             }
             else
             {
                 string refName = GetType().Assembly.FullName;
                 int i = refName.IndexOf(',');
-                refName = "Mono.Addins.CecilReflector.Reflector, Mono.Addins.CecilReflector" + refName.Substring(i);
+                refName = "Mono.Bundles.CecilReflector.Reflector, Mono.Bundles.CecilReflector" + refName.Substring(i);
                 t = Type.GetType(refName, false);
             }
             if (t != null)

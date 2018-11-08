@@ -8,7 +8,7 @@ namespace Clamp.OSGI.Framework.Data.Description
     public class ConditionTypeDescriptionCollection : ObjectDescriptionCollection<ConditionTypeDescription>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.ConditionTypeDescriptionCollection"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ConditionTypeDescriptionCollection"/> class.
         /// </summary>
         public ConditionTypeDescriptionCollection()
         {
@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.ConditionTypeDescription"/> at the specified index.
+        /// Gets the <see cref="Mono.Bundles.Description.ConditionTypeDescription"/> at the specified index.
         /// </summary>
         /// <param name='n'>
         /// Index.

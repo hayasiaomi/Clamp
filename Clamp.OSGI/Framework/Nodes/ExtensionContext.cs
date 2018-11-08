@@ -18,8 +18,8 @@ namespace Clamp.OSGI.Framework.Nodes
         ExtensionTree tree;
         bool fireEvents = false;
 
-        ArrayList runTimeEnabledAddins;
-        ArrayList runTimeDisabledAddins;
+        ArrayList runTimeEnabledBundles;
+        ArrayList runTimeDisabledBundles;
 
         /// <summary>
         /// Extension change event.
@@ -29,7 +29,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// The event args object provides the path of the changed extension, although
         /// it does not provide information about what changed. Hosts subscribing to
         /// this event should get the new list of nodes using a query method such as
-        /// AddinManager.GetExtensionNodes() and then update whatever needs to be updated.
+        /// BundleManager.GetExtensionNodes() and then update whatever needs to be updated.
         /// </remarks>
         public event ExtensionEventHandler ExtensionChanged;
 
@@ -59,13 +59,13 @@ namespace Clamp.OSGI.Framework.Nodes
             childContexts = null;
             parentContext = null;
             tree = null;
-            runTimeEnabledAddins = null;
-            runTimeDisabledAddins = null;
+            runTimeEnabledBundles = null;
+            runTimeDisabledBundles = null;
         }
 
-        internal ClampBundle AddinEngine
+        internal ClampBundle BundleEngine
         {
-            get { return tree.AddinEngine; }
+            get { return tree.BundleEngine; }
         }
 
         void CleanDisposedChildContexts()
@@ -96,7 +96,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     childContexts = new List<WeakReference>();
                 else
                     CleanDisposedChildContexts();
-                ExtensionContext ctx = new ExtensionContext(this.AddinEngine, this);
+                ExtensionContext ctx = new ExtensionContext(this.BundleEngine, this);
                 WeakReference wref = new WeakReference(ctx);
                 childContexts.Add(wref);
                 return ctx;
@@ -135,7 +135,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// Identifier of the condition.
         /// </param>
         /// <param name="type">
-        /// Type of the condition evaluator. Must be a subclass of Mono.Addins.ConditionType.
+        /// Type of the condition evaluator. Must be a subclass of Mono.Bundles.ConditionType.
         /// </param>
         /// <remarks>
         /// The registered condition will be particular to this extension context. Any event
@@ -347,7 +347,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </remarks>
         public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
         {
-            string path = AddinEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return new ExtensionNodeList(null);
             return GetExtensionNodes(path, expectedNodeType);
@@ -369,7 +369,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </remarks>
         public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
         {
-            string path = AddinEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return new ExtensionNodeList<T>(null);
             return new ExtensionNodeList<T>(GetExtensionNodes(path, typeof(T)).list);
@@ -408,7 +408,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     if (!expectedNodeType.IsInstanceOfType(cnode))
                     {
                         foundError = true;
-                        AddinEngine.ReportError("Error while getting nodes for path '" + path + "'. Expected subclass of node type '" + expectedNodeType + "'. Found '" + cnode.GetType(), null, null, false);
+                        BundleEngine.ReportError("Error while getting nodes for path '" + path + "'. Expected subclass of node type '" + expectedNodeType + "'. Found '" + cnode.GetType(), null, null, false);
                     }
                 }
                 if (foundError)
@@ -469,7 +469,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         public object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance)
         {
-            string path = AddinEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return (object[])Array.CreateInstance(instanceType, 0);
             return GetExtensionObjects(path, instanceType, reuseCachedInstance);
@@ -490,7 +490,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </remarks>
         public T[] GetExtensionObjects<T>(bool reuseCachedInstance)
         {
-            string path = AddinEngine.GetAutoTypeExtensionPoint(typeof(T));
+            string path = BundleEngine.GetAutoTypeExtensionPoint(typeof(T));
             if (path == null)
                 return new T[0];
             return GetExtensionObjects<T>(path, reuseCachedInstance);
@@ -507,7 +507,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         /// <remarks>
         /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Addins.TypeExtensionNode. The returned array is composed
+        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
         /// by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node.
         /// </remarks>
@@ -530,7 +530,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         /// <remarks>
         /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Addins.TypeExtensionNode. The returned array is composed
+        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
         /// by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node (or TypeExtensionNode.GetInstance() if
         /// reuseCachedInstance is set to true)
@@ -554,7 +554,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         /// <remarks>
         /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Addins.TypeExtensionNode. The returned array is composed
+        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
         /// by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node.
         /// 
@@ -577,7 +577,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         /// <remarks>
         /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Addins.TypeExtensionNode. The returned array is composed
+        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
         /// by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node.
         /// 
@@ -603,7 +603,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         /// <remarks>
         /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Addins.TypeExtensionNode. The returned array is composed
+        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
         /// by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node (or TypeExtensionNode.GetInstance() if
         /// reuseCachedInstance is set to true).
@@ -636,7 +636,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </returns>
         /// <remarks>
         /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Addins.TypeExtensionNode. The returned array is composed
+        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
         /// by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node (or TypeExtensionNode.GetInstance() if
         /// reuseCachedInstance is set to true).
@@ -716,7 +716,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </remarks>
         public void AddExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
-            string path = AddinEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 throw new InvalidOperationException("Type '" + instanceType + "' not bound to an extension point.");
             AddExtensionNodeHandler(path, handler);
@@ -733,7 +733,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </param>
         public void RemoveExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
-            string path = AddinEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 throw new InvalidOperationException("Type '" + instanceType + "' not bound to an extension point.");
             RemoveExtensionNodeHandler(path, handler);
@@ -802,9 +802,9 @@ namespace Clamp.OSGI.Framework.Nodes
                 ExtensionChanged(this, args);
         }
 
-        internal void NotifyAddinLoaded(RuntimeBundle ad)
+        internal void NotifyBundleLoaded(RuntimeBundle ad)
         {
-            tree.NotifyAddinLoaded(ad, true);
+            tree.NotifyBundleLoaded(ad, true);
 
             lock (conditionTypes)
             {
@@ -815,7 +815,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     {
                         ExtensionContext ctx = wref.Target as ExtensionContext;
                         if (ctx != null)
-                            ctx.NotifyAddinLoaded(ad);
+                            ctx.NotifyBundleLoaded(ad);
                     }
                 }
             }
@@ -831,7 +831,7 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        internal void ActivateAddinExtensions(string id)
+        internal void ActivateBundleExtensions(string id)
         {
             // Looks for loaded extension points which are extended by the provided
             // add-in, and adds the new nodes
@@ -840,15 +840,15 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 fireEvents = true;
 
-                Bundle addin = AddinEngine.Registry.GetAddin(id);
+                Bundle addin = BundleEngine.Registry.GetBundle(id);
                 if (addin == null)
                 {
-                    AddinEngine.ReportError("Required add-in not found", id, null, false);
+                    BundleEngine.ReportError("Required add-in not found", id, null, false);
                     return;
                 }
                 // Take note that this add-in has been enabled at run-time
                 // Needed because loaded add-in descriptions may not include this add-in. 
-                RegisterRuntimeEnabledAddin(id);
+                RegisterRuntimeEnabledBundle(id);
 
                 // Look for loaded extension points
                 Hashtable eps = new Hashtable();
@@ -869,7 +869,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 ArrayList loadedNodes = new ArrayList();
                 foreach (ExtensionPoint ep in eps.Keys)
                 {
-                    ExtensionLoadData data = GetAddinExtensions(id, ep);
+                    ExtensionLoadData data = GetBundleExtensions(id, ep);
                     if (data != null)
                     {
                         foreach (Extension ext in data.Extensions)
@@ -878,17 +878,17 @@ namespace Clamp.OSGI.Framework.Nodes
                             if (node != null && node.ExtensionNodeSet != null)
                             {
                                 if (node.ChildrenLoaded)
-                                    LoadModuleExtensionNodes(ext, data.AddinId, node.ExtensionNodeSet, loadedNodes);
+                                    LoadModuleExtensionNodes(ext, data.BundleId, node.ExtensionNodeSet, loadedNodes);
                             }
                             else
-                                AddinEngine.ReportError("Extension node not found or not extensible: " + ext.Path, id, null, false);
+                                BundleEngine.ReportError("Extension node not found or not extensible: " + ext.Path, id, null, false);
                         }
                     }
                 }
 
-                // Call the OnAddinLoaded method on nodes, if the add-in is already loaded
+                // Call the OnBundleLoaded method on nodes, if the add-in is already loaded
                 foreach (TreeNode nod in loadedNodes)
-                    nod.ExtensionNode.OnAddinLoaded();
+                    nod.ExtensionNode.OnBundleLoaded();
 
                 // Global extension change event. Other events are fired by LoadModuleExtensionNodes.
                 // The event is called for all extensions, even for those not loaded. This is for coherence,
@@ -912,26 +912,26 @@ namespace Clamp.OSGI.Framework.Nodes
                     {
                         ExtensionContext ctx = wref.Target as ExtensionContext;
                         if (ctx != null)
-                            ctx.ActivateAddinExtensions(id);
+                            ctx.ActivateBundleExtensions(id);
                     }
                 }
             }
         }
 
-        internal void RemoveAddinExtensions(string id)
+        internal void RemoveBundleExtensions(string id)
         {
             try
             {
                 // Registers this add-in as disabled, so from now on extension from this
                 // add-in will be ignored
-                RegisterRuntimeDisabledAddin(id);
+                RegisterRuntimeDisabledBundle(id);
 
                 fireEvents = true;
 
                 // This method removes all extension nodes added by the add-in
                 // Get all nodes created by the addin
                 ArrayList list = new ArrayList();
-                tree.FindAddinNodes(id, list);
+                tree.FindBundleNodes(id, list);
 
                 // Remove each node and notify the change
                 foreach (TreeNode node in list)
@@ -943,7 +943,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     }
                     else
                     {
-                        node.ExtensionNode.OnAddinUnloaded();
+                        node.ExtensionNode.OnBundleUnloaded();
                         node.Remove();
                     }
                 }
@@ -954,13 +954,13 @@ namespace Clamp.OSGI.Framework.Nodes
                 // event without first getting the list of nodes that may change).
 
                 // We get the runtime add-in because the add-in may already have been deleted from the registry
-                RuntimeBundle addin = AddinEngine.GetAddin(id);
+                RuntimeBundle addin = BundleEngine.GetBundle(id);
                 if (addin != null)
                 {
                     ArrayList paths = new ArrayList();
-                    // Using addin.Module.ParentAddinDescription here because addin.Addin.Description may not
+                    // Using addin.Module.ParentBundleDescription here because addin.Bundle.Description may not
                     // have a valid reference (the description is lazy loaded and may already have been removed from the registry)
-                    foreach (ModuleDescription mod in addin.Module.ParentAddinDescription.AllModules)
+                    foreach (ModuleDescription mod in addin.Module.ParentBundleDescription.AllModules)
                     {
                         foreach (Extension ext in mod.Extensions)
                         {
@@ -978,29 +978,29 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        void RegisterRuntimeDisabledAddin(string addinId)
+        void RegisterRuntimeDisabledBundle(string addinId)
         {
-            if (runTimeDisabledAddins == null)
-                runTimeDisabledAddins = new ArrayList();
-            if (!runTimeDisabledAddins.Contains(addinId))
-                runTimeDisabledAddins.Add(addinId);
+            if (runTimeDisabledBundles == null)
+                runTimeDisabledBundles = new ArrayList();
+            if (!runTimeDisabledBundles.Contains(addinId))
+                runTimeDisabledBundles.Add(addinId);
 
-            if (runTimeEnabledAddins != null)
-                runTimeEnabledAddins.Remove(addinId);
+            if (runTimeEnabledBundles != null)
+                runTimeEnabledBundles.Remove(addinId);
         }
 
-        void RegisterRuntimeEnabledAddin(string addinId)
+        void RegisterRuntimeEnabledBundle(string addinId)
         {
-            if (runTimeEnabledAddins == null)
-                runTimeEnabledAddins = new ArrayList();
-            if (!runTimeEnabledAddins.Contains(addinId))
-                runTimeEnabledAddins.Add(addinId);
+            if (runTimeEnabledBundles == null)
+                runTimeEnabledBundles = new ArrayList();
+            if (!runTimeEnabledBundles.Contains(addinId))
+                runTimeEnabledBundles.Add(addinId);
 
-            if (runTimeDisabledAddins != null)
-                runTimeDisabledAddins.Remove(addinId);
+            if (runTimeDisabledBundles != null)
+                runTimeDisabledBundles.Remove(addinId);
         }
 
-        internal ICollection GetAddinsForPath(string path, List<string> col)
+        internal ICollection GetBundlesForPath(string path, List<string> col)
         {
             ArrayList newlist = null;
 
@@ -1008,23 +1008,23 @@ namespace Clamp.OSGI.Framework.Nodes
             // they may contain extension for this path.
             // Ignore addins disabled at run-time.
 
-            if (runTimeEnabledAddins != null && runTimeEnabledAddins.Count > 0)
+            if (runTimeEnabledBundles != null && runTimeEnabledBundles.Count > 0)
             {
                 newlist = new ArrayList();
                 newlist.AddRange(col);
-                foreach (string s in runTimeEnabledAddins)
+                foreach (string s in runTimeEnabledBundles)
                     if (!newlist.Contains(s))
                         newlist.Add(s);
             }
 
-            if (runTimeDisabledAddins != null && runTimeDisabledAddins.Count > 0)
+            if (runTimeDisabledBundles != null && runTimeDisabledBundles.Count > 0)
             {
                 if (newlist == null)
                 {
                     newlist = new ArrayList();
                     newlist.AddRange(col);
                 }
-                foreach (string s in runTimeDisabledAddins)
+                foreach (string s in runTimeDisabledBundles)
                     newlist.Remove(s);
             }
 
@@ -1051,9 +1051,9 @@ namespace Clamp.OSGI.Framework.Nodes
 
                 ArrayList loadData = new ArrayList();
 
-                foreach (string addin in GetAddinsForPath(ep.Path, ep.Addins))
+                foreach (string addin in GetBundlesForPath(ep.Path, ep.Bundles))
                 {
-                    ExtensionLoadData ed = GetAddinExtensions(addin, ep);
+                    ExtensionLoadData ed = GetBundleExtensions(addin, ep);
                     if (ed != null)
                     {
                         // Insert the addin data taking into account dependencies.
@@ -1062,7 +1062,7 @@ namespace Clamp.OSGI.Framework.Nodes
                         for (int n = 0; n < loadData.Count; n++)
                         {
                             ExtensionLoadData other = (ExtensionLoadData)loadData[n];
-                            if (AddinEngine.Registry.AddinDependsOn(other.AddinId, ed.AddinId))
+                            if (BundleEngine.Registry.BundleDependsOn(other.BundleId, ed.BundleId))
                             {
                                 loadData.Insert(n, ed);
                                 added = true;
@@ -1083,33 +1083,33 @@ namespace Clamp.OSGI.Framework.Nodes
                     {
                         TreeNode cnode = GetNode(ext.Path);
                         if (cnode != null && cnode.ExtensionNodeSet != null)
-                            LoadModuleExtensionNodes(ext, data.AddinId, cnode.ExtensionNodeSet, loadedNodes);
+                            LoadModuleExtensionNodes(ext, data.BundleId, cnode.ExtensionNodeSet, loadedNodes);
                         else
-                            AddinEngine.ReportError("Extension node not found or not extensible: " + ext.Path, data.AddinId, null, false);
+                            BundleEngine.ReportError("Extension node not found or not extensible: " + ext.Path, data.BundleId, null, false);
                     }
                 }
-                // Call the OnAddinLoaded method on nodes, if the add-in is already loaded
+                // Call the OnBundleLoaded method on nodes, if the add-in is already loaded
                 foreach (TreeNode nod in loadedNodes)
-                    nod.ExtensionNode.OnAddinLoaded();
+                    nod.ExtensionNode.OnBundleLoaded();
 
                 NotifyExtensionsChanged(new ExtensionEventArgs(requestedExtensionPath));
             }
         }
 
-        ExtensionLoadData GetAddinExtensions(string id, ExtensionPoint ep)
+        ExtensionLoadData GetBundleExtensions(string id, ExtensionPoint ep)
         {
             Bundle pinfo = null;
 
-            // Root add-ins are not returned by GetInstalledAddin.
-            RuntimeBundle addin = AddinEngine.GetAddin(id);
+            // Root add-ins are not returned by GetInstalledBundle.
+            RuntimeBundle addin = BundleEngine.GetBundle(id);
             if (addin != null)
-                pinfo = addin.Addin;
+                pinfo = addin.Bundle;
             else
-                pinfo = AddinEngine.Registry.GetAddin(id);
+                pinfo = BundleEngine.Registry.GetBundle(id);
 
             if (pinfo == null)
             {
-                AddinEngine.ReportError("Required add-in not found", id, null, false);
+                BundleEngine.ReportError("Required add-in not found", id, null, false);
                 return null;
             }
             if (!pinfo.Enabled || pinfo.Version != Bundle.GetIdVersion(id))
@@ -1119,12 +1119,12 @@ namespace Clamp.OSGI.Framework.Nodes
 
             ExtensionLoadData data = null;
             BundleDescription conf = pinfo.Description;
-            GetAddinExtensions(conf.MainModule, id, ep, ref data);
+            GetBundleExtensions(conf.MainModule, id, ep, ref data);
 
             foreach (ModuleDescription module in conf.OptionalModules)
             {
-                if (CheckOptionalAddinDependencies(conf, module))
-                    GetAddinExtensions(module, id, ep, ref data);
+                if (CheckOptionalBundleDependencies(conf, module))
+                    GetBundleExtensions(module, id, ep, ref data);
             }
             if (data != null)
                 data.Extensions.Sort();
@@ -1132,7 +1132,7 @@ namespace Clamp.OSGI.Framework.Nodes
             return data;
         }
 
-        void GetAddinExtensions(ModuleDescription module, string addinId, ExtensionPoint ep, ref ExtensionLoadData data)
+        void GetBundleExtensions(ModuleDescription module, string addinId, ExtensionPoint ep, ref ExtensionLoadData data)
         {
             string basePath = ep.Path + "/";
 
@@ -1143,7 +1143,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     if (data == null)
                     {
                         data = new ExtensionLoadData();
-                        data.AddinId = addinId;
+                        data.BundleId = addinId;
                         data.Extensions = new ArrayList();
                     }
                     data.Extensions.Add(extension);
@@ -1157,26 +1157,26 @@ namespace Clamp.OSGI.Framework.Nodes
             ArrayList addedNodes = new ArrayList();
             tree.LoadExtension(addinId, extension, addedNodes);
 
-            RuntimeBundle ad = AddinEngine.GetAddin(addinId);
+            RuntimeBundle ad = BundleEngine.GetBundle(addinId);
             if (ad != null)
             {
                 foreach (TreeNode nod in addedNodes)
                 {
-                    // Don't call OnAddinLoaded here. Do it when the entire extension point has been loaded.
+                    // Don't call OnBundleLoaded here. Do it when the entire extension point has been loaded.
                     if (nod.ExtensionNode != null)
                         loadedNodes.Add(nod);
                 }
             }
         }
 
-        bool CheckOptionalAddinDependencies(BundleDescription conf, ModuleDescription module)
+        bool CheckOptionalBundleDependencies(BundleDescription conf, ModuleDescription module)
         {
             foreach (Dependency dep in module.Dependencies)
             {
                 BundleDependency pdep = dep as BundleDependency;
                 if (pdep != null)
                 {
-                    Bundle pinfo = AddinEngine.Registry.GetAddin(Bundle.GetFullId(conf.Namespace, pdep.AddinId, pdep.Version));
+                    Bundle pinfo = BundleEngine.Registry.GetBundle(Bundle.GetFullId(conf.Namespace, pdep.BundleId, pdep.Version));
                     if (pinfo == null || !pinfo.Enabled)
                         return false;
                 }
@@ -1223,7 +1223,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 else
                 {
                     // Create if not found
-                    TreeNode newNode = new TreeNode(AddinEngine, part);
+                    TreeNode newNode = new TreeNode(BundleEngine, part);
                     dstNode.AddChildNode(newNode);
                     dstNode = newNode;
 
@@ -1395,7 +1395,7 @@ namespace Clamp.OSGI.Framework.Nodes
 
     internal class ExtensionLoadData
     {
-        public string AddinId;
+        public string BundleId;
         public ArrayList Extensions;
     }
 }

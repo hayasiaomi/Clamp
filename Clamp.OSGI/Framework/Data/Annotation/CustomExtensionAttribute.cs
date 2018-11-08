@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Data.Description
+namespace Clamp.OSGI.Framework.Data.Annotation
 {
     public class CustomExtensionAttribute : Attribute
     {
-        string id;
-        string insertBefore;
-        string insertAfter;
-        string path;
+        private string id;
+        private string insertBefore;
+        private string insertAfter;
+        private string path;
 
         internal const string PathFieldKey = "__path";
 
@@ -71,9 +71,9 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// <remarks>
         /// This property provides access to the resources and types of the add-in that created this extension node.
         /// </remarks>
-        public RuntimeBundle Addin
+        public RuntimeBundle Bundle
         {
-            get { return ExtensionNode?.Addin; }
+            get { return ExtensionNode?.Bundle; }
         }
     }
 }

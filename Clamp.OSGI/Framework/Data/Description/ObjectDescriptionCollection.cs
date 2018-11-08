@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
-    /// <summary>
-	/// Base class for add-in description collections.
-	/// </summary>
-	public class ObjectDescriptionCollection : CollectionBase
+    public class ObjectDescriptionCollection : CollectionBase
     {
         object owner;
 
@@ -82,6 +81,61 @@ namespace Clamp.OSGI.Framework.Data.Description
         public bool Contains(ObjectDescription ob)
         {
             return List.Contains(ob);
+        }
+
+#pragma warning disable 1591
+        protected override void OnRemove(int index, object value)
+        {
+            ObjectDescription ep = (ObjectDescription)value;
+            if (ep.Element != null)
+            {
+                ep.Element.ParentNode.RemoveChild(ep.Element);
+                ep.Element = null;
+            }
+            if (owner != null)
+                ep.SetParent(null);
+        }
+
+        protected override void OnInsertComplete(int index, object value)
+        {
+            if (owner != null)
+                ((ObjectDescription)value).SetParent(owner);
+        }
+
+        protected override void OnSetComplete(int index, object oldValue, object newValue)
+        {
+            if (owner != null)
+            {
+                ((ObjectDescription)newValue).SetParent(owner);
+                ((ObjectDescription)oldValue).SetParent(null);
+            }
+        }
+
+        protected override void OnClear()
+        {
+            if (owner != null)
+            {
+                foreach (ObjectDescription ob in List)
+                    ob.SetParent(null);
+            }
+        }
+#pragma warning restore 1591
+
+
+        internal void SaveXml(XmlElement parent)
+        {
+            foreach (ObjectDescription ob in this)
+                ob.SaveXml(parent);
+        }
+
+        internal void Verify(string location, StringCollection errors)
+        {
+            int n = 0;
+            foreach (ObjectDescription ob in this)
+            {
+                ob.Verify(location + "[" + n + "]/", errors);
+                n++;
+            }
         }
     }
 

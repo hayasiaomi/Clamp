@@ -7,9 +7,9 @@ namespace Clamp.OSGI.Framework.Data
 {
     enum BundleSearchFlagsInternal
     {
-        IncludeAddins = 1,
+        IncludeBundles = 1,
         IncludeRoots = 1 << 1,
-        IncludeAll = IncludeAddins | IncludeRoots,
+        IncludeAll = IncludeBundles | IncludeRoots,
         LatestVersionsOnly = 1 << 3,
         ExcludePendingUninstall = 1 << 4
     }

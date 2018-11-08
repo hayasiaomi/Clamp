@@ -26,13 +26,13 @@ namespace Clamp.OSGI.Framework.Data
                 BundleDependency adep = dep as BundleDependency;
                 if (adep == null)
                     continue;
-                var descs = FindDescriptions(desc.Domain, adep.FullAddinId);
+                var descs = FindDescriptions(desc.Domain, adep.FullBundleId);
                 if (descs.Count == 0)
-                    yield return adep.FullAddinId;
+                    yield return adep.FullBundleId;
             }
         }
 
-        public BundleDescription GetSimilarExistingAddin(BundleDescription conf, string addinId)
+        public BundleDescription GetSimilarExistingBundle(BundleDescription conf, string addinId)
         {
             string domain = conf.Domain;
             List<BundleDescription> list;
@@ -50,7 +50,7 @@ namespace Clamp.OSGI.Framework.Data
         public string FindCondition(BundleDescription desc, ModuleDescription mod, string conditionId)
         {
             if (desc.ConditionTypes.Any(c => c.Id == conditionId))
-                return desc.AddinId;
+                return desc.BundleId;
 
             foreach (Dependency dep in mod.Dependencies)
             {
@@ -58,7 +58,7 @@ namespace Clamp.OSGI.Framework.Data
 
                 if (adep == null)
                     continue;
-                var descs = FindDescriptions(desc.Domain, adep.FullAddinId);
+                var descs = FindDescriptions(desc.Domain, adep.FullBundleId);
                 foreach (var d in descs)
                 {
                     var c = FindCondition(d, d.MainModule, conditionId);
@@ -69,7 +69,7 @@ namespace Clamp.OSGI.Framework.Data
             return null;
         }
 
-        public List<BundleDescription> GetSortedAddins()
+        public List<BundleDescription> GetSortedBundles()
         {
             var inserted = new HashSet<string>();
             var lists = new Dictionary<string, List<BundleDescription>>();
@@ -77,7 +77,7 @@ namespace Clamp.OSGI.Framework.Data
             foreach (List<BundleDescription> dlist in addins.Values)
             {
                 foreach (BundleDescription desc in dlist)
-                    InsertSortedAddin(inserted, lists, desc);
+                    InsertSortedBundle(inserted, lists, desc);
             }
 
             // Merge all domain lists into a single list.
@@ -87,14 +87,14 @@ namespace Clamp.OSGI.Framework.Data
             lists.TryGetValue(BundleDatabase.GlobalDomain, out global);
             lists.Remove(BundleDatabase.GlobalDomain);
 
-            List<BundleDescription> sortedAddins = new List<BundleDescription>();
+            List<BundleDescription> sortedBundles = new List<BundleDescription>();
             foreach (var dl in lists.Values)
             {
-                sortedAddins.AddRange(dl);
+                sortedBundles.AddRange(dl);
             }
             if (global != null)
-                sortedAddins.AddRange(global);
-            return sortedAddins;
+                sortedBundles.AddRange(global);
+            return sortedBundles;
         }
 
         List<BundleDescription> FindDescriptions(string domain, string fullid)
@@ -118,9 +118,9 @@ namespace Clamp.OSGI.Framework.Data
         }
 
 
-        void InsertSortedAddin(HashSet<string> inserted, Dictionary<string, List<BundleDescription>> lists, BundleDescription desc)
+        void InsertSortedBundle(HashSet<string> inserted, Dictionary<string, List<BundleDescription>> lists, BundleDescription desc)
         {
-            string sid = desc.AddinId + " " + desc.Domain;
+            string sid = desc.BundleId + " " + desc.Domain;
             if (!inserted.Add(sid))
                 return;
 
@@ -131,11 +131,11 @@ namespace Clamp.OSGI.Framework.Data
                     BundleDependency adep = dep as BundleDependency;
                     if (adep == null)
                         continue;
-                    var descs = FindDescriptions(desc.Domain, adep.FullAddinId);
+                    var descs = FindDescriptions(desc.Domain, adep.FullBundleId);
                     if (descs.Count > 0)
                     {
                         foreach (BundleDescription sd in descs)
-                            InsertSortedAddin(inserted, lists, sd);
+                            InsertSortedBundle(inserted, lists, sd);
                     }
                 }
             }

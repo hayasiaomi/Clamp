@@ -27,7 +27,7 @@ namespace Clamp.OSGI.Framework.Data
 
                 if (registry.StartupDirectory != null)
                     scanner.ScanFolder(registry.StartupDirectory, null, scanResult);
-                foreach (string dir in registry.GlobalAddinDirectories)
+                foreach (string dir in registry.GlobalBundleDirectories)
                     scanner.ScanFolderRec(dir, BundleDatabase.GlobalDomain, scanResult);
             }
 

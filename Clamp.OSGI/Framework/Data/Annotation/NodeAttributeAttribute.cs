@@ -1,19 +1,20 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Description;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Clamp.OSGI.Framework.Data.Description
+namespace Clamp.OSGI.Framework.Data.Annotation
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
     public class NodeAttributeAttribute : Attribute
     {
-        string name;
-        bool required;
-        bool localizable;
-        Type type;
-        string typeName;
-        string description;
+        private string name;
+        private bool required;
+        private bool localizable;
+        private Type type;
+        private string typeName;
+        private string description;
 
         /// <summary>
         /// Initializes a new instance

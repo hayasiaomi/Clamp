@@ -1,21 +1,29 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Serialization;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
-    internal class BundleDependency : Dependency
+    [XmlType("BundleReference")]
+    public class BundleDependency : Dependency
     {
-        private string id;
-        private string version;
+        string id;
+        string version;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.BundleDependency"/> class.
+        /// </summary>
         public BundleDependency()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.AddinDependency"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.BundleDependency"/> class.
         /// </summary>
         /// <param name='fullId'>
         /// Full identifier of the add-in (includes version)
@@ -27,7 +35,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.AddinDependency"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.BundleDependency"/> class.
         /// </summary>
         /// <param name='id'>
         /// Identifier of the add-in.
@@ -41,6 +49,25 @@ namespace Clamp.OSGI.Framework.Data.Description
             this.version = version;
         }
 
+        internal BundleDependency(XmlElement elem) : base(elem)
+        {
+            id = elem.GetAttribute("id");
+            version = elem.GetAttribute("version");
+        }
+
+        internal override void Verify(string location, StringCollection errors)
+        {
+            VerifyNotEmpty(location + "Dependencies/Bundle/", errors, "id", BundleId);
+            VerifyNotEmpty(location + "Dependencies/Bundle/", errors, "version", Version);
+        }
+
+        internal override void SaveXml(XmlElement parent)
+        {
+            CreateElement(parent, "Bundle");
+            Element.SetAttribute("id", BundleId);
+            Element.SetAttribute("version", Version);
+        }
+
         /// <summary>
         /// Gets the full addin identifier.
         /// </summary>
@@ -50,15 +77,15 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// <remarks>
         /// Includes namespace and version number. For example: MonoDevelop.TextEditor,1.0
         /// </remarks>
-        public string FullAddinId
+        public string FullBundleId
         {
             get
             {
-                BundleDescription desc = ParentAddinDescription;
+                BundleDescription desc = ParentBundleDescription;
                 if (desc == null)
-                    return Bundle.GetFullId(null, AddinId, Version);
+                    return Bundle.GetFullId(null, BundleId, Version);
                 else
-                    return Bundle.GetFullId(desc.Namespace, AddinId, Version);
+                    return Bundle.GetFullId(desc.Namespace, BundleId, Version);
             }
         }
 
@@ -68,7 +95,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// <value>
         /// The addin identifier.
         /// </value>
-        public string AddinId
+        public string BundleId
         {
             get { return id != null ? ParseString(id) : string.Empty; }
             set { id = value; }
@@ -94,21 +121,34 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// </value>
         public override string Name
         {
-            get { return AddinId + " v" + Version; }
+            get { return BundleId + " v" + Version; }
         }
 
         internal override bool CheckInstalled(BundleRegistry registry)
         {
-            Bundle[] bundles = registry.GetAddins();
-            foreach (Bundle bundle in bundles)
+            Bundle[] addins = registry.GetBundles();
+            foreach (Bundle addin in addins)
             {
-                if (bundle.Id == id && bundle.SupportsVersion(version))
+                if (addin.Id == id && addin.SupportsVersion(version))
                 {
                     return true;
                 }
             }
             return false;
         }
-       
+
+        internal override void Write(BinaryXmlWriter writer)
+        {
+            base.Write(writer);
+            writer.WriteValue("id", ParseString(id));
+            writer.WriteValue("version", ParseString(version));
+        }
+
+        internal override void Read(BinaryXmlReader reader)
+        {
+            base.Read(reader);
+            id = reader.ReadStringValue("id");
+            version = reader.ReadStringValue("version");
+        }
     }
 }

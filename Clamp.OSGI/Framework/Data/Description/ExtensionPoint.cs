@@ -1,47 +1,170 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Serialization;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
-    public class ExtensionPoint : ObjectDescription
+    public sealed class ExtensionPoint : ObjectDescription
     {
-        private ExtensionNodeSet nodeSet;
-        private ConditionTypeDescriptionCollection conditions;
         private string path;
         private string name;
         private string description;
-
+        private ExtensionNodeSet nodeSet;
+        private ConditionTypeDescriptionCollection conditions;
         private string defaultInsertBefore;
         private string defaultInsertAfter;
 
         // Information gathered from others addins:
 
         private List<string> addins;  // Add-ins which extend this extension point
-        private string rootAddin;     // Add-in which defines this extension point
+        private string rootBundle;     // Add-in which defines this extension point
 
-        public ExtensionNodeSet NodeSet
+        internal ExtensionPoint(XmlElement elem) : base(elem)
         {
-            get
+            path = elem.GetAttribute("path");
+            name = elem.GetAttribute("name");
+            defaultInsertBefore = elem.GetAttribute("defaultInsertBefore");
+            defaultInsertAfter = elem.GetAttribute("defaultInsertAfter");
+            description = ReadXmlDescription();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ExtensionPoint"/> class.
+        /// </summary>
+        public ExtensionPoint()
+        {
+        }
+
+        /// <summary>
+        /// Copies another extension point.
+        /// </summary>
+        /// <param name='ep'>
+        /// Extension point from which to copy.
+        /// </param>
+        public void CopyFrom(ExtensionPoint ep)
+        {
+            path = ep.path;
+            name = ep.name;
+            defaultInsertBefore = ep.defaultInsertBefore;
+            defaultInsertAfter = ep.defaultInsertAfter;
+            description = ep.description;
+            NodeSet.CopyFrom(ep.NodeSet);
+            Conditions.Clear();
+            foreach (ConditionTypeDescription cond in ep.Conditions)
             {
-                if (nodeSet == null)
-                {
-                    nodeSet = new ExtensionNodeSet();
-                    nodeSet.SetParent(this);
-                }
-                return nodeSet;
+                ConditionTypeDescription cc = new ConditionTypeDescription();
+                cc.CopyFrom(cond);
+                Conditions.Add(cc);
+            }
+            Bundles.Clear();
+            foreach (string s in ep.Bundles)
+                Bundles.Add(s);
+            rootBundle = ep.rootBundle;
+        }
+
+        internal override void Verify(string location, StringCollection errors)
+        {
+            VerifyNotEmpty(location + "ExtensionPoint", errors, Path, "path");
+            NodeSet.Verify(location + "ExtensionPoint (" + Path + ")/", errors);
+            Conditions.Verify(location + "ExtensionPoint (" + Path + ")/", errors);
+        }
+
+        internal void SetExtensionsBundleId(string addinId)
+        {
+            NodeSet.SetExtensionsBundleId(addinId);
+            foreach (ConditionTypeDescription cond in Conditions)
+                cond.BundleId = addinId;
+            Bundles.Add(addinId);
+        }
+
+        internal void MergeWith(string thisBundleId, ExtensionPoint ep)
+        {
+            NodeSet.MergeWith(thisBundleId, ep.NodeSet);
+
+            foreach (ConditionTypeDescription cond in ep.Conditions)
+            {
+                if (cond.BundleId != thisBundleId && !Conditions.Contains(cond))
+                    Conditions.Add(cond);
+            }
+            foreach (string s in ep.Bundles)
+            {
+                if (!Bundles.Contains(s))
+                    Bundles.Add(s);
             }
         }
 
-        internal void SetExtensionsAddinId(string addinId)
+        internal void UnmergeExternalData(string thisBundleId, Hashtable addinsToUnmerge)
         {
-            //NodeSet.SetExtensionsAddinId(addinId);
-            //foreach (ConditionTypeDescription cond in Conditions)
-            //    cond.AddinId = addinId;
-            //Addins.Add(addinId);
+            NodeSet.UnmergeExternalData(thisBundleId, addinsToUnmerge);
+
+            ArrayList todel = new ArrayList();
+            foreach (ConditionTypeDescription cond in Conditions)
+            {
+                if (cond.BundleId != thisBundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(cond.BundleId)))
+                    todel.Add(cond);
+            }
+            foreach (ConditionTypeDescription cond in todel)
+                Conditions.Remove(cond);
+
+            if (addinsToUnmerge == null)
+                Bundles.Clear();
+            else
+            {
+                foreach (string s in addinsToUnmerge.Keys)
+                    Bundles.Remove(s);
+            }
+            if (thisBundleId != null && !Bundles.Contains(thisBundleId))
+                Bundles.Add(thisBundleId);
         }
 
+        internal void Clear()
+        {
+            NodeSet.Clear();
+            Conditions.Clear();
+            Bundles.Clear();
+        }
+
+        internal override void SaveXml(XmlElement parent)
+        {
+            CreateElement(parent, "ExtensionPoint");
+
+            Element.SetAttribute("path", Path);
+
+            if (Name.Length > 0)
+                Element.SetAttribute("name", Name);
+            else
+                Element.RemoveAttribute("name");
+
+            if (DefaultInsertBefore.Length > 0)
+                Element.SetAttribute("defaultInsertBefore", DefaultInsertBefore);
+            else
+                Element.RemoveAttribute("defaultInsertBefore");
+
+            if (DefaultInsertAfter.Length > 0)
+                Element.SetAttribute("defaultInsertAfter", DefaultInsertAfter);
+            else
+                Element.RemoveAttribute("defaultInsertAfter");
+
+            SaveXmlDescription(Description);
+
+            if (nodeSet != null)
+            {
+                nodeSet.Element = Element;
+                nodeSet.SaveXml(parent);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the path that identifies the extension point.
+        /// </summary>
+        /// <value>
+        /// The path.
+        /// </value>
         public string Path
         {
             get { return path != null ? path : string.Empty; }
@@ -78,15 +201,15 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// <remarks>
         /// This value is only available when the add-in description is loaded from an add-in registry.
         /// </remarks>
-        public string[] ExtenderAddins
+        public string[] ExtenderBundles
         {
             get
             {
-                return Addins.ToArray();
+                return Bundles.ToArray();
             }
         }
 
-        internal List<string> Addins
+        internal List<string> Bundles
         {
             get
             {
@@ -96,10 +219,32 @@ namespace Clamp.OSGI.Framework.Data.Description
             }
         }
 
-        internal string RootAddin
+        internal string RootBundle
         {
-            get { return rootAddin; }
-            set { rootAddin = value; }
+            get { return rootBundle; }
+            set { rootBundle = value; }
+        }
+
+        /// <summary>
+        /// A node set which specifies the node types allowed in this extension point.
+        /// </summary>
+        /// <value>
+        /// The node set.
+        /// </value>
+        public ExtensionNodeSet NodeSet
+        {
+            get
+            {
+                if (nodeSet == null)
+                {
+                    if (Element != null)
+                        nodeSet = new ExtensionNodeSet(Element);
+                    else
+                        nodeSet = new ExtensionNodeSet();
+                    nodeSet.SetParent(this);
+                }
+                return nodeSet;
+            }
         }
 
         internal void SetNodeSet(ExtensionNodeSet nset)
@@ -122,6 +267,11 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (conditions == null)
                 {
                     conditions = new ConditionTypeDescriptionCollection(this);
+                    if (Element != null)
+                    {
+                        foreach (XmlElement elem in Element.SelectNodes("ConditionType"))
+                            conditions.Add(new ConditionTypeDescription(elem));
+                    }
                 }
                 return conditions;
             }
@@ -169,6 +319,35 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
             get { return defaultInsertAfter ?? ""; }
             set { defaultInsertAfter = value; }
+        }
+
+        internal override void Write(BinaryXmlWriter writer)
+        {
+            writer.WriteValue("path", path);
+            writer.WriteValue("name", name);
+            writer.WriteValue("description", Description);
+            writer.WriteValue("rootBundle", rootBundle);
+            writer.WriteValue("addins", Bundles);
+            writer.WriteValue("NodeSet", NodeSet);
+            writer.WriteValue("Conditions", Conditions);
+            writer.WriteValue("defaultInsertBefore", defaultInsertBefore);
+            writer.WriteValue("defaultInsertAfter", defaultInsertAfter);
+        }
+
+        internal override void Read(BinaryXmlReader reader)
+        {
+            path = reader.ReadStringValue("path");
+            name = reader.ReadStringValue("name");
+            if (!reader.IgnoreDescriptionData)
+                description = reader.ReadStringValue("description");
+            rootBundle = reader.ReadStringValue("rootBundle");
+            addins = (List<string>)reader.ReadValue("addins", new List<string>());
+            nodeSet = (ExtensionNodeSet)reader.ReadValue("NodeSet");
+            conditions = (ConditionTypeDescriptionCollection)reader.ReadValue("Conditions", new ConditionTypeDescriptionCollection(this));
+            defaultInsertBefore = reader.ReadStringValue("defaultInsertBefore");
+            defaultInsertAfter = reader.ReadStringValue("defaultInsertAfter");
+            if (nodeSet != null)
+                nodeSet.SetParent(this);
         }
     }
 }

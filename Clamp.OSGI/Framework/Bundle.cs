@@ -20,7 +20,7 @@ namespace Clamp.OSGI.Framework
         private WeakReference desc;
         private BundleDatabase database;
         private bool? isLatestVersion;
-        private bool? isUserAddin;
+        private bool? isUserBundle;
         private string id;
         private string domain;
         private BundleRegistry registry;
@@ -43,17 +43,17 @@ namespace Clamp.OSGI.Framework
             this.database = database;
             this.id = id;
             this.domain = domain;
-            LoadAddinInfo();
+            LoadBundleInfo();
         }
 
-        private void LoadAddinInfo()
+        private void LoadBundleInfo()
         {
             if (bundleInfo == null)
             {
                 try
                 {
                     BundleDescription m = Description;
-                    sourceFile = m.AddinFile;
+                    sourceFile = m.BundleFile;
                     bundleInfo = BundleInfo.ReadFromDescription(m);
                 }
                 catch (Exception ex)
@@ -76,7 +76,7 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public string Namespace
         {
-            get { return this.AddinInfo.Namespace; }
+            get { return this.BundleInfo.Namespace; }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public string LocalId
         {
-            get { return this.AddinInfo.LocalId; }
+            get { return this.BundleInfo.LocalId; }
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public string Version
         {
-            get { return this.AddinInfo.Version; }
+            get { return this.BundleInfo.Version; }
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public string Name
         {
-            get { return this.AddinInfo.Name; }
+            get { return this.BundleInfo.Name; }
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Clamp.OSGI.Framework
         /// </summary>
         public BundlePropertyCollection Properties
         {
-            get { return this.AddinInfo.Properties; }
+            get { return this.BundleInfo.Properties; }
         }
 
 
@@ -118,14 +118,14 @@ namespace Clamp.OSGI.Framework
             {
                 if (!IsLatestVersion)
                     return false;
-                return AddinInfo.IsRoot ? true : database.IsAddinEnabled(Description.Domain, AddinInfo.Id, true);
+                return BundleInfo.IsRoot ? true : database.IsBundleEnabled(Description.Domain, BundleInfo.Id, true);
             }
             set
             {
                 if (value)
-                    database.EnableAddin(Description.Domain, AddinInfo.Id, true);
+                    database.EnableBundle(Description.Domain, BundleInfo.Id, true);
                 else
-                    database.DisableAddin(Description.Domain, AddinInfo.Id);
+                    database.DisableBundle(Description.Domain, BundleInfo.Id);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Clamp.OSGI.Framework
 
                 BundleDescription m;
 
-                database.ReadAddinDescription(configFile, out m);
+                database.ReadBundleDescription(configFile, out m);
 
                 if (m == null)
                 {
@@ -165,10 +165,10 @@ namespace Clamp.OSGI.Framework
                 if (bundleInfo == null)
                 {
                     bundleInfo = BundleInfo.ReadFromDescription(m);
-                    sourceFile = m.AddinFile;
+                    sourceFile = m.BundleFile;
                 }
-                SetIsUserAddin(m);
-                if (!isUserAddin.Value)
+                SetIsUserBundle(m);
+                if (!isUserBundle.Value)
                     m.Flags |= BundleFlags.CantUninstall;
                 desc = new WeakReference(m);
                 return m;
@@ -197,8 +197,8 @@ namespace Clamp.OSGI.Framework
                 if (isLatestVersion == null)
                 {
                     string id, version;
-                    Bundle.GetIdParts(AddinInfo.Id, out id, out version);
-                    var addins = database.GetInstalledAddins(null, BundleSearchFlagsInternal.IncludeAll | BundleSearchFlagsInternal.LatestVersionsOnly);
+                    Bundle.GetIdParts(BundleInfo.Id, out id, out version);
+                    var addins = database.GetInstalledBundles(null, BundleSearchFlagsInternal.IncludeAll | BundleSearchFlagsInternal.LatestVersionsOnly);
                     isLatestVersion = addins.Any(a => Bundle.GetIdName(a.Id) == id && a.Version == version);
                 }
                 return isLatestVersion.Value;
@@ -213,7 +213,7 @@ namespace Clamp.OSGI.Framework
             get { return Path.Combine(database.BundlePrivateDataPath, Path.GetFileNameWithoutExtension(Description.FileName)); }
         }
 
-        internal BundleInfo AddinInfo
+        internal BundleInfo BundleInfo
         {
             get
             {
@@ -248,7 +248,7 @@ namespace Clamp.OSGI.Framework
         /// </remarks>
         public bool SupportsVersion(string version)
         {
-            return AddinInfo.SupportsVersion(version);
+            return BundleInfo.SupportsVersion(version);
         }
 
 
@@ -266,13 +266,13 @@ namespace Clamp.OSGI.Framework
         #endregion
 
         #region private method
-        private void SetIsUserAddin(BundleDescription adesc)
+        private void SetIsUserBundle(BundleDescription adesc)
         {
-            string installPath = database.Registry.DefaultAddinsFolder;
+            string installPath = database.Registry.DefaultBundlesFolder;
 
             if (installPath[installPath.Length - 1] != Path.DirectorySeparatorChar)
                 installPath += Path.DirectorySeparatorChar;
-            isUserAddin = adesc != null && Path.GetFullPath(adesc.AddinFile).StartsWith(installPath);
+            isUserBundle = adesc != null && Path.GetFullPath(adesc.BundleFile).StartsWith(installPath);
         }
         #endregion
 

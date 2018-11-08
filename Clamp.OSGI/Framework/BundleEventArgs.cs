@@ -18,7 +18,7 @@ namespace Clamp.OSGI.Framework
         string addinId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.AddinEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.BundleEventArgs"/> class.
         /// </summary>
         /// <param name='addinId'>
         /// Add-in identifier.
@@ -31,7 +31,7 @@ namespace Clamp.OSGI.Framework
         /// <summary>
         /// Identifier of the add-in that generated the event.
         /// </summary>
-        public string AddinId
+        public string BundleId
         {
             get { return addinId; }
         }

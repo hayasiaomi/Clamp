@@ -8,10 +8,10 @@ namespace Clamp.OSGI.Framework.Data.Description
     [AttributeUsage(AttributeTargets.Class)]
     public class ExtensionNodeAttribute : Attribute
     {
-        string nodeName;
-        string description;
-        string customAttributeTypeName;
-        Type customAttributeType;
+        private string nodeName;
+        private string description;
+        private string customAttributeTypeName;
+        private Type customAttributeType;
 
         /// <summary>
         /// Initializes the attribute

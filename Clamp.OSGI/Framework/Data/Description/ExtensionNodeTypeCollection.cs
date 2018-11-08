@@ -8,7 +8,7 @@ namespace Clamp.OSGI.Framework.Data.Description
     public class ExtensionNodeTypeCollection : ObjectDescriptionCollection<ExtensionNodeType>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionNodeTypeCollection"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ExtensionNodeTypeCollection"/> class.
         /// </summary>
         public ExtensionNodeTypeCollection()
         {
@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.ExtensionNodeType"/> at the specified index.
+        /// Gets the <see cref="Mono.Bundles.Description.ExtensionNodeType"/> at the specified index.
         /// </summary>
         /// <param name='n'>
         /// The index.
@@ -30,7 +30,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.ExtensionNodeType"/> with the specified id.
+        /// Gets the <see cref="Mono.Bundles.Description.ExtensionNodeType"/> with the specified id.
         /// </summary>
         /// <param name='id'>
         /// Identifier.

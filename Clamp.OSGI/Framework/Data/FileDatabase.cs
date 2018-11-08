@@ -1,5 +1,5 @@
 ﻿using Clamp.OSGI.Framework.Data.Description;
-using LiteDB;
+using Clamp.OSGI.Framework.Data.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -82,22 +82,21 @@ namespace Clamp.OSGI.Framework.Data
         {
             return FileLock(FileAccess.Write, -1);
         }
-        public void WriteObject(string file, object obj)
+        public void WriteObject(string file, object obj, BinaryXmlTypeMap typeMap)
         {
-            //using (Stream s = Create(file))
-            //{
-            //    BinaryXmlWriter writer = new BinaryXmlWriter(s, typeMap);
-            //    writer.WriteValue("data", obj);
-            //}
+            using (Stream s = Create(file))
+            {
+                BinaryXmlWriter writer = new BinaryXmlWriter(s, typeMap);
+                writer.WriteValue("data", obj);
+            }
         }
 
-
-        public void WriteSharedObject(string objectId, string targetFile, PersistentObject obj)
+        public void WriteSharedObject(string objectId, string targetFile, BinaryXmlTypeMap typeMap, IBinaryXmlElement obj)
         {
-            WriteSharedObject(null, null, null, objectId, targetFile, obj);
+            WriteSharedObject(null, null, null, objectId, targetFile, typeMap, obj);
         }
 
-        public string WriteSharedObject(string directory, string sharedFileName, string extension, string objectId, string readFileName, PersistentObject obj)
+        public string WriteSharedObject(string directory, string sharedFileName, string extension, string objectId, string readFileName, BinaryXmlTypeMap typeMap, IBinaryXmlElement obj)
         {
             string file = readFileName;
 
@@ -114,17 +113,14 @@ namespace Clamp.OSGI.Framework.Data
                 }
             }
 
-            //TODO 增加数据库里
-            //using (Stream s = Create(file))
-            //{
-            //    BinaryXmlWriter writer = new BinaryXmlWriter(s, typeMap);
-            //    writer.WriteBeginElement("File");
-            //    writer.WriteValue("id", objectId);
-            //    writer.WriteValue("data", obj);
-            //    writer.WriteEndElement();
-            //}
-
-
+            using (Stream s = Create(file))
+            {
+                BinaryXmlWriter writer = new BinaryXmlWriter(s, typeMap);
+                writer.WriteBeginElement("File");
+                writer.WriteValue("id", objectId);
+                writer.WriteValue("data", obj);
+                writer.WriteEndElement();
+            }
             return file;
         }
 
@@ -212,16 +208,16 @@ namespace Clamp.OSGI.Framework.Data
                 EndTransaction();
             }
         }
-        public object ReadSharedObject(string fullFileName)
+        public object ReadSharedObject(string fullFileName, BinaryXmlTypeMap typeMap)
         {
             object result;
-            OpenFileForPath(fullFileName, null, false, out result);
+            OpenFileForPath(fullFileName, null, typeMap, false, out result);
             return result;
         }
 
-        public object ReadSharedObject(string directory, string sharedFileName, string extension, string objectId, out string fileName)
+        public object ReadSharedObject(string directory, string sharedFileName, string extension, string objectId, BinaryXmlTypeMap typeMap, out string fileName)
         {
-            return ReadSharedObject(directory, sharedFileName, extension, objectId, false, out fileName);
+            return ReadSharedObject(directory, sharedFileName, extension, objectId, typeMap, false, out fileName);
         }
 
         public string[] GetDirectoryFiles(string dir, string pattern)
@@ -250,6 +246,19 @@ namespace Clamp.OSGI.Framework.Data
             }
             else
                 return Directory.GetFiles(dir, pattern);
+        }
+
+        public Stream Create(string fileName)
+        {
+            if (inTransaction)
+            {
+                deletedFiles.Remove(fileName);
+                deletedDirs.Remove(Path.GetDirectoryName(fileName));
+                foldersToUpdate[Path.GetDirectoryName(fileName)] = null;
+                return File.Create(fileName + ".new");
+            }
+            else
+                return File.Create(fileName);
         }
 
         public bool Exists(string fileName)
@@ -323,6 +332,18 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        public Stream OpenRead(string fileName)
+        {
+            if (inTransaction)
+            {
+                if (deletedFiles.Contains(fileName))
+                    throw new FileNotFoundException();
+                if (File.Exists(fileName + ".new"))
+                    return File.OpenRead(fileName + ".new");
+            }
+            return File.OpenRead(fileName);
+        }
+
         #endregion
 
         #region private Method
@@ -347,34 +368,35 @@ namespace Clamp.OSGI.Framework.Data
         }
 
 
-        private object ReadSharedObject(string directory, string sharedFileName, string extension, string objectId, bool checkOnly, out string fileName)
+        private object ReadSharedObject(string directory, string sharedFileName, string extension, string objectId, BinaryXmlTypeMap typeMap, bool checkOnly, out string fileName)
         {
             string name = GetFileKey(directory, sharedFileName, objectId);
             string file = Path.Combine(directory, name + extension);
 
             object result;
-
-            if (OpenFileForPath(file, objectId, checkOnly, out result))
+            if (OpenFileForPath(file, objectId, typeMap, checkOnly, out result))
             {
                 fileName = file;
                 return result;
             }
 
+            // The file is not the one we expected. There has been a name collision
+
             foreach (string f in GetDirectoryFiles(directory, name + "*" + extension))
             {
-                if (f != file && OpenFileForPath(f, objectId, checkOnly, out result))
+                if (f != file && OpenFileForPath(f, objectId, typeMap, checkOnly, out result))
                 {
                     fileName = f;
                     return result;
                 }
             }
 
+            // File not found
             fileName = null;
-
             return null;
         }
 
-        private bool OpenFileForPath(string f, string objectId, bool checkOnly, out object result)
+        private bool OpenFileForPath(string f, string objectId, BinaryXmlTypeMap typeMap, bool checkOnly, out object result)
         {
             result = null;
 
@@ -382,29 +404,18 @@ namespace Clamp.OSGI.Framework.Data
             {
                 return false;
             }
-
-            //using (Stream s = OpenRead(f))
-            //{
-            //    BinaryXmlReader reader = new BinaryXmlReader(s, typeMap);
-            //    reader.ReadBeginElement();
-            //    string id = reader.ReadStringValue("id");
-            //    if (objectId == null || objectId == id)
-            //    {
-            //        if (!checkOnly)
-            //            result = reader.ReadValue("data");
-            //        return true;
-            //    }
-            //}
-            //using (LiteDatabase liteDatabase = new LiteDatabase(f))
-            //{
-            //    if (objectId == null || objectId == id)
-            //    {
-            //        if (!checkOnly)
-            //            result = reader.ReadValue("data");
-            //        return true;
-            //    }
-            //}
-
+            using (Stream s = OpenRead(f))
+            {
+                BinaryXmlReader reader = new BinaryXmlReader(s, typeMap);
+                reader.ReadBeginElement();
+                string id = reader.ReadStringValue("id");
+                if (objectId == null || objectId == id)
+                {
+                    if (!checkOnly)
+                        result = reader.ReadValue("data");
+                    return true;
+                }
+            }
             return false;
         }
 

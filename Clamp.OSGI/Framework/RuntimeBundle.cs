@@ -22,10 +22,10 @@ namespace Clamp.OSGI.Framework
         private string baseDirectory;
         private string privatePath;
         private Bundle ainfo;
-        private RuntimeBundle parentAddin;
+        private RuntimeBundle parentBundle;
 
         private Assembly[] assemblies;
-        private RuntimeBundle[] depAddins;
+        private RuntimeBundle[] depBundles;
         private ResourceManager[] resourceManagers;
         private BundleLocalizer localizer;
         private ModuleDescription module;
@@ -36,17 +36,17 @@ namespace Clamp.OSGI.Framework
             this.clampBundle = clampBundle;
         }
 
-        internal RuntimeBundle(ClampBundle clampBundle, RuntimeBundle parentAddin, ModuleDescription module)
+        internal RuntimeBundle(ClampBundle clampBundle, RuntimeBundle parentBundle, ModuleDescription module)
         {
             this.clampBundle = clampBundle;
-            this.parentAddin = parentAddin;
+            this.parentBundle = parentBundle;
             this.module = module;
-            id = parentAddin.id;
-            baseDirectory = parentAddin.baseDirectory;
-            privatePath = parentAddin.privatePath;
-            ainfo = parentAddin.ainfo;
-            localizer = parentAddin.localizer;
-            module.RuntimeAddin = this;
+            id = parentBundle.id;
+            baseDirectory = parentBundle.baseDirectory;
+            privatePath = parentBundle.privatePath;
+            ainfo = parentBundle.ainfo;
+            localizer = parentBundle.localizer;
+            module.RuntimeBundle = this;
         }
 
         internal ModuleDescription Module
@@ -79,16 +79,16 @@ namespace Clamp.OSGI.Framework
             get { return Bundle.GetIdVersion(id); }
         }
 
-        internal Bundle Addin
+        internal Bundle Bundle
         {
             get { return ainfo; }
         }
 
         /// <summary>
-        /// Returns a string that represents the current RuntimeAddin.
+        /// Returns a string that represents the current RuntimeBundle.
         /// </summary>
         /// <returns>
-        /// A string that represents the current RuntimeAddin.
+        /// A string that represents the current RuntimeBundle.
         /// </returns>
         public override string ToString()
         {
@@ -329,9 +329,9 @@ namespace Clamp.OSGI.Framework
             foreach (ResourceManager rm in GetResourceManagers())
                 yield return rm;
 
-            if (parentAddin != null)
+            if (parentBundle != null)
             {
-                foreach (ResourceManager rm in parentAddin.GetResourceManagers())
+                foreach (ResourceManager rm in parentBundle.GetResourceManagers())
                     yield return rm;
             }
         }
@@ -343,9 +343,9 @@ namespace Clamp.OSGI.Framework
 
             // Look in the parent addin assemblies
 
-            if (parentAddin != null)
+            if (parentBundle != null)
             {
-                foreach (Assembly asm in parentAddin.Assemblies)
+                foreach (Assembly asm in parentBundle.Assemblies)
                     yield return asm;
             }
         }
@@ -353,13 +353,13 @@ namespace Clamp.OSGI.Framework
         IEnumerable<RuntimeBundle> GetAllDependencies()
         {
             // Look in the dependent add-ins
-            foreach (RuntimeBundle addin in GetDepAddins())
+            foreach (RuntimeBundle addin in GetDepBundles())
                 yield return addin;
 
-            if (parentAddin != null)
+            if (parentBundle != null)
             {
                 // Look in the parent dependent add-ins
-                foreach (RuntimeBundle addin in parentAddin.GetDepAddins())
+                foreach (RuntimeBundle addin in parentBundle.GetDepBundles())
                     yield return addin;
             }
         }
@@ -581,11 +581,11 @@ namespace Clamp.OSGI.Framework
         internal RuntimeBundle GetModule(ModuleDescription module)
         {
             // If requesting the root module, return this
-            if (module == module.ParentAddinDescription.MainModule)
+            if (module == module.ParentBundleDescription.MainModule)
                 return this;
 
-            if (module.RuntimeAddin != null)
-                return module.RuntimeAddin;
+            if (module.RuntimeBundle != null)
+                return module.RuntimeBundle;
 
             RuntimeBundle addin = new RuntimeBundle(clampBundle, this, module);
             return addin;
@@ -596,10 +596,10 @@ namespace Clamp.OSGI.Framework
             ainfo = iad;
 
             BundleDescription description = iad.Description;
-            id = description.AddinId;
+            id = description.BundleId;
             baseDirectory = description.BasePath;
             module = description.MainModule;
-            module.RuntimeAddin = this;
+            module.RuntimeBundle = this;
 
             if (description.Localizer != null)
             {
@@ -607,7 +607,7 @@ namespace Clamp.OSGI.Framework
 
                 // First try getting one of the stock localizers. If none of found try getting the type.
                 object fob = null;
-                Type t = Type.GetType("Mono.Addins.Localization." + cls + "Localizer, " + GetType().Assembly.FullName, false);
+                Type t = Type.GetType("Mono.Bundles.Localization." + cls + "Localizer, " + GetType().Assembly.FullName, false);
                 if (t != null)
                     fob = Activator.CreateInstance(t);
 
@@ -617,7 +617,7 @@ namespace Clamp.OSGI.Framework
                 IBundleLocalizerFactory factory = fob as IBundleLocalizerFactory;
 
                 if (factory == null)
-                    throw new InvalidOperationException("Localizer factory type '" + cls + "' must implement IAddinLocalizerFactory");
+                    throw new InvalidOperationException("Localizer factory type '" + cls + "' must implement IBundleLocalizerFactory");
 
                 localizer = new BundleLocalizer(factory.CreateLocalizer(this, description.Localizer));
             }
@@ -625,10 +625,10 @@ namespace Clamp.OSGI.Framework
             return description;
         }
 
-        RuntimeBundle[] GetDepAddins()
+        RuntimeBundle[] GetDepBundles()
         {
-            if (depAddins != null)
-                return depAddins;
+            if (depBundles != null)
+                return depBundles;
 
             ArrayList plugList = new ArrayList();
             string ns = ainfo.Description.Namespace;
@@ -639,14 +639,14 @@ namespace Clamp.OSGI.Framework
                 BundleDependency pdep = dep as BundleDependency;
                 if (pdep != null)
                 {
-                    RuntimeBundle adn = clampBundle.GetAddin(Bundle.GetFullId(ns, pdep.AddinId, pdep.Version));
+                    RuntimeBundle adn = clampBundle.GetBundle(Bundle.GetFullId(ns, pdep.BundleId, pdep.Version));
                     if (adn != null)
                         plugList.Add(adn);
                     else
-                        clampBundle.ReportError("Add-in dependency not loaded: " + pdep.FullAddinId, module.ParentAddinDescription.AddinId, null, false);
+                        clampBundle.ReportError("Add-in dependency not loaded: " + pdep.FullBundleId, module.ParentBundleDescription.BundleId, null, false);
                 }
             }
-            return depAddins = (RuntimeBundle[])plugList.ToArray(typeof(RuntimeBundle));
+            return depBundles = (RuntimeBundle[])plugList.ToArray(typeof(RuntimeBundle));
         }
 
         void LoadModule(ModuleDescription module, ArrayList asmList)
@@ -693,20 +693,20 @@ namespace Clamp.OSGI.Framework
 
         internal void UnloadExtensions()
         {
-            clampBundle.UnregisterAddinNodeSets(id);
+            clampBundle.UnregisterBundleNodeSets(id);
         }
 
-        bool CheckAddinDependencies(ModuleDescription module, bool forceLoadAssemblies)
+        bool CheckBundleDependencies(ModuleDescription module, bool forceLoadAssemblies)
         {
             foreach (Dependency dep in module.Dependencies)
             {
                 BundleDependency pdep = dep as BundleDependency;
                 if (pdep == null)
                     continue;
-                if (!clampBundle.IsAddinLoaded(pdep.FullAddinId))
+                if (!clampBundle.IsBundleLoaded(pdep.FullBundleId))
                     return false;
                 if (forceLoadAssemblies)
-                    clampBundle.GetAddin(pdep.FullAddinId).EnsureAssembliesLoaded();
+                    clampBundle.GetBundle(pdep.FullBundleId).EnsureAssembliesLoaded();
             }
             return true;
         }
@@ -724,7 +724,7 @@ namespace Clamp.OSGI.Framework
             ArrayList asmList = new ArrayList();
 
             // Load the assemblies of the module
-            CheckAddinDependencies(module, true);
+            CheckBundleDependencies(module, true);
             LoadModule(module, asmList);
 
             assemblies = (Assembly[])asmList.ToArray(typeof(Assembly));

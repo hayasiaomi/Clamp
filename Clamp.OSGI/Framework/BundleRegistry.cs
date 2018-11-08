@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework
         private string addinsDir;
         private string databaseDir;
 
-        public string DefaultAddinsFolder
+        public string DefaultBundlesFolder
         {
             get { return addinsDir; }
         }
@@ -53,7 +53,7 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        internal List<string> GlobalAddinDirectories
+        internal List<string> GlobalBundleDirectories
         {
             get { return addinDirs; }
         }
@@ -95,7 +95,7 @@ namespace Clamp.OSGI.Framework
                 this.databaseDir = Path.GetFullPath(this.basePath);
 
             addinDirs = new List<string>();
-            addinDirs.Add(DefaultAddinsFolder);
+            addinDirs.Add(DefaultBundlesFolder);
 
             database = new BundleDatabase(clampBundle, this);
 
@@ -110,7 +110,7 @@ namespace Clamp.OSGI.Framework
 
         #region internal method
 
-        internal bool CreateHostAddinsFile(string hostFile)
+        internal bool CreateHostBundlesFile(string hostFile)
         {
             hostFile = Path.GetFullPath(hostFile);
             string baseName = Path.GetFileNameWithoutExtension(hostFile);
@@ -159,14 +159,14 @@ namespace Clamp.OSGI.Framework
             return true;
         }
 
-        internal bool AddinDependsOn(string id1, string id2)
+        internal bool BundleDependsOn(string id1, string id2)
         {
-            return database.AddinDependsOn(currentDomain, id1, id2);
+            return database.BundleDependsOn(currentDomain, id1, id2);
         }
 
-        internal void ParseAddin(string file, string outFile)
+        internal void ParseBundle(string file, string outFile)
         {
-            database.ParseAddin(currentDomain, file, outFile, true);
+            database.ParseBundle(currentDomain, file, outFile, true);
         }
 
         internal void NotifyDatabaseUpdated()
@@ -178,79 +178,23 @@ namespace Clamp.OSGI.Framework
             database.CopyExtensions(other.database);
         }
 
-        /// <summary>
-        /// 新建一个组件宿主
-        /// </summary>
-        /// <param name="hostFile"></param>
-        /// <returns></returns>
-        internal bool CreateHostBundlesFile(string hostFile)
-        {
-            hostFile = Path.GetFullPath(hostFile);
 
-            string baseName = Path.GetFileNameWithoutExtension(hostFile);
-
-            if (!Directory.Exists(database.HostsPath))
-                Directory.CreateDirectory(database.HostsPath);
-
-            foreach (string s in Directory.GetFiles(database.HostsPath, baseName + "*.bundles"))
-            {
-                try
-                {
-                    using (StreamReader sr = new StreamReader(s))
-                    {
-                        XmlTextReader tr = new XmlTextReader(sr);
-                        tr.MoveToContent();
-                        string host = tr.GetAttribute("host-reference");
-                        if (host == hostFile)
-                            return false;
-                    }
-                }
-                catch
-                {
-                    // Ignore this file
-                }
-            }
-
-            string file = Path.Combine(database.HostsPath, baseName) + ".bundles";
-            int n = 1;
-            while (File.Exists(file))
-            {
-                file = Path.Combine(database.HostsPath, baseName) + "_" + n + ".bundles";
-                n++;
-            }
-
-            using (StreamWriter sw = new StreamWriter(file))
-            {
-                XmlTextWriter tw = new XmlTextWriter(sw);
-                tw.Formatting = Formatting.Indented;
-                tw.WriteStartElement("Addins");
-                tw.WriteAttributeString("host-reference", hostFile);
-                tw.WriteStartElement("Directory");
-                tw.WriteAttributeString("shared", "false");
-                tw.WriteString(Path.GetDirectoryName(hostFile));
-                tw.WriteEndElement();
-                tw.Close();
-            }
-            return true;
-        }
-
-
-        internal Bundle GetAddinForHostAssembly(string filePath)
+        internal Bundle GetBundleForHostAssembly(string filePath)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
                 return null;
-            return database.GetAddinForHostAssembly(currentDomain, filePath);
+            return database.GetBundleForHostAssembly(currentDomain, filePath);
         }
         #endregion
 
         #region  public method
 
 
-        public bool IsAddinEnabled(string id)
+        public bool IsBundleEnabled(string id)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
                 return false;
-            return database.IsAddinEnabled(currentDomain, id);
+            return database.IsBundleEnabled(currentDomain, id);
         }
         /// <summary>
         /// 更新组件注册表
@@ -260,16 +204,16 @@ namespace Clamp.OSGI.Framework
             database.Update(currentDomain);
         }
 
-        public Bundle[] GetAddins()
+        public Bundle[] GetBundles()
         {
-            return GetModules(BundleSearchFlags.IncludeAddins);
+            return GetModules(BundleSearchFlags.IncludeBundles);
         }
 
-        public Bundle GetAddin(string id)
+        public Bundle GetBundle(string id)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
                 return null;
-            Bundle ad = database.GetInstalledAddin(currentDomain, id);
+            Bundle ad = database.GetInstalledBundle(currentDomain, id);
             if (ad != null && IsRegisteredForUninstall(ad.Id))
                 return null;
             return ad;
@@ -286,7 +230,7 @@ namespace Clamp.OSGI.Framework
 
             BundleSearchFlagsInternal f = (BundleSearchFlagsInternal)(int)flags;
 
-            return database.GetInstalledAddins(currentDomain, f | BundleSearchFlagsInternal.ExcludePendingUninstall).ToArray();
+            return database.GetInstalledBundles(currentDomain, f | BundleSearchFlagsInternal.ExcludePendingUninstall).ToArray();
         }
 
         public void Dispose()
@@ -324,7 +268,7 @@ namespace Clamp.OSGI.Framework
         {
             BundleRegistry reg = new BundleRegistry(engine, GlobalRegistryPath, null, null);
             string baseDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
-            reg.GlobalAddinDirectories.Add(Path.Combine(baseDir, "clamp.bundles"));
+            reg.GlobalBundleDirectories.Add(Path.Combine(baseDir, "clamp.bundles"));
             return reg;
         }
 

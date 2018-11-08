@@ -1,4 +1,5 @@
-﻿using Clamp.OSGI.Framework.Data.Description;
+﻿using Clamp.OSGI.Framework.Data.Annotation;
+using Clamp.OSGI.Framework.Data.Description;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace Clamp.OSGI.Framework.Nodes
 
                 if (elem.NodeName == "Condition")
                 {
-                    Condition cond = new Condition(AddinEngine, elem, parentCondition);
+                    Condition cond = new Condition(BundleEngine, elem, parentCondition);
                     LoadExtensionElement(tnode, addin, elem.ChildNodes, module, ref curPos, cond, false, addedNodes);
                     continue;
                 }
@@ -156,7 +157,7 @@ namespace Clamp.OSGI.Framework.Nodes
             }
             if (elem.NodeName == "Condition")
             {
-                return new Condition(AddinEngine, elem, parentCondition);
+                return new Condition(BundleEngine, elem, parentCondition);
             }
             addinEngine.ReportError("Invalid complex condition element '" + elem.NodeName + "'.", null, null, false);
             return new NullCondition();
@@ -194,17 +195,17 @@ namespace Clamp.OSGI.Framework.Nodes
         #region private mehtod
         bool InitializeNodeType(ExtensionNodeType ntype)
         {
-            RuntimeBundle p = addinEngine.GetAddin(ntype.AddinId);
+            RuntimeBundle p = addinEngine.GetBundle(ntype.BundleId);
             if (p == null)
             {
-                if (!addinEngine.IsAddinLoaded(ntype.AddinId))
+                if (!addinEngine.IsBundleLoaded(ntype.BundleId))
                 {
-                    if (!addinEngine.LoadAddin(ntype.AddinId, false))
+                    if (!addinEngine.LoadBundle(ntype.BundleId, false))
                         return false;
-                    p = addinEngine.GetAddin(ntype.AddinId);
+                    p = addinEngine.GetBundle(ntype.BundleId);
                     if (p == null)
                     {
-                        addinEngine.ReportError("Add-in not found", ntype.AddinId, null, false);
+                        addinEngine.ReportError("Add-in not found", ntype.BundleId, null, false);
                         return false;
                     }
                 }
@@ -219,7 +220,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     Type attType = p.GetType(ntype.ExtensionAttributeTypeName, false);
                     if (attType == null)
                     {
-                        addinEngine.ReportError("Custom attribute type '" + ntype.ExtensionAttributeTypeName + "' not found.", ntype.AddinId, null, false);
+                        addinEngine.ReportError("Custom attribute type '" + ntype.ExtensionAttributeTypeName + "' not found.", ntype.BundleId, null, false);
                         return false;
                     }
                     if (ntype.ObjectTypeName.Length > 0 || ntype.TypeName == typeof(TypeExtensionNode).FullName)
@@ -238,7 +239,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 ntype.Type = p.GetType(ntype.TypeName, false);
                 if (ntype.Type == null)
                 {
-                    addinEngine.ReportError("Extension node type '" + ntype.TypeName + "' not found.", ntype.AddinId, null, false);
+                    addinEngine.ReportError("Extension node type '" + ntype.TypeName + "' not found.", ntype.BundleId, null, false);
                     return false;
                 }
             }

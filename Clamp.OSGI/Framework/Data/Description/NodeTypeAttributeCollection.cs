@@ -8,7 +8,7 @@ namespace Clamp.OSGI.Framework.Data.Description
     public class NodeTypeAttributeCollection : ObjectDescriptionCollection<NodeTypeAttribute>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.NodeTypeAttributeCollection"/> class.
+        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.NodeTypeAttributeCollection"/> class.
         /// </summary>
         public NodeTypeAttributeCollection()
         {
@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.NodeTypeAttribute"/> at the specified index.
+        /// Gets the <see cref="Mono.Bundles.Description.NodeTypeAttribute"/> at the specified index.
         /// </summary>
         /// <param name='n'>
         /// The index.

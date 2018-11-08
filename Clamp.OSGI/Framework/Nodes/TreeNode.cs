@@ -30,7 +30,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 childrenLoaded = true;
         }
 
-        public ClampBundle AddinEngine
+        public ClampBundle BundleEngine
         {
             get { return addinEngine; }
         }
@@ -54,7 +54,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 if (extensionNode == null && extensionPoint != null)
                 {
                     extensionNode = new ExtensionNode();
-                    extensionNode.SetData(addinEngine, extensionPoint.RootAddin, null, null);
+                    extensionNode.SetData(addinEngine, extensionPoint.RootBundle, null, null);
                     AttachExtensionNode(extensionNode);
                 }
                 return extensionNode;
@@ -235,14 +235,14 @@ namespace Clamp.OSGI.Framework.Nodes
             return string.Join("/", ids);
         }
 
-        public void NotifyAddinLoaded(RuntimeBundle ad, bool recursive)
+        public void NotifyBundleLoaded(RuntimeBundle ad, bool recursive)
         {
-            if (extensionNode != null && extensionNode.AddinId == ad.Addin.Id)
-                extensionNode.OnAddinLoaded();
+            if (extensionNode != null && extensionNode.BundleId == ad.Bundle.Id)
+                extensionNode.OnBundleLoaded();
             if (recursive && childrenLoaded)
             {
                 foreach (TreeNode node in Children.Clone())
-                    node.NotifyAddinLoaded(ad, true);
+                    node.NotifyBundleLoaded(ad, true);
             }
         }
 
@@ -271,9 +271,9 @@ namespace Clamp.OSGI.Framework.Nodes
             return null;
         }
 
-        public void FindAddinNodes(string id, ArrayList nodes)
+        public void FindBundleNodes(string id, ArrayList nodes)
         {
-            if (id != null && extensionPoint != null && extensionPoint.RootAddin == id)
+            if (id != null && extensionPoint != null && extensionPoint.RootBundle == id)
             {
                 // It is an extension point created by the add-in. All nodes below this
                 // extension point will be added to the list, even if they come from other add-ins.
@@ -284,10 +284,10 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 // Deep-first search, to make sure children are removed before the parent.
                 foreach (TreeNode node in Children)
-                    node.FindAddinNodes(id, nodes);
+                    node.FindBundleNodes(id, nodes);
             }
 
-            if (id == null || (ExtensionNode != null && ExtensionNode.AddinId == id))
+            if (id == null || (ExtensionNode != null && ExtensionNode.BundleId == id))
                 nodes.Add(this);
         }
 
@@ -299,7 +299,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 {
                     if (nt.ObjectTypeName.Length > 0 && (nodeName.Length == 0 || nodeName == nt.Id))
                     {
-                        RuntimeBundle addin = addinEngine.GetAddin(extensionPoint.RootAddin);
+                        RuntimeBundle addin = addinEngine.GetBundle(extensionPoint.RootBundle);
                         Type ot = addin.GetType(nt.ObjectTypeName);
                         if (ot != null)
                         {
@@ -350,10 +350,10 @@ namespace Clamp.OSGI.Framework.Nodes
         {
             if (extensionPoint != null)
             {
-                string aid = Bundle.GetIdName(extensionPoint.ParentAddinDescription.AddinId);
-                RuntimeBundle ad = addinEngine.GetAddin(aid);
+                string aid = Bundle.GetIdName(extensionPoint.ParentBundleDescription.BundleId);
+                RuntimeBundle ad = addinEngine.GetBundle(aid);
                 if (ad != null)
-                    extensionPoint = ad.Addin.Description.ExtensionPoints[GetPath()];
+                    extensionPoint = ad.Bundle.Description.ExtensionPoints[GetPath()];
             }
             if (childrenList != null)
             {

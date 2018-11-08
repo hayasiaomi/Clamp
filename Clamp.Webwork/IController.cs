@@ -2,6 +2,8 @@ namespace Clamp.Webwork
 {
     using System.Collections.Generic;
     using System.ComponentModel;
+    using Clamp.OSGI.Framework.Data.Annotation;
+    using Clamp.OSGI.Framework.Data.Description;
     using Clamp.Webwork.ModelBinding;
     using Clamp.Webwork.Responses.Negotiation;
     using Clamp.Webwork.Routing;
@@ -12,6 +14,8 @@ namespace Clamp.Webwork
     /// Nancy module base interface
     /// Defines all the properties / behaviour needed by Nancy internally
     /// </summary>
+
+    [TypeExtensionPoint]
     public interface IController
     {
         /// <summary><para>

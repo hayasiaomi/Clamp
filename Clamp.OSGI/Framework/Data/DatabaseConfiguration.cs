@@ -117,12 +117,12 @@ namespace Clamp.OSGI.Framework.Data
         {
             var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-            var appAddinsConfigFilePath = Path.Combine(assemblyDirectory, "addins-config.xml");
+            var appBundlesConfigFilePath = Path.Combine(assemblyDirectory, "addins-config.xml");
 
-            if (!File.Exists(appAddinsConfigFilePath))
+            if (!File.Exists(appBundlesConfigFilePath))
                 return new DatabaseConfiguration();
 
-            return ReadInternal(appAddinsConfigFilePath);
+            return ReadInternal(appBundlesConfigFilePath);
         }
 
         static DatabaseConfiguration ReadInternal(string file)
@@ -131,19 +131,19 @@ namespace Clamp.OSGI.Framework.Data
             XmlDocument doc = new XmlDocument();
             doc.Load(file);
 
-            XmlElement disabledElem = (XmlElement)doc.DocumentElement.SelectSingleNode("DisabledAddins");
+            XmlElement disabledElem = (XmlElement)doc.DocumentElement.SelectSingleNode("DisabledBundles");
             if (disabledElem != null)
             {
                 // For back compatibility
-                foreach (XmlElement elem in disabledElem.SelectNodes("Addin"))
+                foreach (XmlElement elem in disabledElem.SelectNodes("Bundle"))
                     config.SetEnabled(elem.InnerText, false, true, false);
                 return config;
             }
 
-            XmlElement statusElem = (XmlElement)doc.DocumentElement.SelectSingleNode("AddinStatus");
+            XmlElement statusElem = (XmlElement)doc.DocumentElement.SelectSingleNode("BundleStatus");
             if (statusElem != null)
             {
-                foreach (XmlElement elem in statusElem.SelectNodes("Addin"))
+                foreach (XmlElement elem in statusElem.SelectNodes("Bundle"))
                 {
                     BundleStatus status = new BundleStatus(elem.GetAttribute("id"));
                     string senabled = elem.GetAttribute("enabled");
@@ -170,10 +170,10 @@ namespace Clamp.OSGI.Framework.Data
                 tw.Formatting = Formatting.Indented;
                 tw.WriteStartElement("Configuration");
 
-                tw.WriteStartElement("AddinStatus");
+                tw.WriteStartElement("BundleStatus");
                 foreach (BundleStatus e in bundleStatus.Values)
                 {
-                    tw.WriteStartElement("Addin");
+                    tw.WriteStartElement("Bundle");
                     tw.WriteAttributeString("id", e.BundleId);
                     tw.WriteAttributeString("enabled", e.Enabled.ToString());
                     if (e.Uninstalled)
@@ -185,7 +185,7 @@ namespace Clamp.OSGI.Framework.Data
                     }
                     tw.WriteEndElement();
                 }
-                tw.WriteEndElement(); // AddinStatus
+                tw.WriteEndElement(); // BundleStatus
                 tw.WriteEndElement(); // Configuration
             }
         }

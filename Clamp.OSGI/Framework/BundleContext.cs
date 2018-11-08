@@ -25,7 +25,7 @@ namespace Clamp.OSGI.Framework
 
         public IBundle[] GetBundles()
         {
-            return this.clampBundle.Registry.GetAddins();
+            return this.clampBundle.Registry.GetBundles();
         }
 
         public void AddServiceListener(IServiceListener listener)

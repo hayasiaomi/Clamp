@@ -1,4 +1,5 @@
-﻿using Clamp.OSGI.Framework.Data.Description;
+﻿using Clamp.OSGI.Framework.Data.Annotation;
+using Clamp.OSGI.Framework.Data.Description;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -94,7 +95,7 @@ namespace Clamp.OSGI.Framework.Nodes
             this.module = module;
         }
 
-        internal string AddinId
+        internal string BundleId
         {
             get { return addinId; }
         }
@@ -110,15 +111,15 @@ namespace Clamp.OSGI.Framework.Nodes
         /// <remarks>
         /// This property provides access to the resources and types of the add-in that created this extension node.
         /// </remarks>
-        public RuntimeBundle Addin
+        public RuntimeBundle Bundle
         {
             get
             {
                 if (addin == null && addinId != null)
                 {
-                    if (!addinEngine.IsAddinLoaded(addinId))
-                        addinEngine.LoadAddin(addinId, true);
-                    addin = addinEngine.GetAddin(addinId);
+                    if (!addinEngine.IsBundleLoaded(addinId))
+                        addinEngine.LoadBundle(addinId, true);
+                    addin = addinEngine.GetBundle(addinId);
                     if (addin != null)
                         addin = addin.GetModule(module);
                 }
@@ -147,7 +148,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     }
                     catch (Exception ex)
                     {
-                        addinEngine.ReportError(null, node.Addin != null ? node.Addin.Id : null, ex, false);
+                        addinEngine.ReportError(null, node.Bundle != null ? node.Bundle.Id : null, ex, false);
                     }
                 }
             }
@@ -219,7 +220,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// An array of child objects.
         /// </returns>
         /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Addins.TypeExtensionNode.
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
         /// The returned array is composed by all objects created by calling the
         /// TypeExtensionNode.GetInstance() method for each node.
         /// </remarks>
@@ -238,7 +239,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// An array of child objects.
         /// </returns>
         /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Addins.TypeExtensionNode.
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
         /// The returned array is composed by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node (or TypeExtensionNode.GetInstance() if reuseCachedInstance is set to true).
         /// </remarks>
@@ -257,7 +258,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// An array of child objects.
         /// </returns>
         /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Addins.TypeExtensionNode.
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
         /// The returned array is composed by all objects created by calling the
         /// TypeExtensionNode.GetInstance(Type) method for each node.
         /// 
@@ -276,7 +277,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// An array of child objects.
         /// </returns>
         /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Addins.TypeExtensionNode.
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
         /// The returned array is composed by all objects created by calling the
         /// TypeExtensionNode.GetInstance() method for each node.
         /// </remarks>
@@ -297,7 +298,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// An array of child objects.
         /// </returns>
         /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Addins.TypeExtensionNode.
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
         /// The returned array is composed by all objects created by calling the TypeExtensionNode.CreateInstance(Type)
         /// method for each node (or TypeExtensionNode.GetInstance(Type) if reuseCachedInstance is set to true).
         /// 
@@ -319,7 +320,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// An array of child objects.
         /// </returns>
         /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Addins.TypeExtensionNode.
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
         /// The returned array is composed by all objects created by calling the TypeExtensionNode.CreateInstance()
         /// method for each node (or TypeExtensionNode.GetInstance() if reuseCachedInstance is set to true).
         /// </remarks>
@@ -350,7 +351,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 }
                 catch (Exception ex)
                 {
-                    addinEngine.ReportError("Error while getting object for node in path '" + Path + "'.", node.AddinId, ex, false);
+                    addinEngine.ReportError("Error while getting object for node in path '" + Path + "'.", node.BundleId, ex, false);
                 }
             }
             return list.ToArray(arrayElementType);
@@ -407,7 +408,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 if (memberType == typeof(string))
                 {
                     if (f.Localizable)
-                        val = Addin.Localizer.GetString(at.value);
+                        val = Bundle.Localizer.GetString(at.value);
                     else
                         val = at.value;
                 }
@@ -488,7 +489,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// <summary>
         /// Called when the add-in that defined this extension node is actually loaded in memory.
         /// </summary>
-        internal protected virtual void OnAddinLoaded()
+        internal protected virtual void OnBundleLoaded()
         {
         }
 
@@ -496,7 +497,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// Called when the add-in that defined this extension node is being
         /// unloaded from memory.
         /// </summary>
-        internal protected virtual void OnAddinUnloaded()
+        internal protected virtual void OnBundleUnloaded()
         {
         }
 

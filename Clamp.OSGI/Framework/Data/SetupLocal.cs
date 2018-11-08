@@ -9,7 +9,7 @@ namespace Clamp.OSGI.Framework.Data
     {
         public void Scan(BundleRegistry registry, string scanFolder, string[] filesToIgnore)
         {
-            BundleRegistry reg = new BundleRegistry(registry.BasePath, registry.DefaultAddinsFolder, registry.BundleCachePath);
+            BundleRegistry reg = new BundleRegistry(registry.BasePath, registry.DefaultBundlesFolder, registry.BundleCachePath);
 
             reg.CopyExtensionsFrom(registry);
 
@@ -21,9 +21,9 @@ namespace Clamp.OSGI.Framework.Data
             reg.ScanFolders(scanFolder, files);
         }
 
-        public void GetAddinDescription(BundleRegistry registry, string file, string outFile)
+        public void GetBundleDescription(BundleRegistry registry, string file, string outFile)
         {
-            registry.ParseAddin(file, outFile);
+            registry.ParseBundle(file, outFile);
         }
     }
 }

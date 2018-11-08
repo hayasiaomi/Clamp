@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,8 @@ namespace Clamp.OSGI.Framework.Data
 {
     class BundleHostIndex
     {
+        private static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleHostIndex));
+
         private Hashtable index = new Hashtable();
 
         public static BundleHostIndex Read(FileDatabase fileDatabase, string file)
@@ -42,10 +45,10 @@ namespace Clamp.OSGI.Framework.Data
 
         public void Write(FileDatabase fileDatabase, string file)
         {
-            fileDatabase.WriteObject(file, this);
+            fileDatabase.WriteObject(file, this, typeMap);
         }
 
-        public bool GetAddinForAssembly(string assemblyLocation, out string addinId, out string addinLocation, out string domain)
+        public bool GetBundleForAssembly(string assemblyLocation, out string addinId, out string addinLocation, out string domain)
         {
             assemblyLocation = NormalizeFileName(assemblyLocation);
             string s = index[Path.GetFullPath(assemblyLocation)] as string;

@@ -41,15 +41,27 @@ namespace Clamp.OSGI.Framework.Data
 
         internal ArrayList ModifiedFolderInfos { set; get; }
 
-        internal List<string> AddinsToUpdateRelations { set; get; }
+        internal List<string> BundlesToUpdateRelations { set; get; }
 
-        internal List<string> RemovedAddins { set; get; }
+        internal List<string> RemovedBundles { set; get; }
+
+        internal List<string> BundlesToUpdate { set; get; }
+
+        internal ArrayList FilesWithScanFailure { set; get; }
 
         internal ArrayList FilesToScan { get { return this.filesToScan; } }
 
-        internal List<string> AddinsToUpdate { set; get; }
-
         internal BundleHostIndex HostIndex { set; get; }
+
+        public BundleScanResult()
+        {
+            this.ModifiedFolderInfos = new ArrayList();
+            this.BundlesToUpdateRelations = new List<string>();
+            this.RemovedBundles = new List<string>();
+            this.BundlesToUpdate = new List<string>();
+            this.FilesWithScanFailure = new ArrayList();
+        }
+
 
         public void RegisterModifiedFolderInfo(BundleScanFolderInfo folderInfo)
         {
@@ -57,16 +69,22 @@ namespace Clamp.OSGI.Framework.Data
                 this.ModifiedFolderInfos.Add(folderInfo);
         }
 
-        public void AddRemovedAddin(string addinId)
+        public void AddRemovedBundle(string addinId)
         {
-            if (!this.RemovedAddins.Contains(addinId))
-                this.RemovedAddins.Add(addinId);
+            if (!this.RemovedBundles.Contains(addinId))
+                this.RemovedBundles.Add(addinId);
         }
 
-        public void AddAddinToUpdateRelations(string addinId)
+        public void AddFileToWithFailure(string file)
         {
-            if (!this.AddinsToUpdateRelations.Contains(addinId))
-                this.AddinsToUpdateRelations.Add(addinId);
+            if (!FilesWithScanFailure.Contains(file))
+                FilesWithScanFailure.Add(file);
+        }
+
+        public void AddBundleToUpdateRelations(string addinId)
+        {
+            if (!this.BundlesToUpdateRelations.Contains(addinId))
+                this.BundlesToUpdateRelations.Add(addinId);
         }
 
         public bool VisitFolder(string folder)
@@ -80,10 +98,10 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        public void AddAddinToUpdate(string addinId)
+        public void AddBundleToUpdate(string addinId)
         {
-            if (!AddinsToUpdate.Contains(addinId))
-                AddinsToUpdate.Add(addinId);
+            if (!BundlesToUpdate.Contains(addinId))
+                BundlesToUpdate.Add(addinId);
         }
 
         public bool IgnorePath(string file)
@@ -104,7 +122,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             FileToScan di = new FileToScan();
             di.File = file;
-            di.AddinScanFolderInfo = folderInfo;
+            di.BundleScanFolderInfo = folderInfo;
             FilesToScan.Add(di);
             RegisterModifiedFolderInfo(folderInfo);
         }
@@ -126,12 +144,15 @@ namespace Clamp.OSGI.Framework.Data
         public void AddAssemblyLocation(string file)
         {
             string name = Path.GetFileNameWithoutExtension(file);
+
             ArrayList list = assemblyLocations[name] as ArrayList;
+
             if (list == null)
             {
                 list = new ArrayList();
                 assemblyLocations[name] = list;
             }
+
             list.Add(file);
         }
 
@@ -185,6 +206,6 @@ namespace Clamp.OSGI.Framework.Data
     class FileToScan
     {
         public string File;
-        public BundleScanFolderInfo AddinScanFolderInfo;
+        public BundleScanFolderInfo BundleScanFolderInfo;
     }
 }

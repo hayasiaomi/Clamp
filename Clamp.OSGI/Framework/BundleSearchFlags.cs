@@ -11,7 +11,7 @@ namespace Clamp.OSGI.Framework
         /// <summary>
         /// Add-ins are included in the search
         /// </summary>
-        IncludeAddins = 1,
+        IncludeBundles = 1,
         /// <summary>
         /// Add-in roots are included in the search
         /// </summary>
@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Framework
         /// <summary>
         /// Both add-in and add-in roots are included in the search
         /// </summary>
-        IncludeAll = IncludeAddins | IncludeRoots,
+        IncludeAll = IncludeBundles | IncludeRoots,
         /// <summary>
         /// Only the latest version of every add-in or add-in root is included in the search
         /// </summary>

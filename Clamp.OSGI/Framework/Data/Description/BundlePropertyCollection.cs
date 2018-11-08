@@ -92,20 +92,20 @@ namespace Clamp.OSGI.Framework.Data.Description
         bool HasProperty(string name);
     }
 
-    class AddinPropertyCollectionImpl : List<BundleProperty>, BundlePropertyCollection
+    class BundlePropertyCollectionImpl : List<BundleProperty>, BundlePropertyCollection
     {
         BundleDescription desc;
 
-        public AddinPropertyCollectionImpl()
+        public BundlePropertyCollectionImpl()
         {
         }
 
-        public AddinPropertyCollectionImpl(BundleDescription desc)
+        public BundlePropertyCollectionImpl(BundleDescription desc)
         {
             this.desc = desc;
         }
 
-        public AddinPropertyCollectionImpl(BundlePropertyCollection col)
+        public BundlePropertyCollectionImpl(BundlePropertyCollection col)
         {
             AddRange(col);
         }

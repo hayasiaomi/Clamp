@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
@@ -106,6 +108,78 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// </remarks>
         public ContentType ContentType { get; set; }
 
-      
+        internal override void Verify(string location, StringCollection errors)
+        {
+            VerifyNotEmpty(location + "Attribute", errors, Name, "name");
+        }
+
+        internal NodeTypeAttribute(XmlElement elem) : base(elem)
+        {
+            name = elem.GetAttribute("name");
+            type = elem.GetAttribute("type");
+            required = elem.GetAttribute("required").ToLower() == "true";
+            localizable = elem.GetAttribute("localizable").ToLower() == "true";
+            string ct = elem.GetAttribute("contentType");
+            if (!string.IsNullOrEmpty(ct))
+                ContentType = (ContentType)Enum.Parse(typeof(ContentType), ct);
+            description = ReadXmlDescription();
+        }
+
+        internal override void SaveXml(XmlElement parent)
+        {
+            CreateElement(parent, "Attribute");
+            Element.SetAttribute("name", name);
+
+            if (Type.Length > 0)
+                Element.SetAttribute("type", Type);
+            else
+                Element.RemoveAttribute("type");
+
+            if (required)
+                Element.SetAttribute("required", "True");
+            else
+                Element.RemoveAttribute("required");
+
+            if (localizable)
+                Element.SetAttribute("localizable", "True");
+            else
+                Element.RemoveAttribute("localizable");
+
+            if (ContentType != ContentType.Text)
+                Element.SetAttribute("contentType", ContentType.ToString());
+            else
+                Element.RemoveAttribute("contentType");
+
+            SaveXmlDescription(description);
+        }
+
+        internal override void Write(BinaryXmlWriter writer)
+        {
+            writer.WriteValue("name", name);
+            writer.WriteValue("type", type);
+            writer.WriteValue("required", required);
+            writer.WriteValue("description", description);
+            writer.WriteValue("localizable", localizable);
+            writer.WriteValue("contentType", ContentType.ToString());
+        }
+
+        internal override void Read(BinaryXmlReader reader)
+        {
+            name = reader.ReadStringValue("name");
+            type = reader.ReadStringValue("type");
+            required = reader.ReadBooleanValue("required");
+            if (!reader.IgnoreDescriptionData)
+                description = reader.ReadStringValue("description");
+            localizable = reader.ReadBooleanValue("localizable");
+            string ct = reader.ReadStringValue("contentType");
+            try
+            {
+                ContentType = (ContentType)Enum.Parse(typeof(ContentType), ct);
+            }
+            catch
+            {
+                ContentType = ContentType.Text;
+            }
+        }
     }
 }

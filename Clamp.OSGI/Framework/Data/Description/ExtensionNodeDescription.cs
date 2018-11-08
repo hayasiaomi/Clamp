@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Clamp.OSGI.Framework.Data.Serialization;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
@@ -20,6 +23,12 @@ namespace Clamp.OSGI.Framework.Data.Description
         public ExtensionNodeDescription(string nodeName)
         {
             this.nodeName = nodeName;
+        }
+
+        internal ExtensionNodeDescription(XmlElement elem)
+        {
+            Element = elem;
+            nodeName = elem.LocalName;
         }
 
         internal ExtensionNodeDescription()
@@ -87,7 +96,12 @@ namespace Clamp.OSGI.Framework.Data.Description
                 return string.Empty;
         }
 
-      
+        internal override void Verify(string location, StringCollection errors)
+        {
+            if (nodeName == null || nodeName.Length == 0)
+                errors.Add(location + "Node: NodeName can't be empty.");
+            ChildNodes.Verify(location + NodeName + "/", errors);
+        }
 
         /// <summary>
         /// Gets or sets the name of the node.
@@ -100,6 +114,8 @@ namespace Clamp.OSGI.Framework.Data.Description
             get { return nodeName; }
             internal set
             {
+                if (Element != null)
+                    throw new InvalidOperationException("Can't change node name of xml element");
                 nodeName = value;
             }
         }
@@ -163,7 +179,20 @@ namespace Clamp.OSGI.Framework.Data.Description
             get { return nodeName == "Condition" || nodeName == "ComplexCondition"; }
         }
 
-      
+        internal override void SaveXml(XmlElement parent)
+        {
+            if (Element == null)
+            {
+                Element = parent.OwnerDocument.CreateElement(nodeName);
+                parent.AppendChild(Element);
+                if (attributes != null)
+                {
+                    for (int n = 0; n < attributes.Length; n += 2)
+                        Element.SetAttribute(attributes[n], attributes[n + 1]);
+                }
+                ChildNodes.SaveXml(Element);
+            }
+        }
 
         /// <summary>
         /// Gets the value of an attribute.
@@ -176,6 +205,9 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// </param>
         public string GetAttribute(string key)
         {
+            if (Element != null)
+                return Element.GetAttribute(key);
+
             if (attributes == null)
                 return string.Empty;
             for (int n = 0; n < attributes.Length; n += 2)
@@ -197,6 +229,12 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// </param>
         public void SetAttribute(string key, string value)
         {
+            if (Element != null)
+            {
+                Element.SetAttribute(key, value);
+                return;
+            }
+
             if (value == null)
                 value = string.Empty;
 
@@ -231,6 +269,12 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// </param>
         public void RemoveAttribute(string name)
         {
+            if (Element != null)
+            {
+                Element.RemoveAttribute(name);
+                return;
+            }
+
             if (attributes == null)
                 return;
 
@@ -257,6 +301,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
             get
             {
+                if (Element != null)
+                    SaveXmlAttributes();
                 if (attributes == null)
                     return new NodeAttribute[0];
                 NodeAttribute[] ats = new NodeAttribute[attributes.Length / 2];
@@ -284,6 +330,14 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (childNodes == null)
                 {
                     childNodes = new ExtensionNodeDescriptionCollection(this);
+                    if (Element != null)
+                    {
+                        foreach (XmlNode nod in Element.ChildNodes)
+                        {
+                            if (nod is XmlElement)
+                                childNodes.Add(new ExtensionNodeDescription((XmlElement)nod));
+                        }
+                    }
                 }
                 return childNodes;
             }
@@ -296,7 +350,30 @@ namespace Clamp.OSGI.Framework.Data.Description
 
         void SaveXmlAttributes()
         {
-          
+            attributes = new string[Element.Attributes.Count * 2];
+            for (int n = 0; n < attributes.Length; n += 2)
+            {
+                XmlAttribute at = Element.Attributes[n / 2];
+                attributes[n] = at.LocalName;
+                attributes[n + 1] = at.Value;
+            }
+        }
+
+        internal override void Write(BinaryXmlWriter writer)
+        {
+            if (Element != null)
+                SaveXmlAttributes();
+
+            writer.WriteValue("nodeName", nodeName);
+            writer.WriteValue("attributes", attributes);
+            writer.WriteValue("ChildNodes", ChildNodes);
+        }
+
+        internal override void Read(BinaryXmlReader reader)
+        {
+            nodeName = reader.ReadStringValue("nodeName");
+            attributes = (string[])reader.ReadValue("attributes");
+            childNodes = (ExtensionNodeDescriptionCollection)reader.ReadValue("ChildNodes", new ExtensionNodeDescriptionCollection(this));
         }
     }
 }
