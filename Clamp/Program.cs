@@ -25,6 +25,8 @@ namespace Clamp
 
             clampBundle.Start();
 
+            clampBundle.WaitForStop();
+
         }
     }
 }

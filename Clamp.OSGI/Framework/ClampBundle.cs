@@ -29,6 +29,7 @@ namespace Clamp.OSGI.Framework
         private bool initialized;
         private string startupDirectory;
         private BundleLocalizer defaultLocalizer;
+        private Dictionary<string, string> configProps;
         public static event BundleErrorEventHandler BundleLoadError;
 
         public static event BundleEventHandler BundleLoaded;
@@ -64,9 +65,10 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        public ClampBundle()
+        internal ClampBundle(Dictionary<string, string> configProps)
         {
             this.extensionContext = new ExtensionContext(this);
+            this.configProps = configProps;
         }
 
         #region public method
@@ -146,9 +148,10 @@ namespace Clamp.OSGI.Framework
             }
         }
 
+        public void WaitForStop()
+        {
 
-
-
+        }
 
         #endregion
 

@@ -42,5 +42,7 @@ namespace Clamp.OSGI.Framework
         //    object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance);
 
         //    T[] GetInstance<T>(string path, bool reuseCachedInstance);
+
+        void WaitForStop();
     }
 }
