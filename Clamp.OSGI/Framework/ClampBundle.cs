@@ -55,6 +55,15 @@ namespace Clamp.OSGI.Framework
             }
         }
 
+        internal BundleRegistry Registry
+        {
+            get
+            {
+                CheckInitialized();
+                return registry;
+            }
+        }
+
         public ClampBundle()
         {
             this.extensionContext = new ExtensionContext(this);
@@ -81,8 +90,8 @@ namespace Clamp.OSGI.Framework
 
                 this.registry = new BundleRegistry(this, this.startupDirectory, addinsDir, databaseDir);
 
-                if (registry.CreateHostBundlesFile(asmFile) || registry.UnknownDomain)
-                    registry.Update();
+                if (this.registry.CreateHostBundlesFile(asmFile) || this.registry.UnknownDomain)
+                    this.registry.Update();
 
                 initialized = true;
 
@@ -118,29 +127,7 @@ namespace Clamp.OSGI.Framework
         #region 重写 Bundle有方法
         public override void Start()
         {
-            //if (this.Bundles != null && this.Bundles.Count > 0)
-            //{
-            //    List<Bundle> addIns = this.Bundles.OrderBy(addin => addin.StartLevel).ToList();
-
-            //    foreach (Bundle addin in addIns)
-            //    {
-            //        if (addin.Enabled)
-            //        {
-            //            if (!string.IsNullOrWhiteSpace(addin.ActivatorClassName))
-            //            {
-            //                IBundleActivator addInActivator = addin.CreateObject(addin.ActivatorClassName) as IBundleActivator;
-
-            //                if (addInActivator != null)
-            //                {
-            //                    BundleContext context = new BundleContext(addin, this);
-
-            //                    addInActivator.Start(context);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-
+            this.registry.Update();
         }
 
         public override void Stop()

@@ -62,15 +62,13 @@ namespace Clamp.OSGI.Framework.Data
             Directory.CreateDirectory(dir);
         }
 
-        public object ReadObject(string file)
+        public object ReadObject(string file, BinaryXmlTypeMap typeMap)
         {
-            //using (Stream s = OpenRead(file))
-            //{
-            //    BinaryXmlReader reader = new BinaryXmlReader(s, typeMap);
-            //    return reader.ReadValue("data");
-            //}
-
-            return null;
+            using (Stream s = OpenRead(file))
+            {
+                BinaryXmlReader reader = new BinaryXmlReader(s, typeMap);
+                return reader.ReadValue("data");
+            }
         }
 
         public IDisposable LockRead()

@@ -8,44 +8,16 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
-    class BundleHostIndex
+    class BundleHostIndex : IBinaryXmlElement
     {
-        private static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleHostIndex));
+        static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleHostIndex));
 
-        private Hashtable index = new Hashtable();
-
-        public static BundleHostIndex Read(FileDatabase fileDatabase, string file)
-        {
-            return (BundleHostIndex)fileDatabase.ReadObject(file);
-        }
+        Hashtable index = new Hashtable();
 
         public void RegisterAssembly(string assemblyLocation, string addinId, string addinLocation, string domain)
         {
             assemblyLocation = NormalizeFileName(assemblyLocation);
             index[Path.GetFullPath(assemblyLocation)] = addinId + " " + addinLocation + " " + domain;
-        }
-
-
-        public void RemoveHostData(string addinId, string addinLocation)
-        {
-            string loc = addinId + " " + Path.GetFullPath(addinLocation) + " ";
-            ArrayList todelete = new ArrayList();
-            foreach (DictionaryEntry e in index)
-            {
-                if (((string)e.Value).StartsWith(loc))
-                    todelete.Add(e.Key);
-            }
-            foreach (string s in todelete)
-                index.Remove(s);
-        }
-        string NormalizeFileName(string name)
-        {
-            return name.ToLower();
-        }
-
-        public void Write(FileDatabase fileDatabase, string file)
-        {
-            fileDatabase.WriteObject(file, this, typeMap);
         }
 
         public bool GetBundleForAssembly(string assemblyLocation, out string addinId, out string addinLocation, out string domain)
@@ -68,6 +40,44 @@ namespace Clamp.OSGI.Framework.Data
                 domain = s.Substring(j + 1);
                 return true;
             }
+        }
+
+        public void RemoveHostData(string addinId, string addinLocation)
+        {
+            string loc = addinId + " " + Path.GetFullPath(addinLocation) + " ";
+            ArrayList todelete = new ArrayList();
+            foreach (DictionaryEntry e in index)
+            {
+                if (((string)e.Value).StartsWith(loc))
+                    todelete.Add(e.Key);
+            }
+            foreach (string s in todelete)
+                index.Remove(s);
+        }
+
+        public static BundleHostIndex Read(FileDatabase fileDatabase, string file)
+        {
+            return (BundleHostIndex)fileDatabase.ReadObject(file, typeMap);
+        }
+
+        public void Write(FileDatabase fileDatabase, string file)
+        {
+            fileDatabase.WriteObject(file, this, typeMap);
+        }
+
+        void IBinaryXmlElement.Write(BinaryXmlWriter writer)
+        {
+            writer.WriteValue("index", index);
+        }
+
+        void IBinaryXmlElement.Read(BinaryXmlReader reader)
+        {
+            reader.ReadValue("index", index);
+        }
+
+        private string NormalizeFileName(string name)
+        {
+            return name.ToLower();
         }
     }
 }

@@ -23,8 +23,8 @@ namespace Clamp.OSGI.Framework
         private bool? isUserBundle;
         private string id;
         private string domain;
-        private BundleRegistry registry;
         private ClampBundle clampBundle;
+
 
         internal Bundle()
         {
@@ -34,7 +34,6 @@ namespace Clamp.OSGI.Framework
             this.domain = null;
             this.clampBundle = null;
             this.database = null;
-            this.registry = null;
         }
 
         internal Bundle(ClampBundle clampBundle, BundleDatabase database, string domain, string id)
@@ -46,22 +45,7 @@ namespace Clamp.OSGI.Framework
             LoadBundleInfo();
         }
 
-        private void LoadBundleInfo()
-        {
-            if (bundleInfo == null)
-            {
-                try
-                {
-                    BundleDescription m = Description;
-                    sourceFile = m.BundleFile;
-                    bundleInfo = BundleInfo.ReadFromDescription(m);
-                }
-                catch (Exception ex)
-                {
-                    throw new InvalidOperationException("Could not read add-in file: " + database.GetDescriptionPath(domain, id), ex);
-                }
-            }
-        }
+
         #region public Property
         /// <summary>
         /// Full identifier of the add-in, including namespace and version.
@@ -181,14 +165,7 @@ namespace Clamp.OSGI.Framework
             get { return this.clampBundle; }
         }
 
-        internal BundleRegistry Registry
-        {
-            get
-            {
-                //CheckInitialized();
-                return registry;
-            }
-        }
+
 
         internal bool IsLatestVersion
         {
@@ -254,18 +231,33 @@ namespace Clamp.OSGI.Framework
 
         public virtual void Start()
         {
-            throw new NotImplementedException();
         }
 
         public virtual void Stop()
         {
-            throw new NotImplementedException();
         }
 
 
         #endregion
 
         #region private method
+
+        private void LoadBundleInfo()
+        {
+            if (bundleInfo == null)
+            {
+                try
+                {
+                    BundleDescription m = Description;
+                    sourceFile = m.BundleFile;
+                    bundleInfo = BundleInfo.ReadFromDescription(m);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Could not read add-in file: " + database.GetDescriptionPath(domain, id), ex);
+                }
+            }
+        }
         private void SetIsUserBundle(BundleDescription adesc)
         {
             string installPath = database.Registry.DefaultBundlesFolder;
