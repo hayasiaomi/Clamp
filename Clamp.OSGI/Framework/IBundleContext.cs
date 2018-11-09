@@ -8,49 +8,26 @@ namespace Clamp.OSGI.Framework
 {
     public interface IBundleContext
     {
-        IBundle GetBundle(long id);
+        RuntimeBundle GetRuntimeBundle(string id);
+        IBundle GetBundle(string id);
 
         IBundle[] GetBundles();
 
-        void AddServiceListener(IServiceListener listener);
+        object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance);
 
-        void RemoveServiceListener(IServiceListener listener);
+        T[] GetExtensionObjects<T>(bool reuseCachedInstance);
 
-        ExtensionNode GetExtensionNode(string path);
+        object[] GetExtensionObjects(string path);
 
-        T GetExtensionNode<T>(string path) where T : ExtensionNode;
+        object[] GetExtensionObjects(string path, bool reuseCachedInstance);
 
-        ExtensionNodeList GetExtensionNodes(string path);
+        object[] GetExtensionObjects(string path, Type arrayElementType);
 
-        ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType);
+        T[] GetExtensionObjects<T>(string path);
+        object[] GetExtensionObjects(string path, Type arrayElementType, bool reuseCachedInstance);
 
-        ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode;
+        T[] GetExtensionObjects<T>(string path, bool reuseCachedInstance);
 
-        ExtensionNodeList GetExtensionNodes(Type instanceType);
-
-        ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType);
-
-        ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode;
-
-        object[] GetInstance(Type instanceType);
-
-        T[] GetInstance<T>();
-
-        object[] GetInstance(Type instanceType, bool reuseCachedInstance);
-
-        T[] GetInstance<T>(bool reuseCachedInstance);
-
-        object[] GetInstance(string path);
-
-        object[] GetInstance(string path, bool reuseCachedInstance);
-
-        object[] GetInstance(string path, Type arrayElementType);
-
-        T[] GetInstance<T>(string path);
-
-        object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance);
-
-        T[] GetInstance<T>(string path, bool reuseCachedInstance);
 
     }
 }

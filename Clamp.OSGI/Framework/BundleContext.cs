@@ -10,17 +10,24 @@ namespace Clamp.OSGI.Framework
     {
         private ClampBundle clampBundle;
 
-        public IBundle Bundle { private set; get; }
+        public RuntimeBundle RuntimeBundle { private set; get; }
 
-        internal BundleContext(Bundle bundle, ClampBundle clampBundle)
+        public Bundle Bundle { get { return this.RuntimeBundle.Bundle; } }
+
+        internal BundleContext(RuntimeBundle runtimeBundle, ClampBundle clampBundle)
         {
             this.clampBundle = clampBundle;
-            this.Bundle = bundle;
+            this.RuntimeBundle = runtimeBundle;
         }
 
-        public IBundle GetBundle(long id)
+        public RuntimeBundle GetRuntimeBundle(string id)
         {
-            throw new NotImplementedException();
+            return this.clampBundle.GetBundle(id);
+        }
+
+        public IBundle GetBundle(string id)
+        {
+            return this.clampBundle.Registry.GetBundle(id);
         }
 
         public IBundle[] GetBundles()
@@ -28,103 +35,70 @@ namespace Clamp.OSGI.Framework
             return this.clampBundle.Registry.GetBundles();
         }
 
-        public void AddServiceListener(IServiceListener listener)
+        public object[] GetExtensionObjects(Type instanceType)
         {
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects(instanceType);
         }
 
-        public void RemoveServiceListener(IServiceListener listener)
-        {
 
+        public T[] GetExtensionObjects<T>()
+        {
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects<T>();
         }
 
-        public ExtensionNode GetExtensionNode(string path)
+
+        public object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects(instanceType, reuseCachedInstance);
         }
 
-        public T GetExtensionNode<T>(string path) where T : ExtensionNode
+        public T[] GetExtensionObjects<T>(bool reuseCachedInstance)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects<T>(reuseCachedInstance);
         }
 
-        public ExtensionNodeList GetExtensionNodes(string path)
+
+        public object[] GetExtensionObjects(string path)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects(path);
         }
 
-        public ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType)
+
+        public object[] GetExtensionObjects(string path, bool reuseCachedInstance)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects(path, reuseCachedInstance);
         }
 
-        public ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode
+        public object[] GetExtensionObjects(string path, Type arrayElementType)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects(path, arrayElementType);
         }
 
-        public ExtensionNodeList GetExtensionNodes(Type instanceType)
+        public T[] GetExtensionObjects<T>(string path)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects<T>(path);
         }
 
-        public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
+        public object[] GetExtensionObjects(string path, Type arrayElementType, bool reuseCachedInstance)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects(path, arrayElementType, reuseCachedInstance);
         }
 
-        public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
+        public T[] GetExtensionObjects<T>(string path, bool reuseCachedInstance)
         {
-            throw new NotImplementedException();
+            this.clampBundle.CheckInitialized();
+            return this.clampBundle.GetExtensionObjects<T>(path, reuseCachedInstance);
         }
 
-        public object[] GetInstance(Type instanceType)
-        {
-            throw new NotImplementedException();
-        }
 
-        public T[] GetInstance<T>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(Type instanceType, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>(bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path, Type arrayElementType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>(string path, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

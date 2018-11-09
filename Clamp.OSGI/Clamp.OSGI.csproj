@@ -142,7 +142,7 @@
     <Compile Include="Framework\Localization\StringResourceLocalizer.cs" />
     <Compile Include="Framework\Localization\StringTableLocalizer.cs" />
     <Compile Include="Framework\MissingDependencyException.cs" />
-    <Compile Include="Framework\TreeNodeBundle.cs" />
+    <Compile Include="Framework\TreeClampBundle.cs" />
     <Compile Include="Framework\Nodes\ExtensionNode.cs" />
     <Compile Include="Framework\Nodes\ExtensionNodeList.cs" />
     <Compile Include="Framework\Nodes\ExtensionTree.cs" />

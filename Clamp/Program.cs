@@ -26,8 +26,6 @@ namespace Clamp
 
             clampBundle.Start();
 
-            //foreach (ICommand cmd in clampBundle.GetExtensionObjects(typeof(ICommand)))
-            //    cmd.Run();
 
             clampBundle.WaitForStop();
 

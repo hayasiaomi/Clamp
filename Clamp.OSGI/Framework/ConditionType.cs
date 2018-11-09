@@ -55,7 +55,7 @@ namespace Clamp.OSGI.Framework
             this.parent = parent;
         }
 
-        public virtual bool Evaluate(TreeNodeBundle ctx)
+        public virtual bool Evaluate(TreeClampBundle ctx)
         {
             return parent == null || parent.Evaluate(ctx);
         }
@@ -71,7 +71,7 @@ namespace Clamp.OSGI.Framework
         {
         }
 
-        public override bool Evaluate(TreeNodeBundle ctx)
+        public override bool Evaluate(TreeClampBundle ctx)
         {
             return false;
         }
@@ -86,7 +86,7 @@ namespace Clamp.OSGI.Framework
             this.conditions = conditions;
         }
 
-        public override bool Evaluate(TreeNodeBundle ctx)
+        public override bool Evaluate(TreeClampBundle ctx)
         {
             if (!base.Evaluate(ctx))
                 return false;
@@ -112,7 +112,7 @@ namespace Clamp.OSGI.Framework
             this.conditions = conditions;
         }
 
-        public override bool Evaluate(TreeNodeBundle ctx)
+        public override bool Evaluate(TreeClampBundle ctx)
         {
             if (!base.Evaluate(ctx))
                 return false;
@@ -138,7 +138,7 @@ namespace Clamp.OSGI.Framework
             this.baseCond = baseCond;
         }
 
-        public override bool Evaluate(TreeNodeBundle ctx)
+        public override bool Evaluate(TreeClampBundle ctx)
         {
             return !base.Evaluate(ctx);
         }
@@ -167,7 +167,7 @@ namespace Clamp.OSGI.Framework
             node = element;
         }
 
-        public override bool Evaluate(TreeNodeBundle ctx)
+        public override bool Evaluate(TreeClampBundle ctx)
         {
             if (!base.Evaluate(ctx))
                 return false;

@@ -8,12 +8,12 @@ using Clamp.OSGI.Framework.Nodes;
 
 namespace Clamp.OSGI.Framework
 {
-    public class TreeNodeBundle : Bundle
+    public class TreeClampBundle : Bundle, IClampBundle
     {
         private Hashtable conditionTypes = new Hashtable();
         private Hashtable conditionsToNodes = new Hashtable();
         private List<WeakReference> childContexts;
-        private TreeNodeBundle parentContext;
+        private TreeClampBundle parentContext;
         private ExtensionTree tree;
         private bool fireEvents = false;
 
@@ -32,80 +32,39 @@ namespace Clamp.OSGI.Framework
         /// </remarks>
         public event ExtensionEventHandler ExtensionChanged;
 
+        internal bool FireEvents
+        {
+            get { return fireEvents; }
+        }
+        internal ClampBundle BundleEngine
+        {
+            get { return tree.BundleEngine; }
+        }
 
-        internal TreeNodeBundle(TreeNodeBundle parent)
+        internal TreeClampBundle(TreeClampBundle parent)
         {
             this.fireEvents = false;
             this.tree = new ExtensionTree(this as ClampBundle, this);
             this.parentContext = parent;
         }
 
-        internal TreeNodeBundle(ClampBundle clampBundle, TreeNodeBundle parent)
+        internal TreeClampBundle(ClampBundle clampBundle, TreeClampBundle parent)
         {
             this.fireEvents = false;
             this.tree = new ExtensionTree(clampBundle, this);
             this.parentContext = parent;
         }
 
-#pragma warning disable 1591
-        [ObsoleteAttribute]
-        protected void Clear()
+        #region 实现 IClampBundle的方法
+        public virtual void WaitForStop()
         {
-        }
-#pragma warning restore 1591
 
-        internal void ClearContext()
-        {
-            conditionTypes.Clear();
-            conditionsToNodes.Clear();
-            childContexts = null;
-            parentContext = null;
-            tree = null;
-            runTimeEnabledBundles = null;
-            runTimeDisabledBundles = null;
         }
 
-        internal ClampBundle BundleEngine
-        {
-            get { return tree.BundleEngine; }
-        }
+        #endregion
 
-        void CleanDisposedChildContexts()
-        {
-            if (childContexts != null)
-                childContexts.RemoveAll(w => w.Target == null);
-        }
+        #region public mehtod
 
-        internal virtual void ResetCachedData()
-        {
-            tree.ResetCachedData();
-            if (childContexts != null)
-            {
-                foreach (WeakReference wref in childContexts)
-                {
-                    TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
-                    if (ctx != null)
-                        ctx.ResetCachedData();
-                }
-            }
-        }
-
-        internal TreeNodeBundle CreateChildContext()
-        {
-            lock (conditionTypes)
-            {
-                if (childContexts == null)
-                    childContexts = new List<WeakReference>();
-                else
-                    CleanDisposedChildContexts();
-
-                TreeNodeBundle ctx = new TreeNodeBundle(this.BundleEngine, this);
-
-                WeakReference wref = new WeakReference(ctx);
-                childContexts.Add(wref);
-                return ctx;
-            }
-        }
 
         /// <summary>
         /// Registers a new condition in the extension context.
@@ -153,97 +112,6 @@ namespace Clamp.OSGI.Framework
             if (ot != null)
                 ot.Changed -= new EventHandler(OnConditionChanged);
             info.CondType = type;
-        }
-
-        ConditionInfo CreateConditionInfo(string id)
-        {
-            ConditionInfo info = conditionTypes[id] as ConditionInfo;
-            if (info == null)
-            {
-                info = new ConditionInfo();
-                conditionTypes[id] = info;
-            }
-            return info;
-        }
-
-        internal bool FireEvents
-        {
-            get { return fireEvents; }
-        }
-
-        internal ConditionType GetCondition(string id)
-        {
-            ConditionType ct;
-            ConditionInfo info = (ConditionInfo)conditionTypes[id];
-
-            if (info != null)
-            {
-                if (info.CondType is Type)
-                {
-                    // The condition was registered as a type, create an instance now
-                    ct = (ConditionType)Activator.CreateInstance((Type)info.CondType);
-                    ct.Id = id;
-                    ct.Changed += new EventHandler(OnConditionChanged);
-                    info.CondType = ct;
-                }
-                else
-                    ct = info.CondType as ConditionType;
-
-                if (ct != null)
-                    return ct;
-            }
-
-            if (parentContext != null)
-                return parentContext.GetCondition(id);
-            else
-                return null;
-        }
-
-        internal void RegisterNodeCondition(TreeNode node, BaseCondition cond)
-        {
-            ArrayList list = (ArrayList)conditionsToNodes[cond];
-            if (list == null)
-            {
-                list = new ArrayList();
-                conditionsToNodes[cond] = list;
-                ArrayList conditionTypeIds = new ArrayList();
-                cond.GetConditionTypes(conditionTypeIds);
-
-                foreach (string cid in conditionTypeIds)
-                {
-
-                    // Make sure the condition is properly created
-                    GetCondition(cid);
-
-                    ConditionInfo info = CreateConditionInfo(cid);
-                    if (info.BoundConditions == null)
-                        info.BoundConditions = new ArrayList();
-
-                    info.BoundConditions.Add(cond);
-                }
-            }
-            list.Add(node);
-        }
-
-        internal void UnregisterNodeCondition(TreeNode node, BaseCondition cond)
-        {
-            ArrayList list = (ArrayList)conditionsToNodes[cond];
-            if (list == null)
-                return;
-
-            list.Remove(node);
-            if (list.Count == 0)
-            {
-                conditionsToNodes.Remove(cond);
-                ArrayList conditionTypeIds = new ArrayList();
-                cond.GetConditionTypes(conditionTypeIds);
-                foreach (string cid in conditionTypes.Keys)
-                {
-                    ConditionInfo info = conditionTypes[cid] as ConditionInfo;
-                    if (info != null && info.BoundConditions != null)
-                        info.BoundConditions.Remove(cond);
-                }
-            }
         }
 
         /// <summary>
@@ -743,10 +611,126 @@ namespace Clamp.OSGI.Framework
             RemoveExtensionNodeHandler(path, handler);
         }
 
-        void OnConditionChanged(object s, EventArgs a)
+        #endregion
+
+
+        #region internal method
+
+        internal void ClearContext()
         {
-            ConditionType cond = (ConditionType)s;
-            NotifyConditionChanged(cond);
+            conditionTypes.Clear();
+            conditionsToNodes.Clear();
+            childContexts = null;
+            parentContext = null;
+            tree = null;
+            runTimeEnabledBundles = null;
+            runTimeDisabledBundles = null;
+        }
+
+        internal virtual void ResetCachedData()
+        {
+            tree.ResetCachedData();
+            if (childContexts != null)
+            {
+                foreach (WeakReference wref in childContexts)
+                {
+                    TreeClampBundle ctx = wref.Target as TreeClampBundle;
+                    if (ctx != null)
+                        ctx.ResetCachedData();
+                }
+            }
+        }
+
+        internal TreeClampBundle CreateChildContext()
+        {
+            lock (conditionTypes)
+            {
+                if (childContexts == null)
+                    childContexts = new List<WeakReference>();
+                else
+                    CleanDisposedChildContexts();
+
+                TreeClampBundle ctx = new TreeClampBundle(this.BundleEngine, this);
+
+                WeakReference wref = new WeakReference(ctx);
+                childContexts.Add(wref);
+                return ctx;
+            }
+        }
+
+        internal ConditionType GetCondition(string id)
+        {
+            ConditionType ct;
+            ConditionInfo info = (ConditionInfo)conditionTypes[id];
+
+            if (info != null)
+            {
+                if (info.CondType is Type)
+                {
+                    // The condition was registered as a type, create an instance now
+                    ct = (ConditionType)Activator.CreateInstance((Type)info.CondType);
+                    ct.Id = id;
+                    ct.Changed += new EventHandler(OnConditionChanged);
+                    info.CondType = ct;
+                }
+                else
+                    ct = info.CondType as ConditionType;
+
+                if (ct != null)
+                    return ct;
+            }
+
+            if (parentContext != null)
+                return parentContext.GetCondition(id);
+            else
+                return null;
+        }
+
+        internal void RegisterNodeCondition(TreeNode node, BaseCondition cond)
+        {
+            ArrayList list = (ArrayList)conditionsToNodes[cond];
+            if (list == null)
+            {
+                list = new ArrayList();
+                conditionsToNodes[cond] = list;
+                ArrayList conditionTypeIds = new ArrayList();
+                cond.GetConditionTypes(conditionTypeIds);
+
+                foreach (string cid in conditionTypeIds)
+                {
+
+                    // Make sure the condition is properly created
+                    GetCondition(cid);
+
+                    ConditionInfo info = CreateConditionInfo(cid);
+                    if (info.BoundConditions == null)
+                        info.BoundConditions = new ArrayList();
+
+                    info.BoundConditions.Add(cond);
+                }
+            }
+            list.Add(node);
+        }
+
+        internal void UnregisterNodeCondition(TreeNode node, BaseCondition cond)
+        {
+            ArrayList list = (ArrayList)conditionsToNodes[cond];
+            if (list == null)
+                return;
+
+            list.Remove(node);
+            if (list.Count == 0)
+            {
+                conditionsToNodes.Remove(cond);
+                ArrayList conditionTypeIds = new ArrayList();
+                cond.GetConditionTypes(conditionTypeIds);
+                foreach (string cid in conditionTypes.Keys)
+                {
+                    ConditionInfo info = conditionTypes[cid] as ConditionInfo;
+                    if (info != null && info.BoundConditions != null)
+                        info.BoundConditions.Remove(cond);
+                }
+            }
         }
 
         internal void NotifyConditionChanged(ConditionType cond)
@@ -788,7 +772,7 @@ namespace Clamp.OSGI.Framework
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
+                        TreeClampBundle ctx = wref.Target as TreeClampBundle;
                         if (ctx != null)
                             ctx.NotifyConditionChanged(cond);
                     }
@@ -817,7 +801,7 @@ namespace Clamp.OSGI.Framework
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
+                        TreeClampBundle ctx = wref.Target as TreeClampBundle;
                         if (ctx != null)
                             ctx.NotifyBundleLoaded(ad);
                     }
@@ -914,7 +898,7 @@ namespace Clamp.OSGI.Framework
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
+                        TreeClampBundle ctx = wref.Target as TreeClampBundle;
                         if (ctx != null)
                             ctx.ActivateBundleExtensions(id);
                     }
@@ -980,28 +964,6 @@ namespace Clamp.OSGI.Framework
             {
                 fireEvents = false;
             }
-        }
-
-        void RegisterRuntimeDisabledBundle(string addinId)
-        {
-            if (runTimeDisabledBundles == null)
-                runTimeDisabledBundles = new ArrayList();
-            if (!runTimeDisabledBundles.Contains(addinId))
-                runTimeDisabledBundles.Add(addinId);
-
-            if (runTimeEnabledBundles != null)
-                runTimeEnabledBundles.Remove(addinId);
-        }
-
-        void RegisterRuntimeEnabledBundle(string addinId)
-        {
-            if (runTimeEnabledBundles == null)
-                runTimeEnabledBundles = new ArrayList();
-            if (!runTimeEnabledBundles.Contains(addinId))
-                runTimeEnabledBundles.Add(addinId);
-
-            if (runTimeDisabledBundles != null)
-                runTimeDisabledBundles.Remove(addinId);
         }
 
         internal ICollection GetBundlesForPath(string path, List<string> col)
@@ -1100,7 +1062,61 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        ExtensionLoadData GetBundleExtensions(string id, ExtensionPoint ep)
+        internal bool FindExtensionPathByType(Type type, string nodeName, out string path, out string pathNodeName)
+        {
+            return tree.FindExtensionPathByType(type, nodeName, out path, out pathNodeName);
+        }
+
+        #endregion
+
+        #region private method
+        private void CleanDisposedChildContexts()
+        {
+            if (childContexts != null)
+                childContexts.RemoveAll(w => w.Target == null);
+        }
+
+        private ConditionInfo CreateConditionInfo(string id)
+        {
+            ConditionInfo info = conditionTypes[id] as ConditionInfo;
+            if (info == null)
+            {
+                info = new ConditionInfo();
+                conditionTypes[id] = info;
+            }
+            return info;
+        }
+
+
+        private void OnConditionChanged(object s, EventArgs a)
+        {
+            ConditionType cond = (ConditionType)s;
+            NotifyConditionChanged(cond);
+        }
+
+        private void RegisterRuntimeDisabledBundle(string addinId)
+        {
+            if (runTimeDisabledBundles == null)
+                runTimeDisabledBundles = new ArrayList();
+            if (!runTimeDisabledBundles.Contains(addinId))
+                runTimeDisabledBundles.Add(addinId);
+
+            if (runTimeEnabledBundles != null)
+                runTimeEnabledBundles.Remove(addinId);
+        }
+
+        private void RegisterRuntimeEnabledBundle(string addinId)
+        {
+            if (runTimeEnabledBundles == null)
+                runTimeEnabledBundles = new ArrayList();
+            if (!runTimeEnabledBundles.Contains(addinId))
+                runTimeEnabledBundles.Add(addinId);
+
+            if (runTimeDisabledBundles != null)
+                runTimeDisabledBundles.Remove(addinId);
+        }
+
+        private ExtensionLoadData GetBundleExtensions(string id, ExtensionPoint ep)
         {
             Bundle pinfo = null;
 
@@ -1136,7 +1152,7 @@ namespace Clamp.OSGI.Framework
             return data;
         }
 
-        void GetBundleExtensions(ModuleDescription module, string addinId, ExtensionPoint ep, ref ExtensionLoadData data)
+        private void GetBundleExtensions(ModuleDescription module, string addinId, ExtensionPoint ep, ref ExtensionLoadData data)
         {
             string basePath = ep.Path + "/";
 
@@ -1155,7 +1171,7 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        void LoadModuleExtensionNodes(Extension extension, string addinId, ExtensionNodeSet nset, ArrayList loadedNodes)
+        private void LoadModuleExtensionNodes(Extension extension, string addinId, ExtensionNodeSet nset, ArrayList loadedNodes)
         {
             // Now load the extensions
             ArrayList addedNodes = new ArrayList();
@@ -1173,7 +1189,7 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        bool CheckOptionalBundleDependencies(BundleDescription conf, ModuleDescription module)
+        private bool CheckOptionalBundleDependencies(BundleDescription conf, ModuleDescription module)
         {
             foreach (Dependency dep in module.Dependencies)
             {
@@ -1188,8 +1204,7 @@ namespace Clamp.OSGI.Framework
             return true;
         }
 
-
-        TreeNode GetNode(string path)
+        private TreeNode GetNode(string path)
         {
             TreeNode node = tree.GetNode(path);
             if (node != null || parentContext == null)
@@ -1244,10 +1259,11 @@ namespace Clamp.OSGI.Framework
             return dstNode;
         }
 
-        internal bool FindExtensionPathByType(Type type, string nodeName, out string path, out string pathNodeName)
-        {
-            return tree.FindExtensionPathByType(type, nodeName, out path, out pathNodeName);
-        }
+  
+
+        #endregion
+
+
     }
 
     class ConditionInfo

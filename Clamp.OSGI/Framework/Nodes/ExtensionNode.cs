@@ -63,7 +63,7 @@ namespace Clamp.OSGI.Framework.Nodes
         /// <summary>
         /// Extension context to which this node belongs
         /// </summary>
-        public TreeNodeBundle ExtensionContext
+        public TreeClampBundle ExtensionContext
         {
             get { return treeNode.Context; }
         }

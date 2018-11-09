@@ -7,4 +7,4 @@ using System.Text;
 
 [assembly: BundleRoot("Clamp", "1.0")]
 [assembly: BundleDependency("Clamp.Webwork", "1.0")]
-
+[assembly: BundleDependency("Aomi.Main", "1.0")]

@@ -87,7 +87,7 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        public virtual TreeNodeBundle Context
+        public virtual TreeClampBundle Context
         {
             get
             {
@@ -104,7 +104,7 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 if (condition == null)
                     return true;
-                TreeNodeBundle ctx = Context;
+                TreeClampBundle ctx = Context;
                 if (ctx == null)
                     return true;
                 else

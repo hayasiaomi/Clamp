@@ -7,8 +7,8 @@
     <ProjectGuid>{55EA65FF-E185-457C-9EFF-CA95590898DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ShanDian.Webwork</RootNamespace>
-    <AssemblyName>ShanDian.Webwork</AssemblyName>
+    <RootNamespace>Clamp.Webwork</RootNamespace>
+    <AssemblyName>Clamp.Webwork</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

@@ -16,7 +16,7 @@ using Clamp.OSGI.Framework.Localization;
 
 namespace Clamp.OSGI.Framework
 {
-    internal class ClampBundle : TreeNodeBundle, IClampBundle
+    public class ClampBundle : TreeClampBundle
     {
         private object LocalLock = new object();
         private Hashtable autoExtensionTypes = new Hashtable();
@@ -95,11 +95,7 @@ namespace Clamp.OSGI.Framework
 
                 initialized = true;
 
-                ActivateRoots();
 
-                OnAssemblyLoaded(null, null);
-                AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(OnAssemblyLoaded);
-                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
             }
         }
 
@@ -124,10 +120,18 @@ namespace Clamp.OSGI.Framework
 
         #endregion
 
-        #region 重写 Bundle有方法
+        #region 重写 Bundle 的方法
         public override void Start()
         {
+            ActivateRoots();
+
+            OnAssemblyLoaded(null, null);
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(OnAssemblyLoaded);
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
+
             this.registry.Update();
+
+
         }
 
         public override void Stop()
@@ -152,99 +156,6 @@ namespace Clamp.OSGI.Framework
         }
 
         #endregion
-
-        #region 实现接口
-        public ExtensionNode GetExtensionNode(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T GetExtensionNode<T>(string path) where T : ExtensionNode
-        {
-            throw new NotImplementedException();
-        }
-
-        public ExtensionNodeList GetExtensionNodes(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode
-        {
-            throw new NotImplementedException();
-        }
-
-        public ExtensionNodeList GetExtensionNodes(Type instanceType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(Type instanceType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(Type instanceType, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>(bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path, Type arrayElementType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object[] GetInstance(string path, Type arrayElementType, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T[] GetInstance<T>(string path, bool reuseCachedInstance)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
         #region internal method
 
 
