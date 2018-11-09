@@ -54,6 +54,11 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bundles\Aomi\Aomi.Main\Aomi.Main.csproj">
+      <Project>{d982b913-9d0d-4a77-9441-671e03684f3b}</Project>
+      <Name>Aomi.Main</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Clamp.OSGI\Clamp.OSGI.csproj">
       <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
       <Name>Clamp.OSGI</Name>
