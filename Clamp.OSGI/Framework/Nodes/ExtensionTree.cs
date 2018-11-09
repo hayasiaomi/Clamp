@@ -13,16 +13,16 @@ namespace Clamp.OSGI.Framework.Nodes
     {
         int internalId;
         internal const string AutoIdPrefix = "__nid_";
-        ExtensionContext context;
+        TreeNodeBundle treeNodeBundle;
 
-        public ExtensionTree(ClampBundle clampBundle, ExtensionContext context) : base(clampBundle, "")
+        public ExtensionTree(ClampBundle clampBundle, TreeNodeBundle context) : base(clampBundle, "")
         {
-            this.context = context;
+            this.treeNodeBundle = context;
         }
 
-        public override ExtensionContext Context
+        public override TreeNodeBundle Context
         {
-            get { return context; }
+            get { return treeNodeBundle; }
         }
 
 

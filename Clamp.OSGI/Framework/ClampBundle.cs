@@ -16,7 +16,7 @@ using Clamp.OSGI.Framework.Localization;
 
 namespace Clamp.OSGI.Framework
 {
-    internal class ClampBundle : Bundle, IClampBundle
+    internal class ClampBundle : TreeNodeBundle, IClampBundle
     {
         private object LocalLock = new object();
         private Hashtable autoExtensionTypes = new Hashtable();
@@ -25,7 +25,6 @@ namespace Clamp.OSGI.Framework
         private Dictionary<string, ExtensionNodeSet> nodeSets = new Dictionary<string, ExtensionNodeSet>();
         private List<Assembly> pendingRootChecks = new List<Assembly>();
         private BundleRegistry registry;
-        private ExtensionContext extensionContext;
         private bool initialized;
         private string startupDirectory;
         private BundleLocalizer defaultLocalizer;
@@ -65,9 +64,8 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        internal ClampBundle(Dictionary<string, string> configProps)
+        internal ClampBundle(Dictionary<string, string> configProps) : base(null)
         {
-            this.extensionContext = new ExtensionContext(this);
             this.configProps = configProps;
         }
 
@@ -144,7 +142,7 @@ namespace Clamp.OSGI.Framework
                 registry.Dispose();
                 registry = null;
                 startupDirectory = null;
-                extensionContext.ClearContext();
+                ClearContext();
             }
         }
 
@@ -325,7 +323,8 @@ namespace Clamp.OSGI.Framework
 
         internal void InsertExtensionPoint(RuntimeBundle addin, ExtensionPoint ep)
         {
-            extensionContext.CreateExtensionPoint(ep);
+            CreateExtensionPoint(ep);
+
             foreach (ExtensionNodeType nt in ep.NodeSet.NodeTypes)
             {
                 if (nt.ObjectTypeName.Length > 0)
@@ -370,7 +369,7 @@ namespace Clamp.OSGI.Framework
 
         internal void UnloadBundle(string id)
         {
-            this.extensionContext.RemoveBundleExtensions(id);
+            RemoveBundleExtensions(id);
 
             RuntimeBundle addin = GetBundle(id);
             if (addin != null)
@@ -395,7 +394,7 @@ namespace Clamp.OSGI.Framework
 
         internal void ActivateBundle(string id)
         {
-            this.extensionContext.ActivateBundleExtensions(id);
+            ActivateBundleExtensions(id);
         }
 
         internal bool LoadBundle(string id, bool throwExceptions)
@@ -511,7 +510,7 @@ namespace Clamp.OSGI.Framework
                     foreach (ConditionTypeDescription cond in description.ConditionTypes)
                     {
                         Type ctype = p.GetType(cond.TypeName, true);
-                        extensionContext.RegisterCondition(cond.Id, ctype);
+                        RegisterCondition(cond.Id, ctype);
                     }
                 }
 
@@ -519,7 +518,7 @@ namespace Clamp.OSGI.Framework
                     InsertExtensionPoint(p, ep);
 
                 // Fire loaded event
-                extensionContext.NotifyBundleLoaded(p);
+                NotifyBundleLoaded(p);
                 ReportBundleLoad(p.Id);
                 return true;
             }

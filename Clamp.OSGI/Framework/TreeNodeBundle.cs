@@ -4,22 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Clamp.OSGI.Framework.Data.Description;
+using Clamp.OSGI.Framework.Nodes;
 
-namespace Clamp.OSGI.Framework.Nodes
+namespace Clamp.OSGI.Framework
 {
-    public class ExtensionContext
+    public class TreeNodeBundle : Bundle
     {
-       
+        private Hashtable conditionTypes = new Hashtable();
+        private Hashtable conditionsToNodes = new Hashtable();
+        private List<WeakReference> childContexts;
+        private TreeNodeBundle parentContext;
+        private ExtensionTree tree;
+        private bool fireEvents = false;
 
-        Hashtable conditionTypes = new Hashtable();
-        Hashtable conditionsToNodes = new Hashtable();
-        List<WeakReference> childContexts;
-        ExtensionContext parentContext;
-        ExtensionTree tree;
-        bool fireEvents = false;
-
-        ArrayList runTimeEnabledBundles;
-        ArrayList runTimeDisabledBundles;
+        private ArrayList runTimeEnabledBundles;
+        private ArrayList runTimeDisabledBundles;
 
         /// <summary>
         /// Extension change event.
@@ -33,15 +32,18 @@ namespace Clamp.OSGI.Framework.Nodes
         /// </remarks>
         public event ExtensionEventHandler ExtensionChanged;
 
-        internal ExtensionContext(ClampBundle addinEngine) : this(addinEngine, null)
-        {
 
-        }
-
-        internal ExtensionContext(ClampBundle addinEngine, ExtensionContext parent)
+        internal TreeNodeBundle(TreeNodeBundle parent)
         {
             this.fireEvents = false;
-            this.tree = new ExtensionTree(addinEngine, this);
+            this.tree = new ExtensionTree(this as ClampBundle, this);
+            this.parentContext = parent;
+        }
+
+        internal TreeNodeBundle(ClampBundle clampBundle, TreeNodeBundle parent)
+        {
+            this.fireEvents = false;
+            this.tree = new ExtensionTree(clampBundle, this);
             this.parentContext = parent;
         }
 
@@ -81,14 +83,14 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 foreach (WeakReference wref in childContexts)
                 {
-                    ExtensionContext ctx = wref.Target as ExtensionContext;
+                    TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
                     if (ctx != null)
                         ctx.ResetCachedData();
                 }
             }
         }
 
-        internal ExtensionContext CreateChildContext()
+        internal TreeNodeBundle CreateChildContext()
         {
             lock (conditionTypes)
             {
@@ -96,7 +98,9 @@ namespace Clamp.OSGI.Framework.Nodes
                     childContexts = new List<WeakReference>();
                 else
                     CleanDisposedChildContexts();
-                ExtensionContext ctx = new ExtensionContext(this.BundleEngine, this);
+
+                TreeNodeBundle ctx = new TreeNodeBundle(this.BundleEngine, this);
+
                 WeakReference wref = new WeakReference(ctx);
                 childContexts.Add(wref);
                 return ctx;
@@ -784,7 +788,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        ExtensionContext ctx = wref.Target as ExtensionContext;
+                        TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
                         if (ctx != null)
                             ctx.NotifyConditionChanged(cond);
                     }
@@ -813,7 +817,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        ExtensionContext ctx = wref.Target as ExtensionContext;
+                        TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
                         if (ctx != null)
                             ctx.NotifyBundleLoaded(ad);
                     }
@@ -910,7 +914,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        ExtensionContext ctx = wref.Target as ExtensionContext;
+                        TreeNodeBundle ctx = wref.Target as TreeNodeBundle;
                         if (ctx != null)
                             ctx.ActivateBundleExtensions(id);
                     }
