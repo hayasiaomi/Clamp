@@ -21,9 +21,8 @@ namespace Clamp.OSGI.Framework
         private string id;
         private string baseDirectory;
         private string privatePath;
-        private Bundle ainfo;
+        private Bundle bundle;
         private RuntimeBundle parentBundle;
-
         private Assembly[] assemblies;
         private RuntimeBundle[] depBundles;
         private ResourceManager[] resourceManagers;
@@ -44,23 +43,9 @@ namespace Clamp.OSGI.Framework
             id = parentBundle.id;
             baseDirectory = parentBundle.baseDirectory;
             privatePath = parentBundle.privatePath;
-            ainfo = parentBundle.ainfo;
+            bundle = parentBundle.bundle;
             localizer = parentBundle.localizer;
             module.RuntimeBundle = this;
-        }
-
-        internal ModuleDescription Module
-        {
-            get { return module; }
-        }
-
-        internal Assembly[] Assemblies
-        {
-            get
-            {
-                EnsureAssembliesLoaded();
-                return assemblies;
-            }
         }
 
         /// <summary>
@@ -79,11 +64,64 @@ namespace Clamp.OSGI.Framework
             get { return Bundle.GetIdVersion(id); }
         }
 
-        internal Bundle Bundle
+
+        /// <summary>
+        /// Path to a directory where add-ins can store private configuration or status data
+        /// </summary>
+        public string PrivateDataPath
         {
-            get { return ainfo; }
+            get
+            {
+                if (privatePath == null)
+                {
+                    privatePath = bundle.PrivateDataPath;
+                    if (!Directory.Exists(privatePath))
+                        Directory.CreateDirectory(privatePath);
+                }
+                return privatePath;
+            }
         }
 
+        /// <summary>
+        /// Localizer which can be used to localize strings defined in this add-in
+        /// </summary>
+        public BundleLocalizer Localizer
+        {
+            get
+            {
+                if (localizer != null)
+                    return localizer;
+                else
+                    return clampBundle.DefaultLocalizer;
+            }
+        }
+
+        internal Bundle Bundle
+        {
+            get { return bundle; }
+        }
+
+        internal bool AssembliesLoaded
+        {
+            get { return assemblies != null; }
+        }
+
+        internal ModuleDescription Module
+        {
+            get { return module; }
+        }
+
+        internal Assembly[] Assemblies
+        {
+            get
+            {
+                EnsureAssembliesLoaded();
+                return assemblies;
+            }
+        }
+
+
+        #region public method
         /// <summary>
         /// Returns a string that represents the current RuntimeBundle.
         /// </summary>
@@ -92,29 +130,10 @@ namespace Clamp.OSGI.Framework
         /// </returns>
         public override string ToString()
         {
-            return ainfo.ToString();
+            return bundle.ToString();
         }
 
-        ResourceManager[] GetResourceManagers()
-        {
-            if (resourceManagers != null)
-                return resourceManagers;
 
-            EnsureAssembliesLoaded();
-            ArrayList managersList = new ArrayList();
-
-            // Search for embedded resource files
-            foreach (Assembly asm in assemblies)
-            {
-                foreach (string res in asm.GetManifestResourceNames())
-                {
-                    if (res.EndsWith(".resources"))
-                        managersList.Add(new ResourceManager(res.Substring(0, res.Length - ".resources".Length), asm));
-                }
-            }
-
-            return resourceManagers = (ResourceManager[])managersList.ToArray(typeof(ResourceManager));
-        }
 
         /// <summary>
         /// Gets a resource string
@@ -324,45 +343,6 @@ namespace Clamp.OSGI.Framework
             return null;
         }
 
-        IEnumerable<ResourceManager> GetAllResourceManagers()
-        {
-            foreach (ResourceManager rm in GetResourceManagers())
-                yield return rm;
-
-            if (parentBundle != null)
-            {
-                foreach (ResourceManager rm in parentBundle.GetResourceManagers())
-                    yield return rm;
-            }
-        }
-
-        IEnumerable<Assembly> GetAllAssemblies()
-        {
-            foreach (Assembly asm in Assemblies)
-                yield return asm;
-
-            // Look in the parent addin assemblies
-
-            if (parentBundle != null)
-            {
-                foreach (Assembly asm in parentBundle.Assemblies)
-                    yield return asm;
-            }
-        }
-
-        IEnumerable<RuntimeBundle> GetAllDependencies()
-        {
-            // Look in the dependent add-ins
-            foreach (RuntimeBundle addin in GetDepBundles())
-                yield return addin;
-
-            if (parentBundle != null)
-            {
-                // Look in the parent dependent add-ins
-                foreach (RuntimeBundle addin in parentBundle.GetDepBundles())
-                    yield return addin;
-            }
-        }
 
         /// <summary>
         /// Creates an instance of a type defined in the add-in
@@ -450,22 +430,7 @@ namespace Clamp.OSGI.Framework
             return Path.Combine(baseDirectory, string.Join("" + Path.DirectorySeparatorChar, filePath));
         }
 
-        /// <summary>
-        /// Path to a directory where add-ins can store private configuration or status data
-        /// </summary>
-        public string PrivateDataPath
-        {
-            get
-            {
-                if (privatePath == null)
-                {
-                    privatePath = ainfo.PrivateDataPath;
-                    if (!Directory.Exists(privatePath))
-                        Directory.CreateDirectory(privatePath);
-                }
-                return privatePath;
-            }
-        }
+
 
         /// <summary>
         /// Gets the content of a resource
@@ -564,20 +529,9 @@ namespace Clamp.OSGI.Framework
             return null;
         }
 
-        /// <summary>
-        /// Localizer which can be used to localize strings defined in this add-in
-        /// </summary>
-        public BundleLocalizer Localizer
-        {
-            get
-            {
-                if (localizer != null)
-                    return localizer;
-                else
-                    return clampBundle.DefaultLocalizer;
-            }
-        }
+        #endregion
 
+        #region internal Method
         internal RuntimeBundle GetModule(ModuleDescription module)
         {
             // If requesting the root module, return this
@@ -593,7 +547,7 @@ namespace Clamp.OSGI.Framework
 
         internal BundleDescription Load(Bundle iad)
         {
-            ainfo = iad;
+            bundle = iad;
 
             BundleDescription description = iad.Description;
             id = description.BundleId;
@@ -624,14 +578,99 @@ namespace Clamp.OSGI.Framework
 
             return description;
         }
+        internal void UnloadExtensions()
+        {
+            clampBundle.UnregisterBundleNodeSets(id);
+        }
 
-        RuntimeBundle[] GetDepBundles()
+        internal void EnsureAssembliesLoaded()
+        {
+            if (assemblies != null)
+                return;
+
+            ArrayList asmList = new ArrayList();
+
+            // Load the assemblies of the module
+            CheckBundleDependencies(module, true);
+            LoadModule(module, asmList);
+
+            assemblies = (Assembly[])asmList.ToArray(typeof(Assembly));
+            clampBundle.RegisterAssemblies(this);
+        }
+
+        #endregion
+
+        #region private method
+
+
+        private IEnumerable<ResourceManager> GetAllResourceManagers()
+        {
+            foreach (ResourceManager rm in GetResourceManagers())
+                yield return rm;
+
+            if (parentBundle != null)
+            {
+                foreach (ResourceManager rm in parentBundle.GetResourceManagers())
+                    yield return rm;
+            }
+        }
+
+        private IEnumerable<Assembly> GetAllAssemblies()
+        {
+            foreach (Assembly asm in Assemblies)
+                yield return asm;
+
+            // Look in the parent addin assemblies
+
+            if (parentBundle != null)
+            {
+                foreach (Assembly asm in parentBundle.Assemblies)
+                    yield return asm;
+            }
+        }
+
+        private IEnumerable<RuntimeBundle> GetAllDependencies()
+        {
+            // Look in the dependent add-ins
+            foreach (RuntimeBundle addin in GetDepBundles())
+                yield return addin;
+
+            if (parentBundle != null)
+            {
+                // Look in the parent dependent add-ins
+                foreach (RuntimeBundle addin in parentBundle.GetDepBundles())
+                    yield return addin;
+            }
+        }
+
+        private ResourceManager[] GetResourceManagers()
+        {
+            if (resourceManagers != null)
+                return resourceManagers;
+
+            EnsureAssembliesLoaded();
+            ArrayList managersList = new ArrayList();
+
+            // Search for embedded resource files
+            foreach (Assembly asm in assemblies)
+            {
+                foreach (string res in asm.GetManifestResourceNames())
+                {
+                    if (res.EndsWith(".resources"))
+                        managersList.Add(new ResourceManager(res.Substring(0, res.Length - ".resources".Length), asm));
+                }
+            }
+
+            return resourceManagers = (ResourceManager[])managersList.ToArray(typeof(ResourceManager));
+        }
+
+        private RuntimeBundle[] GetDepBundles()
         {
             if (depBundles != null)
                 return depBundles;
 
             ArrayList plugList = new ArrayList();
-            string ns = ainfo.Description.Namespace;
+            string ns = bundle.Description.Namespace;
 
             // Collect dependent ids
             foreach (Dependency dep in module.Dependencies)
@@ -649,7 +688,7 @@ namespace Clamp.OSGI.Framework
             return depBundles = (RuntimeBundle[])plugList.ToArray(typeof(RuntimeBundle));
         }
 
-        void LoadModule(ModuleDescription module, ArrayList asmList)
+        private void LoadModule(ModuleDescription module, ArrayList asmList)
         {
             // Load the assemblies
             foreach (string s in module.Assemblies)
@@ -691,12 +730,7 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        internal void UnloadExtensions()
-        {
-            clampBundle.UnregisterBundleNodeSets(id);
-        }
-
-        bool CheckBundleDependencies(ModuleDescription module, bool forceLoadAssemblies)
+        private bool CheckBundleDependencies(ModuleDescription module, bool forceLoadAssemblies)
         {
             foreach (Dependency dep in module.Dependencies)
             {
@@ -711,24 +745,7 @@ namespace Clamp.OSGI.Framework
             return true;
         }
 
-        internal bool AssembliesLoaded
-        {
-            get { return assemblies != null; }
-        }
+        #endregion
 
-        internal void EnsureAssembliesLoaded()
-        {
-            if (assemblies != null)
-                return;
-
-            ArrayList asmList = new ArrayList();
-
-            // Load the assemblies of the module
-            CheckBundleDependencies(module, true);
-            LoadModule(module, asmList);
-
-            assemblies = (Assembly[])asmList.ToArray(typeof(Assembly));
-            clampBundle.RegisterAssemblies(this);
-        }
     }
 }

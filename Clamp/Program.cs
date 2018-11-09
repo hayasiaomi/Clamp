@@ -1,4 +1,5 @@
-﻿using Clamp.OSGI.Framework;
+﻿using Aomi.Main;
+using Clamp.OSGI.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,9 @@ namespace Clamp
             IClampBundle clampBundle = ClampBundleFactory.GetClampBundle();
 
             clampBundle.Start();
+
+            foreach (ICommand cmd in clampBundle.GetExtensionObjects(typeof(ICommand)))
+                cmd.Run();
 
             clampBundle.WaitForStop();
 
