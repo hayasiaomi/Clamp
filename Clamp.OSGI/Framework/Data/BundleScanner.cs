@@ -945,6 +945,7 @@ namespace Clamp.OSGI.Framework.Data
             // Get dependencies
 
             object[] deps = reflector.GetCustomAttributes(asm, typeof(BundleDependencyAttribute), false);
+
             foreach (BundleDependencyAttribute dep in deps)
             {
                 BundleDependency adep = new BundleDependency();

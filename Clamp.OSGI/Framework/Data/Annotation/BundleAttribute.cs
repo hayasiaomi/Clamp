@@ -12,14 +12,14 @@ namespace Clamp.OSGI.Framework.Data.Annotation
     [AttributeUsage(AttributeTargets.Assembly)]
     public class BundleAttribute : Attribute
     {
-        string id;
-        string version;
-        string ns;
-        string category;
-        bool enabledByDefault = true;
-        BundleFlags flags;
-        string compatVersion;
-        string url;
+        private string id;
+        private string version;
+        private string ns;
+        private string category;
+        private bool enabledByDefault = true;
+        private BundleFlags flags;
+        private string compatVersion;
+        private string url;
 
         /// <summary>
         /// Initializes an add-in marker attribute

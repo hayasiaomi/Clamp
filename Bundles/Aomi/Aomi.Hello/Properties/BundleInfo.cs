@@ -4,5 +4,5 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-[assembly: Bundle("Aomi.Hello")]
+[assembly: Bundle]
 [assembly: BundleDependency("Aomi.Main", "1.0")]
