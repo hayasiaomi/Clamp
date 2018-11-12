@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// Bundle的检测结果类
+    /// </summary>
     internal class BundleScanResult : MarshalByRefObject, IAssemblyLocator
     {
         private ArrayList filesToScan = new ArrayList();

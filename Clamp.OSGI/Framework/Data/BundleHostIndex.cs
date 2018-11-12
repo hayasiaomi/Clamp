@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// Bundle住宿索引类
+    /// </summary>
     class BundleHostIndex : IBinaryXmlElement
     {
         static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleHostIndex));
@@ -54,7 +57,12 @@ namespace Clamp.OSGI.Framework.Data
             foreach (string s in todelete)
                 index.Remove(s);
         }
-
+        /// <summary>
+        /// 读取Bundle住宿索引类
+        /// </summary>
+        /// <param name="fileDatabase"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static BundleHostIndex Read(FileDatabase fileDatabase, string file)
         {
             return (BundleHostIndex)fileDatabase.ReadObject(file, typeMap);

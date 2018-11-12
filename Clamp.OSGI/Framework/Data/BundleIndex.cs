@@ -84,6 +84,7 @@ namespace Clamp.OSGI.Framework.Data
             // Make sure the global domain is inserted the last
 
             List<BundleDescription> global;
+
             lists.TryGetValue(BundleDatabase.GlobalDomain, out global);
             lists.Remove(BundleDatabase.GlobalDomain);
 

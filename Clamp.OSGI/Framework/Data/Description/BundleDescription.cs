@@ -673,7 +673,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 string file = Path.Combine(this.BasePath, f);
                 BundleFileInfo fi = new BundleFileInfo();
                 fi.FileName = f;
-                fi.Timestamp = File.GetLastWriteTime(file);
+                fi.LastScan = File.GetLastWriteTime(file);
                 list.Add(fi);
             }
             fileInfo = list.ToArray();
@@ -690,7 +690,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 string file = Path.Combine(this.BasePath, f.FileName);
                 if (!File.Exists(file))
                     return true;
-                if (f.Timestamp != File.GetLastWriteTime(file))
+                if (f.LastScan != File.GetLastWriteTime(file))
                     return true;
             }
 
@@ -1361,48 +1361,6 @@ namespace Clamp.OSGI.Framework.Data.Description
 
             if (mainModule != null)
                 mainModule.SetParent(this);
-        }
-    }
-
-    class BundleFileInfo : IBinaryXmlElement
-    {
-        string fileName;
-        DateTime timestamp;
-
-        public string FileName
-        {
-            get
-            {
-                return fileName;
-            }
-            set
-            {
-                fileName = value;
-            }
-        }
-
-        public System.DateTime Timestamp
-        {
-            get
-            {
-                return timestamp;
-            }
-            set
-            {
-                timestamp = value;
-            }
-        }
-
-        public void Read(BinaryXmlReader reader)
-        {
-            fileName = reader.ReadStringValue("fileName");
-            timestamp = reader.ReadDateTimeValue("timestamp");
-        }
-
-        public void Write(BinaryXmlWriter writer)
-        {
-            writer.WriteValue("fileName", fileName);
-            writer.WriteValue("timestamp", timestamp);
         }
     }
 }

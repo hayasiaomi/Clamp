@@ -29,6 +29,10 @@ namespace Clamp.OSGI.Framework.Data
             return h;
         }
 
+        /// <summary>
+        /// 检测当前路径是否可以写入
+        /// </summary>
+        /// <param name="path"></param>
         public static void CheckWrittableFloder(string path)
         {
             string testFile = null;

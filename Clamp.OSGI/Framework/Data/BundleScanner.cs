@@ -11,6 +11,9 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// Bundle的检测者
+    /// </summary>
     internal class BundleScanner
     {
         private Dictionary<IAssemblyReflector, object> coreAssemblies = new Dictionary<IAssemblyReflector, object>();

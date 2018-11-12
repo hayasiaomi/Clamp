@@ -13,15 +13,15 @@ namespace Clamp.OSGI.Framework.Data
 
         internal class BundleStatus
         {
+            public string BundleId { set; get; }
+            public bool Enabled { set; get; }
+            public bool Uninstalled { set; get; }
+            public List<string> Files { set; get; }
+
             public BundleStatus(string bundleId)
             {
                 this.BundleId = bundleId;
             }
-
-            public string BundleId;
-            public bool Enabled;
-            public bool Uninstalled;
-            public List<string> Files;
         }
 
         public bool IsEnabled(string addinId, bool defaultValue)
@@ -51,10 +51,12 @@ namespace Clamp.OSGI.Framework.Data
             var bundleName = exactVersionMatch ? addinId : Bundle.GetIdName(addinId);
 
             BundleStatus s;
+
             bundleStatus.TryGetValue(bundleName, out s);
 
             if (s == null)
                 s = bundleStatus[bundleName] = new BundleStatus(bundleName);
+
             s.Enabled = enabled;
 
             // If enabling a specific version of an add-in, make sure the add-in is enabled as a whole
@@ -65,6 +67,7 @@ namespace Clamp.OSGI.Framework.Data
         public void RegisterForUninstall(string addinId, IEnumerable<string> files)
         {
             BundleStatus s;
+
             if (!bundleStatus.TryGetValue(addinId, out s))
                 s = bundleStatus[addinId] = new BundleStatus(addinId);
 
@@ -117,7 +120,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-            var appBundlesConfigFilePath = Path.Combine(assemblyDirectory, "addins-config.xml");
+            var appBundlesConfigFilePath = Path.Combine(assemblyDirectory, "bundles-config.xml");
 
             if (!File.Exists(appBundlesConfigFilePath))
                 return new DatabaseConfiguration();
@@ -132,15 +135,18 @@ namespace Clamp.OSGI.Framework.Data
             doc.Load(file);
 
             XmlElement disabledElem = (XmlElement)doc.DocumentElement.SelectSingleNode("DisabledBundles");
+
             if (disabledElem != null)
             {
                 // For back compatibility
                 foreach (XmlElement elem in disabledElem.SelectNodes("Bundle"))
                     config.SetEnabled(elem.InnerText, false, true, false);
+
                 return config;
             }
 
             XmlElement statusElem = (XmlElement)doc.DocumentElement.SelectSingleNode("BundleStatus");
+
             if (statusElem != null)
             {
                 foreach (XmlElement elem in statusElem.SelectNodes("Bundle"))
@@ -150,6 +156,7 @@ namespace Clamp.OSGI.Framework.Data
                     status.Enabled = senabled.Length == 0 || senabled == "True";
                     status.Uninstalled = elem.GetAttribute("uninstalled") == "True";
                     config.bundleStatus[status.BundleId] = status;
+
                     foreach (XmlElement fileElem in elem.SelectNodes("File"))
                     {
                         if (status.Files == null)
@@ -158,6 +165,7 @@ namespace Clamp.OSGI.Framework.Data
                     }
                 }
             }
+
             return config;
         }
 

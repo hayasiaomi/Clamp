@@ -9,6 +9,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// Bundle检测文件夹信息
+    /// </summary>
     internal class BundleScanFolderInfo : IBinaryXmlElement
     {
         private static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleScanFolderInfo), typeof(BundleFileInfo));
@@ -19,11 +22,17 @@ namespace Clamp.OSGI.Framework.Data
         private string domain;
         private bool sharedFolder = true;
 
+        /// <summary>
+        /// 文件夹的路径
+        /// </summary>
         public string Folder
         {
             get { return folder; }
         }
 
+        /// <summary>
+        /// 是否为共享文件夹
+        /// </summary>
         public bool SharedFolder
         {
             get
@@ -35,11 +44,18 @@ namespace Clamp.OSGI.Framework.Data
                 sharedFolder = value;
             }
         }
+
+        /// <summary>
+        /// 文件夹的名称
+        /// </summary>
         public string FileName
         {
             get { return fileName; }
         }
 
+        /// <summary>
+        /// 文件夹的哉，如果当前的文件夹是一个共享的文件夹那么就为global域
+        /// </summary>
         public string Domain
         {
             get
@@ -56,6 +72,9 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 文件夹的根本域
+        /// </summary>
         public string RootsDomain
         {
             get
@@ -80,28 +99,38 @@ namespace Clamp.OSGI.Framework.Data
         }
         #region public method
 
+        /// <summary>
+        /// 当前文件夹信息写入到本地的数据库
+        /// </summary>
+        /// <param name="filedb"></param>
+        /// <param name="basePath"></param>
         public void Write(FileDatabase filedb, string basePath)
         {
             filedb.WriteSharedObject(basePath, GetDomain(folder), ".data", Path.GetFullPath(folder), fileName, typeMap, this);
         }
 
+
         public BundleFileInfo SetLastScanTime(string file, string addinId, bool isRoot, DateTime time, bool scanError)
         {
             BundleFileInfo info = (BundleFileInfo)files[file];
+
             if (info == null)
             {
                 info = new BundleFileInfo();
                 info.File = file;
                 files[file] = info;
             }
+
             info.LastScan = time;
             info.BundleId = addinId;
             info.IsRoot = isRoot;
             info.ScanError = scanError;
+
             if (addinId != null)
                 info.Domain = GetDomain(isRoot);
             else
                 info.Domain = null;
+
             return info;
         }
 
@@ -151,7 +180,12 @@ namespace Clamp.OSGI.Framework.Data
 
         #region public static method
 
-
+        /// <summary>
+        /// 读取Bunlde的文件夹信息
+        /// </summary>
+        /// <param name="filedb"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static BundleScanFolderInfo Read(FileDatabase filedb, string file)
         {
             BundleScanFolderInfo finfo = (BundleScanFolderInfo)filedb.ReadSharedObject(file, typeMap);
@@ -161,7 +195,13 @@ namespace Clamp.OSGI.Framework.Data
             return finfo;
         }
 
-
+        /// <summary>
+        /// 根据文件夹路径来获得对应的文件夹信息
+        /// </summary>
+        /// <param name="filedb"></param>
+        /// <param name="basePath"></param>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
         public static BundleScanFolderInfo Read(FileDatabase filedb, string basePath, string folderPath)
         {
             string fileName;
@@ -210,52 +250,6 @@ namespace Clamp.OSGI.Framework.Data
             reader.ReadValue("files", files);
             domain = reader.ReadStringValue("domain");
             sharedFolder = reader.ReadBooleanValue("sharedFolder");
-        }
-    }
-
-    class BundleFileInfo : IBinaryXmlElement
-    {
-        public string File;
-        public DateTime LastScan;
-        public string BundleId;
-        public bool IsRoot;
-        public bool ScanError;
-        public string Domain;
-        public StringCollection IgnorePaths;
-
-        public bool IsBundle
-        {
-            get { return BundleId != null && BundleId.Length != 0; }
-        }
-
-        public void AddPathToIgnore(string path)
-        {
-            if (IgnorePaths == null)
-                IgnorePaths = new StringCollection();
-            IgnorePaths.Add(path);
-        }
-
-        void IBinaryXmlElement.Write(BinaryXmlWriter writer)
-        {
-            writer.WriteValue("File", File);
-            writer.WriteValue("LastScan", LastScan);
-            writer.WriteValue("BundleId", BundleId);
-            writer.WriteValue("IsRoot", IsRoot);
-            writer.WriteValue("ScanError", ScanError);
-            writer.WriteValue("Domain", Domain);
-            if (IgnorePaths != null && IgnorePaths.Count > 0)
-                writer.WriteValue("IgnorePaths", IgnorePaths);
-        }
-
-        void IBinaryXmlElement.Read(BinaryXmlReader reader)
-        {
-            File = reader.ReadStringValue("File");
-            LastScan = reader.ReadDateTimeValue("LastScan");
-            BundleId = reader.ReadStringValue("BundleId");
-            IsRoot = reader.ReadBooleanValue("IsRoot");
-            ScanError = reader.ReadBooleanValue("ScanError");
-            Domain = reader.ReadStringValue("Domain");
-            IgnorePaths = (StringCollection)reader.ReadValue("IgnorePaths", new StringCollection());
         }
     }
 }

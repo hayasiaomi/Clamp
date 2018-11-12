@@ -16,6 +16,9 @@ using Clamp.OSGI.Framework.Localization;
 
 namespace Clamp.OSGI.Framework
 {
+    /// <summary>
+    /// Clamp对应的Bundle类
+    /// </summary>
     public class ClampBundle : TreeClampBundle
     {
         private object LocalLock = new object();
@@ -54,7 +57,9 @@ namespace Clamp.OSGI.Framework
                 return loc ?? NullLocalizer.Instance;
             }
         }
-
+        /// <summary>
+        /// Bundle的注册类
+        /// </summary>
         internal BundleRegistry Registry
         {
             get
@@ -245,7 +250,9 @@ namespace Clamp.OSGI.Framework
                 }
             }
         }
-
+        /// <summary>
+        /// 激活根Bundle
+        /// </summary>
         internal void ActivateRoots()
         {
             lock (pendingRootChecks)
@@ -543,7 +550,9 @@ namespace Clamp.OSGI.Framework
         {
             if (BundleDatabase.RunningSetupProcess || asm is System.Reflection.Emit.AssemblyBuilder || asm.IsDynamic)
                 return;
+
             string codeBase;
+
             try
             {
                 codeBase = asm.CodeBase;
@@ -554,11 +563,14 @@ namespace Clamp.OSGI.Framework
             }
 
             Uri u;
+
             if (!Uri.TryCreate(codeBase, UriKind.Absolute, out u))
                 return;
 
             string asmFile = u.LocalPath;
+
             Bundle ainfo;
+
             try
             {
                 ainfo = Registry.GetBundleForHostAssembly(asmFile);
@@ -572,6 +584,7 @@ namespace Clamp.OSGI.Framework
             if (ainfo != null && !IsBundleLoaded(ainfo.Id))
             {
                 BundleDescription adesc = null;
+
                 try
                 {
                     adesc = ainfo.Description;
@@ -579,6 +592,7 @@ namespace Clamp.OSGI.Framework
                 catch (Exception ex)
                 {
                 }
+
                 if (adesc == null || adesc.FilesChanged())
                 {
                     // If the add-in has changed, update the add-in database.
@@ -589,6 +603,7 @@ namespace Clamp.OSGI.Framework
                     if (ainfo == null)
                         return;
                 }
+
                 LoadBundle(ainfo.Id, false);
             }
         }
@@ -602,9 +617,11 @@ namespace Clamp.OSGI.Framework
             {
                 if (asm is System.Reflection.Emit.AssemblyBuilder)
                     continue;
+
                 try
                 {
                     Uri u;
+
                     if (!Uri.TryCreate(asm.CodeBase, UriKind.Absolute, out u))
                         continue;
 

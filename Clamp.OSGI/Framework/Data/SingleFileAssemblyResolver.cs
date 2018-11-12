@@ -25,8 +25,8 @@ namespace Clamp.OSGI.Framework.Data
                 scanResult = new BundleScanResult();
                 scanResult.LocateAssembliesOnly = true;
 
-                if (registry.StartupDirectory != null)
-                    scanner.ScanFolder(registry.StartupDirectory, null, scanResult);
+                if (registry.BasePath != null)
+                    scanner.ScanFolder(registry.BasePath, null, scanResult);
                 foreach (string dir in registry.GlobalBundleDirectories)
                     scanner.ScanFolderRec(dir, BundleDatabase.GlobalDomain, scanResult);
             }

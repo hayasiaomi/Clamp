@@ -68,6 +68,7 @@
     <Compile Include="Framework\Data\Annotation\ImportAddinFileAttribute.cs" />
     <Compile Include="Framework\Data\CustomAttribute.cs" />
     <Compile Include="Framework\Data\Description\AssemblyDependency.cs" />
+    <Compile Include="Framework\Data\BundleFileInfo.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescription.cs" />
     <Compile Include="Framework\Data\Description\ConditionTypeDescriptionCollection.cs" />
     <Compile Include="Framework\Data\Annotation\CustomExtensionAttribute.cs" />

@@ -231,13 +231,18 @@ namespace Clamp.OSGI.Framework.Data
                 return ob as Bundle; // Don't use a cast here is ob may not be an Bundle.
 
             BundleHostIndex index = GetBundleHostIndex();
+
             string addin, addinFile, rdomain;
+
             if (index.GetBundleForAssembly(assemblyLocation, out addin, out addinFile, out rdomain))
             {
                 string sid = addin + " " + rdomain;
+
                 ainfo = cachedBundleSetupInfos[sid] as Bundle;
+
                 if (ainfo == null)
                     ainfo = new Bundle(this.clampBundle, this, rdomain, addin);
+
                 cachedBundleSetupInfos[assemblyLocation] = ainfo;
                 cachedBundleSetupInfos[addin + " " + rdomain] = ainfo;
             }
@@ -289,7 +294,12 @@ namespace Clamp.OSGI.Framework.Data
             return result;
         }
 
-
+        /// <summary>
+        /// 尝试是否可以读取Bundle的文件夹信息
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folderInfo"></param>
+        /// <returns></returns>
 
         public bool ReadFolderInfo(string file, out BundleScanFolderInfo folderInfo)
         {
@@ -305,6 +315,11 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 获得路径的域
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public string GetFolderDomain(string path)
         {
             BundleScanFolderInfo folderInfo;
@@ -322,6 +337,12 @@ namespace Clamp.OSGI.Framework.Data
                 return UnknownDomain;
         }
 
+        /// <summary>
+        /// 根据当前的路径来获得相对的域
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="folderInfo"></param>
+        /// <returns></returns>
         public bool GetFolderInfoForPath(string path, out BundleScanFolderInfo folderInfo)
         {
             try
@@ -335,7 +356,10 @@ namespace Clamp.OSGI.Framework.Data
                 return false;
             }
         }
-
+        /// <summary>
+        /// 更新域下的信息
+        /// </summary>
+        /// <param name="domain"></param>
         public void Update(string domain)
         {
             fatalDatabseError = false;
@@ -350,9 +374,6 @@ namespace Clamp.OSGI.Framework.Data
 
             if (changesFound)
             {
-                // Something has changed, the add-ins need to be re-scanned, but it has
-                // to be done in an external process
-
                 if (domain != null)
                 {
                     using (fileDatabase.LockRead())
@@ -396,6 +417,7 @@ namespace Clamp.OSGI.Framework.Data
                     if (!installed.Contains(bid))
                     {
                         Bundle bundle = clampBundle.Registry.GetBundle(bid);
+
                         if (bundle != null)
                             this.clampBundle.ActivateBundle(bid);
                     }
@@ -431,12 +453,14 @@ namespace Clamp.OSGI.Framework.Data
 
                 if (Path.GetFullPath(description.BundleFile) == bundleFile)
                     return true;
+
                 file = baseFile + "_" + (++altNum);
             }
             while (fileDatabase.Exists(file));
 
             // File not found. Return false only if there has been any read error.
             description = null;
+
             return failed;
         }
 
@@ -445,8 +469,10 @@ namespace Clamp.OSGI.Framework.Data
             try
             {
                 description = BundleDescription.ReadBinary(fileDatabase, file);
+
                 if (description != null)
                     description.OwnerDatabase = this;
+
                 return true;
             }
             catch (Exception ex)
@@ -586,8 +612,10 @@ namespace Clamp.OSGI.Framework.Data
         {
             // Try the given domain, and if not found, try the shared domain
             Bundle ad = GetInstalledDomainBundle(domain, id, exactVersionMatch, enabledOnly, true);
+
             if (ad != null)
                 return ad;
+
             if (domain != BundleDatabase.GlobalDomain)
                 return GetInstalledDomainBundle(BundleDatabase.GlobalDomain, id, exactVersionMatch, enabledOnly, true);
             else
@@ -628,6 +656,7 @@ namespace Clamp.OSGI.Framework.Data
                         // if there is an older version available. Check it now.
 
                         adepid = Bundle.GetFullId(ainfo.BundleInfo.Namespace, adep.BundleId, adep.Version);
+
                         Bundle adepinfo = GetInstalledBundle(domain, adepid, false, true);
 
                         if (adepinfo == null)
@@ -660,6 +689,7 @@ namespace Clamp.OSGI.Framework.Data
         public bool BundleDependsOn(string domain, string id1, string id2)
         {
             Hashtable visited = new Hashtable();
+
             return BundleDependsOn(visited, domain, id1, id2);
         }
 
@@ -813,25 +843,38 @@ namespace Clamp.OSGI.Framework.Data
             RemoveBundleDescriptionFile(desc.FileName);
         }
 
+        /// <summary>
+        /// 检测文件夹是否发生变化
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns></returns>
         internal bool CheckFolders(string domain)
         {
             using (fileDatabase.LockRead())
             {
                 BundleScanResult scanResult = new BundleScanResult();
+
                 scanResult.CheckOnly = true;
                 scanResult.Domain = domain;
+
                 InternalScanFolders(scanResult);
+
                 return scanResult.ChangesFound;
             }
         }
 
-
+        /// <summary>
+        /// 内部检测文件夹
+        /// </summary>
+        /// <param name="scanResult"></param>
         internal void InternalScanFolders(BundleScanResult scanResult)
         {
             try
             {
                 fs.ScanStarted();
+
                 InternalScanFolders2(scanResult);
+
             }
             catch (Exception ex)
             {
@@ -842,11 +885,15 @@ namespace Clamp.OSGI.Framework.Data
                 fs.ScanFinished();
             }
         }
-
+        /// <summary>
+        /// 内部检测文件夹
+        /// </summary>
+        /// <param name="scanResult"></param>
         internal void InternalScanFolders2(BundleScanResult scanResult)
         {
             DateTime tim = DateTime.Now;
 
+            //检测文件夹结构
             DatabaseInfrastructureCheck();
 
             try
@@ -860,6 +907,7 @@ namespace Clamp.OSGI.Framework.Data
                     scanResult.ChangesFound = true;
                     return;
                 }
+
                 scanResult.RegenerateAllData = true;
             }
 
@@ -870,6 +918,7 @@ namespace Clamp.OSGI.Framework.Data
             foreach (string file in Directory.GetFiles(BundleFolderCachePath, "*.data"))
             {
                 BundleScanFolderInfo folderInfo;
+
                 bool res = ReadFolderInfo(file, out folderInfo);
                 bool validForDomain = scanResult.Domain == null || folderInfo.Domain == GlobalDomain || folderInfo.Domain == scanResult.Domain;
 
@@ -896,8 +945,8 @@ namespace Clamp.OSGI.Framework.Data
 
             // Look for changes in the add-in folders
 
-            if (registry.StartupDirectory != null)
-                scanner.ScanFolder(registry.StartupDirectory, null, scanResult);
+            if (registry.BasePath != null)
+                scanner.ScanFolder(registry.BasePath, null, scanResult);
 
             if (scanResult.CheckOnly && scanResult.ChangesFound)
                 return;
@@ -1084,6 +1133,10 @@ namespace Clamp.OSGI.Framework.Data
             rootSetupInfos = null;
         }
 
+        /// <summary>
+        /// 获得当前的Bundle住宿索引类
+        /// </summary>
+        /// <returns></returns>
         internal BundleHostIndex GetBundleHostIndex()
         {
             if (hostIndex != null)
@@ -1098,6 +1151,7 @@ namespace Clamp.OSGI.Framework.Data
             }
             return hostIndex;
         }
+
         /// <summary>
         /// 检测试当前系统下数据库文件夹是否可以操作和结构是否合格
         /// </summary>
@@ -1120,7 +1174,6 @@ namespace Clamp.OSGI.Framework.Data
                     hasChanges = true;
                 }
 
-                // Make sure we can write in those folders
 
                 Util.CheckWrittableFloder(BundleCachePath);
                 Util.CheckWrittableFloder(BundleFolderCachePath);
@@ -1138,7 +1191,9 @@ namespace Clamp.OSGI.Framework.Data
 
         #endregion
         #region private method
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void RunPendingUninstalls()
         {
             bool changesDone = false;
@@ -1146,15 +1201,18 @@ namespace Clamp.OSGI.Framework.Data
             foreach (var adn in Configuration.GetPendingUninstalls())
             {
                 HashSet<string> files = new HashSet<string>(adn.Files);
+
                 if (ClampBundle.CheckAssembliesLoaded(files))
                     continue;
 
                 // Make sure all files can be deleted before doing so
                 bool canUninstall = true;
+
                 foreach (string f in adn.Files)
                 {
                     if (!File.Exists(f))
                         continue;
+
                     try
                     {
                         File.OpenWrite(f).Close();
@@ -1206,17 +1264,22 @@ namespace Clamp.OSGI.Framework.Data
                 return false;
 
             id2 = Bundle.GetIdName(id2);
+
             foreach (Dependency dep in addin1.BundleInfo.Dependencies)
             {
                 BundleDependency adep = dep as BundleDependency;
                 if (adep == null)
                     continue;
+
                 string depid = Bundle.GetFullId(addin1.BundleInfo.Namespace, adep.BundleId, null);
+
                 if (depid == id2)
                     return true;
+
                 else if (BundleDependsOn(visited, domain, depid, id2))
                     return true;
             }
+
             return false;
         }
 
@@ -1540,11 +1603,14 @@ namespace Clamp.OSGI.Framework.Data
 
                 FindInstalledBundles(adict, domain, idFilter);
                 List<Bundle> alist = new List<Bundle>(adict.Values);
+
                 UpdateLastVersionFlags(alist);
+
                 if (idFilter != null)
                     return alist;
                 allSetupInfos = alist;
             }
+
             if ((type & BundleSearchFlagsInternal.IncludeAll) == BundleSearchFlagsInternal.IncludeAll)
                 return FilterById(allSetupInfos, idFilter);
 
@@ -1576,6 +1642,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             if (id == null)
                 return addins;
+
             return addins.Where(a => Bundle.GetIdName(a.Id) == id);
         }
 
@@ -1583,15 +1650,19 @@ namespace Clamp.OSGI.Framework.Data
         {
             if (idFilter == null)
                 idFilter = "*";
+
             string dir = Path.Combine(BundleCachePath, domain);
+
             if (Directory.Exists(dir))
             {
                 foreach (string file in fileDatabase.GetDirectoryFiles(dir, idFilter + ",*.maddin"))
                 {
                     string id = Path.GetFileNameWithoutExtension(file);
+
                     if (!result.ContainsKey(id))
                     {
                         var adesc = GetInstalledDomainBundle(domain, id, true, false, false);
+
                         if (adesc != null)
                             result.Add(id, adesc);
                     }
@@ -1602,18 +1673,24 @@ namespace Clamp.OSGI.Framework.Data
         private void UpdateLastVersionFlags(List<Bundle> addins)
         {
             Dictionary<string, string> versions = new Dictionary<string, string>();
+
             foreach (Bundle a in addins)
             {
                 string last;
                 string id, version;
+
                 Bundle.GetIdParts(a.Id, out id, out version);
+
                 if (!versions.TryGetValue(id, out last) || Bundle.CompareVersions(last, version) > 0)
                     versions[id] = version;
             }
+
             foreach (Bundle a in addins)
             {
                 string id, version;
+
                 Bundle.GetIdParts(a.Id, out id, out version);
+
                 a.IsLatestVersion = versions[id] == version;
             }
         }
@@ -1633,15 +1710,19 @@ namespace Clamp.OSGI.Framework.Data
         private Bundle GetInstalledDomainBundle(string domain, string id, bool exactVersionMatch, bool enabledOnly, bool dbLockCheck)
         {
             Bundle sinfo = null;
+
             string idd = id + " " + domain;
             object ob = cachedBundleSetupInfos[idd];
+
             if (ob != null)
             {
                 sinfo = ob as Bundle;
+
                 if (sinfo != null)
                 {
                     if (!enabledOnly || sinfo.Enabled)
                         return sinfo;
+
                     if (exactVersionMatch)
                         return null;
                 }
@@ -1674,14 +1755,14 @@ namespace Clamp.OSGI.Framework.Data
                 if (!exactVersionMatch)
                 {
                     sinfo = null;
+
                     string version, name, bestVersion = null;
+
                     Bundle.GetIdParts(id, out name, out version);
 
                     foreach (Bundle ia in InternalGetInstalledBundles(domain, name, BundleSearchFlagsInternal.IncludeAll))
                     {
-                        if ((!enabledOnly || ia.Enabled) &&
-                            (version.Length == 0 || ia.SupportsVersion(version)) &&
-                            (bestVersion == null || Bundle.CompareVersions(bestVersion, ia.Version) > 0))
+                        if ((!enabledOnly || ia.Enabled) && (version.Length == 0 || ia.SupportsVersion(version)) && (bestVersion == null || Bundle.CompareVersions(bestVersion, ia.Version) > 0))
                         {
                             bestVersion = ia.Version;
                             sinfo = ia;

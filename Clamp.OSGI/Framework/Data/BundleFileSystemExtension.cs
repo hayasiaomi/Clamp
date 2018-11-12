@@ -12,14 +12,14 @@ namespace Clamp.OSGI.Framework.Data
         private IAssemblyReflector reflector;
 
         /// <summary>
-        /// Called when the add-in scan is about to start
+        /// Bundle开始检测
         /// </summary>
         public virtual void ScanStarted()
         {
         }
 
         /// <summary>
-        /// Called when the add-in scan has finished
+        /// Bundle结束检测
         /// </summary>
         public virtual void ScanFinished()
         {

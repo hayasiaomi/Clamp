@@ -10,47 +10,57 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework
 {
+    /// <summary>
+    /// Bundle的注册类
+    /// </summary>
     internal class BundleRegistry : IDisposable
     {
         private List<string> addinDirs;
         private BundleDatabase database;
         private string basePath;
         private string currentDomain;
-        private string addinsDir;
+        private string bundlesDir;
         private string databaseDir;
 
+        /// <summary>
+        /// 获得默认的Bundle的文件夹
+        /// </summary>
         public string DefaultBundlesFolder
         {
-            get { return addinsDir; }
+            get { return bundlesDir; }
         }
 
+        /// <summary>
+        /// 根路径
+        /// </summary>
         public string BasePath
         {
             get { return basePath; }
         }
 
+        /// <summary>
+        /// Bundle的存在存放路径，即是数据库的路径
+        /// </summary>
         internal string BundleCachePath
         {
             get { return databaseDir; }
         }
 
-
+        /// <summary>
+        /// 当前是否为未知的域
+        /// </summary>
         internal bool UnknownDomain
         {
             get { return currentDomain == BundleDatabase.UnknownDomain; }
         }
 
+
+        /// <summary>
+        /// 当前的哉
+        /// </summary>
         internal string CurrentDomain
         {
             get { return currentDomain; }
-        }
-
-        internal string StartupDirectory
-        {
-            get
-            {
-                return this.basePath;
-            }
         }
 
         internal List<string> GlobalBundleDirectories
@@ -77,12 +87,12 @@ namespace Clamp.OSGI.Framework
             if (addinsDir != null)
             {
                 if (Path.IsPathRooted(addinsDir))
-                    this.addinsDir = Path.GetFullPath(addinsDir);
+                    this.bundlesDir = Path.GetFullPath(addinsDir);
                 else
-                    this.addinsDir = Path.GetFullPath(Path.Combine(this.basePath, addinsDir));
+                    this.bundlesDir = Path.GetFullPath(Path.Combine(this.basePath, addinsDir));
             }
             else
-                this.addinsDir = Path.Combine(this.basePath, "bundles");
+                this.bundlesDir = Path.Combine(this.basePath, "bundles");
 
             if (databaseDir != null)
             {
@@ -110,13 +120,21 @@ namespace Clamp.OSGI.Framework
 
         #region internal method
 
+        /// <summary>
+        /// 创建Bundles的住宿文件
+        /// </summary>
+        /// <param name="hostFile"></param>
+        /// <returns></returns>
         internal bool CreateHostBundlesFile(string hostFile)
         {
             hostFile = Path.GetFullPath(hostFile);
+
             string baseName = Path.GetFileNameWithoutExtension(hostFile);
+
             if (!Directory.Exists(database.HostsPath))
                 Directory.CreateDirectory(database.HostsPath);
 
+            //检测一下当前的hostFile是否存在 如果存在就不需要在创建了。如果没有存在的话，就要新建一个 并返回true
             foreach (string s in Directory.GetFiles(database.HostsPath, baseName + "*.bundles"))
             {
                 try
@@ -132,12 +150,13 @@ namespace Clamp.OSGI.Framework
                 }
                 catch
                 {
-                    // Ignore this file
                 }
             }
 
             string file = Path.Combine(database.HostsPath, baseName) + ".bundles";
+
             int n = 1;
+
             while (File.Exists(file))
             {
                 file = Path.Combine(database.HostsPath, baseName) + "_" + n + ".bundles";
@@ -156,6 +175,7 @@ namespace Clamp.OSGI.Framework
                 tw.WriteEndElement();
                 tw.Close();
             }
+
             return true;
         }
 
@@ -178,7 +198,11 @@ namespace Clamp.OSGI.Framework
             database.CopyExtensions(other.database);
         }
 
-
+        /// <summary>
+        /// 根据程序集获得对应的Bundle
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         internal Bundle GetBundleForHostAssembly(string filePath)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
@@ -197,7 +221,7 @@ namespace Clamp.OSGI.Framework
             return database.IsBundleEnabled(currentDomain, id);
         }
         /// <summary>
-        /// 更新组件注册表
+        /// 更新bundle注册表
         /// </summary>
         public void Update()
         {

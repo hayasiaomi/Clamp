@@ -70,7 +70,10 @@ namespace Clamp.OSGI.Framework.Data
                 return reader.ReadValue("data");
             }
         }
-
+        /// <summary>
+        /// 锁住数据库的读
+        /// </summary>
+        /// <returns></returns>
         public IDisposable LockRead()
         {
             return FileLock(FileAccess.Read, -1);
@@ -206,6 +209,13 @@ namespace Clamp.OSGI.Framework.Data
                 EndTransaction();
             }
         }
+
+        /// <summary>
+        /// 取读数据
+        /// </summary>
+        /// <param name="fullFileName"></param>
+        /// <param name="typeMap"></param>
+        /// <returns></returns>
         public object ReadSharedObject(string fullFileName, BinaryXmlTypeMap typeMap)
         {
             object result;
@@ -402,6 +412,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 return false;
             }
+
             using (Stream s = OpenRead(f))
             {
                 BinaryXmlReader reader = new BinaryXmlReader(s, typeMap);
