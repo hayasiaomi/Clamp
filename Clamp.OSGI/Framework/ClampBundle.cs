@@ -260,6 +260,7 @@ namespace Clamp.OSGI.Framework
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
                 CheckHostAssembly(asm);
         }
+
         internal void CheckInitialized()
         {
             if (!initialized)

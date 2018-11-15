@@ -384,7 +384,7 @@ namespace Clamp.OSGI.Framework.Data
                         }
                     }
                 }
-
+                //开起一个检测试的进程
                 RunScannerProcess();
 
                 ResetCachedData();
@@ -1513,8 +1513,9 @@ namespace Clamp.OSGI.Framework.Data
                 list.Insert(curPos++, node);
         }
 
-
-
+        /// <summary>
+        /// 执行检测进程
+        /// </summary>
         private void RunScannerProcess()
         {
             ISetupHandler setup = GetSetupHandler();
