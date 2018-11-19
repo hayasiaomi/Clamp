@@ -109,7 +109,15 @@ namespace Clamp.OSGI.Framework.Data
             filedb.WriteSharedObject(basePath, GetDomain(folder), ".data", Path.GetFullPath(folder), fileName, typeMap, this);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="addinId"></param>
+        /// <param name="isRoot"></param>
+        /// <param name="time"></param>
+        /// <param name="scanError"></param>
+        /// <returns></returns>
         public BundleFileInfo SetLastScanTime(string file, string addinId, bool isRoot, DateTime time, bool scanError)
         {
             BundleFileInfo info = (BundleFileInfo)files[file];
@@ -139,13 +147,17 @@ namespace Clamp.OSGI.Framework.Data
             return (BundleFileInfo)files[file];
         }
 
+        /// <summary>
+        /// 获得删除的Bundle
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         public ArrayList GetMissingBundles(BundleFileSystemExtension fs)
         {
             ArrayList missing = new ArrayList();
 
             if (!fs.DirectoryExists(folder))
             {
-                // All deleted
                 foreach (BundleFileInfo info in files.Values)
                 {
                     if (info.IsBundle)
@@ -154,6 +166,7 @@ namespace Clamp.OSGI.Framework.Data
                 files.Clear();
                 return missing;
             }
+
             ArrayList toDelete = new ArrayList();
 
             foreach (BundleFileInfo info in files.Values)

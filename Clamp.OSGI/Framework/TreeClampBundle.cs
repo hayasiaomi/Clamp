@@ -829,11 +829,13 @@ namespace Clamp.OSGI.Framework
                 fireEvents = true;
 
                 Bundle addin = BundleEngine.Registry.GetBundle(id);
+
                 if (addin == null)
                 {
                     BundleEngine.ReportError("Required add-in not found", id, null, false);
                     return;
                 }
+
                 // Take note that this add-in has been enabled at run-time
                 // Needed because loaded add-in descriptions may not include this add-in. 
                 RegisterRuntimeEnabledBundle(id);

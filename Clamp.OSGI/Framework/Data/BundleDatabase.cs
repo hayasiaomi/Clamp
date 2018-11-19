@@ -425,11 +425,19 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 根据域、BundleID和Bundle文件来获得对应的Bundle详细类
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="bundleId"></param>
+        /// <param name="bundleFile"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
         public bool GetBundleDescription(string domain, string bundleId, string bundleFile, out BundleDescription description)
         {
-            // If the same add-in is installed in different folders (in the same domain) there will be several .maddin files for it,
-            // using the suffix "_X" where X is a number > 1 (for example: someBundle,1.0.maddin, someBundle,1.0.maddin_2, someBundle,1.0.maddin_3, ...)
-            // We need to return the .maddin whose BundleFile matches the one being requested
+            // If the same add-in is installed in different folders (in the same domain) there will be several .mbundle files for it,
+            // using the suffix "_X" where X is a number > 1 (for example: someBundle,1.0.mbundle, someBundle,1.0.mbundle_2, someBundle,1.0.mbundle_3, ...)
+            // We need to return the .mbundle whose BundleFile matches the one being requested
 
             bundleFile = Path.GetFullPath(bundleFile);
             int altNum = 1;
@@ -441,7 +449,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (!ReadBundleDescription(file, out description))
                 {
-                    // Remove the BundleDescription here since it is corrupted.
+                    //所以说当前这个文件是有问题，必须删除掉，这样子才可以保证调用SaveDescription不会被替掉。
                     // Avoids creating alternate versions of corrupted files when later calling SaveDescription.
                     RemoveBundleDescriptionFile(file);
                     failed = true;
@@ -463,7 +471,12 @@ namespace Clamp.OSGI.Framework.Data
 
             return failed;
         }
-
+        /// <summary>
+        /// 根据文件路径读取 Bundle详细信息，如果有问题就是会返回false
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
         public bool ReadBundleDescription(string file, out BundleDescription description)
         {
             try
@@ -482,6 +495,11 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 安全删除
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public bool SafeDelete(string file)
         {
             try
@@ -768,13 +786,14 @@ namespace Clamp.OSGI.Framework.Data
         internal bool RemoveBundleDescriptionFile(string file)
         {
             // Removes an add-in description and shifts up alternate instances of the description file
-            // (so xxx,1.0.maddin_2 will become xxx,1.0.maddin, xxx,1.0.maddin_3 -> xxx,1.0.maddin_2, etc)
+            // (so xxx,1.0.mbundle_2 will become xxx,1.0.mbundle, xxx,1.0.mbundle_3 -> xxx,1.0.mbundle_2, etc)
 
             if (!SafeDelete(file))
                 return false;
 
             int dversion;
-            if (file.EndsWith(".maddin"))
+
+            if (file.EndsWith(".mbundle"))
                 dversion = 2;
             else
             {
@@ -810,23 +829,36 @@ namespace Clamp.OSGI.Framework.Data
             return true;
         }
 
+        /// <summary>
+        /// 获得BundleDescription相对应的路径
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal string GetDescriptionPath(string domain, string id)
         {
-            return Path.Combine(Path.Combine(BundleCachePath, domain), id + ".maddin");
+            return Path.Combine(Path.Combine(BundleCachePath, domain), id + ".mbundle");
         }
 
-        internal void UninstallBundle(string domain, string addinId, string addinFile, BundleScanResult scanResult)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="bundleId"></param>
+        /// <param name="addinFile"></param>
+        /// <param name="scanResult"></param>
+        internal void UninstallBundle(string domain, string bundleId, string addinFile, BundleScanResult scanResult)
         {
             BundleDescription desc;
 
-            if (!GetBundleDescription(domain, addinId, addinFile, out desc))
+            if (!GetBundleDescription(domain, bundleId, addinFile, out desc))
             {
                 // If we can't get information about the old assembly, just regenerate all relation data
                 scanResult.RegenerateRelationData = true;
                 return;
             }
 
-            scanResult.AddRemovedBundle(addinId);
+            scanResult.AddRemovedBundle(bundleId);
 
             // If the add-in didn't exist, there is nothing left to do
 
@@ -885,6 +917,7 @@ namespace Clamp.OSGI.Framework.Data
                 fs.ScanFinished();
             }
         }
+
         /// <summary>
         /// 内部检测文件夹
         /// </summary>
@@ -913,8 +946,7 @@ namespace Clamp.OSGI.Framework.Data
 
             BundleScanner scanner = new BundleScanner(this, scanResult);
 
-            // Check if any of the previously scanned folders has been deleted
-
+            //检测之前检测过的文件夹是否已被删除
             foreach (string file in Directory.GetFiles(BundleFolderCachePath, "*.data"))
             {
                 BundleScanFolderInfo folderInfo;
@@ -926,12 +958,12 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     if (res)
                     {
-                        // Folder has been deleted. Remove the add-ins it had.
+                        //文件夹信息的数据存在，但是文件却不存在，所以要删掉
                         scanner.UpdateDeletedBundles(folderInfo, scanResult);
                     }
                     else
                     {
-                        // Folder info file corrupt. Regenerate all.
+                        //说明数据发生变化了。需要重新更新
                         scanResult.ChangesFound = true;
                         scanResult.RegenerateRelationData = true;
                     }
@@ -943,8 +975,7 @@ namespace Clamp.OSGI.Framework.Data
                 }
             }
 
-            // Look for changes in the add-in folders
-
+            //查看对应的文件夹是否发生变化
             if (registry.BasePath != null)
                 scanner.ScanFolder(registry.BasePath, null, scanResult);
 
@@ -1001,120 +1032,7 @@ namespace Clamp.OSGI.Framework.Data
             SaveBundleHostIndex();
         }
 
-        void GenerateBundleExtensionMapsInternal(string domain, List<string> addinsToUpdate, List<string> addinsToUpdateRelations, List<string> removedBundles)
-        {
-            BundleUpdateData updateData = new BundleUpdateData(this);
 
-            // Clear cached data
-            cachedBundleSetupInfos.Clear();
-
-            // Collect all information
-
-            BundleIndex addinHash = new BundleIndex();
-
-            Hashtable changedBundles = null;
-            ArrayList descriptionsToSave = new ArrayList();
-            ArrayList files = new ArrayList();
-
-            bool partialGeneration = addinsToUpdate != null;
-            string[] domains = GetDomains().Where(d => d == domain || d == GlobalDomain).ToArray();
-
-            // Get the files to be updated
-
-            if (partialGeneration)
-            {
-                changedBundles = new Hashtable();
-
-                // Get the files and ids of all add-ins that have to be updated
-                // Include removed add-ins: if there are several instances of the same add-in, removing one of
-                // them will make other instances to show up. If there is a single instance, its files are
-                // already removed.
-                foreach (string sa in addinsToUpdate.Union(removedBundles))
-                {
-                    changedBundles[sa] = sa;
-
-                    foreach (string file in GetBundleFiles(sa, domains))
-                    {
-                        if (!files.Contains(file))
-                        {
-                            files.Add(file);
-                            string an = Path.GetFileNameWithoutExtension(file);
-                            changedBundles[an] = an;
-                        }
-                    }
-                }
-
-                // Get the files and ids of all add-ins whose relations have to be updated
-                foreach (string sa in addinsToUpdateRelations)
-                {
-                    foreach (string file in GetBundleFiles(sa, domains))
-                    {
-                        if (!files.Contains(file))
-                        {
-                            files.Add(file);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach (var dom in domains)
-                    files.AddRange(fileDatabase.GetDirectoryFiles(Path.Combine(BundleCachePath, dom), "*.maddin"));
-            }
-
-            // Load the descriptions.
-            foreach (string file in files)
-            {
-
-                BundleDescription conf;
-
-                if (!ReadBundleDescription(file, out conf))
-                {
-                    SafeDelete(file);
-                    continue;
-                }
-
-                // If the original file does not exist, the description can be deleted
-                if (!fs.FileExists(conf.BundleFile))
-                {
-                    SafeDelete(file);
-                    continue;
-                }
-
-                // Remove old data from the description. Remove the data of the add-ins that
-                // have changed. This data will be re-added later.
-
-                conf.UnmergeExternalData(changedBundles);
-                descriptionsToSave.Add(conf);
-
-                addinHash.Add(conf);
-            }
-
-            // Sort the add-ins, to make sure add-ins are processed before
-            // all their dependencies
-
-            var sorted = addinHash.GetSortedBundles();
-
-            // Register extension points and node sets
-            foreach (BundleDescription conf in sorted)
-                CollectExtensionPointData(conf, updateData);
-
-            // Register extensions
-            foreach (BundleDescription conf in sorted)
-            {
-                if (changedBundles == null || changedBundles.ContainsKey(conf.BundleId))
-                {
-                    CollectExtensionData(addinHash, conf, updateData);
-                }
-            }
-
-            // Save the maps
-            foreach (BundleDescription conf in descriptionsToSave)
-            {
-                ConsolidateExtensions(conf);
-                conf.SaveBinary(fileDatabase);
-            }
-        }
 
         internal void ResetCachedData()
         {
@@ -1122,8 +1040,8 @@ namespace Clamp.OSGI.Framework.Data
             hostIndex = null;
             cachedBundleSetupInfos.Clear();
 
-            //if (clampBundle != null)
-            //    clampBundle.ResetCachedData();
+            if (clampBundle != null)
+                clampBundle.ResetCachedData();
         }
 
         internal void ResetBasicCachedData()
@@ -1191,6 +1109,121 @@ namespace Clamp.OSGI.Framework.Data
 
         #endregion
         #region private method
+
+        private void GenerateBundleExtensionMapsInternal(string domain, List<string> addinsToUpdate, List<string> addinsToUpdateRelations, List<string> removedBundles)
+        {
+            BundleUpdateData updateData = new BundleUpdateData(this);
+
+            // Clear cached data
+            cachedBundleSetupInfos.Clear();
+
+            // Collect all information
+
+            BundleIndex addinHash = new BundleIndex();
+
+            Hashtable changedBundles = null;
+            ArrayList descriptionsToSave = new ArrayList();
+            ArrayList files = new ArrayList();
+
+            bool partialGeneration = addinsToUpdate != null;
+            string[] domains = GetDomains().Where(d => d == domain || d == GlobalDomain).ToArray();
+
+            // Get the files to be updated
+
+            if (partialGeneration)
+            {
+                changedBundles = new Hashtable();
+
+                // Get the files and ids of all add-ins that have to be updated
+                // Include removed add-ins: if there are several instances of the same add-in, removing one of
+                // them will make other instances to show up. If there is a single instance, its files are
+                // already removed.
+                foreach (string sa in addinsToUpdate.Union(removedBundles))
+                {
+                    changedBundles[sa] = sa;
+
+                    foreach (string file in GetBundleFiles(sa, domains))
+                    {
+                        if (!files.Contains(file))
+                        {
+                            files.Add(file);
+                            string an = Path.GetFileNameWithoutExtension(file);
+                            changedBundles[an] = an;
+                        }
+                    }
+                }
+
+                // Get the files and ids of all add-ins whose relations have to be updated
+                foreach (string sa in addinsToUpdateRelations)
+                {
+                    foreach (string file in GetBundleFiles(sa, domains))
+                    {
+                        if (!files.Contains(file))
+                        {
+                            files.Add(file);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var dom in domains)
+                    files.AddRange(fileDatabase.GetDirectoryFiles(Path.Combine(BundleCachePath, dom), "*.mbundle"));
+            }
+
+            // Load the descriptions.
+            foreach (string file in files)
+            {
+
+                BundleDescription conf;
+
+                if (!ReadBundleDescription(file, out conf))
+                {
+                    SafeDelete(file);
+                    continue;
+                }
+
+                // If the original file does not exist, the description can be deleted
+                if (!fs.FileExists(conf.BundleFile))
+                {
+                    SafeDelete(file);
+                    continue;
+                }
+
+                // Remove old data from the description. Remove the data of the add-ins that
+                // have changed. This data will be re-added later.
+
+                conf.UnmergeExternalData(changedBundles);
+                descriptionsToSave.Add(conf);
+
+                addinHash.Add(conf);
+            }
+
+            // Sort the add-ins, to make sure add-ins are processed before
+            // all their dependencies
+
+            var sorted = addinHash.GetSortedBundles();
+
+            // Register extension points and node sets
+            foreach (BundleDescription conf in sorted)
+                CollectExtensionPointData(conf, updateData);
+
+            // Register extensions
+            foreach (BundleDescription conf in sorted)
+            {
+                if (changedBundles == null || changedBundles.ContainsKey(conf.BundleId))
+                {
+                    CollectExtensionData(addinHash, conf, updateData);
+                }
+            }
+
+            // Save the maps
+            foreach (BundleDescription conf in descriptionsToSave)
+            {
+                ConsolidateExtensions(conf);
+                conf.SaveBinary(fileDatabase);
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -1656,7 +1689,7 @@ namespace Clamp.OSGI.Framework.Data
 
             if (Directory.Exists(dir))
             {
-                foreach (string file in fileDatabase.GetDirectoryFiles(dir, idFilter + ",*.maddin"))
+                foreach (string file in fileDatabase.GetDirectoryFiles(dir, idFilter + ",*.mbundle"))
                 {
                     string id = Path.GetFileNameWithoutExtension(file);
 

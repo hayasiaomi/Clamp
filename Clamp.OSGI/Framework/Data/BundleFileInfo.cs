@@ -61,9 +61,10 @@ namespace Clamp.OSGI.Framework.Data
         /// </summary>
         public string BundleId { set; get; }
         /// <summary>
-        /// 是否为根文件
+        /// 是否为正常Bundle，而非特殊Bundle
         /// </summary>
         public bool IsRoot { set; get; }
+
         public bool ScanError { set; get; }
         /// <summary>
         /// 对应的域
@@ -82,6 +83,10 @@ namespace Clamp.OSGI.Framework.Data
             get { return BundleId != null && BundleId.Length != 0; }
         }
 
+        /// <summary>
+        /// 增加怱略的文件路径
+        /// </summary>
+        /// <param name="path"></param>
         public void AddPathToIgnore(string path)
         {
             if (IgnorePaths == null)

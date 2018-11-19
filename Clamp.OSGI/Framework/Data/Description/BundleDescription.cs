@@ -11,6 +11,9 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// Bundle的详细类
+    /// </summary>
     public class BundleDescription : IBinaryXmlElement
     {
         private XmlDocument configDoc;

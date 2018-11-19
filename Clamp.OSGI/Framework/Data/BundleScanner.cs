@@ -19,13 +19,18 @@ namespace Clamp.OSGI.Framework.Data
         private Dictionary<IAssemblyReflector, object> coreAssemblies = new Dictionary<IAssemblyReflector, object>();
         private BundleDatabase database;
         private BundleFileSystemExtension fs;
+
         public BundleScanner(BundleDatabase database, BundleScanResult scanResult)
         {
             this.database = database;
-            fs = database.FileSystem;
+            this.fs = database.FileSystem;
         }
         #region public mehtod
-
+        /// <summary>
+        /// 更新删除的Bundle
+        /// </summary>
+        /// <param name="folderInfo"></param>
+        /// <param name="scanResult"></param>
         public void UpdateDeletedBundles(BundleScanFolderInfo folderInfo, BundleScanResult scanResult)
         {
             ArrayList missing = folderInfo.GetMissingBundles(fs);
@@ -47,6 +52,12 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 检测文件夹
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="domain"></param>
+        /// <param name="scanResult"></param>
         public void ScanFolder(string path, string domain, BundleScanResult scanResult)
         {
             path = Path.GetFullPath(path);
@@ -59,20 +70,17 @@ namespace Clamp.OSGI.Framework.Data
 
             if (!database.GetFolderInfoForPath(path, out folderInfo))
             {
-                // folderInfo file was corrupt.
-                // Just in case, we are going to regenerate all relation data.
+                // 文件夹有可能动过，为了以防万一还是重新加载数据
                 if (!fs.DirectoryExists(path))
                     scanResult.RegenerateRelationData = true;
             }
             else
             {
-                // Directory is included but it doesn't exist. Ignore it.
                 if (folderInfo == null && !fs.DirectoryExists(path))
                     return;
             }
 
             // if domain is null it means that a new domain has to be created.
-
             bool sharedFolder = domain == BundleDatabase.GlobalDomain;
             bool isNewFolder = folderInfo == null;
 
@@ -94,6 +102,7 @@ namespace Clamp.OSGI.Framework.Data
                 else
                 {
                     folderInfo.Domain = domain;
+
                     if (!isNewFolder)
                     {
                         // Domain has changed. Update the folder info and regenerate everything.

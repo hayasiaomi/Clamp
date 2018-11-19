@@ -220,6 +220,7 @@ namespace Clamp.OSGI.Framework
                 return false;
             return database.IsBundleEnabled(currentDomain, id);
         }
+
         /// <summary>
         /// 更新bundle注册表
         /// </summary>
@@ -242,6 +243,7 @@ namespace Clamp.OSGI.Framework
                 return null;
             return ad;
         }
+
         public bool IsRegisteredForUninstall(string addinId)
         {
             return database.IsRegisteredForUninstall(currentDomain, addinId);

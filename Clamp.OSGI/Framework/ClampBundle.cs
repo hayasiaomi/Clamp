@@ -32,11 +32,12 @@ namespace Clamp.OSGI.Framework
         private string startupDirectory;
         private BundleLocalizer defaultLocalizer;
         private Dictionary<string, string> configProps;
-        public static event BundleErrorEventHandler BundleLoadError;
 
-        public static event BundleEventHandler BundleLoaded;
+        public event BundleErrorEventHandler BundleLoadError;
 
-        public static event BundleEventHandler BundleUnloaded;
+        public event BundleEventHandler BundleLoaded;
+
+        public event BundleEventHandler BundleUnloaded;
 
         public bool IsInitialized
         {
@@ -47,7 +48,9 @@ namespace Clamp.OSGI.Framework
         /// 插件的根目录
         /// </summary>
         public string StartupDirectory { get { return this.startupDirectory; } }
-
+        /// <summary>
+        /// 默认的本地化
+        /// </summary>
         public BundleLocalizer DefaultLocalizer
         {
             get
@@ -99,8 +102,6 @@ namespace Clamp.OSGI.Framework
                     this.registry.Update();
 
                 initialized = true;
-
-
             }
         }
 
@@ -213,6 +214,11 @@ namespace Clamp.OSGI.Framework
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal RuntimeBundle GetBundle(string id)
         {
             ValidateBundleRoots();
@@ -261,6 +267,9 @@ namespace Clamp.OSGI.Framework
                 CheckHostAssembly(asm);
         }
 
+        /// <summary>
+        /// 检测框架是否初始化过
+        /// </summary>
         internal void CheckInitialized()
         {
             if (!initialized)
@@ -270,6 +279,7 @@ namespace Clamp.OSGI.Framework
         internal void ValidateBundleRoots()
         {
             List<Assembly> copy = null;
+
             lock (pendingRootChecks)
             {
                 if (pendingRootChecks.Count > 0)
@@ -278,6 +288,7 @@ namespace Clamp.OSGI.Framework
                     pendingRootChecks.Clear();
                 }
             }
+
             if (copy != null)
             {
                 foreach (Assembly asm in copy)
@@ -291,14 +302,19 @@ namespace Clamp.OSGI.Framework
             RemoveBundleExtensions(id);
 
             RuntimeBundle addin = GetBundle(id);
+
             if (addin != null)
             {
                 addin.UnloadExtensions();
+
                 lock (LocalLock)
                 {
                     var loadedBundlesCopy = new Dictionary<string, RuntimeBundle>(loadedBundles);
+
                     loadedBundlesCopy.Remove(Bundle.GetIdName(id));
+
                     loadedBundles = loadedBundlesCopy;
+
                     if (addin.AssembliesLoaded)
                     {
                         var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeBundle>(loadedAssemblies);
@@ -307,6 +323,7 @@ namespace Clamp.OSGI.Framework
                         loadedAssemblies = loadedAssembliesCopy;
                     }
                 }
+
                 ReportBundleUnload(id);
             }
         }

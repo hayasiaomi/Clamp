@@ -9,7 +9,7 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data
 {
     /// <summary>
-    /// Bundle的检测结果类
+    /// Bundle检测结果类
     /// </summary>
     internal class BundleScanResult : MarshalByRefObject, IAssemblyLocator
     {
@@ -20,17 +20,28 @@ namespace Clamp.OSGI.Framework.Data
         private Hashtable filesToIgnore;
         private bool regenerateRelationData;
 
+        /// <summary>
+        /// 是否重新执行所有数据
+        /// </summary>
         public bool RegenerateAllData { set; get; }
-
+        /// <summary>
+        /// 是否只是检测，而不更新
+        /// </summary>
         public bool CheckOnly { set; get; }
-
+        /// <summary>
+        /// 当前对应的域
+        /// </summary>
         public string Domain { set; get; }
-
+        /// <summary>
+        /// 是否发生变化
+        /// </summary>
         public bool ChangesFound { set; get; }
 
         public bool LocateAssembliesOnly { set; get; }
 
-
+        /// <summary>
+        /// 是否重新执行相关的数据
+        /// </summary>
         public bool RegenerateRelationData
         {
             get { return this.regenerateRelationData; }

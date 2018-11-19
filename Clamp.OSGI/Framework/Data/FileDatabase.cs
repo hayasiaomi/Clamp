@@ -269,6 +269,11 @@ namespace Clamp.OSGI.Framework.Data
                 return File.Create(fileName);
         }
 
+        /// <summary>
+        ///判断当前Bundle文件数据库里面是否存在这个文件 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public bool Exists(string fileName)
         {
             if (inTransaction)
@@ -281,6 +286,10 @@ namespace Clamp.OSGI.Framework.Data
             return File.Exists(fileName);
         }
 
+        /// <summary>
+        /// 删除Bundle文件数据库的文件
+        /// </summary>
+        /// <param name="fileName"></param>
         public void Delete(string fileName)
         {
             if (inTransaction)
