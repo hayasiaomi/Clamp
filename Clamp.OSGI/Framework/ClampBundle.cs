@@ -48,6 +48,7 @@ namespace Clamp.OSGI.Framework
         /// 插件的根目录
         /// </summary>
         public string StartupDirectory { get { return this.startupDirectory; } }
+
         /// <summary>
         /// 默认的本地化
         /// </summary>
