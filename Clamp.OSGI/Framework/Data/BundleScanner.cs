@@ -80,7 +80,6 @@ namespace Clamp.OSGI.Framework.Data
                     return;
             }
 
-            // if domain is null it means that a new domain has to be created.
             bool sharedFolder = domain == BundleDatabase.GlobalDomain;
             bool isNewFolder = folderInfo == null;
 
@@ -91,6 +90,7 @@ namespace Clamp.OSGI.Framework.Data
 
             if (!sharedFolder && (folderInfo.SharedFolder || folderInfo.Domain != domain))
             {
+                // if domain is null it means that a new domain has to be created.
                 // If the folder already has a domain, reuse it
                 if (domain == null && folderInfo.RootsDomain != null && folderInfo.RootsDomain != BundleDatabase.GlobalDomain)
                     domain = folderInfo.RootsDomain;
@@ -584,6 +584,13 @@ namespace Clamp.OSGI.Framework.Data
                 return false;
             }
         }
+
+        /// <summary>
+        /// 注册需要检测的文件到对应的BundleScanResult对象里面去
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="scanResult"></param>
+        /// <param name="folderInfo"></param>
         private void RegisterFileToScan(string file, BundleScanResult scanResult, BundleScanFolderInfo folderInfo)
         {
             if (scanResult.LocateAssembliesOnly)

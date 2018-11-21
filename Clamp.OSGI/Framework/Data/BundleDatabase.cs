@@ -224,9 +224,11 @@ namespace Clamp.OSGI.Framework.Data
         public Bundle GetBundleForHostAssembly(string domain, string assemblyLocation)
         {
             InternalCheck(domain);
+
             Bundle ainfo = null;
 
             object ob = cachedBundleSetupInfos[assemblyLocation];
+
             if (ob != null)
                 return ob as Bundle; // Don't use a cast here is ob may not be an Bundle.
 

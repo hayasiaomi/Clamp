@@ -142,6 +142,11 @@ namespace Clamp.OSGI.Framework.Data
             return info;
         }
 
+        /// <summary>
+        /// 获得Bundle文件夹内部的文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public BundleFileInfo GetBundleFileInfo(string file)
         {
             return (BundleFileInfo)files[file];

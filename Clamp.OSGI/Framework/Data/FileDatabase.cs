@@ -79,10 +79,16 @@ namespace Clamp.OSGI.Framework.Data
             return FileLock(FileAccess.Read, -1);
         }
 
+        /// <summary>
+        /// 锁住数据库的写
+        /// </summary>
+        /// <returns></returns>
         public IDisposable LockWrite()
         {
             return FileLock(FileAccess.Write, -1);
         }
+
+
         public void WriteObject(string file, object obj, BinaryXmlTypeMap typeMap)
         {
             using (Stream s = Create(file))

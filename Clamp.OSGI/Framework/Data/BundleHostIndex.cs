@@ -15,7 +15,7 @@ namespace Clamp.OSGI.Framework.Data
     {
         static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleHostIndex));
 
-        Hashtable index = new Hashtable();
+        private Hashtable index = new Hashtable();
 
         public void RegisterAssembly(string assemblyLocation, string addinId, string addinLocation, string domain)
         {
