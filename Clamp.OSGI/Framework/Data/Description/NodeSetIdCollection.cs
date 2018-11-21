@@ -124,21 +124,21 @@ namespace Clamp.OSGI.Framework.Data.Description
             set { list = value; }
         }
 
-        internal void MergeWith(string thisBundleId, NodeSetIdCollection other)
+        internal void MergeWith(string bundleId, NodeSetIdCollection other)
         {
             foreach (string[] ns in other.list)
             {
-                if (ns[1] != thisBundleId && !list.Contains(ns))
+                if (ns[1] != bundleId && !list.Contains(ns))
                     list.Add(ns);
             }
         }
 
-        internal void UnmergeExternalData(string thisBundleId, Hashtable addinsToUnmerge)
+        internal void UnmergeExternalData(string bundleId, Hashtable addinsToUnmerge)
         {
             ArrayList newList = new ArrayList();
             foreach (string[] ns in list)
             {
-                if (ns[1] == thisBundleId || (addinsToUnmerge != null && !addinsToUnmerge.Contains(ns[1])))
+                if (ns[1] == bundleId || (addinsToUnmerge != null && !addinsToUnmerge.Contains(ns[1])))
                     newList.Add(ns);
             }
             list = newList;

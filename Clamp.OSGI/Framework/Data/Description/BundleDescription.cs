@@ -31,7 +31,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         private string category;
         private string basePath;
         private string sourceBundleFile;
-        private bool isroot;
+        private bool isbundle;
         private bool hasUserId;
         private bool canWrite = true;
         private bool defaultEnabled = true;
@@ -282,15 +282,12 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is an add-in root.
+        /// 指示当前是否是Bundle.如果false为fragmentBundle
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance is an add-in root; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsRoot
+        public bool IsBundle
         {
-            get { return isroot; }
-            set { isroot = value; }
+            get { return isbundle; }
+            set { isbundle = value; }
         }
 
         /// <summary>
@@ -727,7 +724,7 @@ namespace Clamp.OSGI.Framework.Data.Description
 
             val = properties.ExtractCoreProperty("IsRoot", removeProperties);
             if (val != null)
-                isroot = GetBool(val, true);
+                isbundle = GetBool(val, true);
 
             val = properties.ExtractCoreProperty("Flags", removeProperties);
             if (val != null)
@@ -746,7 +743,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 case "Version": value = version; return true;
                 case "CompatVersion": value = compatVersion; return true;
                 case "DefaultEnabled": value = defaultEnabled.ToString(); return true;
-                case "IsRoot": value = isroot.ToString(); return true;
+                case "IsRoot": value = isbundle.ToString(); return true;
                 case "Flags": value = flags.ToString(); return true;
             }
             if (properties != null && properties.HasProperty(name))
@@ -827,7 +824,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             SaveCoreProperty(elem, HasUserId ? id : null, "id", "Id");
             SaveCoreProperty(elem, version, "version", "Version");
             SaveCoreProperty(elem, ns, "namespace", "Namespace");
-            SaveCoreProperty(elem, isroot ? "true" : null, "isroot", "IsRoot");
+            SaveCoreProperty(elem, isbundle ? "true" : null, "isroot", "IsRoot");
 
             // Name will return the file name when HasUserId=false
             if (!string.IsNullOrEmpty(name))
@@ -1048,7 +1045,7 @@ namespace Clamp.OSGI.Framework.Data.Description
 
             string s = elem.GetAttribute("isRoot");
             if (s.Length == 0) s = elem.GetAttribute("isroot");
-            config.isroot = GetBool(s, false);
+            config.isbundle = GetBool(s, false);
 
             config.defaultEnabled = GetBool(elem.GetAttribute("defaultEnabled"), true);
 
@@ -1180,7 +1177,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
             StringCollection errors = new StringCollection();
 
-            if (IsRoot)
+            if (IsBundle)
             {
                 if (OptionalModules.Count > 0)
                     errors.Add("Root add-in hosts can't have optional modules.");
@@ -1309,7 +1306,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             TransferCoreProperties(true);
             writer.WriteValue("id", ParseString(id));
             writer.WriteValue("ns", ParseString(ns));
-            writer.WriteValue("isroot", isroot);
+            writer.WriteValue("isroot", isbundle);
             writer.WriteValue("name", ParseString(name));
             writer.WriteValue("version", ParseString(version));
             writer.WriteValue("compatVersion", ParseString(compatVersion));
@@ -1338,7 +1335,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
             id = reader.ReadStringValue("id");
             ns = reader.ReadStringValue("ns");
-            isroot = reader.ReadBooleanValue("isroot");
+            isbundle = reader.ReadBooleanValue("isroot");
             name = reader.ReadStringValue("name");
             version = reader.ReadStringValue("version");
             compatVersion = reader.ReadStringValue("compatVersion");

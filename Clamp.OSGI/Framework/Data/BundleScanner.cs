@@ -90,8 +90,7 @@ namespace Clamp.OSGI.Framework.Data
 
             if (!sharedFolder && (folderInfo.SharedFolder || folderInfo.Domain != domain))
             {
-                // if domain is null it means that a new domain has to be created.
-                // If the folder already has a domain, reuse it
+                // 如果域为null的时候，新建一个域，如果folderInfo的域不为空的话，就重用
                 if (domain == null && folderInfo.RootsDomain != null && folderInfo.RootsDomain != BundleDatabase.GlobalDomain)
                     domain = folderInfo.RootsDomain;
                 else if (domain == null)
@@ -103,9 +102,9 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     folderInfo.Domain = domain;
 
+                    //域发生的变化，所以就要重新加载
                     if (!isNewFolder)
                     {
-                        // Domain has changed. Update the folder info and regenerate everything.
                         scanResult.RegenerateRelationData = true;
                         scanResult.RegisterModifiedFolderInfo(folderInfo);
                     }
@@ -118,7 +117,6 @@ namespace Clamp.OSGI.Framework.Data
 
             folderInfo.SharedFolder = sharedFolder;
 
-            // If there is no domain assigned to the host, get one now
             if (scanResult.Domain == BundleDatabase.UnknownDomain)
                 scanResult.Domain = domain;
 
@@ -132,9 +130,6 @@ namespace Clamp.OSGI.Framework.Data
             {
                 IEnumerable<string> files = fs.GetFiles(path);
 
-                // First of all, look for .addin files. Bundle files must be processed before
-                // assemblies, because they may add files to the ignore list (i.e., assemblies
-                // included in .addin files won't be scanned twice).
                 foreach (string file in files)
                 {
                     if (file.EndsWith(".bundle.xml") || file.EndsWith(".bundle"))
@@ -142,8 +137,6 @@ namespace Clamp.OSGI.Framework.Data
                         RegisterFileToScan(file, scanResult, folderInfo);
                     }
                 }
-
-                // Now scan assemblies. They can also add files to the ignore list.
 
                 foreach (string file in files)
                 {
@@ -154,8 +147,6 @@ namespace Clamp.OSGI.Framework.Data
                         scanResult.AddAssemblyLocation(file);
                     }
                 }
-
-                // Finally scan .addins files
 
                 foreach (string file in files)
                 {
@@ -329,6 +320,7 @@ namespace Clamp.OSGI.Framework.Data
             foreach (string sd in fs.GetDirectories(dir))
                 ScanFolderRec(sd, domain, scanResult);
         }
+
         public void ScanFile(string file, BundleScanFolderInfo folderInfo, BundleScanResult scanResult)
         {
             if (scanResult.IgnorePath(file))
@@ -350,7 +342,7 @@ namespace Clamp.OSGI.Framework.Data
             }
 
             string scannedBundleId = null;
-            bool scannedIsRoot = false;
+            bool scannedIsBundle = false;
             bool scanSuccessful = false;
             BundleDescription config = null;
 
@@ -421,7 +413,7 @@ namespace Clamp.OSGI.Framework.Data
 
                     // If the scanned file results in an add-in version different from the one obtained from
                     // previous scans, the old add-in needs to be uninstalled.
-                    if (fi != null && fi.IsBundle && fi.BundleId != config.BundleId)
+                    if (fi != null && fi.IsLegalBundle && fi.BundleId != config.BundleId)
                     {
                         database.UninstallBundle(folderInfo.Domain, fi.BundleId, fi.File, scanResult);
 
@@ -434,7 +426,7 @@ namespace Clamp.OSGI.Framework.Data
                     if (scanSuccessful)
                     {
                         // Assign the domain
-                        if (config.IsRoot)
+                        if (config.IsBundle)
                         {
                             if (folderInfo.RootsDomain == null)
                             {
@@ -448,7 +440,7 @@ namespace Clamp.OSGI.Framework.Data
                         else
                             config.Domain = folderInfo.Domain;
 
-                        if (config.IsRoot && scanResult.HostIndex != null)
+                        if (config.IsBundle && scanResult.HostIndex != null)
                         {
                             foreach (string f in config.MainModule.Assemblies)
                             {
@@ -463,7 +455,7 @@ namespace Clamp.OSGI.Framework.Data
                             Util.AddDependencies(config, scanResult);
                             scanResult.AddBundleToUpdate(config.BundleId);
                             scannedBundleId = config.BundleId;
-                            scannedIsRoot = config.IsRoot;
+                            scannedIsBundle = config.IsBundle;
                             return;
                         }
                     }
@@ -474,7 +466,7 @@ namespace Clamp.OSGI.Framework.Data
             }
             finally
             {
-                BundleFileInfo ainfo = folderInfo.SetLastScanTime(file, scannedBundleId, scannedIsRoot, fs.GetLastWriteTime(file), !scanSuccessful);
+                BundleFileInfo ainfo = folderInfo.SetLastScanTime(file, scannedBundleId, scannedIsBundle, fs.GetLastWriteTime(file), !scanSuccessful);
 
                 if (scanSuccessful && config != null)
                 {
@@ -558,7 +550,7 @@ namespace Clamp.OSGI.Framework.Data
                 if (config == null || config.IsExtensionModel)
                 {
                     // In this case, only scan the assembly if it has the Bundle attribute.
-                    BundleAttribute att = (BundleAttribute)reflector.GetCustomAttribute(asm, typeof(BundleAttribute), false);
+                    FragmentBundleAttribute att = (FragmentBundleAttribute)reflector.GetCustomAttribute(asm, typeof(FragmentBundleAttribute), false);
                     if (att == null)
                     {
                         config = null;
@@ -600,7 +592,7 @@ namespace Clamp.OSGI.Framework.Data
 
             bool added = false;
 
-            if (finfo != null && (!finfo.IsBundle || finfo.Domain == folderInfo.GetDomain(finfo.IsRoot)) && fs.GetLastWriteTime(file) == finfo.LastScan && !scanResult.RegenerateAllData)
+            if (finfo != null && (!finfo.IsLegalBundle || finfo.Domain == folderInfo.GetDomain(finfo.IsBundle)) && fs.GetLastWriteTime(file) == finfo.LastScan && !scanResult.RegenerateAllData)
             {
                 if (finfo.ScanError)
                 {
@@ -611,7 +603,7 @@ namespace Clamp.OSGI.Framework.Data
                     added = true;
                 }
 
-                if (!finfo.IsBundle)
+                if (!finfo.IsLegalBundle)
                     return;
 
                 if (database.BundleDescriptionExists(finfo.Domain, finfo.BundleId))
@@ -726,7 +718,7 @@ namespace Clamp.OSGI.Framework.Data
 
             // Now scan all modules
 
-            if (!config.IsRoot)
+            if (!config.IsBundle)
             {
                 foreach (ModuleDescription mod in config.OptionalModules)
                 {
@@ -821,7 +813,8 @@ namespace Clamp.OSGI.Framework.Data
         private void ScanAssemblyBundleHeaders(IAssemblyReflector reflector, BundleDescription config, object asm, BundleScanResult scanResult)
         {
             // Get basic add-in information
-            BundleAttribute att = (BundleAttribute)reflector.GetCustomAttribute(asm, typeof(BundleAttribute), false);
+            FragmentBundleAttribute att = (FragmentBundleAttribute)reflector.GetCustomAttribute(asm, typeof(FragmentBundleAttribute), false);
+
             if (att != null)
             {
                 if (att.Id.Length > 0)
@@ -836,7 +829,8 @@ namespace Clamp.OSGI.Framework.Data
                     config.CompatVersion = att.CompatVersion;
                 if (att.Url.Length > 0)
                     config.Url = att.Url;
-                config.IsRoot = att is BundleRootAttribute;
+
+                config.IsBundle = att is BundleAttribute;
                 config.EnabledByDefault = att.EnabledByDefault;
                 config.Flags = att.Flags;
             }

@@ -180,7 +180,7 @@ namespace Clamp.OSGI.Framework
             info.description = description.Description;
             info.category = description.Category;
             info.baseVersion = description.CompatVersion;
-            info.isroot = description.IsRoot;
+            info.isroot = description.IsBundle;
             info.defaultEnabled = description.EnabledByDefault;
 
             foreach (Dependency dep in description.MainModule.Dependencies)

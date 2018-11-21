@@ -63,7 +63,7 @@ namespace Clamp.OSGI.Framework.Data
         /// <summary>
         /// 是否为正常Bundle，而非特殊Bundle
         /// </summary>
-        public bool IsRoot { set; get; }
+        public bool IsBundle { set; get; }
 
         public bool ScanError { set; get; }
         /// <summary>
@@ -78,7 +78,7 @@ namespace Clamp.OSGI.Framework.Data
         /// <summary>
         /// 是否为一个Bundle
         /// </summary>
-        public bool IsBundle
+        public bool IsLegalBundle
         {
             get { return BundleId != null && BundleId.Length != 0; }
         }
@@ -100,7 +100,7 @@ namespace Clamp.OSGI.Framework.Data
             writer.WriteValue("FileName", this.FileName);
             writer.WriteValue("LastScan", this.LastScan);
             writer.WriteValue("BundleId", this.BundleId);
-            writer.WriteValue("IsRoot", this.IsRoot);
+            writer.WriteValue("IsBundle", this.IsBundle);
             writer.WriteValue("ScanError", this.ScanError);
             writer.WriteValue("Domain", this.Domain);
             if (this.IgnorePaths != null && this.IgnorePaths.Count > 0)
@@ -113,7 +113,7 @@ namespace Clamp.OSGI.Framework.Data
             this.FileName = reader.ReadStringValue("FileName");
             this.LastScan = reader.ReadDateTimeValue("LastScan");
             this.BundleId = reader.ReadStringValue("BundleId");
-            this.IsRoot = reader.ReadBooleanValue("IsRoot");
+            this.IsBundle = reader.ReadBooleanValue("IsBundle");
             this.ScanError = reader.ReadBooleanValue("ScanError");
             this.Domain = reader.ReadStringValue("Domain");
             this.IgnorePaths = (StringCollection)reader.ReadValue("IgnorePaths", new StringCollection());

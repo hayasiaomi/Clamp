@@ -226,30 +226,30 @@ namespace Clamp.OSGI.Framework.Data.Description
             NodeSets.SetExtensionsBundleId(addinId);
         }
 
-        internal void MergeWith(string thisBundleId, ExtensionNodeSet other)
+        internal void MergeWith(string bundleId, ExtensionNodeSet other)
         {
             foreach (ExtensionNodeType nt in other.NodeTypes)
             {
-                if (nt.BundleId != thisBundleId && !NodeTypes.Contains(nt))
+                if (nt.BundleId != bundleId && !NodeTypes.Contains(nt))
                     NodeTypes.Add(nt);
             }
-            NodeSets.MergeWith(thisBundleId, other.NodeSets);
+            NodeSets.MergeWith(bundleId, other.NodeSets);
         }
 
-        internal void UnmergeExternalData(string thisBundleId, Hashtable addinsToUnmerge)
+        internal void UnmergeExternalData(string bundleId, Hashtable addinsToUnmerge)
         {
             // Removes extension types and extension sets coming from other add-ins.
 
             ArrayList todelete = new ArrayList();
             foreach (ExtensionNodeType nt in NodeTypes)
             {
-                if (nt.BundleId != thisBundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(nt.BundleId)))
+                if (nt.BundleId != bundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(nt.BundleId)))
                     todelete.Add(nt);
             }
             foreach (ExtensionNodeType nt in todelete)
                 NodeTypes.Remove(nt);
 
-            NodeSets.UnmergeExternalData(thisBundleId, addinsToUnmerge);
+            NodeSets.UnmergeExternalData(bundleId, addinsToUnmerge);
         }
 
         void InitCollections()
@@ -293,5 +293,5 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
     }
 
-  
+
 }

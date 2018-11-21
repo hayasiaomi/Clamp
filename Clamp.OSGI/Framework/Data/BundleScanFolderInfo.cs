@@ -131,7 +131,7 @@ namespace Clamp.OSGI.Framework.Data
 
             info.LastScan = time;
             info.BundleId = addinId;
-            info.IsRoot = isRoot;
+            info.IsBundle = isRoot;
             info.ScanError = scanError;
 
             if (addinId != null)
@@ -165,7 +165,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 foreach (BundleFileInfo info in files.Values)
                 {
-                    if (info.IsBundle)
+                    if (info.IsLegalBundle)
                         missing.Add(info);
                 }
                 files.Clear();
@@ -178,12 +178,12 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (!fs.FileExists(info.File))
                 {
-                    if (info.IsBundle)
+                    if (info.IsLegalBundle)
                         missing.Add(info);
 
                     toDelete.Add(info.File);
                 }
-                else if (info.IsBundle && info.Domain != GetDomain(info.IsRoot))
+                else if (info.IsLegalBundle && info.Domain != GetDomain(info.IsBundle))
                 {
                     missing.Add(info);
                 }

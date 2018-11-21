@@ -13,11 +13,11 @@ namespace Clamp.OSGI.Framework.Nodes
         bool childrenLoaded;
         TreeNode treeNode;
         ExtensionNodeList childNodes;
-        RuntimeBundle addin;
-        string addinId;
+        RuntimeBundle runtimeBundle;
+        string bundleId;
         ExtensionNodeType nodeType;
         ModuleDescription module;
-        ClampBundle addinEngine;
+        ClampBundle clampBundle;
         event ExtensionNodeEventHandler extensionNodeChanged;
 
         /// <summary>
@@ -89,15 +89,15 @@ namespace Clamp.OSGI.Framework.Nodes
 
         internal void SetData(ClampBundle addinEngine, string plugid, ExtensionNodeType nodeType, ModuleDescription module)
         {
-            this.addinEngine = addinEngine;
-            this.addinId = plugid;
+            this.clampBundle = addinEngine;
+            this.bundleId = plugid;
             this.nodeType = nodeType;
             this.module = module;
         }
 
         internal string BundleId
         {
-            get { return addinId; }
+            get { return bundleId; }
         }
 
         internal TreeNode TreeNode
@@ -115,17 +115,17 @@ namespace Clamp.OSGI.Framework.Nodes
         {
             get
             {
-                if (addin == null && addinId != null)
+                if (runtimeBundle == null && bundleId != null)
                 {
-                    if (!addinEngine.IsBundleLoaded(addinId))
-                        addinEngine.LoadBundle(addinId, true);
-                    addin = addinEngine.GetBundle(addinId);
-                    if (addin != null)
-                        addin = addin.GetModule(module);
+                    if (!clampBundle.IsBundleLoaded(bundleId))
+                        clampBundle.LoadBundle(bundleId, true);
+                    runtimeBundle = clampBundle.GetBundle(bundleId);
+                    if (runtimeBundle != null)
+                        runtimeBundle = runtimeBundle.GetModule(module);
                 }
-                if (addin == null)
-                    throw new InvalidOperationException("Add-in '" + addinId + "' could not be loaded.");
-                return addin;
+                if (runtimeBundle == null)
+                    throw new InvalidOperationException("Add-in '" + bundleId + "' could not be loaded.");
+                return runtimeBundle;
             }
         }
 
@@ -148,7 +148,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     }
                     catch (Exception ex)
                     {
-                        addinEngine.ReportError(null, node.Bundle != null ? node.Bundle.Id : null, ex, false);
+                        clampBundle.ReportError(null, node.Bundle != null ? node.Bundle.Id : null, ex, false);
                     }
                 }
             }
@@ -178,7 +178,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 }
                 catch (Exception ex)
                 {
-                    addinEngine.ReportError(null, null, ex, false);
+                    clampBundle.ReportError(null, null, ex, false);
                     childNodes = ExtensionNodeList.Empty;
                     return childNodes;
                 }
@@ -201,7 +201,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     }
                     catch (Exception ex)
                     {
-                        addinEngine.ReportError(null, null, ex, false);
+                        clampBundle.ReportError(null, null, ex, false);
                     }
                 }
                 if (list.Count > 0)
@@ -338,7 +338,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 InstanceExtensionNode node = ChildNodes[n] as InstanceExtensionNode;
                 if (node == null)
                 {
-                    addinEngine.ReportError("Error while getting object for node in path '" + Path + "'. Extension node is not a subclass of InstanceExtensionNode.", null, null, false);
+                    clampBundle.ReportError("Error while getting object for node in path '" + Path + "'. Extension node is not a subclass of InstanceExtensionNode.", null, null, false);
                     continue;
                 }
 
@@ -351,7 +351,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 }
                 catch (Exception ex)
                 {
-                    addinEngine.ReportError("Error while getting object for node in path '" + Path + "'.", node.BundleId, ex, false);
+                    clampBundle.ReportError("Error while getting object for node in path '" + Path + "'.", node.BundleId, ex, false);
                 }
             }
             return list.ToArray(arrayElementType);

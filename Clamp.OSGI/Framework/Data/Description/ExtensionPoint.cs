@@ -82,13 +82,13 @@ namespace Clamp.OSGI.Framework.Data.Description
             Bundles.Add(addinId);
         }
 
-        internal void MergeWith(string thisBundleId, ExtensionPoint ep)
+        internal void MergeWith(string bundleId, ExtensionPoint ep)
         {
-            NodeSet.MergeWith(thisBundleId, ep.NodeSet);
+            NodeSet.MergeWith(bundleId, ep.NodeSet);
 
             foreach (ConditionTypeDescription cond in ep.Conditions)
             {
-                if (cond.BundleId != thisBundleId && !Conditions.Contains(cond))
+                if (cond.BundleId != bundleId && !Conditions.Contains(cond))
                     Conditions.Add(cond);
             }
             foreach (string s in ep.Bundles)
@@ -98,14 +98,14 @@ namespace Clamp.OSGI.Framework.Data.Description
             }
         }
 
-        internal void UnmergeExternalData(string thisBundleId, Hashtable addinsToUnmerge)
+        internal void UnmergeExternalData(string bundleId, Hashtable addinsToUnmerge)
         {
-            NodeSet.UnmergeExternalData(thisBundleId, addinsToUnmerge);
+            NodeSet.UnmergeExternalData(bundleId, addinsToUnmerge);
 
             ArrayList todel = new ArrayList();
             foreach (ConditionTypeDescription cond in Conditions)
             {
-                if (cond.BundleId != thisBundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(cond.BundleId)))
+                if (cond.BundleId != bundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(cond.BundleId)))
                     todel.Add(cond);
             }
             foreach (ConditionTypeDescription cond in todel)
@@ -118,8 +118,8 @@ namespace Clamp.OSGI.Framework.Data.Description
                 foreach (string s in addinsToUnmerge.Keys)
                     Bundles.Remove(s);
             }
-            if (thisBundleId != null && !Bundles.Contains(thisBundleId))
-                Bundles.Add(thisBundleId);
+            if (bundleId != null && !Bundles.Contains(bundleId))
+                Bundles.Add(bundleId);
         }
 
         internal void Clear()

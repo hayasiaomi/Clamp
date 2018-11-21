@@ -154,7 +154,7 @@ namespace Clamp.OSGI.Framework.Data
                 if (GetFolderInfoForPath(Path.GetDirectoryName(file), out finfo) && finfo != null)
                 {
                     BundleFileInfo afi = finfo.GetBundleFileInfo(file);
-                    if (afi != null && afi.IsBundle)
+                    if (afi != null && afi.IsLegalBundle)
                     {
                         BundleDescription adesc;
 
@@ -527,7 +527,10 @@ namespace Clamp.OSGI.Framework.Data
                 return false;
             }
         }
-
+        /// <summary>
+        /// 获得下一个域的值
+        /// </summary>
+        /// <returns></returns>
         public string GetUniqueDomainId()
         {
             if (lastDomainId != 0)
@@ -871,7 +874,7 @@ namespace Clamp.OSGI.Framework.Data
 
             Util.AddDependencies(desc, scanResult);
 
-            if (desc.IsRoot)
+            if (desc.IsBundle)
                 scanResult.HostIndex.RemoveHostData(desc.BundleId, desc.BundleFile);
 
             RemoveBundleDescriptionFile(desc.FileName);
@@ -1656,7 +1659,7 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     bundleSetupInfos = new List<Bundle>();
                     foreach (Bundle adn in allSetupInfos)
-                        if (!adn.Description.IsRoot)
+                        if (!adn.Description.IsBundle)
                             bundleSetupInfos.Add(adn);
                 }
                 return FilterById(bundleSetupInfos, idFilter);
@@ -1667,7 +1670,7 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     rootSetupInfos = new List<Bundle>();
                     foreach (Bundle adn in allSetupInfos)
-                        if (adn.Description.IsRoot)
+                        if (adn.Description.IsBundle)
                             rootSetupInfos.Add(adn);
                 }
                 return FilterById(rootSetupInfos, idFilter);
@@ -1983,7 +1986,7 @@ namespace Clamp.OSGI.Framework.Data
                         // is loaded when it tries to evaluate this condition.
                         var condAsm = index.FindCondition(conf, module, id);
                         if (condAsm != null)
-                            node.SetAttribute(Condition.SourceBundleAttribute, condAsm);
+                            node.SetAttribute(Condition.SourceFragmentBundleAttribute, condAsm);
                     }
                     AddChildExtensions(conf, module, updateData, index, path + "/" + id, node.ChildNodes, isCondition);
                 }
