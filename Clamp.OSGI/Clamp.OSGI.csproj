@@ -50,8 +50,8 @@
     <Compile Include="Framework\BundleEventArgs.cs" />
     <Compile Include="Framework\ClampConstants.cs" />
     <Compile Include="Framework\ConditionType.cs" />
-    <Compile Include="Framework\Data\Annotation\AddinAuthorAttribute.cs" />
-    <Compile Include="Framework\Data\Annotation\AddinCategoryAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleAuthorAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleCategoryAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\AddinDescriptionAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\AddinFlagsAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\AddinLocalizerGettextAttribute.cs" />
