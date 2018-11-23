@@ -1986,7 +1986,7 @@ namespace Clamp.OSGI.Framework.Data
                         // is loaded when it tries to evaluate this condition.
                         var condAsm = index.FindCondition(conf, module, id);
                         if (condAsm != null)
-                            node.SetAttribute(Condition.SourceFragmentBundleAttribute, condAsm);
+                            node.SetAttribute(Condition.SourceBundleFragmentAttribute, condAsm);
                     }
                     AddChildExtensions(conf, module, updateData, index, path + "/" + id, node.ChildNodes, isCondition);
                 }

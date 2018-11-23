@@ -157,13 +157,13 @@ namespace Clamp.OSGI.Framework
         ClampBundle addinEngine;
         string addin;
 
-        internal const string SourceFragmentBundleAttribute = "__sourceBundle";
+        internal const string SourceBundleFragmentAttribute = "__sourceBundle";
 
         internal Condition(ClampBundle addinEngine, ExtensionNodeDescription element, BaseCondition parent) : base(parent)
         {
             this.addinEngine = addinEngine;
             typeId = element.GetAttribute("id");
-            addin = element.GetAttribute(SourceFragmentBundleAttribute);
+            addin = element.GetAttribute(SourceBundleFragmentAttribute);
             node = element;
         }
 

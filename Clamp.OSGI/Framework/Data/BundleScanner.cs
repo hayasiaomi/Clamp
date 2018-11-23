@@ -550,7 +550,7 @@ namespace Clamp.OSGI.Framework.Data
                 if (config == null || config.IsExtensionModel)
                 {
                     // In this case, only scan the assembly if it has the Bundle attribute.
-                    FragmentBundleAttribute att = (FragmentBundleAttribute)reflector.GetCustomAttribute(asm, typeof(FragmentBundleAttribute), false);
+                    BundleFragmentAttribute att = (BundleFragmentAttribute)reflector.GetCustomAttribute(asm, typeof(BundleFragmentAttribute), false);
                     if (att == null)
                     {
                         config = null;
@@ -813,7 +813,7 @@ namespace Clamp.OSGI.Framework.Data
         private void ScanAssemblyBundleHeaders(IAssemblyReflector reflector, BundleDescription config, object asm, BundleScanResult scanResult)
         {
             // Get basic add-in information
-            FragmentBundleAttribute att = (FragmentBundleAttribute)reflector.GetCustomAttribute(asm, typeof(FragmentBundleAttribute), false);
+            BundleFragmentAttribute att = (BundleFragmentAttribute)reflector.GetCustomAttribute(asm, typeof(BundleFragmentAttribute), false);
 
             if (att != null)
             {

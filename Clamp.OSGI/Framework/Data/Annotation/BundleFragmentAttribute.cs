@@ -7,10 +7,10 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    /// 用于标识当前的程序集是一个Bundle
+    /// 特殊Bundle注解
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
-    public class FragmentBundleAttribute : Attribute
+    public class BundleFragmentAttribute : Attribute
     {
         private string id;
         private string version;
@@ -22,18 +22,18 @@ namespace Clamp.OSGI.Framework.Data.Annotation
         private string url;
 
 
-        public FragmentBundleAttribute()
+        public BundleFragmentAttribute()
         {
         }
 
 
-        public FragmentBundleAttribute(string id)
+        public BundleFragmentAttribute(string id)
         {
             this.id = id;
         }
 
 
-        public FragmentBundleAttribute(string id, string version)
+        public BundleFragmentAttribute(string id, string version)
         {
             this.id = id;
             this.version = version;
