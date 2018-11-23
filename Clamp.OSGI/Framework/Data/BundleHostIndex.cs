@@ -17,20 +17,37 @@ namespace Clamp.OSGI.Framework.Data
 
         private Hashtable index = new Hashtable();
 
-        public void RegisterAssembly(string assemblyLocation, string addinId, string addinLocation, string domain)
+        /// <summary>
+        /// 注册住宿程序集相关的Bundle信息
+        /// </summary>
+        /// <param name="assemblyLocation"></param>
+        /// <param name="bundleId"></param>
+        /// <param name="bundleLocation"></param>
+        /// <param name="domain"></param>
+        public void RegisterAssembly(string assemblyLocation, string bundleId, string bundleLocation, string domain)
         {
             assemblyLocation = NormalizeFileName(assemblyLocation);
-            index[Path.GetFullPath(assemblyLocation)] = addinId + " " + addinLocation + " " + domain;
+            index[Path.GetFullPath(assemblyLocation)] = bundleId + " " + bundleLocation + " " + domain;
         }
 
-        public bool GetBundleForAssembly(string assemblyLocation, out string addinId, out string addinLocation, out string domain)
+        /// <summary>
+        /// 获得住宿程序集对应的Bundle的相关信息，成功为true，否则为false
+        /// </summary>
+        /// <param name="assemblyLocation"></param>
+        /// <param name="bundleId"></param>
+        /// <param name="bundleLocation"></param>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        public bool GetBundleForAssembly(string assemblyLocation, out string bundleId, out string bundleLocation, out string domain)
         {
             assemblyLocation = NormalizeFileName(assemblyLocation);
+
             string s = index[Path.GetFullPath(assemblyLocation)] as string;
+
             if (s == null)
             {
-                addinId = null;
-                addinLocation = null;
+                bundleId = null;
+                bundleLocation = null;
                 domain = null;
                 return false;
             }
@@ -38,22 +55,29 @@ namespace Clamp.OSGI.Framework.Data
             {
                 int i = s.IndexOf(' ');
                 int j = s.LastIndexOf(' ');
-                addinId = s.Substring(0, i);
-                addinLocation = s.Substring(i + 1, j - i - 1);
+                bundleId = s.Substring(0, i);
+                bundleLocation = s.Substring(i + 1, j - i - 1);
                 domain = s.Substring(j + 1);
                 return true;
             }
         }
-
-        public void RemoveHostData(string addinId, string addinLocation)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bundleId"></param>
+        /// <param name="bundleLocation"></param>
+        public void RemoveHostData(string bundleId, string bundleLocation)
         {
-            string loc = addinId + " " + Path.GetFullPath(addinLocation) + " ";
+            string loc = bundleId + " " + Path.GetFullPath(bundleLocation) + " ";
+
             ArrayList todelete = new ArrayList();
+
             foreach (DictionaryEntry e in index)
             {
                 if (((string)e.Value).StartsWith(loc))
                     todelete.Add(e.Key);
             }
+
             foreach (string s in todelete)
                 index.Remove(s);
         }
@@ -83,6 +107,11 @@ namespace Clamp.OSGI.Framework.Data
             reader.ReadValue("index", index);
         }
 
+        /// <summary>
+        /// 文件名正常化。即是小写
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private string NormalizeFileName(string name)
         {
             return name.ToLower();

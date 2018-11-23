@@ -17,7 +17,7 @@ using Clamp.OSGI.Framework.Localization;
 namespace Clamp.OSGI.Framework
 {
     /// <summary>
-    /// Clamp对应的Bundle类
+    /// 框架的Bundle
     /// </summary>
     public class ClampBundle : TreeClampBundle
     {
@@ -26,7 +26,7 @@ namespace Clamp.OSGI.Framework
         private Dictionary<string, RuntimeBundle> loadedBundles = new Dictionary<string, RuntimeBundle>();
         private Dictionary<Assembly, RuntimeBundle> loadedAssemblies = new Dictionary<Assembly, RuntimeBundle>();
         private Dictionary<string, ExtensionNodeSet> nodeSets = new Dictionary<string, ExtensionNodeSet>();
-        private List<Assembly> pendingRootChecks = new List<Assembly>();
+        private List<Assembly> pendingAssemblyBundlesChecks = new List<Assembly>();
         private BundleRegistry registry;
         private bool initialized;
         private string startupDirectory;
@@ -39,15 +39,13 @@ namespace Clamp.OSGI.Framework
 
         public event BundleEventHandler BundleUnloaded;
 
+        /// <summary>
+        /// 是否初始化过
+        /// </summary>
         public bool IsInitialized
         {
             get { return initialized; }
         }
-
-        /// <summary>
-        /// 插件的根目录
-        /// </summary>
-        public string StartupDirectory { get { return this.startupDirectory; } }
 
         /// <summary>
         /// 默认的本地化
@@ -62,7 +60,7 @@ namespace Clamp.OSGI.Framework
             }
         }
         /// <summary>
-        /// Bundle的注册类
+        /// Bundle的注册者
         /// </summary>
         internal BundleRegistry Registry
         {
@@ -130,7 +128,7 @@ namespace Clamp.OSGI.Framework
         #region 重写 Bundle 的方法
         public override void Start()
         {
-            ActivateRoots();
+            ActivateBundles();
 
             OnAssemblyLoaded(null, null);
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(OnAssemblyLoaded);
@@ -257,15 +255,17 @@ namespace Clamp.OSGI.Framework
                 }
             }
         }
+
         /// <summary>
-        /// 激活根Bundle
+        /// 激活Bundle
         /// </summary>
-        internal void ActivateRoots()
+        internal void ActivateBundles()
         {
-            lock (pendingRootChecks)
-                pendingRootChecks.Clear();
+            lock (pendingAssemblyBundlesChecks)
+                pendingAssemblyBundlesChecks.Clear();
+
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-                CheckHostAssembly(asm);
+                CheckBundleAssembly(asm);
         }
 
         /// <summary>
@@ -277,23 +277,26 @@ namespace Clamp.OSGI.Framework
                 throw new InvalidOperationException("Clamp框架没有初始化过");
         }
 
+        /// <summary>
+        /// 验证Bundle的
+        /// </summary>
         internal void ValidateBundleRoots()
         {
             List<Assembly> copy = null;
 
-            lock (pendingRootChecks)
+            lock (pendingAssemblyBundlesChecks)
             {
-                if (pendingRootChecks.Count > 0)
+                if (pendingAssemblyBundlesChecks.Count > 0)
                 {
-                    copy = new List<Assembly>(pendingRootChecks);
-                    pendingRootChecks.Clear();
+                    copy = new List<Assembly>(pendingAssemblyBundlesChecks);
+                    pendingAssemblyBundlesChecks.Clear();
                 }
             }
 
             if (copy != null)
             {
                 foreach (Assembly asm in copy)
-                    CheckHostAssembly(asm);
+                    CheckBundleAssembly(asm);
             }
         }
 
@@ -550,9 +553,9 @@ namespace Clamp.OSGI.Framework
         {
             if (a != null)
             {
-                lock (pendingRootChecks)
+                lock (pendingAssemblyBundlesChecks)
                 {
-                    pendingRootChecks.Add(a.LoadedAssembly);
+                    pendingAssemblyBundlesChecks.Add(a.LoadedAssembly);
                 }
             }
         }
@@ -565,7 +568,11 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-        private void CheckHostAssembly(Assembly asm)
+        /// <summary>
+        /// 检测当前的程序集是否为Bundle，如果是就加载
+        /// </summary>
+        /// <param name="asm"></param>
+        private void CheckBundleAssembly(Assembly asm)
         {
             if (BundleDatabase.RunningSetupProcess || asm is System.Reflection.Emit.AssemblyBuilder || asm.IsDynamic)
                 return;
@@ -588,42 +595,44 @@ namespace Clamp.OSGI.Framework
 
             string asmFile = u.LocalPath;
 
-            Bundle ainfo;
+            Bundle bundle;
 
             try
             {
-                ainfo = Registry.GetBundleForHostAssembly(asmFile);
+                bundle = Registry.GetBundleForHostAssembly(asmFile);
             }
             catch (Exception ex)
             {
                 Registry.Update();
-                ainfo = Registry.GetBundleForHostAssembly(asmFile);
+
+                bundle = Registry.GetBundleForHostAssembly(asmFile);
             }
 
-            if (ainfo != null && !IsBundleLoaded(ainfo.Id))
+            if (bundle != null && !IsBundleLoaded(bundle.Id))
             {
-                BundleDescription adesc = null;
+                BundleDescription bdesc = null;
 
                 try
                 {
-                    adesc = ainfo.Description;
+                    bdesc = bundle.Description;
                 }
                 catch (Exception ex)
                 {
+
                 }
 
-                if (adesc == null || adesc.FilesChanged())
+                if (bdesc == null || bdesc.FilesChanged())
                 {
                     // If the add-in has changed, update the add-in database.
                     // We do it here because once loaded, add-in roots can't be
                     // reloaded like regular add-ins.
                     Registry.Update();
-                    ainfo = Registry.GetBundleForHostAssembly(asmFile);
-                    if (ainfo == null)
+                    bundle = Registry.GetBundleForHostAssembly(asmFile);
+                    if (bundle == null)
                         return;
                 }
 
-                LoadBundle(ainfo.Id, false);
+                LoadBundle(bundle.Id, false);
             }
         }
 

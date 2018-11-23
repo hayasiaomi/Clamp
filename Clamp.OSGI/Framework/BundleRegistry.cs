@@ -11,7 +11,7 @@ using System.Xml;
 namespace Clamp.OSGI.Framework
 {
     /// <summary>
-    /// Bundle的注册类
+    /// Bundle的注册者
     /// </summary>
     internal class BundleRegistry : IDisposable
     {
@@ -121,7 +121,7 @@ namespace Clamp.OSGI.Framework
         #region internal method
 
         /// <summary>
-        /// 创建Bundles的住宿文件
+        /// 创建当前住宿的数据文件，如果新建成功就返回true，否则是false
         /// </summary>
         /// <param name="hostFile"></param>
         /// <returns></returns>
@@ -199,7 +199,7 @@ namespace Clamp.OSGI.Framework
         }
 
         /// <summary>
-        /// 根据程序集获得对应的Bundle
+        /// 根据主程序集获得对应的住宿Bundle
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
@@ -207,6 +207,7 @@ namespace Clamp.OSGI.Framework
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
                 return null;
+
             return database.GetBundleForHostAssembly(currentDomain, filePath);
         }
         #endregion

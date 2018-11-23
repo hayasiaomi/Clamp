@@ -42,6 +42,7 @@ namespace Clamp.OSGI.Framework
             this.database = database;
             this.id = id;
             this.domain = domain;
+
             LoadBundleInfo();
         }
 
@@ -113,6 +114,9 @@ namespace Clamp.OSGI.Framework
             }
         }
 
+        /// <summary>
+        /// 获得Bundle的细详信息
+        /// </summary>
         public BundleDescription Description
         {
             get
@@ -120,41 +124,48 @@ namespace Clamp.OSGI.Framework
                 if (desc != null)
                 {
                     BundleDescription d = desc.Target as BundleDescription;
+
                     if (d != null)
                         return d;
                 }
 
-                var configFile = database.GetDescriptionPath(domain, id);
+                var mBundleFile = database.GetDescriptionPath(domain, id);
 
                 BundleDescription m;
 
-                database.ReadBundleDescription(configFile, out m);
+                database.ReadBundleDescription(mBundleFile, out m);
 
                 if (m == null)
                 {
                     try
                     {
-                        if (File.Exists(configFile))
+                        //Bundle的详细是一个空的，但是数据文件却在，所以是脏数据。要删除掉
+                        if (File.Exists(mBundleFile))
                         {
-                            // The file is corrupted. Remove it.
-                            File.Delete(configFile);
+                            File.Delete(mBundleFile);
                         }
                     }
                     catch
                     {
                         // Ignore
                     }
-                    throw new InvalidOperationException("Could not read add-in description");
+
+                    throw new InvalidOperationException("不能加载Bundle的细详信息");
                 }
+
                 if (bundleInfo == null)
                 {
                     bundleInfo = BundleInfo.ReadFromDescription(m);
                     sourceFile = m.BundleFile;
                 }
+
                 SetIsUserBundle(m);
+
                 if (!isUserBundle.Value)
                     m.Flags |= BundleFlags.CantUninstall;
+
                 desc = new WeakReference(m);
+
                 return m;
             }
         }
@@ -164,7 +175,6 @@ namespace Clamp.OSGI.Framework
         {
             get { return this.clampBundle; }
         }
-
 
 
         internal bool IsLatestVersion
@@ -242,6 +252,9 @@ namespace Clamp.OSGI.Framework
 
         #region private method
 
+        /// <summary>
+        /// 加载Bundle的相关信息
+        /// </summary>
         private void LoadBundleInfo()
         {
             if (bundleInfo == null)
@@ -258,12 +271,18 @@ namespace Clamp.OSGI.Framework
                 }
             }
         }
+
+        /// <summary>
+        /// 设置他是否为用户组件
+        /// </summary>
+        /// <param name="adesc"></param>
         private void SetIsUserBundle(BundleDescription adesc)
         {
             string installPath = database.Registry.DefaultBundlesFolder;
 
             if (installPath[installPath.Length - 1] != Path.DirectorySeparatorChar)
                 installPath += Path.DirectorySeparatorChar;
+
             isUserBundle = adesc != null && Path.GetFullPath(adesc.BundleFile).StartsWith(installPath);
         }
         #endregion

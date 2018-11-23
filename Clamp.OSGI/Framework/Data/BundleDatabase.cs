@@ -46,6 +46,9 @@ namespace Clamp.OSGI.Framework.Data
             get { return Path.Combine(BundleDbDir, "hosts"); }
         }
 
+        /// <summary>
+        ///  Bundle所在路径数据对的存储路径
+        /// </summary>
         public string BundleFolderCachePath
         {
             get { return Path.Combine(BundleDbDir, "bundle-dir-data"); }
@@ -56,11 +59,17 @@ namespace Clamp.OSGI.Framework.Data
             get { return Path.Combine(BundleDbDir, "bundle-priv-data"); }
         }
 
+        /// <summary>
+        /// Bundle数据对的存储路径
+        /// </summary>
         public string BundleCachePath
         {
             get { return Path.Combine(BundleDbDir, "bundle-data"); }
         }
 
+        /// <summary>
+        /// 住宿的索引文件
+        /// </summary>
         public string HostIndexFile
         {
             get { return Path.Combine(BundleDbDir, "host-index"); }
@@ -221,11 +230,17 @@ namespace Clamp.OSGI.Framework.Data
             return Configuration.IsRegisteredForUninstall(addinId);
         }
 
+        /// <summary>
+        /// 根据域和主程序来获得主宿体的Bundle
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="assemblyLocation"></param>
+        /// <returns></returns>
         public Bundle GetBundleForHostAssembly(string domain, string assemblyLocation)
         {
             InternalCheck(domain);
 
-            Bundle ainfo = null;
+            Bundle bundle = null;
 
             object ob = cachedBundleSetupInfos[assemblyLocation];
 
@@ -234,22 +249,22 @@ namespace Clamp.OSGI.Framework.Data
 
             BundleHostIndex index = GetBundleHostIndex();
 
-            string addin, addinFile, rdomain;
+            string bundleId, bundleFile, rdomain;
 
-            if (index.GetBundleForAssembly(assemblyLocation, out addin, out addinFile, out rdomain))
+            if (index.GetBundleForAssembly(assemblyLocation, out bundleId, out bundleFile, out rdomain))
             {
-                string sid = addin + " " + rdomain;
+                string sid = bundleId + " " + rdomain;
 
-                ainfo = cachedBundleSetupInfos[sid] as Bundle;
+                bundle = cachedBundleSetupInfos[sid] as Bundle;
 
-                if (ainfo == null)
-                    ainfo = new Bundle(this.clampBundle, this, rdomain, addin);
+                if (bundle == null)
+                    bundle = new Bundle(this.clampBundle, this, rdomain, bundleId);
 
-                cachedBundleSetupInfos[assemblyLocation] = ainfo;
-                cachedBundleSetupInfos[addin + " " + rdomain] = ainfo;
+                cachedBundleSetupInfos[assemblyLocation] = bundle;
+                cachedBundleSetupInfos[bundleId + " " + rdomain] = bundle;
             }
 
-            return ainfo;
+            return bundle;
         }
 
         public IEnumerable<Bundle> GetInstalledBundles(string domain, BundleSearchFlagsInternal flags)
@@ -835,7 +850,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 获得BundleDescription相对应的路径
+        /// 根据域和ID来获得对应的mbundle的文件路径
         /// </summary>
         /// <param name="domain"></param>
         /// <param name="id"></param>
@@ -1822,13 +1837,17 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 内部检测对应的域，如果Bundle的存储路径不存的时候，需要重要更新域
+        /// </summary>
+        /// <param name="domain"></param>
         private void InternalCheck(string domain)
         {
-            // If the database is broken, don't try to regenerate it at every check.
             if (fatalDatabseError)
                 return;
 
             bool update = false;
+
             using (fileDatabase.LockRead())
             {
                 if (!Directory.Exists(BundleCachePath))
@@ -1836,8 +1855,9 @@ namespace Clamp.OSGI.Framework.Data
                     update = true;
                 }
             }
+
             if (update)
-                Update(domain);
+                Update(domain);//Bundle的存储路径不存，需在更新
         }
 
         private bool BundleIdExists(string id)

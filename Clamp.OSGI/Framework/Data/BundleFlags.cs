@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// Bundle的状态
+    /// </summary>
     [Flags]
     public enum BundleFlags
     {
