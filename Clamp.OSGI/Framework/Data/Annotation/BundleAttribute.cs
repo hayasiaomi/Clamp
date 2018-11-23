@@ -6,7 +6,7 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    ///  用于标识当前的程序集是一个Bundle
+    ///  Bundle的注解
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
     public class BundleAttribute : FragmentBundleAttribute

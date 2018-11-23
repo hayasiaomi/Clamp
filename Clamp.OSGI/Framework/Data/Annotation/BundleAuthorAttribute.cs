@@ -5,24 +5,20 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// Bunlde的作者注解
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class BundleAuthorAttribute : Attribute
     {
         private string name;
 
-        /// <summary>
-        /// Initializes the attribute
-        /// </summary>
-        /// <param name="name">
-        /// Name of the author
-        /// </param>
         public BundleAuthorAttribute(string name)
         {
             this.name = name;
         }
-
         /// <summary>
-        /// Author name
+        /// 作者的名称
         /// </summary>
         public string Name
         {

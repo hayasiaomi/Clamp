@@ -5,22 +5,19 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// bundle的种类的注解
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class BundleCategoryAttribute : Attribute
     {
-        /// <summary>
-        /// Initializes the attribute
-        /// </summary>
-        /// <param name="category">
-        /// The category to which the add-in belongs
-        /// </param>
         public BundleCategoryAttribute(string category)
         {
             this.Category = category;
         }
 
         /// <summary>
-        /// The category to which the add-in belongs
+        /// 种类名称
         /// </summary>
         public string Category { get; set; }
     }

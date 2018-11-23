@@ -5,23 +5,18 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// Bundle的URL注解
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class BundleUrlAttribute : Attribute
     {
-        /// <summary>
-        /// Initializes the attribute
-        /// </summary>
-        /// <param name="url">
-        /// Url of the add-in
-        /// </param>
+       
         public BundleUrlAttribute(string url)
         {
             this.Url = url;
         }
 
-        /// <summary>
-        /// Url of the add-in
-        /// </summary>
         public string Url { get; set; }
     }
 }
