@@ -87,7 +87,7 @@
     <Compile Include="Framework\ISetupHandler.cs" />
     <Compile Include="Framework\Localization\BundleLocalizer.cs" />
     <Compile Include="Framework\BundleSearchFlags.cs" />
-    <Compile Include="Framework\Data\Annotation\FragmentBundleAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleFragmentAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\BundleDependencyAttribute.cs" />
     <Compile Include="Framework\Bundle.cs" />
     <Compile Include="Framework\BundleActivator.cs" />
