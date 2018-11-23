@@ -65,7 +65,7 @@ namespace Clamp.OSGI.Framework.Data
 
         internal ArrayList FilesToScan { get { return this.filesToScan; } }
 
-        internal BundleHostIndex HostIndex { set; get; }
+        internal BundleActivationIndex ActivationIndex { set; get; }
 
         public BundleScanResult()
         {

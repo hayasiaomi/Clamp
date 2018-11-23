@@ -11,9 +11,9 @@ namespace Clamp.OSGI.Framework.Data
     /// <summary>
     /// Bundle住宿索引类
     /// </summary>
-    class BundleHostIndex : IBinaryXmlElement
+    class BundleActivationIndex : IBinaryXmlElement
     {
-        static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleHostIndex));
+        static BinaryXmlTypeMap typeMap = new BinaryXmlTypeMap(typeof(BundleActivationIndex));
 
         private Hashtable index = new Hashtable();
 
@@ -87,9 +87,9 @@ namespace Clamp.OSGI.Framework.Data
         /// <param name="fileDatabase"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static BundleHostIndex Read(FileDatabase fileDatabase, string file)
+        public static BundleActivationIndex Read(FileDatabase fileDatabase, string file)
         {
-            return (BundleHostIndex)fileDatabase.ReadObject(file, typeMap);
+            return (BundleActivationIndex)fileDatabase.ReadObject(file, typeMap);
         }
 
         public void Write(FileDatabase fileDatabase, string file)

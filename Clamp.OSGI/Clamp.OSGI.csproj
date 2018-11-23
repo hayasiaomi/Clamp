@@ -103,7 +103,7 @@
     <Compile Include="Framework\Data\Description\BundleDependency.cs" />
     <Compile Include="Framework\Data\Description\BundleDescription.cs" />
     <Compile Include="Framework\Data\BundleFileSystemExtension.cs" />
-    <Compile Include="Framework\Data\BundleHostIndex.cs" />
+    <Compile Include="Framework\Data\BundleActivationIndex.cs" />
     <Compile Include="Framework\Data\BundleScanner.cs" />
     <Compile Include="Framework\Data\BundleScanResult.cs" />
     <Compile Include="Framework\Data\BundleScanFolderInfo.cs" />

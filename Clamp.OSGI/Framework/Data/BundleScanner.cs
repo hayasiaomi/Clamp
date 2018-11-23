@@ -440,12 +440,12 @@ namespace Clamp.OSGI.Framework.Data
                         else
                             config.Domain = folderInfo.Domain;
 
-                        if (config.IsBundle && scanResult.HostIndex != null)
+                        if (config.IsBundle && scanResult.ActivationIndex != null)
                         {
                             foreach (string f in config.MainModule.Assemblies)
                             {
                                 string asmFile = Path.Combine(config.BasePath, f);
-                                scanResult.HostIndex.RegisterAssembly(asmFile, config.BundleId, config.BundleFile, config.Domain);
+                                scanResult.ActivationIndex.RegisterAssembly(asmFile, config.BundleId, config.BundleFile, config.Domain);
                             }
                         }
 
@@ -688,8 +688,8 @@ namespace Clamp.OSGI.Framework.Data
                 // The add-in id and version must be already assigned at this point
 
                 // Clean host data from the index. New data will be added.
-                if (scanResult.HostIndex != null)
-                    scanResult.HostIndex.RemoveHostData(config.BundleId, config.BundleFile);
+                if (scanResult.ActivationIndex != null)
+                    scanResult.ActivationIndex.RemoveHostData(config.BundleId, config.BundleFile);
 
                 foreach (object asm in assemblies)
                     ScanAssemblyContents(reflector, config, config.MainModule, asm, scanResult);

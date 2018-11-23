@@ -21,7 +21,7 @@ namespace Clamp.OSGI.Framework.Data
         private bool fatalDatabseError;
         private FileDatabase fileDatabase;
         private string addinDbDir;
-        private BundleHostIndex hostIndex;
+        private BundleActivationIndex hostIndex;
         private BundleRegistry registry;
         private ClampBundle clampBundle;
         private int lastDomainId;
@@ -247,7 +247,7 @@ namespace Clamp.OSGI.Framework.Data
             if (ob != null)
                 return ob as Bundle; // Don't use a cast here is ob may not be an Bundle.
 
-            BundleHostIndex index = GetBundleHostIndex();
+            BundleActivationIndex index = GetBundleHostIndex();
 
             string bundleId, bundleFile, rdomain;
 
@@ -890,7 +890,7 @@ namespace Clamp.OSGI.Framework.Data
             Util.AddDependencies(desc, scanResult);
 
             if (desc.IsBundle)
-                scanResult.HostIndex.RemoveHostData(desc.BundleId, desc.BundleFile);
+                scanResult.ActivationIndex.RemoveHostData(desc.BundleId, desc.BundleFile);
 
             RemoveBundleDescriptionFile(desc.FileName);
         }
@@ -951,7 +951,7 @@ namespace Clamp.OSGI.Framework.Data
 
             try
             {
-                scanResult.HostIndex = GetBundleHostIndex();
+                scanResult.ActivationIndex = GetBundleHostIndex();
             }
             catch (Exception ex)
             {
@@ -1075,7 +1075,7 @@ namespace Clamp.OSGI.Framework.Data
         /// 获得当前的Bundle住宿索引类
         /// </summary>
         /// <returns></returns>
-        internal BundleHostIndex GetBundleHostIndex()
+        internal BundleActivationIndex GetBundleHostIndex()
         {
             if (hostIndex != null)
                 return hostIndex;
@@ -1083,9 +1083,9 @@ namespace Clamp.OSGI.Framework.Data
             using (fileDatabase.LockRead())
             {
                 if (fileDatabase.Exists(HostIndexFile))
-                    hostIndex = BundleHostIndex.Read(fileDatabase, HostIndexFile);
+                    hostIndex = BundleActivationIndex.Read(fileDatabase, HostIndexFile);
                 else
-                    hostIndex = new BundleHostIndex();
+                    hostIndex = new BundleActivationIndex();
             }
             return hostIndex;
         }
