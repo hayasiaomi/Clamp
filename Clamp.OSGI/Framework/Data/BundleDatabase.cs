@@ -21,7 +21,7 @@ namespace Clamp.OSGI.Framework.Data
         private bool fatalDatabseError;
         private FileDatabase fileDatabase;
         private string addinDbDir;
-        private BundleActivationIndex hostIndex;
+        private BundleActivationIndex activationIndex;
         private BundleRegistry registry;
         private ClampBundle clampBundle;
         private int lastDomainId;
@@ -68,11 +68,11 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 住宿的索引文件
+        /// 激活索引文件
         /// </summary>
-        public string HostIndexFile
+        public string ActivationIndexFile
         {
-            get { return Path.Combine(BundleDbDir, "host-index"); }
+            get { return Path.Combine(BundleDbDir, "activation-index"); }
         }
 
         public string ConfigFile
@@ -247,7 +247,7 @@ namespace Clamp.OSGI.Framework.Data
             if (ob != null)
                 return ob as Bundle; // Don't use a cast here is ob may not be an Bundle.
 
-            BundleActivationIndex index = GetBundleHostIndex();
+            BundleActivationIndex index = GetBundleActivationIndex();
 
             string bundleId, bundleFile, rdomain;
 
@@ -951,7 +951,7 @@ namespace Clamp.OSGI.Framework.Data
 
             try
             {
-                scanResult.ActivationIndex = GetBundleHostIndex();
+                scanResult.ActivationIndex = GetBundleActivationIndex();
             }
             catch (Exception ex)
             {
@@ -1057,7 +1057,7 @@ namespace Clamp.OSGI.Framework.Data
         internal void ResetCachedData()
         {
             ResetBasicCachedData();
-            hostIndex = null;
+            activationIndex = null;
             cachedBundleSetupInfos.Clear();
 
             if (clampBundle != null)
@@ -1075,19 +1075,19 @@ namespace Clamp.OSGI.Framework.Data
         /// 获得当前的Bundle住宿索引类
         /// </summary>
         /// <returns></returns>
-        internal BundleActivationIndex GetBundleHostIndex()
+        internal BundleActivationIndex GetBundleActivationIndex()
         {
-            if (hostIndex != null)
-                return hostIndex;
+            if (activationIndex != null)
+                return activationIndex;
 
             using (fileDatabase.LockRead())
             {
-                if (fileDatabase.Exists(HostIndexFile))
-                    hostIndex = BundleActivationIndex.Read(fileDatabase, HostIndexFile);
+                if (fileDatabase.Exists(ActivationIndexFile))
+                    activationIndex = BundleActivationIndex.Read(fileDatabase, ActivationIndexFile);
                 else
-                    hostIndex = new BundleActivationIndex();
+                    activationIndex = new BundleActivationIndex();
             }
-            return hostIndex;
+            return activationIndex;
         }
 
         /// <summary>
@@ -1871,8 +1871,8 @@ namespace Clamp.OSGI.Framework.Data
         }
         private void SaveBundleHostIndex()
         {
-            if (hostIndex != null)
-                hostIndex.Write(fileDatabase, HostIndexFile);
+            if (activationIndex != null)
+                activationIndex.Write(fileDatabase, ActivationIndexFile);
         }
 
         private string[] GetDomains()

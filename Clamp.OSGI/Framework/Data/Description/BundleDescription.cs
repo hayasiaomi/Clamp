@@ -678,10 +678,12 @@ namespace Clamp.OSGI.Framework.Data.Description
             }
             fileInfo = list.ToArray();
         }
-
+        /// <summary>
+        /// 判断Bundle详细对应的文件有没有发生变化
+        /// </summary>
+        /// <returns></returns>
         internal bool FilesChanged()
         {
-            // Checks if the files of the add-in have changed.
             if (fileInfo == null)
                 return true;
 
