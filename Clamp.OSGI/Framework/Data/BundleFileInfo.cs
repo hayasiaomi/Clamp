@@ -78,7 +78,7 @@ namespace Clamp.OSGI.Framework.Data
         /// <summary>
         /// 是否为一个Bundle
         /// </summary>
-        public bool IsLegalBundle
+        public bool IsNotNullBundleId
         {
             get { return BundleId != null && BundleId.Length != 0; }
         }

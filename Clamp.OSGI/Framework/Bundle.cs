@@ -103,7 +103,7 @@ namespace Clamp.OSGI.Framework
             {
                 if (!IsLatestVersion)
                     return false;
-                return BundleInfo.IsRoot ? true : database.IsBundleEnabled(Description.Domain, BundleInfo.Id, true);
+                return BundleInfo.IsBundle ? true : database.IsBundleEnabled(Description.Domain, BundleInfo.Id, true);
             }
             set
             {
@@ -121,19 +121,19 @@ namespace Clamp.OSGI.Framework
         {
             get
             {
-                if (desc != null)
+                if (this.desc != null)
                 {
-                    BundleDescription d = desc.Target as BundleDescription;
+                    BundleDescription d = this.desc.Target as BundleDescription;
 
                     if (d != null)
                         return d;
                 }
 
-                var mBundleFile = database.GetDescriptionPath(domain, id);
+                var mBundleFile = this.database.GetDescriptionPath(domain, id);
 
                 BundleDescription m;
 
-                database.ReadBundleDescription(mBundleFile, out m);
+                this.database.ReadBundleDescription(mBundleFile, out m);
 
                 if (m == null)
                 {
@@ -153,18 +153,18 @@ namespace Clamp.OSGI.Framework
                     throw new InvalidOperationException("不能加载Bundle的细详信息");
                 }
 
-                if (bundleInfo == null)
+                if (this.bundleInfo == null)
                 {
-                    bundleInfo = BundleInfo.ReadFromDescription(m);
-                    sourceFile = m.BundleFile;
+                    this.bundleInfo = BundleInfo.ReadFromDescription(m);
+                    this.sourceFile = m.BundleFile;
                 }
 
-                SetIsUserBundle(m);
+                this.SetIsUserBundle(m);
 
                 if (!isUserBundle.Value)
                     m.Flags |= BundleFlags.CantUninstall;
 
-                desc = new WeakReference(m);
+                this.desc = new WeakReference(m);
 
                 return m;
             }
@@ -200,6 +200,9 @@ namespace Clamp.OSGI.Framework
             get { return Path.Combine(database.BundlePrivateDataPath, Path.GetFileNameWithoutExtension(Description.FileName)); }
         }
 
+        /// <summary>
+        /// 获得Bundle的信息
+        /// </summary>
         internal BundleInfo BundleInfo
         {
             get
@@ -261,9 +264,10 @@ namespace Clamp.OSGI.Framework
             {
                 try
                 {
-                    BundleDescription m = Description;
-                    sourceFile = m.BundleFile;
-                    bundleInfo = BundleInfo.ReadFromDescription(m);
+                    BundleDescription m = this.Description;
+
+                    this.sourceFile = m.BundleFile;
+                    this.bundleInfo = BundleInfo.ReadFromDescription(m);
                 }
                 catch (Exception ex)
                 {
@@ -273,7 +277,7 @@ namespace Clamp.OSGI.Framework
         }
 
         /// <summary>
-        /// 设置他是否为用户组件
+        /// 设置当前的Bundle是否为用户Bundle，不是系统的Bundle
         /// </summary>
         /// <param name="adesc"></param>
         private void SetIsUserBundle(BundleDescription adesc)
@@ -305,13 +309,13 @@ namespace Clamp.OSGI.Framework
                 return res;
         }
 
-        public static string GetIdName(string addinId)
+        public static string GetIdName(string bundleId)
         {
-            int i = addinId.IndexOf(',');
+            int i = bundleId.IndexOf(',');
             if (i != -1)
-                return addinId.Substring(0, i);
+                return bundleId.Substring(0, i);
             else
-                return addinId;
+                return bundleId;
         }
 
         public static string GetIdVersion(string addinId)
@@ -322,7 +326,12 @@ namespace Clamp.OSGI.Framework
             else
                 return string.Empty;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <returns></returns>
         public static int CompareVersions(string v1, string v2)
         {
             string[] a1 = v1.Split('.');
@@ -332,12 +341,14 @@ namespace Clamp.OSGI.Framework
             {
                 if (n >= a2.Length)
                     return -1;
+
                 if (a1[n].Length == 0)
                 {
                     if (a2[n].Length != 0)
                         return 1;
                     continue;
                 }
+
                 try
                 {
                     int n1 = int.Parse(a1[n]);
@@ -356,17 +367,25 @@ namespace Clamp.OSGI.Framework
                 return 1;
             return 0;
         }
-        public static void GetIdParts(string addinId, out string name, out string version)
+
+        /// <summary>
+        /// 从Bundle的ID值里面分解出名字和版本号
+        /// </summary>
+        /// <param name="bundleId"></param>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        public static void GetIdParts(string bundleId, out string name, out string version)
         {
-            int i = addinId.IndexOf(',');
+            int i = bundleId.IndexOf(',');
+
             if (i != -1)
             {
-                name = addinId.Substring(0, i);
-                version = addinId.Substring(i + 1).Trim();
+                name = bundleId.Substring(0, i);
+                version = bundleId.Substring(i + 1).Trim();
             }
             else
             {
-                name = addinId;
+                name = bundleId;
                 version = string.Empty;
             }
         }

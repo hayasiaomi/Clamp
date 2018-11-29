@@ -300,7 +300,10 @@ namespace Clamp.OSGI.Framework
             }
         }
 
-
+        /// <summary>
+        /// 根据指定ID来卸载Bundle
+        /// </summary>
+        /// <param name="id"></param>
         internal void UnloadBundle(string id)
         {
             RemoveBundleExtensions(id);

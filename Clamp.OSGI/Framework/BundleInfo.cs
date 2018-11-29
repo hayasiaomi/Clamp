@@ -7,26 +7,26 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework
 {
-   /// <summary>
-   /// Bundle的信息
-   /// </summary>
+    /// <summary>
+    /// Bundle的信息
+    /// </summary>
     internal class BundleInfo
     {
-       private string id = "";
-       private string namspace = "";
-       private  string name = "";
-       private string version = "";
-       private string baseVersion = "";
-       private string author = "";
-       private string copyright = "";
-       private string url = "";
-       private string description = "";
-       private string category = "";
-       private bool defaultEnabled = true;
-       private bool isroot;
-       private DependencyCollection dependencies;
-       private DependencyCollection optionalDependencies;
-       private BundlePropertyCollection properties;
+        private string id = "";
+        private string namspace = "";
+        private string name = "";
+        private string version = "";
+        private string baseVersion = "";
+        private string author = "";
+        private string copyright = "";
+        private string url = "";
+        private string description = "";
+        private string category = "";
+        private bool defaultEnabled = true;
+        private bool isBundle;
+        private DependencyCollection dependencies;
+        private DependencyCollection optionalDependencies;
+        private BundlePropertyCollection properties;
 
         private BundleInfo()
         {
@@ -34,6 +34,9 @@ namespace Clamp.OSGI.Framework
             optionalDependencies = new DependencyCollection();
         }
 
+        /// <summary>
+        /// 唯一标识
+        /// </summary>
         public string Id
         {
             get { return Bundle.GetFullId(namspace, id, version); }
@@ -51,12 +54,15 @@ namespace Clamp.OSGI.Framework
             set { namspace = value; }
         }
 
-        public bool IsRoot
+        public bool IsBundle
         {
-            get { return isroot; }
-            set { isroot = value; }
+            get { return isBundle; }
+            set { isBundle = value; }
         }
 
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name
         {
             get
@@ -73,7 +79,9 @@ namespace Clamp.OSGI.Framework
             }
             set { name = value; }
         }
-
+        /// <summary>
+        /// 当前版本号
+        /// </summary>
         public string Version
         {
             get { return version; }
@@ -127,10 +135,13 @@ namespace Clamp.OSGI.Framework
             get
             {
                 string s = Properties.GetPropertyValue("Description");
+
                 if (s.Length > 0)
                     return s;
+
                 return description;
             }
+
             set { description = value; }
         }
 
@@ -139,8 +150,10 @@ namespace Clamp.OSGI.Framework
             get
             {
                 string s = Properties.GetPropertyValue("Category");
+
                 if (s.Length > 0)
                     return s;
+
                 return category;
             }
             set { category = value; }
@@ -167,9 +180,15 @@ namespace Clamp.OSGI.Framework
             get { return properties; }
         }
 
+        /// <summary>
+        /// 从Bundle的详细类中获得Bundle的信息
+        /// </summary>
+        /// <param name="description"></param>
+        /// <returns></returns>
         internal static BundleInfo ReadFromDescription(BundleDescription description)
         {
             BundleInfo info = new BundleInfo();
+
             info.id = description.LocalId;
             info.namspace = description.Namespace;
             info.name = description.Name;
@@ -180,7 +199,7 @@ namespace Clamp.OSGI.Framework
             info.description = description.Description;
             info.category = description.Category;
             info.baseVersion = description.CompatVersion;
-            info.isroot = description.IsBundle;
+            info.isBundle = description.IsBundle;
             info.defaultEnabled = description.EnabledByDefault;
 
             foreach (Dependency dep in description.MainModule.Dependencies)
@@ -191,17 +210,25 @@ namespace Clamp.OSGI.Framework
                 foreach (Dependency dep in mod.Dependencies)
                     info.OptionalDependencies.Add(dep);
             }
+
             info.properties = description.Properties;
 
             return info;
         }
 
+        /// <summary>
+        /// 支持的版本号必须是在Version和BaseVersion之间，如果BaseVersion为空的时候，只要小于Version;
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public bool SupportsVersion(string version)
         {
             if (Bundle.CompareVersions(Version, version) > 0)
                 return false;
+
             if (baseVersion == "")
                 return true;
+
             return Bundle.CompareVersions(BaseVersion, version) >= 0;
         }
 

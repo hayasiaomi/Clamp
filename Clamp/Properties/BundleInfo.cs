@@ -3,3 +3,4 @@ using System;
 
 [assembly: Bundle("Clamp", "1.0")]
 [assembly: BundleDependency("Aomi.Main", "1.0")]
+[assembly: BundleDependency("Haya.Main", "1.0")]

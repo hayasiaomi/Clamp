@@ -163,7 +163,7 @@ namespace Clamp.OSGI.Framework.Data
                 if (GetFolderInfoForPath(Path.GetDirectoryName(file), out finfo) && finfo != null)
                 {
                     BundleFileInfo afi = finfo.GetBundleFileInfo(file);
-                    if (afi != null && afi.IsLegalBundle)
+                    if (afi != null && afi.IsNotNullBundleId)
                     {
                         BundleDescription adesc;
 
@@ -214,9 +214,15 @@ namespace Clamp.OSGI.Framework.Data
                 Directory.Delete(BundleFolderCachePath, true);
         }
 
-        public bool BundleDescriptionExists(string domain, string addinId)
+        /// <summary>
+        /// 根据域和Bundle的Id来判断对应的Bundle详细是否存在
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="bundleId"></param>
+        /// <returns></returns>
+        public bool BundleDescriptionExists(string domain, string bundleId)
         {
-            string file = GetDescriptionPath(domain, addinId);
+            string file = GetDescriptionPath(domain, bundleId);
             return fileDatabase.Exists(file);
         }
 
@@ -406,7 +412,7 @@ namespace Clamp.OSGI.Framework.Data
 
                 ResetCachedData();
 
-                registry.NotifyDatabaseUpdated();
+                registry.NotifyDatabaseUpdated();//重新获得域
             }
 
 
@@ -627,15 +633,28 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 根据域和Bundle的ID来判断Bundle是否可用
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool IsBundleEnabled(string domain, string id)
         {
             Bundle ainfo = GetInstalledBundle(domain, id);
+
             if (ainfo != null)
                 return ainfo.Enabled;
             else
                 return false;
         }
 
+        /// <summary>
+        /// 根据域和ID来获得对应的Bundle
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Bundle GetInstalledBundle(string domain, string id)
         {
             return GetInstalledBundle(domain, id, false, false);
@@ -1053,7 +1072,9 @@ namespace Clamp.OSGI.Framework.Data
         }
 
 
-
+        /// <summary>
+        /// 重置当前的所有缓存数据。
+        /// </summary>
         internal void ResetCachedData()
         {
             ResetBasicCachedData();
@@ -1637,11 +1658,24 @@ namespace Clamp.OSGI.Framework.Data
                 return new SetupLocal();
         }
 
+        /// <summary>
+        /// 获得当前域下面所有type指定的类型Bundle集合
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private IEnumerable<Bundle> InternalGetInstalledBundles(string domain, BundleSearchFlagsInternal type)
         {
             return InternalGetInstalledBundles(domain, null, type);
         }
 
+        /// <summary>
+        /// 内部获得域定安装过的Bundle集合，如果idFilter不为空的时候 就是返回指定的Bundle集。当idFilter为空的时候，会根据type类型的值返回对应的Bundle集合
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="idFilter"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private IEnumerable<Bundle> InternalGetInstalledBundles(string domain, string idFilter, BundleSearchFlagsInternal type)
         {
             if ((type & BundleSearchFlagsInternal.LatestVersionsOnly) != 0)
@@ -1649,33 +1683,40 @@ namespace Clamp.OSGI.Framework.Data
 
             if (allSetupInfos == null)
             {
-                Dictionary<string, Bundle> adict = new Dictionary<string, Bundle>();
+                Dictionary<string, Bundle> bdict = new Dictionary<string, Bundle>();
 
-                // Global add-ins are valid for any private domain
+                //如果不是公共的域，就从公共的域中寻找
                 if (domain != BundleDatabase.GlobalDomain)
-                    FindInstalledBundles(adict, BundleDatabase.GlobalDomain, idFilter);
+                    FindInstalledBundles(bdict, BundleDatabase.GlobalDomain, idFilter);
 
-                FindInstalledBundles(adict, domain, idFilter);
-                List<Bundle> alist = new List<Bundle>(adict.Values);
+                FindInstalledBundles(bdict, domain, idFilter);
+
+                List<Bundle> alist = new List<Bundle>(bdict.Values);
 
                 UpdateLastVersionFlags(alist);
 
                 if (idFilter != null)
                     return alist;
+
                 allSetupInfos = alist;
             }
 
+            //返回符合当前ID过虑的所有Bundle,其中包含特殊Bundle
             if ((type & BundleSearchFlagsInternal.IncludeAll) == BundleSearchFlagsInternal.IncludeAll)
                 return FilterById(allSetupInfos, idFilter);
 
+            //返回符合当前ID过虑的所有特殊Bundle  否则的话，就是返回所有Bundle不包含的特殊Bundle
             if ((type & BundleSearchFlagsInternal.IncludeBundles) == BundleSearchFlagsInternal.IncludeBundles)
             {
                 if (bundleSetupInfos == null)
                 {
                     bundleSetupInfos = new List<Bundle>();
-                    foreach (Bundle adn in allSetupInfos)
-                        if (!adn.Description.IsBundle)
-                            bundleSetupInfos.Add(adn);
+
+                    foreach (Bundle bundle in allSetupInfos)
+                    {
+                        if (!bundle.Description.IsBundle)
+                            bundleSetupInfos.Add(bundle);
+                    }
                 }
                 return FilterById(bundleSetupInfos, idFilter);
             }
@@ -1684,14 +1725,23 @@ namespace Clamp.OSGI.Framework.Data
                 if (rootSetupInfos == null)
                 {
                     rootSetupInfos = new List<Bundle>();
+
                     foreach (Bundle adn in allSetupInfos)
+                    {
                         if (adn.Description.IsBundle)
                             rootSetupInfos.Add(adn);
+                    }
                 }
                 return FilterById(rootSetupInfos, idFilter);
             }
         }
 
+        /// <summary>
+        /// 过虑符合ID名的Bundle
+        /// </summary>
+        /// <param name="addins"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private IEnumerable<Bundle> FilterById(List<Bundle> addins, string id)
         {
             if (id == null)
@@ -1700,12 +1750,18 @@ namespace Clamp.OSGI.Framework.Data
             return addins.Where(a => Bundle.GetIdName(a.Id) == id);
         }
 
+        /// <summary>
+        /// 获得已经安装的Bundle,通过域和ID过虑
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="domain"></param>
+        /// <param name="idFilter"></param>
         private void FindInstalledBundles(Dictionary<string, Bundle> result, string domain, string idFilter)
         {
             if (idFilter == null)
                 idFilter = "*";
 
-            string dir = Path.Combine(BundleCachePath, domain);
+            string dir = Path.Combine(BundleCachePath, domain);//获域的所在位置
 
             if (Directory.Exists(dir))
             {
@@ -1724,22 +1780,26 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        private void UpdateLastVersionFlags(List<Bundle> addins)
+        /// <summary>
+        /// 标记Bundle集合是否为最新版本的Bundle
+        /// </summary>
+        /// <param name="bundles"></param>
+        private void UpdateLastVersionFlags(List<Bundle> bundles)
         {
             Dictionary<string, string> versions = new Dictionary<string, string>();
 
-            foreach (Bundle a in addins)
+            foreach (Bundle bundle in bundles)
             {
                 string last;
                 string id, version;
 
-                Bundle.GetIdParts(a.Id, out id, out version);
+                Bundle.GetIdParts(bundle.Id, out id, out version);
 
                 if (!versions.TryGetValue(id, out last) || Bundle.CompareVersions(last, version) > 0)
                     versions[id] = version;
             }
 
-            foreach (Bundle a in addins)
+            foreach (Bundle a in bundles)
             {
                 string id, version;
 
@@ -1760,7 +1820,15 @@ namespace Clamp.OSGI.Framework.Data
                 }
             }
         }
-
+        /// <summary>
+        /// 从域中根据ID获得安装过的Bundle
+        /// </summary>
+        /// <param name="domain">域的值</param>
+        /// <param name="id">标识</param>
+        /// <param name="exactVersionMatch">是否只要准确的版本号</param>
+        /// <param name="enabledOnly">是否只能是可用的</param>
+        /// <param name="dbLockCheck">是否重要检测域</param>
+        /// <returns></returns>
         private Bundle GetInstalledDomainBundle(string domain, string id, bool exactVersionMatch, bool enabledOnly, bool dbLockCheck)
         {
             Bundle sinfo = null;
@@ -1791,12 +1859,16 @@ namespace Clamp.OSGI.Framework.Data
             using ((dbLockCheck ? fileDatabase.LockRead() : null))
             {
                 string path = GetDescriptionPath(domain, id);
+
                 if (sinfo == null && fileDatabase.Exists(path))
                 {
                     sinfo = new Bundle(this.clampBundle, this, domain, id);
+
                     cachedBundleSetupInfos[idd] = sinfo;
+
                     if (!enabledOnly || sinfo.Enabled)
                         return sinfo;
+
                     if (exactVersionMatch)
                     {
                         // Cache lookups with negative result
@@ -1822,6 +1894,7 @@ namespace Clamp.OSGI.Framework.Data
                             sinfo = ia;
                         }
                     }
+
                     if (sinfo != null)
                     {
                         cachedBundleSetupInfos[idd] = sinfo;
@@ -1833,6 +1906,7 @@ namespace Clamp.OSGI.Framework.Data
                 // Ignore the 'not installed' flag when disabled add-ins are allowed
                 if (enabledOnly)
                     cachedBundleSetupInfos[idd] = this;
+
                 return null;
             }
         }

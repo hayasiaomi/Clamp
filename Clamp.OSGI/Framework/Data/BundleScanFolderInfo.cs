@@ -165,7 +165,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 foreach (BundleFileInfo info in files.Values)
                 {
-                    if (info.IsLegalBundle)
+                    if (info.IsNotNullBundleId)
                         missing.Add(info);
                 }
                 files.Clear();
@@ -178,12 +178,12 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (!fs.FileExists(info.File))
                 {
-                    if (info.IsLegalBundle)
+                    if (info.IsNotNullBundleId)
                         missing.Add(info);
 
                     toDelete.Add(info.File);
                 }
-                else if (info.IsLegalBundle && info.Domain != GetDomain(info.IsBundle))
+                else if (info.IsNotNullBundleId && info.Domain != GetDomain(info.IsBundle))
                 {
                     missing.Add(info);
                 }

@@ -630,6 +630,7 @@ namespace Clamp.OSGI.Framework
         internal virtual void ResetCachedData()
         {
             tree.ResetCachedData();
+
             if (childContexts != null)
             {
                 foreach (WeakReference wref in childContexts)
@@ -912,8 +913,7 @@ namespace Clamp.OSGI.Framework
         {
             try
             {
-                // Registers this add-in as disabled, so from now on extension from this
-                // add-in will be ignored
+                //指定Bundle注入不可用的集合中
                 RegisterRuntimeDisabledBundle(id);
 
                 fireEvents = true;
@@ -921,6 +921,7 @@ namespace Clamp.OSGI.Framework
                 // This method removes all extension nodes added by the add-in
                 // Get all nodes created by the addin
                 ArrayList list = new ArrayList();
+
                 tree.FindBundleNodes(id, list);
 
                 // Remove each node and notify the change
@@ -1096,15 +1097,20 @@ namespace Clamp.OSGI.Framework
             NotifyConditionChanged(cond);
         }
 
-        private void RegisterRuntimeDisabledBundle(string addinId)
+        /// <summary>
+        /// 把指定的Bundle的ID注入到不可用的Bundle集合中
+        /// </summary>
+        /// <param name="bundleId"></param>
+        private void RegisterRuntimeDisabledBundle(string bundleId)
         {
             if (runTimeDisabledBundles == null)
                 runTimeDisabledBundles = new ArrayList();
-            if (!runTimeDisabledBundles.Contains(addinId))
-                runTimeDisabledBundles.Add(addinId);
+
+            if (!runTimeDisabledBundles.Contains(bundleId))
+                runTimeDisabledBundles.Add(bundleId);
 
             if (runTimeEnabledBundles != null)
-                runTimeEnabledBundles.Remove(addinId);
+                runTimeEnabledBundles.Remove(bundleId);
         }
 
         private void RegisterRuntimeEnabledBundle(string addinId)
@@ -1261,7 +1267,7 @@ namespace Clamp.OSGI.Framework
             return dstNode;
         }
 
-  
+
 
         #endregion
 

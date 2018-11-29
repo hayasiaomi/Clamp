@@ -413,7 +413,7 @@ namespace Clamp.OSGI.Framework.Data
 
                     // If the scanned file results in an add-in version different from the one obtained from
                     // previous scans, the old add-in needs to be uninstalled.
-                    if (fi != null && fi.IsLegalBundle && fi.BundleId != config.BundleId)
+                    if (fi != null && fi.IsNotNullBundleId && fi.BundleId != config.BundleId)
                     {
                         database.UninstallBundle(folderInfo.Domain, fi.BundleId, fi.File, scanResult);
 
@@ -592,7 +592,7 @@ namespace Clamp.OSGI.Framework.Data
 
             bool added = false;
 
-            if (finfo != null && (!finfo.IsLegalBundle || finfo.Domain == folderInfo.GetDomain(finfo.IsBundle)) && fs.GetLastWriteTime(file) == finfo.LastScan && !scanResult.RegenerateAllData)
+            if (finfo != null && (!finfo.IsNotNullBundleId || finfo.Domain == folderInfo.GetDomain(finfo.IsBundle)) && fs.GetLastWriteTime(file) == finfo.LastScan && !scanResult.RegenerateAllData)
             {
                 if (finfo.ScanError)
                 {
@@ -603,7 +603,7 @@ namespace Clamp.OSGI.Framework.Data
                     added = true;
                 }
 
-                if (!finfo.IsLegalBundle)
+                if (!finfo.IsNotNullBundleId)
                     return;
 
                 if (database.BundleDescriptionExists(finfo.Domain, finfo.BundleId))

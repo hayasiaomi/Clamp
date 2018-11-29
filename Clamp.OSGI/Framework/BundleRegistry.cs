@@ -189,6 +189,9 @@ namespace Clamp.OSGI.Framework
             database.ParseBundle(currentDomain, file, outFile, true);
         }
 
+        /// <summary>
+        /// 通知重新获得当前最新的域
+        /// </summary>
         internal void NotifyDatabaseUpdated()
         {
             currentDomain = database.GetFolderDomain(this.basePath);
@@ -214,7 +217,11 @@ namespace Clamp.OSGI.Framework
 
         #region  public method
 
-
+        /// <summary>
+        /// 根据ID判断Bundle是可用
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool IsBundleEnabled(string id)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)

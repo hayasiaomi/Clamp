@@ -668,14 +668,19 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal void StoreFileInfo()
         {
             ArrayList list = new ArrayList();
+
             foreach (string f in AllFiles)
             {
                 string file = Path.Combine(this.BasePath, f);
+
                 BundleFileInfo fi = new BundleFileInfo();
+
                 fi.FileName = f;
                 fi.LastScan = File.GetLastWriteTime(file);
+
                 list.Add(fi);
             }
+
             fileInfo = list.ToArray();
         }
         /// <summary>
