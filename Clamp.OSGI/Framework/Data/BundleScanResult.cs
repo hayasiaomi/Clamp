@@ -52,7 +52,9 @@ namespace Clamp.OSGI.Framework.Data
                     this.ChangesFound = true;
             }
         }
-
+        /// <summary>
+        /// 修改过的文件夹
+        /// </summary>
         internal ArrayList ModifiedFolderInfos { set; get; }
 
         internal List<string> BundlesToUpdateRelations { set; get; }
@@ -118,17 +120,26 @@ namespace Clamp.OSGI.Framework.Data
                 BundlesToUpdate.Add(addinId);
         }
 
+        /// <summary>
+        /// 是否是忽略的文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public bool IgnorePath(string file)
         {
             if (filesToIgnore == null)
                 return false;
+
             string root = Path.GetPathRoot(file);
+
             while (root != file)
             {
                 if (filesToIgnore.Contains(file))
                     return true;
+
                 file = Path.GetDirectoryName(file);
             }
+
             return false;
         }
 

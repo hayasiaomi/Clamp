@@ -110,15 +110,15 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 
+        /// 把指定的文件设置到当前Bundle文件夹信息类中
         /// </summary>
         /// <param name="file"></param>
-        /// <param name="addinId"></param>
-        /// <param name="isRoot"></param>
+        /// <param name="bundleId"></param>
+        /// <param name="isBundle"></param>
         /// <param name="time"></param>
         /// <param name="scanError"></param>
         /// <returns></returns>
-        public BundleFileInfo SetLastScanTime(string file, string addinId, bool isRoot, DateTime time, bool scanError)
+        public BundleFileInfo SetLastScanTime(string file, string bundleId, bool isBundle, DateTime time, bool scanError)
         {
             BundleFileInfo info = (BundleFileInfo)files[file];
 
@@ -130,12 +130,12 @@ namespace Clamp.OSGI.Framework.Data
             }
 
             info.LastScan = time;
-            info.BundleId = addinId;
-            info.IsBundle = isRoot;
+            info.BundleId = bundleId;
+            info.IsBundle = isBundle;
             info.ScanError = scanError;
 
-            if (addinId != null)
-                info.Domain = GetDomain(isRoot);
+            if (bundleId != null)
+                info.Domain = GetDomain(isBundle);
             else
                 info.Domain = null;
 

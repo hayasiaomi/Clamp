@@ -25,6 +25,7 @@ namespace Clamp.OSGI.Framework.Data
             this.database = database;
             this.fs = database.FileSystem;
         }
+
         #region public mehtod
         /// <summary>
         /// 更新删除的Bundle
@@ -169,14 +170,13 @@ namespace Clamp.OSGI.Framework.Data
             if (scanResult.LocateAssembliesOnly)
                 return;
 
-            // Look for deleted add-ins.
-
+            // 寻找删除的Bundle
             UpdateDeletedBundles(folderInfo, scanResult);
         }
 
         public BundleDescription ScanSingleFile(string file, BundleScanResult scanResult)
         {
-            BundleDescription config = null;
+            BundleDescription bdesc = null;
 
             try
             {
@@ -184,21 +184,21 @@ namespace Clamp.OSGI.Framework.Data
                 bool scanSuccessful;
 
                 if (ext == ".dll" || ext == ".exe")
-                    scanSuccessful = ScanAssembly(file, scanResult, out config);
+                    scanSuccessful = ScanAssembly(file, scanResult, out bdesc);
                 else
-                    scanSuccessful = ScanConfigAssemblies(file, scanResult, out config);
+                    scanSuccessful = ScanConfigAssemblies(file, scanResult, out bdesc);
 
-                if (scanSuccessful && config != null)
+                if (scanSuccessful && bdesc != null)
                 {
 
-                    config.Domain = "global";
-                    if (config.Version.Length == 0)
-                        config.Version = "0.0.0.0";
+                    bdesc.Domain = "global";
+                    if (bdesc.Version.Length == 0)
+                        bdesc.Version = "0.0.0.0";
 
-                    if (config.LocalId.Length == 0)
+                    if (bdesc.LocalId.Length == 0)
                     {
                         // Generate an internal id for this add-in
-                        config.LocalId = database.GetUniqueBundleId(file, "", config.Namespace, config.Version);
+                        bdesc.LocalId = database.GetUniqueBundleId(file, "", bdesc.Namespace, bdesc.Version);
                     }
                 }
             }
@@ -210,7 +210,7 @@ namespace Clamp.OSGI.Framework.Data
             {
 
             }
-            return config;
+            return bdesc;
         }
         public void ScanBundlesFile(string file, string domain, BundleScanResult scanResult)
         {
@@ -321,22 +321,25 @@ namespace Clamp.OSGI.Framework.Data
                 ScanFolderRec(sd, domain, scanResult);
         }
 
+        /// <summary>
+        /// 检查当前指定的文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folderInfo"></param>
+        /// <param name="scanResult"></param>
         public void ScanFile(string file, BundleScanFolderInfo folderInfo, BundleScanResult scanResult)
         {
             if (scanResult.IgnorePath(file))
             {
-                // The file must be ignored. Maybe it caused a crash in a previous scan, or it
-                // might be included by a .addin file (in which case it will be scanned when processing
-                // the .addin file).
                 folderInfo.SetLastScanTime(file, null, false, fs.GetLastWriteTime(file), true);
                 return;
             }
 
             string ext = Path.GetExtension(file).ToLower();
 
+            //判断是当前文件是不是DLL和EXE，但是却没有加载进来，这个时间就可以设置一个错误的文件到Bundle的文件夹信息中
             if ((ext == ".dll" || ext == ".exe") && !Util.IsManagedAssembly(file))
             {
-                // Ignore dlls and exes which are not managed assemblies
                 folderInfo.SetLastScanTime(file, null, false, fs.GetLastWriteTime(file), true);
                 return;
             }
@@ -344,6 +347,7 @@ namespace Clamp.OSGI.Framework.Data
             string scannedBundleId = null;
             bool scannedIsBundle = false;
             bool scanSuccessful = false;
+
             BundleDescription config = null;
 
             try
@@ -529,9 +533,16 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        private bool ScanAssembly(string filePath, BundleScanResult scanResult, out BundleDescription config)
+        /// <summary>
+        /// 检测指定程序集文件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="scanResult"></param>
+        /// <param name="bdesc"></param>
+        /// <returns></returns>
+        private bool ScanAssembly(string filePath, BundleScanResult scanResult, out BundleDescription bdesc)
         {
-            config = null;
+            bdesc = null;
 
             try
             {
@@ -544,32 +555,33 @@ namespace Clamp.OSGI.Framework.Data
 
                 // Get the config file from the resources, if there is one
 
-                if (!ScanEmbeddedDescription(filePath, reflector, asm, out config))
+                if (!ScanEmbeddedDescription(filePath, reflector, asm, out bdesc))
                     return false;
 
-                if (config == null || config.IsExtensionModel)
+                if (bdesc == null || bdesc.IsExtensionModel)
                 {
                     // In this case, only scan the assembly if it has the Bundle attribute.
                     BundleFragmentAttribute att = (BundleFragmentAttribute)reflector.GetCustomAttribute(asm, typeof(BundleFragmentAttribute), false);
+
                     if (att == null)
                     {
-                        config = null;
+                        bdesc = null;
                         return true;
                     }
 
-                    if (config == null)
-                        config = new BundleDescription();
+                    if (bdesc == null)
+                        bdesc = new BundleDescription();
                 }
 
-                config.SetBasePath(Path.GetDirectoryName(filePath));
-                config.BundleFile = filePath;
+                bdesc.SetBasePath(Path.GetDirectoryName(filePath));
+                bdesc.BundleFile = filePath;
 
                 string rasmFile = Path.GetFileName(filePath);
 
-                if (!config.MainModule.Assemblies.Contains(rasmFile))
-                    config.MainModule.Assemblies.Add(rasmFile);
+                if (!bdesc.MainModule.Assemblies.Contains(rasmFile))
+                    bdesc.MainModule.Assemblies.Add(rasmFile);
 
-                return ScanDescription(reflector, config, asm, scanResult);
+                return ScanDescription(reflector, bdesc, asm, scanResult);
             }
             catch (Exception ex)
             {
@@ -622,14 +634,23 @@ namespace Clamp.OSGI.Framework.Data
                 scanResult.AddFileToScan(file, folderInfo);
         }
 
+        /// <summary>
+        /// 获得程序集反射器
+        /// </summary>
+        /// <param name="scanResult"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         private IAssemblyReflector GetReflector(BundleScanResult scanResult, string filePath)
         {
             IAssemblyReflector reflector = fs.GetReflectorForFile(scanResult, filePath);
+
             object coreAssembly;
+
             if (!coreAssemblies.TryGetValue(reflector, out coreAssembly))
             {
                 coreAssemblies[reflector] = coreAssembly = reflector.LoadAssembly(GetType().Assembly.Location);
             }
+
             return reflector;
         }
 
@@ -677,11 +698,13 @@ namespace Clamp.OSGI.Framework.Data
                 foreach (string df in config.MainModule.DataFiles)
                 {
                     string file = Path.Combine(config.BasePath, df);
+
                     scanResult.AddPathToIgnore(Path.GetFullPath(file));
                 }
                 foreach (string df in config.MainModule.IgnorePaths)
                 {
                     string path = Path.Combine(config.BasePath, df);
+
                     scanResult.AddPathToIgnore(Path.GetFullPath(path));
                 }
 
@@ -1301,9 +1324,18 @@ namespace Clamp.OSGI.Framework.Data
         #endregion
 
         #region static  method
-        static bool ScanEmbeddedDescription(string filePath, IAssemblyReflector reflector, object asm, out BundleDescription config)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="reflector"></param>
+        /// <param name="asm"></param>
+        /// <param name="bdesc"></param>
+        /// <returns></returns>
+        static bool ScanEmbeddedDescription(string filePath, IAssemblyReflector reflector, object asm, out BundleDescription bdesc)
         {
-            config = null;
+            bdesc = null;
 
             foreach (string res in reflector.GetResourceNames(asm))
             {
@@ -1311,18 +1343,20 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     using (Stream s = reflector.GetResourceStream(asm, res))
                     {
-                        BundleDescription ad = BundleDescription.Read(s, Path.GetDirectoryName(filePath));
-                        if (config != null)
+                        BundleDescription bd = BundleDescription.Read(s, Path.GetDirectoryName(filePath));
+
+                        if (bdesc != null)
                         {
-                            if (!config.IsExtensionModel && !ad.IsExtensionModel)
+                            //如果俩个都不是ExtensionModel的话，那说明有一个以上的bundle文件。这是不对的。
+                            if (!bdesc.IsExtensionModel && !bd.IsExtensionModel)
                             {
-                                // There is more than one add-in definition
                                 return false;
                             }
-                            config = BundleDescription.Merge(config, ad);
+
+                            bdesc = BundleDescription.Merge(bdesc, bd);
                         }
                         else
-                            config = ad;
+                            bdesc = bd;
                     }
                 }
             }

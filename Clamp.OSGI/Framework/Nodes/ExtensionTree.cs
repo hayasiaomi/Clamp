@@ -11,9 +11,10 @@ namespace Clamp.OSGI.Framework.Nodes
 {
     internal class ExtensionTree : TreeNode
     {
-        int internalId;
         internal const string AutoIdPrefix = "__nid_";
-        TreeClampBundle treeNodeBundle;
+
+        private int internalId;
+        private TreeClampBundle treeNodeBundle;
 
         public ExtensionTree(ClampBundle clampBundle, TreeClampBundle context) : base(clampBundle, "")
         {
@@ -31,7 +32,7 @@ namespace Clamp.OSGI.Framework.Nodes
             TreeNode tnode = GetNode(extension.Path);
             if (tnode == null)
             {
-                addinEngine.ReportError("Can't load extensions for path '" + extension.Path + "'. Extension point not defined.", addin, null, false);
+                clampBundle.ReportError("Can't load extensions for path '" + extension.Path + "'. Extension point not defined.", addin, null, false);
                 return;
             }
 
@@ -93,11 +94,11 @@ namespace Clamp.OSGI.Framework.Nodes
                     curPos = tnode.Children.Count;
 
                 // Find the type of the node in this extension
-                ExtensionNodeType ntype = addinEngine.FindType(tnode.ExtensionNodeSet, elem.NodeName, addin);
+                ExtensionNodeType ntype = clampBundle.FindType(tnode.ExtensionNodeSet, elem.NodeName, addin);
 
                 if (ntype == null)
                 {
-                    addinEngine.ReportError("Node '" + elem.NodeName + "' not allowed in extension: " + tnode.GetPath(), addin, null, false);
+                    clampBundle.ReportError("Node '" + elem.NodeName + "' not allowed in extension: " + tnode.GetPath(), addin, null, false);
                     continue;
                 }
 
@@ -105,7 +106,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 if (id.Length == 0)
                     id = AutoIdPrefix + (++internalId);
 
-                TreeNode cnode = new TreeNode(addinEngine, id);
+                TreeNode cnode = new TreeNode(clampBundle, id);
 
                 ExtensionNode enode = ReadNode(cnode, addin, ntype, elem, module);
                 if (enode == null)
@@ -149,7 +150,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 {
                     if (conds.Count != 1)
                     {
-                        addinEngine.ReportError("Invalid complex condition element '" + elem.NodeName + "'. 'Not' condition can only have one parameter.", null, null, false);
+                        clampBundle.ReportError("Invalid complex condition element '" + elem.NodeName + "'. 'Not' condition can only have one parameter.", null, null, false);
                         return new NullCondition();
                     }
                     return new NotCondition((BaseCondition)conds[0], parentCondition);
@@ -159,7 +160,7 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 return new Condition(BundleEngine, elem, parentCondition);
             }
-            addinEngine.ReportError("Invalid complex condition element '" + elem.NodeName + "'.", null, null, false);
+            clampBundle.ReportError("Invalid complex condition element '" + elem.NodeName + "'.", null, null, false);
             return new NullCondition();
         }
 
@@ -177,35 +178,35 @@ namespace Clamp.OSGI.Framework.Nodes
                 node = Activator.CreateInstance(ntype.Type) as ExtensionNode;
                 if (node == null)
                 {
-                    addinEngine.ReportError("Extension node type '" + ntype.Type + "' must be a subclass of ExtensionNode", addin, null, false);
+                    clampBundle.ReportError("Extension node type '" + ntype.Type + "' must be a subclass of ExtensionNode", addin, null, false);
                     return null;
                 }
 
                 tnode.AttachExtensionNode(node);
-                node.SetData(addinEngine, addin, ntype, module);
+                node.SetData(clampBundle, addin, ntype, module);
                 node.Read(elem);
                 return node;
             }
             catch (Exception ex)
             {
-                addinEngine.ReportError("Could not read extension node of type '" + ntype.Type + "' from extension path '" + tnode.GetPath() + "'", addin, ex, false);
+                clampBundle.ReportError("Could not read extension node of type '" + ntype.Type + "' from extension path '" + tnode.GetPath() + "'", addin, ex, false);
                 return null;
             }
         }
         #region private mehtod
         bool InitializeNodeType(ExtensionNodeType ntype)
         {
-            RuntimeBundle p = addinEngine.GetBundle(ntype.BundleId);
+            RuntimeBundle p = clampBundle.GetBundle(ntype.BundleId);
             if (p == null)
             {
-                if (!addinEngine.IsBundleLoaded(ntype.BundleId))
+                if (!clampBundle.IsBundleLoaded(ntype.BundleId))
                 {
-                    if (!addinEngine.LoadBundle(ntype.BundleId, false))
+                    if (!clampBundle.LoadBundle(ntype.BundleId, false))
                         return false;
-                    p = addinEngine.GetBundle(ntype.BundleId);
+                    p = clampBundle.GetBundle(ntype.BundleId);
                     if (p == null)
                     {
-                        addinEngine.ReportError("Add-in not found", ntype.BundleId, null, false);
+                        clampBundle.ReportError("Add-in not found", ntype.BundleId, null, false);
                         return false;
                     }
                 }
@@ -220,7 +221,7 @@ namespace Clamp.OSGI.Framework.Nodes
                     Type attType = p.GetType(ntype.ExtensionAttributeTypeName, false);
                     if (attType == null)
                     {
-                        addinEngine.ReportError("Custom attribute type '" + ntype.ExtensionAttributeTypeName + "' not found.", ntype.BundleId, null, false);
+                        clampBundle.ReportError("Custom attribute type '" + ntype.ExtensionAttributeTypeName + "' not found.", ntype.BundleId, null, false);
                         return false;
                     }
                     if (ntype.ObjectTypeName.Length > 0 || ntype.TypeName == typeof(TypeExtensionNode).FullName)
@@ -239,7 +240,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 ntype.Type = p.GetType(ntype.TypeName, false);
                 if (ntype.Type == null)
                 {
-                    addinEngine.ReportError("Extension node type '" + ntype.TypeName + "' not found.", ntype.BundleId, null, false);
+                    clampBundle.ReportError("Extension node type '" + ntype.TypeName + "' not found.", ntype.BundleId, null, false);
                     return false;
                 }
             }

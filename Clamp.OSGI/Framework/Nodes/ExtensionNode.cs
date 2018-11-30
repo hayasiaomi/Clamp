@@ -10,15 +10,15 @@ namespace Clamp.OSGI.Framework.Nodes
 {
     public class ExtensionNode
     {
-        bool childrenLoaded;
-        TreeNode treeNode;
-        ExtensionNodeList childNodes;
-        RuntimeBundle runtimeBundle;
-        string bundleId;
-        ExtensionNodeType nodeType;
-        ModuleDescription module;
-        ClampBundle clampBundle;
-        event ExtensionNodeEventHandler extensionNodeChanged;
+        private bool childrenLoaded;
+        private TreeNode treeNode;
+        private ExtensionNodeList childNodes;
+        private RuntimeBundle runtimeBundle;
+        private string bundleId;
+        private ExtensionNodeType nodeType;
+        private ModuleDescription module;
+        private ClampBundle clampBundle;
+        private event ExtensionNodeEventHandler extensionNodeChanged;
 
         /// <summary>
         /// Identifier of the node.

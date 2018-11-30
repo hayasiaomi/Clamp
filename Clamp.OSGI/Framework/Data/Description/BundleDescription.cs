@@ -77,14 +77,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the path to the main addin file.
+        /// 当前Bundle所在的文件
         /// </summary>
-        /// <value>
-        /// The addin file.
-        /// </value>
-        /// <remarks>
-        /// The add-in file can be either the main assembly of an add-in or an xml manifest.
-        /// </remarks>
         public string BundleFile
         {
             get { return sourceBundleFile; }
@@ -266,16 +260,17 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the base path for locating external files relative to the add-in.
+        /// 当前Bundle的根目录
         /// </summary>
-        /// <value>
-        /// The base path.
-        /// </value>
         public string BasePath
         {
             get { return basePath != null ? basePath : string.Empty; }
         }
 
+        /// <summary>
+        /// 当前Bundle所在的根目录
+        /// </summary>
+        /// <param name="path"></param>
         internal void SetBasePath(string path)
         {
             basePath = path;
@@ -983,14 +978,11 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Load an add-in description from a stream
+        /// 获得Bundle的详细对象通过文件流
         /// </summary>
-        /// <param name='stream'>
-        /// The stream
-        /// </param>
-        /// <param name='basePath'>
-        /// The path to be used to resolve relative file paths.
-        /// </param>
+        /// <param name="stream"></param>
+        /// <param name="basePath"></param>
+        /// <returns></returns>
         public static BundleDescription Read(Stream stream, string basePath)
         {
             return Read(new StreamReader(stream), basePath);
@@ -1288,23 +1280,36 @@ namespace Clamp.OSGI.Framework.Data.Description
             get { return RootElement.LocalName == "ExtensionModel"; }
         }
 
+        /// <summary>
+        /// 将desc2的信息合并到desc1
+        /// </summary>
+        /// <param name="desc1"></param>
+        /// <param name="desc2"></param>
+        /// <returns></returns>
         internal static BundleDescription Merge(BundleDescription desc1, BundleDescription desc2)
         {
             if (!desc2.IsExtensionModel)
             {
                 BundleDescription tmp = desc1;
-                desc1 = desc2; desc2 = tmp;
+                desc1 = desc2;
+                desc2 = tmp;
             }
+
             ((BundlePropertyCollectionImpl)desc1.Properties).AddRange(desc2.Properties);
+
             desc1.ExtensionPoints.AddRange(desc2.ExtensionPoints);
             desc1.ExtensionNodeSets.AddRange(desc2.ExtensionNodeSets);
             desc1.ConditionTypes.AddRange(desc2.ConditionTypes);
             desc1.OptionalModules.AddRange(desc2.OptionalModules);
+
             foreach (string s in desc2.MainModule.Assemblies)
                 desc1.MainModule.Assemblies.Add(s);
+
             foreach (string s in desc2.MainModule.DataFiles)
                 desc1.MainModule.DataFiles.Add(s);
+
             desc1.MainModule.MergeWith(desc2.MainModule);
+
             return desc1;
         }
 

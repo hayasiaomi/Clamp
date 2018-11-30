@@ -620,6 +620,11 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
+        /// <summary>
+        /// 保存Bundle的文件夹信息
+        /// </summary>
+        /// <param name="folderInfo"></param>
+        /// <returns></returns>
         public bool SaveFolderInfo(BundleScanFolderInfo folderInfo)
         {
             try
@@ -1045,7 +1050,7 @@ namespace Clamp.OSGI.Framework.Data
             foreach (BundleScanFolderInfo finfo in scanResult.ModifiedFolderInfos)
                 SaveFolderInfo(finfo);
 
-            SaveBundleHostIndex();
+            SaveBundleActivationIndex();
             ResetCachedData();
 
             if (!scanResult.ChangesFound)
@@ -1068,7 +1073,7 @@ namespace Clamp.OSGI.Framework.Data
                 fatalDatabseError = true;
             }
 
-            SaveBundleHostIndex();
+            SaveBundleActivationIndex();
         }
 
 
@@ -1943,7 +1948,11 @@ namespace Clamp.OSGI.Framework.Data
             }
             return false;
         }
-        private void SaveBundleHostIndex()
+
+        /// <summary>
+        /// 保存激活的索引文件
+        /// </summary>
+        private void SaveBundleActivationIndex()
         {
             if (activationIndex != null)
                 activationIndex.Write(fileDatabase, ActivationIndexFile);

@@ -219,6 +219,9 @@ namespace Clamp.OSGI.Framework.Data.Description
             }
         }
 
+        /// <summary>
+        /// 扩展点所在的BundleId
+        /// </summary>
         internal string RootBundle
         {
             get { return rootBundle; }

@@ -36,6 +36,7 @@ namespace Clamp.OSGI.Framework
         {
             get { return fireEvents; }
         }
+
         internal ClampBundle BundleEngine
         {
             get { return tree.BundleEngine; }

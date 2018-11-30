@@ -53,14 +53,10 @@ namespace Clamp.OSGI.Framework.Data
         List<CustomAttribute> GetRawCustomAttributes(object obj, Type type, bool inherit);
 
         /// <summary>
-        /// Loads an assembly.
+        /// 加载一个程序集文件
         /// </summary>
-        /// <returns>
-        /// The loaded assembly
-        /// </returns>
-        /// <param name='file'>
-        /// Path of the assembly.
-        /// </param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         object LoadAssembly(string file);
 
         /// <summary>
@@ -74,15 +70,11 @@ namespace Clamp.OSGI.Framework.Data
         /// </param>
         object LoadAssemblyFromReference(object asmReference);
 
-        /// <summary>
-        /// Gets the names of all resources embedded in an assembly
-        /// </summary>
-        /// <returns>
-        /// The names of the resources
-        /// </returns>
-        /// <param name='asm'>
-        /// An assembly
-        /// </param>
+       /// <summary>
+       /// 获得指定程序集的内部文件集
+       /// </summary>
+       /// <param name="asm"></param>
+       /// <returns></returns>
         string[] GetResourceNames(object asm);
 
         /// <summary>

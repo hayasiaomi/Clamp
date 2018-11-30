@@ -207,8 +207,10 @@ namespace Clamp.OSGI.Framework
             lock (this.LocalLock)
             {
                 var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeBundle>(loadedAssemblies);
+
                 foreach (Assembly asm in addin.Assemblies)
                     loadedAssembliesCopy[asm] = addin;
+
                 loadedAssemblies = loadedAssembliesCopy;
             }
         }
