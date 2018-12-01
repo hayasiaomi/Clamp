@@ -25,7 +25,7 @@ namespace Clamp.OSGI.Framework.Data
         /// </summary>
         public bool RegenerateAllData { set; get; }
         /// <summary>
-        /// 是否只是检测，而不更新
+        /// 是否只是检测，而不带更新
         /// </summary>
         public bool CheckOnly { set; get; }
         /// <summary>
@@ -65,6 +65,9 @@ namespace Clamp.OSGI.Framework.Data
 
         internal ArrayList FilesWithScanFailure { set; get; }
 
+        /// <summary>
+        /// 需要检测的文件集合
+        /// </summary>
         internal ArrayList FilesToScan { get { return this.filesToScan; } }
 
         internal BundleActivationIndex ActivationIndex { set; get; }
@@ -143,13 +146,21 @@ namespace Clamp.OSGI.Framework.Data
             return false;
         }
 
+        /// <summary>
+        /// 增加需要检测的文件到检测文件集合里
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folderInfo"></param>
         public void AddFileToScan(string file, BundleScanFolderInfo folderInfo)
         {
             FileToScan di = new FileToScan();
+
             di.File = file;
             di.BundleScanFolderInfo = folderInfo;
-            FilesToScan.Add(di);
-            RegisterModifiedFolderInfo(folderInfo);
+
+            this.FilesToScan.Add(di);
+
+            this.RegisterModifiedFolderInfo(folderInfo);
         }
 
 
@@ -163,6 +174,7 @@ namespace Clamp.OSGI.Framework.Data
         {
             if (filesToIgnore == null)
                 filesToIgnore = new Hashtable();
+
             filesToIgnore[path] = path;
         }
 
@@ -228,6 +240,9 @@ namespace Clamp.OSGI.Framework.Data
 
     }
 
+    /// <summary>
+    /// 检测文件类
+    /// </summary>
     class FileToScan
     {
         public string File;

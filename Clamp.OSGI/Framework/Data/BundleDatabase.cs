@@ -9,6 +9,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// Bundle数据库类
+    /// </summary>
     internal class BundleDatabase
     {
         public const string GlobalDomain = "global";
@@ -20,7 +23,7 @@ namespace Clamp.OSGI.Framework.Data
         private BundleScanResult currentScanResult;
         private bool fatalDatabseError;
         private FileDatabase fileDatabase;
-        private string addinDbDir;
+        private string bundleDbDir;
         private BundleActivationIndex activationIndex;
         private BundleRegistry registry;
         private ClampBundle clampBundle;
@@ -31,16 +34,24 @@ namespace Clamp.OSGI.Framework.Data
         private List<Bundle> rootSetupInfos;
 
         private List<object> extensions = new List<object>();
+        /// <summary>
+        /// 表示正在执行安装Bundle的进程(AppDomain域不是系统进程)
+        /// </summary>
         internal static bool RunningSetupProcess;
 
         #region public Property
 
+        /// <summary>
+        /// 获得Bundle数据库所在的目录
+        /// </summary>
         public string BundleDbDir
         {
-            get { return addinDbDir; }
+            get { return bundleDbDir; }
         }
 
-
+        /// <summary>
+        /// 获得应用程序的住宿文件路径
+        /// </summary>
         public string HostsPath
         {
             get { return Path.Combine(BundleDbDir, "hosts"); }
@@ -124,8 +135,8 @@ namespace Clamp.OSGI.Framework.Data
         {
             this.clampBundle = clampBundle;
             this.registry = registry;
-            this.addinDbDir = Path.Combine(registry.BundleCachePath, "bundle-db-" + VersionTag);
-            fileDatabase = new FileDatabase(BundleDbDir);
+            this.bundleDbDir = Path.Combine(registry.BundleCachePath, "bundle-db-" + VersionTag);
+            this.fileDatabase = new FileDatabase(BundleDbDir);
         }
 
         #region public method
@@ -361,7 +372,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 根据当前的路径来获得相对的域
+        /// 根据当前的路径来获得相对应的Bundle的文件夹信息。当读取文件数据异常的时候返回false，否则只要是空的也是对的。
         /// </summary>
         /// <param name="path"></param>
         /// <param name="folderInfo"></param>
@@ -754,13 +765,20 @@ namespace Clamp.OSGI.Framework.Data
 
             return BundleDependsOn(visited, domain, id1, id2);
         }
-
+        /// <summary>
+        /// 检测指定的文件夹
+        /// </summary>
+        /// <param name="currentDomain"></param>
+        /// <param name="folderToScan"></param>
+        /// <param name="filesToIgnore"></param>
         internal void ScanFolders(string currentDomain, string folderToScan, List<string> filesToIgnore)
         {
             BundleScanResult res = new BundleScanResult();
+
             res.Domain = currentDomain;
             res.AddPathsToIgnore(filesToIgnore);
-            ScanFolders(res);
+
+            this.ScanFolders(res);
         }
 
         internal void EnableBundle(string domain, string id, bool exactVersionMatch)
@@ -1023,6 +1041,7 @@ namespace Clamp.OSGI.Framework.Data
             if (registry.BasePath != null)
                 scanner.ScanFolder(registry.BasePath, null, scanResult);
 
+            //如果只是检测就返回，不是的就并发生了变化，就继续
             if (scanResult.CheckOnly && scanResult.ChangesFound)
                 return;
 
@@ -1051,6 +1070,7 @@ namespace Clamp.OSGI.Framework.Data
                 SaveFolderInfo(finfo);
 
             SaveBundleActivationIndex();
+
             ResetCachedData();
 
             if (!scanResult.ChangesFound)
@@ -1391,17 +1411,22 @@ namespace Clamp.OSGI.Framework.Data
             }
             return null;
         }
+
+        /// <summary>
+        /// 检测定指定的路径
+        /// </summary>
+        /// <param name="scanResult"></param>
         private void ScanFolders(BundleScanResult scanResult)
         {
             IDisposable checkLock = null;
 
+            //判断他是只是检测。如果不是就要开启一个事务用于更新
             if (scanResult.CheckOnly)
                 checkLock = fileDatabase.LockRead();
             else
             {
-                // All changes are done in a transaction, which won't be committed until
-                // all files have been updated.
 
+                //开启事务，直到所有的文件都更新完成之后才可以提交
                 if (!fileDatabase.BeginTransaction())
                 {
                     // The database is already being updated. Can't do anything for now.
@@ -1419,7 +1444,9 @@ namespace Clamp.OSGI.Framework.Data
                 if (!scanResult.CheckOnly)
                 {
                     AppDomain.CurrentDomain.AssemblyResolve += resolver;
-                    if (einfo != null) einfo.AddEventHandler(AppDomain.CurrentDomain, resolver);
+
+                    if (einfo != null)
+                        einfo.AddEventHandler(AppDomain.CurrentDomain, resolver);
                 }
 
                 InternalScanFolders(scanResult);
@@ -1442,7 +1469,9 @@ namespace Clamp.OSGI.Framework.Data
                 else
                 {
                     AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-                    if (einfo != null) einfo.RemoveEventHandler(AppDomain.CurrentDomain, resolver);
+
+                    if (einfo != null)
+                        einfo.RemoveEventHandler(AppDomain.CurrentDomain, resolver);
                 }
             }
         }
@@ -1655,6 +1684,10 @@ namespace Clamp.OSGI.Framework.Data
             while (retry);
         }
 
+        /// <summary>
+        /// 获得安装的处理者
+        /// </summary>
+        /// <returns></returns>
         private ISetupHandler GetSetupHandler()
         {
             if (fs.RequiresIsolation)

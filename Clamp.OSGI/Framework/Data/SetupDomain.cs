@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// 在AppDomain域中进行安装
+    /// </summary>
     class SetupDomain : ISetupHandler
     {
         AppDomain domain;
@@ -53,7 +56,11 @@ namespace Clamp.OSGI.Framework.Data
             return args.Name == asm.FullName ? asm : null;
         }
 
-        RemoteSetupDomain GetDomain()
+        /// <summary>
+        /// 获得一个新的AppDomain域的
+        /// </summary>
+        /// <returns></returns>
+        private RemoteSetupDomain GetDomain()
         {
             lock (this)
             {
@@ -68,7 +75,10 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        void ReleaseDomain()
+        /// <summary>
+        /// 卸载当前的AppDomain域
+        /// </summary>
+        private void ReleaseDomain()
         {
             lock (this)
             {
@@ -83,6 +93,9 @@ namespace Clamp.OSGI.Framework.Data
         }
     }
 
+    /// <summary>
+    /// 用于跨AppDomain域所用的对象
+    /// </summary>
     class RemoteSetupDomain : MarshalByRefObject
     {
         public RemoteSetupDomain()
@@ -101,13 +114,17 @@ namespace Clamp.OSGI.Framework.Data
             return null;
         }
 
-        public void Scan(string basePath, string addinsDir, string databaseDir, string scanFolder, string[] filesToIgnore)
+        public void Scan(string basePath, string bundlesDir, string databaseDir, string scanFolder, string[] filesToIgnore)
         {
             BundleDatabase.RunningSetupProcess = true;
-            BundleRegistry reg = new BundleRegistry(basePath, addinsDir, databaseDir);
+
+            BundleRegistry reg = new BundleRegistry(basePath, bundlesDir, databaseDir);
+
             List<string> files = new List<string>();
+
             for (int n = 0; n < filesToIgnore.Length; n++)
                 files.Add(filesToIgnore[n]);
+
             reg.ScanFolders(scanFolder, files);
         }
 

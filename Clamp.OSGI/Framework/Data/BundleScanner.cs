@@ -71,12 +71,14 @@ namespace Clamp.OSGI.Framework.Data
 
             if (!database.GetFolderInfoForPath(path, out folderInfo))
             {
+                //说明文件可能存在。只是数据可能异常了。
                 // 文件夹有可能动过，为了以防万一还是重新加载数据
                 if (!fs.DirectoryExists(path))
                     scanResult.RegenerateRelationData = true;
             }
             else
             {
+                //拿不到Bundle的文件夹信息，但是又不存文件夹，所以就是正确的。返回
                 if (folderInfo == null && !fs.DirectoryExists(path))
                     return;
             }
@@ -608,9 +610,6 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (finfo.ScanError)
                 {
-                    // Always schedule the file for scan if there was an error in a previous scan.
-                    // However, don't set ChangesFound=true, in this way if there isn't any other
-                    // change in the registry, the file won't be scanned again.
                     scanResult.AddFileToScan(file, folderInfo);
                     added = true;
                 }
@@ -624,6 +623,7 @@ namespace Clamp.OSGI.Framework.Data
                     // are still valid, so they can be used.
                     if (finfo.IgnorePaths != null)
                         scanResult.AddPathsToIgnore(finfo.IgnorePaths);
+
                     return;
                 }
             }

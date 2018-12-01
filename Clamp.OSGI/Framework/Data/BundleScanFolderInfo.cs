@@ -31,7 +31,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 是否为共享文件夹
+        /// 是否为共享文件夹，默认为true
         /// </summary>
         public bool SharedFolder
         {

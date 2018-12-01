@@ -15,7 +15,7 @@ namespace Clamp.OSGI.Framework
     /// </summary>
     internal class BundleRegistry : IDisposable
     {
-        private List<string> addinDirs;
+        private List<string> bundleDirs;
         private BundleDatabase database;
         private string basePath;
         private string currentDomain;
@@ -65,31 +65,31 @@ namespace Clamp.OSGI.Framework
 
         internal List<string> GlobalBundleDirectories
         {
-            get { return addinDirs; }
+            get { return bundleDirs; }
         }
 
         public BundleRegistry(string basePath) : this(null, basePath, null, null)
         {
         }
 
-        public BundleRegistry(string basePath, string addinsDir) : this(null, basePath, addinsDir, null)
+        public BundleRegistry(string basePath, string bundlesDir) : this(null, basePath, bundlesDir, null)
         {
         }
 
-        public BundleRegistry(string basePath, string addinsDir, string databaseDir) : this(null, basePath, addinsDir, databaseDir)
+        public BundleRegistry(string basePath, string bundlesDir, string databaseDir) : this(null, basePath, bundlesDir, databaseDir)
         {
         }
 
-        public BundleRegistry(ClampBundle clampBundle, string basePath, string addinsDir, string databaseDir)
+        public BundleRegistry(ClampBundle clampBundle, string basePath, string bundlesDir, string databaseDir)
         {
             this.basePath = Path.GetFullPath(basePath);
 
-            if (addinsDir != null)
+            if (bundlesDir != null)
             {
-                if (Path.IsPathRooted(addinsDir))
-                    this.bundlesDir = Path.GetFullPath(addinsDir);
+                if (Path.IsPathRooted(bundlesDir))
+                    this.bundlesDir = Path.GetFullPath(bundlesDir);
                 else
-                    this.bundlesDir = Path.GetFullPath(Path.Combine(this.basePath, addinsDir));
+                    this.bundlesDir = Path.GetFullPath(Path.Combine(this.basePath, bundlesDir));
             }
             else
                 this.bundlesDir = Path.Combine(this.basePath, "bundles");
@@ -104,8 +104,8 @@ namespace Clamp.OSGI.Framework
             else
                 this.databaseDir = Path.GetFullPath(this.basePath);
 
-            addinDirs = new List<string>();
-            addinDirs.Add(DefaultBundlesFolder);
+            bundleDirs = new List<string>();
+            bundleDirs.Add(DefaultBundlesFolder);
 
             database = new BundleDatabase(clampBundle, this);
 
@@ -278,6 +278,11 @@ namespace Clamp.OSGI.Framework
 
         #region internal static method
 
+        /// <summary>
+        /// 检测指定的文件夹
+        /// </summary>
+        /// <param name="folderToScan"></param>
+        /// <param name="filesToIgnore"></param>
         internal void ScanFolders(string folderToScan, List<string> filesToIgnore)
         {
             database.ScanFolders(currentDomain, folderToScan, filesToIgnore);

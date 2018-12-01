@@ -21,6 +21,9 @@ namespace Clamp.OSGI.Framework.Data
         private IDisposable transactionLock;
         private bool ignoreDesc;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string DatabaseLockFile
         {
             get { return Path.Combine(rootDirectory, "fdb-lock"); }
@@ -32,6 +35,9 @@ namespace Clamp.OSGI.Framework.Data
             set { ignoreDesc = value; }
         }
 
+        /// <summary>
+        /// 用于更新数据库的文件锁路径
+        /// </summary>
         internal string UpdateDatabaseLockFile
         {
             get { return Path.Combine(rootDirectory, "fdb-update-lock"); }
@@ -131,15 +137,20 @@ namespace Clamp.OSGI.Framework.Data
             return file;
         }
 
+        /// <summary>
+        /// 开始一个事务
+        /// </summary>
+        /// <returns></returns>
         public bool BeginTransaction()
         {
             if (inTransaction)
-                throw new InvalidOperationException("Already in a transaction");
+                throw new InvalidOperationException("事务已经开启过了");
 
-            transactionLock = LockWrite();
+            this.transactionLock = this.LockWrite();
+
             try
             {
-                updatingLock = new FileStream(UpdateDatabaseLockFile, System.IO.FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                this.updatingLock = new FileStream(UpdateDatabaseLockFile, System.IO.FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
             }
             catch (IOException)
             {
@@ -148,18 +159,21 @@ namespace Clamp.OSGI.Framework.Data
             }
             finally
             {
-                transactionLock.Dispose();
+                this.transactionLock.Dispose();
             }
 
             // Delete .new files that could have been left by an aborted database update
 
             transactionLock = LockRead();
+
             CleanDirectory(rootDirectory);
 
             inTransaction = true;
+
             foldersToUpdate = new Hashtable();
             deletedFiles = new Hashtable();
             deletedDirs = new Hashtable();
+
             return true;
         }
 
@@ -443,7 +457,12 @@ namespace Clamp.OSGI.Framework.Data
             return false;
         }
 
-
+        /// <summary>
+        /// 锁定一个指定文件锁类型，只是只写锁还是只读锁
+        /// </summary>
+        /// <param name="access"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         private IDisposable FileLock(FileAccess access, int timeout)
         {
             DateTime tim = DateTime.Now;
