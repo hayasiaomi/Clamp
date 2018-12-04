@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// 标识一个扩展点
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class ExtensionPointAttribute : Attribute
     {

@@ -6,12 +6,12 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    /// Bundle的属性注解
+    /// 标识Bundle的属性
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class BundlePropertyAttribute : Attribute
     {
-      
+
         public BundlePropertyAttribute(string name, string value) : this(name, null, value)
         {
         }

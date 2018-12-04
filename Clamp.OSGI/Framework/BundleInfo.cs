@@ -47,13 +47,17 @@ namespace Clamp.OSGI.Framework
             get { return id; }
             set { id = value; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public string Namespace
         {
             get { return namspace; }
             set { namspace = value; }
         }
-
+        /// <summary>
+        /// 是否是一个Bundle
+        /// </summary>
         public bool IsBundle
         {
             get { return isBundle; }
@@ -88,12 +92,18 @@ namespace Clamp.OSGI.Framework
             set { version = value; }
         }
 
+        /// <summary>
+        /// 最基本的版本号
+        /// </summary>
         public string BaseVersion
         {
             get { return baseVersion; }
             set { baseVersion = value; }
         }
 
+        /// <summary>
+        /// 作者
+        /// </summary>
         public string Author
         {
             get
@@ -105,7 +115,9 @@ namespace Clamp.OSGI.Framework
             }
             set { author = value; }
         }
-
+        /// <summary>
+        /// 版权
+        /// </summary>
         public string Copyright
         {
             get
@@ -130,6 +142,9 @@ namespace Clamp.OSGI.Framework
             set { url = value; }
         }
 
+        /// <summary>
+        /// 说明
+        /// </summary>
         public string Description
         {
             get
@@ -145,6 +160,9 @@ namespace Clamp.OSGI.Framework
             set { description = value; }
         }
 
+        /// <summary>
+        /// 种类
+        /// </summary>
         public string Category
         {
             get
@@ -159,12 +177,18 @@ namespace Clamp.OSGI.Framework
             set { category = value; }
         }
 
+        /// <summary>
+        /// 默认是否可用
+        /// </summary>
         public bool EnabledByDefault
         {
             get { return defaultEnabled; }
             set { defaultEnabled = value; }
         }
 
+        /// <summary>
+        /// 当前依赖项
+        /// </summary>
         public DependencyCollection Dependencies
         {
             get { return dependencies; }
@@ -232,6 +256,11 @@ namespace Clamp.OSGI.Framework
             return Bundle.CompareVersions(BaseVersion, version) >= 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareVersionTo(BundleInfo other)
         {
             return Bundle.CompareVersions(this.version, other.Version);

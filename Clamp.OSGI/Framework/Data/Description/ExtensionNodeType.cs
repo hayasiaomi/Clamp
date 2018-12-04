@@ -11,12 +11,12 @@ namespace Clamp.OSGI.Framework.Data.Description
 {
     public sealed class ExtensionNodeType : ExtensionNodeSet
     {
-        string typeName;
-        string objectTypeName;
-        string description;
-        string addinId;
-        NodeTypeAttributeCollection attributes;
-        string customAttributeTypeName;
+        private string typeName;
+        private string objectTypeName;
+        private string description;
+        private string bundleId;
+        private NodeTypeAttributeCollection attributes;
+        private string customAttributeTypeName;
 
         // Cached clr type
         [NonSerialized]
@@ -59,8 +59,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         // Bundle where this extension type is implemented
         internal string BundleId
         {
-            get { return addinId; }
-            set { addinId = value; }
+            get { return bundleId; }
+            set { bundleId = value; }
         }
 
         /// <summary>
@@ -145,15 +145,22 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal ExtensionNodeType(XmlElement element) : base(element)
         {
             XmlAttribute at = element.Attributes["type"];
+
             if (at != null)
                 typeName = at.Value;
+
             at = element.Attributes["objectType"];
+
             if (at != null)
                 objectTypeName = at.Value;
+
             at = element.Attributes["customAttributeType"];
+
             if (at != null)
                 customAttributeTypeName = at.Value;
+
             XmlElement de = element["Description"];
+
             if (de != null)
                 description = de.InnerText;
         }
@@ -174,7 +181,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             this.typeName = ntype.TypeName;
             this.objectTypeName = ntype.ObjectTypeName;
             this.description = ntype.Description;
-            this.addinId = ntype.BundleId;
+            this.bundleId = ntype.BundleId;
             Attributes.Clear();
             foreach (NodeTypeAttribute att in ntype.Attributes)
             {
@@ -242,7 +249,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             writer.WriteValue("typeName", typeName);
             writer.WriteValue("objectTypeName", objectTypeName);
             writer.WriteValue("description", description);
-            writer.WriteValue("addinId", addinId);
+            writer.WriteValue("addinId", bundleId);
             writer.WriteValue("Attributes", attributes);
             writer.WriteValue("customAttributeType", customAttributeTypeName);
         }
@@ -250,13 +257,18 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal override void Read(BinaryXmlReader reader)
         {
             base.Read(reader);
+
             typeName = reader.ReadStringValue("typeName");
             objectTypeName = reader.ReadStringValue("objectTypeName");
+
             if (!reader.IgnoreDescriptionData)
                 description = reader.ReadStringValue("description");
-            addinId = reader.ReadStringValue("addinId");
+
+            bundleId = reader.ReadStringValue("bundleId");
+
             if (!reader.IgnoreDescriptionData)
                 attributes = (NodeTypeAttributeCollection)reader.ReadValue("Attributes", new NodeTypeAttributeCollection(this));
+
             customAttributeTypeName = reader.ReadStringValue("customAttributeType");
         }
     }

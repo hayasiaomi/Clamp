@@ -10,8 +10,9 @@ namespace Clamp.OSGI.Framework.Data.Description
 {
     public class Extension : ObjectDescription, IComparable
     {
-        string path;
-        ExtensionNodeDescriptionCollection nodes;
+        private string path;
+
+        private ExtensionNodeDescriptionCollection nodes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mono.Bundles.Description.Extension"/> class.

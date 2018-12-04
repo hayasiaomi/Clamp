@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// 扩展节点组集合
+    /// </summary>
     public class ExtensionNodeSetCollection : ObjectDescriptionCollection<ExtensionNodeSet>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionNodeSetCollection"/> class.
-        /// </summary>
         public ExtensionNodeSetCollection()
         {
         }
@@ -18,23 +18,11 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
         }
 
-        /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.ExtensionNodeSet"/> at the specified index.
-        /// </summary>
-        /// <param name='n'>
-        /// The index.
-        /// </param>
         public ExtensionNodeSet this[int n]
         {
             get { return (ExtensionNodeSet)List[n]; }
         }
 
-        /// <summary>
-        /// Gets the <see cref="Mono.Addins.Description.ExtensionNodeSet"/> with the specified id.
-        /// </summary>
-        /// <param name='id'>
-        /// Identifier.
-        /// </param>
         public ExtensionNodeSet this[string id]
         {
             get

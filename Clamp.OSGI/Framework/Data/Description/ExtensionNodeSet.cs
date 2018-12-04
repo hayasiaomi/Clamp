@@ -9,13 +9,16 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// 扩展节点组
+    /// </summary>
     public class ExtensionNodeSet : ObjectDescription
     {
-        string id;
-        ExtensionNodeTypeCollection nodeTypes;
-        NodeSetIdCollection nodeSets;
-        bool missingNodeSetId;
-        ExtensionNodeTypeCollection cachedAllowedTypes;
+        private string id;
+        private ExtensionNodeTypeCollection nodeTypes;
+        private NodeSetIdCollection nodeSets;
+        private bool missingNodeSetId;
+        private ExtensionNodeTypeCollection cachedAllowedTypes;
 
         internal string SourceBundleId { get; set; }
 
@@ -26,24 +29,27 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Copies data from another node set
+        /// 从给定的扩展节点组里面复制
         /// </summary>
-        /// <param name='nset'>
-        /// Node set from which to copy
-        /// </param>
+        /// <param name="nset"></param>
         public void CopyFrom(ExtensionNodeSet nset)
         {
             id = nset.id;
+
             NodeTypes.Clear();
+
             foreach (ExtensionNodeType nt in nset.NodeTypes)
             {
                 ExtensionNodeType cnt = new ExtensionNodeType();
                 cnt.CopyFrom(nt);
                 NodeTypes.Add(cnt);
             }
+
             NodeSets.Clear();
+
             foreach (string ns in nset.NodeSets)
                 NodeSets.Add(ns);
+
             missingNodeSetId = nset.missingNodeSetId;
         }
 
@@ -101,11 +107,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the identifier of the node set.
+        /// 扩展节点组的ID
         /// </summary>
-        /// <value>
-        /// The identifier.
-        /// </value>
         public string Id
         {
             get { return id != null ? id : string.Empty; }
@@ -216,14 +219,15 @@ namespace Clamp.OSGI.Framework.Data.Description
             nodeTypes = null;
         }
 
-        internal void SetExtensionsBundleId(string addinId)
+        internal void SetExtensionsBundleId(string bundleId)
         {
             foreach (ExtensionNodeType nt in NodeTypes)
             {
-                nt.BundleId = addinId;
-                nt.SetExtensionsBundleId(addinId);
+                nt.BundleId = bundleId;
+                nt.SetExtensionsBundleId(bundleId);
             }
-            NodeSets.SetExtensionsBundleId(addinId);
+
+            NodeSets.SetExtensionsBundleId(bundleId);
         }
 
         internal void MergeWith(string bundleId, ExtensionNodeSet other)
@@ -252,6 +256,9 @@ namespace Clamp.OSGI.Framework.Data.Description
             NodeSets.UnmergeExternalData(bundleId, addinsToUnmerge);
         }
 
+        /// <summary>
+        /// 初始化集合
+        /// </summary>
         void InitCollections()
         {
             nodeTypes = new ExtensionNodeTypeCollection(this);
@@ -260,16 +267,21 @@ namespace Clamp.OSGI.Framework.Data.Description
             foreach (XmlNode n in Element.ChildNodes)
             {
                 XmlElement nt = n as XmlElement;
+
                 if (nt == null)
                     continue;
+
                 if (nt.LocalName == "ExtensionNode")
                 {
                     ExtensionNodeType etype = new ExtensionNodeType(nt);
+
                     nodeTypes.Add(etype);
+
                 }
                 else if (nt.LocalName == "ExtensionNodeSet")
                 {
                     string id = nt.GetAttribute("id");
+
                     if (id.Length > 0)
                         nodeSets.Add(id);
                     else

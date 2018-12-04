@@ -117,10 +117,10 @@ namespace Clamp.OSGI.Framework.Data
             }
         }
 
-        public void AddBundleToUpdate(string addinId)
+        public void AddBundleToUpdate(string bundleId)
         {
-            if (!BundlesToUpdate.Contains(addinId))
-                BundlesToUpdate.Add(addinId);
+            if (!BundlesToUpdate.Contains(bundleId))
+                BundlesToUpdate.Add(bundleId);
         }
 
         /// <summary>

@@ -51,18 +51,31 @@ namespace Clamp.OSGI.Framework.Data
             this.rootDirectory = rootDirectory;
         }
 
+        /// <summary>
+        /// 获得指定目录下的子目录
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         public string[] GetDirectories(string dir)
         {
             return Directory.GetDirectories(dir);
         }
 
 
-
+        /// <summary>
+        /// 判断目录是否存在
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         public bool DirExists(string dir)
         {
             return Directory.Exists(dir);
         }
 
+        /// <summary>
+        /// 创建一个目录
+        /// </summary>
+        /// <param name="dir"></param>
         public void CreateDir(string dir)
         {
             Directory.CreateDirectory(dir);

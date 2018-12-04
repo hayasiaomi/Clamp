@@ -6,7 +6,7 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    /// Bundle的状态
+    /// 标识Bundle的状态
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class BundleFlagsAttribute : Attribute

@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Nodes
 {
+    /// <summary>
+    /// 扩展节点
+    /// </summary>
     public class ExtensionNode
     {
         private bool childrenLoaded;

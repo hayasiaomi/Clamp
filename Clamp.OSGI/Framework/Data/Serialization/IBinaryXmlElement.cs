@@ -2,10 +2,13 @@ using System;
 
 namespace Clamp.OSGI.Framework.Data.Serialization
 {
+    /// <summary>
+    /// 序列化接口
+    /// </summary>
 	internal interface IBinaryXmlElement
-	{
-		void Read (BinaryXmlReader reader);
+    {
+        void Read(BinaryXmlReader reader);
 
-		void Write (BinaryXmlWriter writer);
-	}
+        void Write(BinaryXmlWriter writer);
+    }
 }

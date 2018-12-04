@@ -495,11 +495,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the extension points.
+        /// 扩展点集合
         /// </summary>
-        /// <value>
-        /// The extension points.
-        /// </value>
         public ExtensionPointCollection ExtensionPoints
         {
             get
@@ -507,6 +504,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (extensionPoints == null)
                 {
                     extensionPoints = new ExtensionPointCollection(this);
+
                     if (RootElement != null)
                     {
                         foreach (XmlElement elem in RootElement.SelectNodes("ExtensionPoint"))
@@ -1238,13 +1236,13 @@ namespace Clamp.OSGI.Framework.Data.Description
             return errors;
         }
 
-        internal void SetExtensionsBundleId(string addinId)
+        internal void SetExtensionsBundleId(string bundleId)
         {
             foreach (ExtensionPoint ep in ExtensionPoints)
-                ep.SetExtensionsBundleId(addinId);
+                ep.SetExtensionsBundleId(bundleId);
 
             foreach (ExtensionNodeSet ns in ExtensionNodeSets)
-                ns.SetExtensionsBundleId(addinId);
+                ns.SetExtensionsBundleId(bundleId);
         }
 
         internal void UnmergeExternalData(Hashtable addins)

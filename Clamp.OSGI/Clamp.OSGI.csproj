@@ -51,6 +51,7 @@
     <Compile Include="Framework\ClampConstants.cs" />
     <Compile Include="Framework\ConditionType.cs" />
     <Compile Include="Framework\Data\Annotation\BundleAuthorAttribute.cs" />
+    <Compile Include="Framework\Data\Annotation\BundleBaseAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\BundleCategoryAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\BundleDescriptionAttribute.cs" />
     <Compile Include="Framework\Data\Annotation\BundleFlagsAttribute.cs" />

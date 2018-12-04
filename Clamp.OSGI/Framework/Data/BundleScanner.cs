@@ -350,37 +350,37 @@ namespace Clamp.OSGI.Framework.Data
             bool scannedIsBundle = false;
             bool scanSuccessful = false;
 
-            BundleDescription config = null;
+            BundleDescription bdesc = null;
 
             try
             {
                 if (ext == ".dll" || ext == ".exe")
-                    scanSuccessful = ScanAssembly(file, scanResult, out config);
+                    scanSuccessful = ScanAssembly(file, scanResult, out bdesc);
                 else
-                    scanSuccessful = ScanConfigAssemblies(file, scanResult, out config);
+                    scanSuccessful = ScanConfigAssemblies(file, scanResult, out bdesc);
 
-                if (config != null)
+                if (bdesc != null)
                 {
 
                     BundleFileInfo fi = folderInfo.GetBundleFileInfo(file);
 
-                    // If version is not specified, make up one
-                    if (config.Version.Length == 0)
+                    //没有指定版本号的话，指定一个
+                    if (bdesc.Version.Length == 0)
                     {
-                        config.Version = "0.0.0.0";
+                        bdesc.Version = "0.0.0.0";
                     }
 
-                    if (config.LocalId.Length == 0)
+                    if (bdesc.LocalId.Length == 0)
                     {
                         // Generate an internal id for this add-in
-                        config.LocalId = database.GetUniqueBundleId(file, (fi != null ? fi.BundleId : null), config.Namespace, config.Version);
-                        config.HasUserId = false;
+                        bdesc.LocalId = database.GetUniqueBundleId(file, (fi != null ? fi.BundleId : null), bdesc.Namespace, bdesc.Version);
+                        bdesc.HasUserId = false;
                     }
 
                     // Check errors in the description
                     List<string> errors = new List<string>();
 
-                    if (database.IsGlobalRegistry && config.BundleId.IndexOf('.') == -1)
+                    if (database.IsGlobalRegistry && bdesc.BundleId.IndexOf('.') == -1)
                     {
                         errors.Add("Add-ins registered in the global registry must have a namespace.");
                     }
@@ -392,7 +392,7 @@ namespace Clamp.OSGI.Framework.Data
 
                     // Make sure all extensions sets are initialized with the correct add-in id
 
-                    config.SetExtensionsBundleId(config.BundleId);
+                    bdesc.SetExtensionsBundleId(bdesc.BundleId);
 
                     scanResult.ChangesFound = true;
 
@@ -401,7 +401,7 @@ namespace Clamp.OSGI.Framework.Data
 
                     BundleDescription existingDescription = null;
 
-                    bool res = database.GetBundleDescription(folderInfo.Domain, config.BundleId, config.BundleFile, out existingDescription);
+                    bool res = database.GetBundleDescription(folderInfo.Domain, bdesc.BundleId, bdesc.BundleFile, out existingDescription);
 
                     // If we can't get information about the old assembly, just regenerate all relation data
                     if (!res)
@@ -412,19 +412,19 @@ namespace Clamp.OSGI.Framework.Data
                     if (existingDescription != null)
                     {
                         // Reuse old relation data
-                        config.MergeExternalData(existingDescription);
+                        bdesc.MergeExternalData(existingDescription);
                         Util.AddDependencies(existingDescription, scanResult);
                         replaceFileName = existingDescription.FileName;
                     }
 
                     // If the scanned file results in an add-in version different from the one obtained from
                     // previous scans, the old add-in needs to be uninstalled.
-                    if (fi != null && fi.IsNotNullBundleId && fi.BundleId != config.BundleId)
+                    if (fi != null && fi.IsNotNullBundleId && fi.BundleId != bdesc.BundleId)
                     {
                         database.UninstallBundle(folderInfo.Domain, fi.BundleId, fi.File, scanResult);
 
                         // If the add-in version has changed, regenerate everything again since old data can't be reused
-                        if (Bundle.GetIdName(fi.BundleId) == Bundle.GetIdName(config.BundleId))
+                        if (Bundle.GetIdName(fi.BundleId) == Bundle.GetIdName(bdesc.BundleId))
                             scanResult.RegenerateRelationData = true;
                     }
 
@@ -432,7 +432,7 @@ namespace Clamp.OSGI.Framework.Data
                     if (scanSuccessful)
                     {
                         // Assign the domain
-                        if (config.IsBundle)
+                        if (bdesc.IsBundle)
                         {
                             if (folderInfo.RootsDomain == null)
                             {
@@ -441,27 +441,27 @@ namespace Clamp.OSGI.Framework.Data
                                 else
                                     folderInfo.RootsDomain = database.GetUniqueDomainId();
                             }
-                            config.Domain = folderInfo.RootsDomain;
+                            bdesc.Domain = folderInfo.RootsDomain;
                         }
                         else
-                            config.Domain = folderInfo.Domain;
+                            bdesc.Domain = folderInfo.Domain;
 
-                        if (config.IsBundle && scanResult.ActivationIndex != null)
+                        if (bdesc.IsBundle && scanResult.ActivationIndex != null)
                         {
-                            foreach (string f in config.MainModule.Assemblies)
+                            foreach (string f in bdesc.MainModule.Assemblies)
                             {
-                                string asmFile = Path.Combine(config.BasePath, f);
-                                scanResult.ActivationIndex.RegisterAssembly(asmFile, config.BundleId, config.BundleFile, config.Domain);
+                                string asmFile = Path.Combine(bdesc.BasePath, f);
+                                scanResult.ActivationIndex.RegisterAssembly(asmFile, bdesc.BundleId, bdesc.BundleFile, bdesc.Domain);
                             }
                         }
 
-                        if (database.SaveDescription(config, replaceFileName))
+                        if (database.SaveDescription(bdesc, replaceFileName))
                         {
                             // The new dependencies also have to be updated
-                            Util.AddDependencies(config, scanResult);
-                            scanResult.AddBundleToUpdate(config.BundleId);
-                            scannedBundleId = config.BundleId;
-                            scannedIsBundle = config.IsBundle;
+                            Util.AddDependencies(bdesc, scanResult);
+                            scanResult.AddBundleToUpdate(bdesc.BundleId);
+                            scannedBundleId = bdesc.BundleId;
+                            scannedIsBundle = bdesc.IsBundle;
                             return;
                         }
                     }
@@ -474,12 +474,12 @@ namespace Clamp.OSGI.Framework.Data
             {
                 BundleFileInfo ainfo = folderInfo.SetLastScanTime(file, scannedBundleId, scannedIsBundle, fs.GetLastWriteTime(file), !scanSuccessful);
 
-                if (scanSuccessful && config != null)
+                if (scanSuccessful && bdesc != null)
                 {
                     // Update the ignore list in the folder info object. To be used in the next scan
-                    foreach (string df in config.AllIgnorePaths)
+                    foreach (string df in bdesc.AllIgnorePaths)
                     {
-                        string path = Path.Combine(config.BasePath, df);
+                        string path = Path.Combine(bdesc.BasePath, df);
                         ainfo.AddPathToIgnore(Path.GetFullPath(path));
                     }
                 }
@@ -553,7 +553,7 @@ namespace Clamp.OSGI.Framework.Data
                 object asm = reflector.LoadAssembly(filePath);
 
                 if (asm == null)
-                    throw new Exception("Could not load assembly: " + filePath);
+                    throw new Exception("不能加载程序集: " + filePath);
 
                 // Get the config file from the resources, if there is one
 
@@ -836,7 +836,7 @@ namespace Clamp.OSGI.Framework.Data
         private void ScanAssemblyBundleHeaders(IAssemblyReflector reflector, BundleDescription config, object asm, BundleScanResult scanResult)
         {
             // Get basic add-in information
-            BundleFragmentAttribute att = (BundleFragmentAttribute)reflector.GetCustomAttribute(asm, typeof(BundleFragmentAttribute), false);
+            BundleBaseAttribute att = (BundleBaseAttribute)reflector.GetCustomAttribute(asm, typeof(BundleBaseAttribute), false);
 
             if (att != null)
             {
@@ -922,6 +922,7 @@ namespace Clamp.OSGI.Framework.Data
             // Localizer
 
             BundleLocalizerGettextAttribute locat = (BundleLocalizerGettextAttribute)reflector.GetCustomAttribute(asm, typeof(BundleLocalizerGettextAttribute), false);
+
             if (locat != null)
             {
                 ExtensionNodeDescription node = new ExtensionNodeDescription();
@@ -936,6 +937,7 @@ namespace Clamp.OSGI.Framework.Data
             // Optional modules
 
             atts = reflector.GetCustomAttributes(asm, typeof(BundleModuleAttribute), false);
+
             foreach (BundleModuleAttribute mod in atts)
             {
                 if (mod.AssemblyFile.Length > 0)

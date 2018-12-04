@@ -293,9 +293,17 @@ namespace Clamp.OSGI.Framework
 
         #region public static method
 
+        /// <summary>
+        /// 根据命名空间和ID和版本号组件 有效的ID
+        /// </summary>
+        /// <param name="ns"></param>
+        /// <param name="id"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public static string GetFullId(string ns, string id, string version)
         {
             string res;
+
             if (id.StartsWith("::"))
                 res = id.Substring(2);
             else if (ns != null && ns.Length > 0)

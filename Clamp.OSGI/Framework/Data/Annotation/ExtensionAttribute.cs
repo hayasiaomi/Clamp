@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// 标识当前的扩展
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ExtensionAttribute : Attribute
     {

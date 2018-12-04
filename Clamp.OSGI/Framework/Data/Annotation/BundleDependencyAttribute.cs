@@ -6,7 +6,7 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    /// Bundle的依赖注解
+    /// 标识Bundle当前的依赖
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class BundleDependencyAttribute : Attribute

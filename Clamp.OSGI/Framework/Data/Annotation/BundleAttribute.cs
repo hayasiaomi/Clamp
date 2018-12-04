@@ -6,12 +6,12 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    ///  Bundle的注解
+    ///  标识当前程序是一个Bundle
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
-    public class BundleAttribute : BundleFragmentAttribute
+    public class BundleAttribute : BundleBaseAttribute
     {
-        
+
         public BundleAttribute()
         {
         }

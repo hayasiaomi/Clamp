@@ -819,12 +819,19 @@ namespace Clamp.OSGI.Framework.Data
                 return false;
             return Configuration.IsEnabled(id, ainfo.BundleInfo.EnabledByDefault);
         }
-
+        /// <summary>
+        /// 获得唯一的BundleID
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="oldId"></param>
+        /// <param name="ns"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         internal string GetUniqueBundleId(string file, string oldId, string ns, string version)
         {
             string baseId = "__" + Path.GetFileNameWithoutExtension(file);
 
-            if (Path.GetExtension(baseId) == ".addin")
+            if (Path.GetExtension(baseId) == ".bundle")
                 baseId = Path.GetFileNameWithoutExtension(baseId);
 
             string name = baseId;
@@ -1158,7 +1165,6 @@ namespace Clamp.OSGI.Framework.Data
                     hasChanges = true;
                 }
 
-
                 Util.CheckWrittableFloder(BundleCachePath);
                 Util.CheckWrittableFloder(BundleFolderCachePath);
 
@@ -1185,13 +1191,14 @@ namespace Clamp.OSGI.Framework.Data
 
             // Collect all information
 
-            BundleIndex addinHash = new BundleIndex();
+            BundleIndex bundleHash = new BundleIndex();
 
             Hashtable changedBundles = null;
             ArrayList descriptionsToSave = new ArrayList();
             ArrayList files = new ArrayList();
 
             bool partialGeneration = addinsToUpdate != null;
+
             string[] domains = GetDomains().Where(d => d == domain || d == GlobalDomain).ToArray();
 
             // Get the files to be updated
@@ -1262,13 +1269,13 @@ namespace Clamp.OSGI.Framework.Data
                 conf.UnmergeExternalData(changedBundles);
                 descriptionsToSave.Add(conf);
 
-                addinHash.Add(conf);
+                bundleHash.Add(conf);
             }
 
             // Sort the add-ins, to make sure add-ins are processed before
             // all their dependencies
 
-            var sorted = addinHash.GetSortedBundles();
+            var sorted = bundleHash.GetSortedBundles();
 
             // Register extension points and node sets
             foreach (BundleDescription conf in sorted)
@@ -1279,7 +1286,7 @@ namespace Clamp.OSGI.Framework.Data
             {
                 if (changedBundles == null || changedBundles.ContainsKey(conf.BundleId))
                 {
-                    CollectExtensionData(addinHash, conf, updateData);
+                    CollectExtensionData(bundleHash, conf, updateData);
                 }
             }
 
@@ -1991,12 +1998,18 @@ namespace Clamp.OSGI.Framework.Data
                 activationIndex.Write(fileDatabase, ActivationIndexFile);
         }
 
+        /// <summary>
+        /// 获得所有的域
+        /// </summary>
+        /// <returns></returns>
         private string[] GetDomains()
         {
             string[] dirs = fileDatabase.GetDirectories(BundleCachePath);
             string[] ids = new string[dirs.Length];
+
             for (int n = 0; n < dirs.Length; n++)
                 ids[n] = Path.GetFileName(dirs[n]);
+
             return ids;
         }
 

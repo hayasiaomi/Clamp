@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// 标识当前是一个扩展点
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
     public class TypeExtensionPointAttribute : Attribute
     {
@@ -37,7 +40,7 @@ namespace Clamp.OSGI.Framework.Data.Annotation
         }
 
         /// <summary>
-        /// Path that identifies the extension point
+        /// 扩展点的路径
         /// </summary>
         public string Path
         {
@@ -46,7 +49,7 @@ namespace Clamp.OSGI.Framework.Data.Annotation
         }
 
         /// <summary>
-        /// Description of the extension point.
+        /// 扩展的说明
         /// </summary>
         public string Description
         {

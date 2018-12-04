@@ -6,7 +6,7 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
     /// <summary>
-    /// bundle的种类的注解
+    /// 标识Bundle的种类
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class BundleCategoryAttribute : Attribute

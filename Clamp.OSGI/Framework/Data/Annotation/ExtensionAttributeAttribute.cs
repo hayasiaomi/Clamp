@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Annotation
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExtensionAttributeAttribute : Attribute
     {
         private Type targetType;

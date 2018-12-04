@@ -74,12 +74,14 @@ namespace Clamp.OSGI.Framework.Data.Description
             Conditions.Verify(location + "ExtensionPoint (" + Path + ")/", errors);
         }
 
-        internal void SetExtensionsBundleId(string addinId)
+        internal void SetExtensionsBundleId(string bundleId)
         {
-            NodeSet.SetExtensionsBundleId(addinId);
+            NodeSet.SetExtensionsBundleId(bundleId);
+
             foreach (ConditionTypeDescription cond in Conditions)
-                cond.BundleId = addinId;
-            Bundles.Add(addinId);
+                cond.BundleId = bundleId;
+
+            Bundles.Add(bundleId);
         }
 
         internal void MergeWith(string bundleId, ExtensionPoint ep)
