@@ -9,6 +9,9 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// 扩展节点对应的类型类
+    /// </summary>
     public sealed class ExtensionNodeType : ExtensionNodeSet
     {
         private string typeName;
@@ -64,11 +67,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Type that implements the extension node.
+        /// 类型
         /// </summary>
-        /// <value>
-        /// The full name of the type.
-        /// </value>
         public string TypeName
         {
             get { return typeName != null ? typeName : string.Empty; }
@@ -76,11 +76,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Element name to be used when defining an extension in an XML manifest. The default name is "Type".
+        /// 节点名
         /// </summary>
-        /// <value>
-        /// The name of the node.
-        /// </value>
         public string NodeName
         {
             get { return Id; }
@@ -124,20 +121,24 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (attributes == null)
                 {
                     attributes = new NodeTypeAttributeCollection(this);
+
                     if (Element != null)
                     {
                         XmlElement atts = Element["Attributes"];
+
                         if (atts != null)
                         {
                             foreach (XmlNode node in atts.ChildNodes)
                             {
                                 XmlElement e = node as XmlElement;
+
                                 if (e != null)
                                     attributes.Add(new NodeTypeAttribute(e));
                             }
                         }
                     }
                 }
+
                 return attributes;
             }
         }

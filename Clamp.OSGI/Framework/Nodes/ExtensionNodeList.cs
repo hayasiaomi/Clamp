@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Nodes
 {
+    /// <summary>
+    /// 扩展节点集合
+    /// </summary>
     public class ExtensionNodeList : IEnumerable
     {
         internal List<ExtensionNode> list;
@@ -17,12 +20,6 @@ namespace Clamp.OSGI.Framework.Nodes
             this.list = list;
         }
 
-        /// <summary>
-        /// Returns the node in the specified index.
-        /// </summary>
-        /// <param name="n">
-        /// The index.
-        /// </param>
         public ExtensionNode this[int n]
         {
             get
@@ -34,12 +31,6 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        /// <summary>
-        /// Returns the node with the specified ID.
-        /// </summary>
-        /// <param name="id">
-        /// An id.
-        /// </param>
         public ExtensionNode this[string id]
         {
             get
@@ -56,9 +47,6 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        /// <summary>
-        /// Gets an enumerator which enumerates all nodes in the list
-        /// </summary>
         public IEnumerator GetEnumerator()
         {
             if (list == null)
@@ -67,7 +55,7 @@ namespace Clamp.OSGI.Framework.Nodes
         }
 
         /// <summary>
-        /// Number of nodes of the collection.
+        /// 节点数量
         /// </summary>
         public int Count
         {
@@ -75,14 +63,10 @@ namespace Clamp.OSGI.Framework.Nodes
         }
 
         /// <summary>
-        /// Copies all nodes to an array
+        /// 将整个扩展节点集合复制到兼容的一个扩展节点集合中，从目标扩展节点集合的指定索引位置开始放置。
         /// </summary>
-        /// <param name='array'>
-        /// The target array
-        /// </param>
-        /// <param name='index'>
-        /// Initial index where to copy to
-        /// </param>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo(ExtensionNode[] array, int index)
         {
             if (list != null)
@@ -91,11 +75,12 @@ namespace Clamp.OSGI.Framework.Nodes
     }
 
     /// <summary>
-    /// A list of extension nodes.
+    /// 扩展节点集合
     /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ExtensionNodeList<T> : IEnumerable, IEnumerable<T> where T : ExtensionNode
     {
-        List<ExtensionNode> list;
+        private List<ExtensionNode> list;
 
         internal static ExtensionNodeList<T> Empty = new ExtensionNodeList<T>(new List<ExtensionNode>());
 
@@ -104,12 +89,6 @@ namespace Clamp.OSGI.Framework.Nodes
             this.list = list;
         }
 
-        /// <summary>
-        /// Returns the node in the specified index.
-        /// </summary>
-        /// <param name="n">
-        /// The index.
-        /// </param>
         public T this[int n]
         {
             get
@@ -121,12 +100,6 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        /// <summary>
-        /// Returns the node with the specified ID.
-        /// </summary>
-        /// <param name="id">
-        /// An id.
-        /// </param>
         public T this[string id]
         {
             get
@@ -143,9 +116,6 @@ namespace Clamp.OSGI.Framework.Nodes
             }
         }
 
-        /// <summary>
-        /// Gets an enumerator which enumerates all nodes in the list
-        /// </summary>
         public IEnumerator<T> GetEnumerator()
         {
             if (list == null)
@@ -162,22 +132,19 @@ namespace Clamp.OSGI.Framework.Nodes
         }
 
         /// <summary>
-        /// Number of nodes of the collection.
+        /// 集合数量
         /// </summary>
         public int Count
         {
             get { return list == null ? 0 : list.Count; }
         }
 
+
         /// <summary>
-        /// Copies all nodes to an array
+        /// 将整个扩展节点集合复制到兼容的一个扩展节点集合中，从目标扩展节点集合的指定索引位置开始放置。
         /// </summary>
-        /// <param name='array'>
-        /// The target array
-        /// </param>
-        /// <param name='index'>
-        /// Initial index where to copy to
-        /// </param>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo(T[] array, int index)
         {
             if (list != null)

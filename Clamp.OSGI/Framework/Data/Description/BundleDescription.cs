@@ -743,15 +743,19 @@ namespace Clamp.OSGI.Framework.Data.Description
                 case "Version": value = version; return true;
                 case "CompatVersion": value = compatVersion; return true;
                 case "DefaultEnabled": value = defaultEnabled.ToString(); return true;
-                case "IsRoot": value = isbundle.ToString(); return true;
+                case "IsBundle": value = isbundle.ToString(); return true;
                 case "Flags": value = flags.ToString(); return true;
             }
+
             if (properties != null && properties.HasProperty(name))
             {
                 value = properties.GetPropertyValue(name);
+
                 return true;
             }
+
             value = null;
+
             return false;
         }
 
@@ -987,93 +991,103 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Load an add-in description from a text reader
+        /// 通过一个文本流来读取一个Bundle说明
         /// </summary>
-        /// <param name='reader'>
-        /// The text reader
-        /// </param>
-        /// <param name='basePath'>
-        /// The path to be used to resolve relative file paths.
-        /// </param>
+        /// <param name="reader"></param>
+        /// <param name="basePath"></param>
+        /// <returns></returns>
         public static BundleDescription Read(TextReader reader, string basePath)
         {
-            BundleDescription config = new BundleDescription();
+            BundleDescription bdesc = new BundleDescription();
 
             try
             {
-                config.configDoc = new XmlDocument();
-                config.configDoc.Load(reader);
+                bdesc.configDoc = new XmlDocument();
+                bdesc.configDoc.Load(reader);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("The add-in configuration file is invalid: " + ex.Message, ex);
+                throw new InvalidOperationException("Bundle配置文件不是有效的文件: " + ex.Message, ex);
             }
 
-            XmlElement elem = config.configDoc.DocumentElement;
+            XmlElement elem = bdesc.configDoc.DocumentElement;
+
             if (elem.LocalName == "ExtensionModel")
-                return config;
+                return bdesc;
 
             XmlElement varsElem = (XmlElement)elem.SelectSingleNode("Variables");
+
             if (varsElem != null)
             {
                 foreach (XmlNode node in varsElem.ChildNodes)
                 {
                     XmlElement prop = node as XmlElement;
+
                     if (prop == null)
                         continue;
-                    if (config.variables == null)
-                        config.variables = new Dictionary<string, string>();
-                    config.variables[prop.LocalName] = prop.InnerText;
+
+                    if (bdesc.variables == null)
+                        bdesc.variables = new Dictionary<string, string>();
+
+                    bdesc.variables[prop.LocalName] = prop.InnerText;
                 }
             }
 
-            config.id = elem.GetAttribute("id");
-            config.ns = elem.GetAttribute("namespace");
-            config.name = elem.GetAttribute("name");
-            config.version = elem.GetAttribute("version");
-            config.compatVersion = elem.GetAttribute("compatVersion");
-            config.author = elem.GetAttribute("author");
-            config.url = elem.GetAttribute("url");
-            config.copyright = elem.GetAttribute("copyright");
-            config.description = elem.GetAttribute("description");
-            config.category = elem.GetAttribute("category");
-            config.basePath = elem.GetAttribute("basePath");
-            config.domain = "global";
+            bdesc.id = elem.GetAttribute("id");
+            bdesc.ns = elem.GetAttribute("namespace");
+            bdesc.name = elem.GetAttribute("name");
+            bdesc.version = elem.GetAttribute("version");
+            bdesc.compatVersion = elem.GetAttribute("compatVersion");
+            bdesc.author = elem.GetAttribute("author");
+            bdesc.url = elem.GetAttribute("url");
+            bdesc.copyright = elem.GetAttribute("copyright");
+            bdesc.description = elem.GetAttribute("description");
+            bdesc.category = elem.GetAttribute("category");
+            bdesc.basePath = elem.GetAttribute("basePath");
+            bdesc.domain = "global";
 
-            string s = elem.GetAttribute("isRoot");
-            if (s.Length == 0) s = elem.GetAttribute("isroot");
-            config.isbundle = GetBool(s, false);
+            string s = elem.GetAttribute("isBundle");
 
-            config.defaultEnabled = GetBool(elem.GetAttribute("defaultEnabled"), true);
+            if (s.Length == 0)
+                s = elem.GetAttribute("isbundle");
+
+            bdesc.isbundle = GetBool(s, true);
+
+            bdesc.defaultEnabled = GetBool(elem.GetAttribute("defaultEnabled"), true);
 
             string prot = elem.GetAttribute("flags");
+
             if (prot.Length == 0)
-                config.flags = BundleFlags.None;
+                bdesc.flags = BundleFlags.None;
             else
-                config.flags = (BundleFlags)Enum.Parse(typeof(BundleFlags), prot);
+                bdesc.flags = (BundleFlags)Enum.Parse(typeof(BundleFlags), prot);
 
             XmlElement localizerElem = (XmlElement)elem.SelectSingleNode("Localizer");
+
             if (localizerElem != null)
-                config.localizer = new ExtensionNodeDescription(localizerElem);
+                bdesc.localizer = new ExtensionNodeDescription(localizerElem);
 
             XmlElement headerElem = (XmlElement)elem.SelectSingleNode("Header");
+
             if (headerElem != null)
             {
                 foreach (XmlNode node in headerElem.ChildNodes)
                 {
                     XmlElement prop = node as XmlElement;
+
                     if (prop == null)
                         continue;
-                    config.Properties.SetPropertyValue(prop.LocalName, prop.InnerText, prop.GetAttribute("locale"));
+
+                    bdesc.Properties.SetPropertyValue(prop.LocalName, prop.InnerText, prop.GetAttribute("locale"));
                 }
             }
 
-            config.TransferCoreProperties(false);
+            bdesc.TransferCoreProperties(false);
 
-            if (config.id.Length > 0)
-                config.hasUserId = true;
+            if (bdesc.id.Length > 0)
+                bdesc.hasUserId = true;
 
-            return config;
+            return bdesc;
         }
 
         internal string ParseString(string input)
@@ -1082,10 +1096,12 @@ namespace Clamp.OSGI.Framework.Data.Description
                 return input;
 
             int i = input.IndexOf("$(");
+
             if (i == -1)
                 return input;
 
             StringBuilder result = new StringBuilder(input.Length);
+
             result.Append(input, 0, i);
 
             while (i < input.Length)
@@ -1108,6 +1124,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                     string tag = input.Substring(start, i - start);
 
                     string tagValue;
+
                     if (TryGetVariableValue(tag, out tagValue))
                         result.Append(tagValue);
                     else
@@ -1120,11 +1137,19 @@ namespace Clamp.OSGI.Framework.Data.Description
                 {
                     result.Append(input[i]);
                 }
+
                 i++;
             }
+
             return result.ToString();
         }
 
+        /// <summary>
+        /// 将定的字符串转化为BOOLEAN
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="defval"></param>
+        /// <returns></returns>
         static bool GetBool(string s, bool defval)
         {
             if (s.Length == 0)

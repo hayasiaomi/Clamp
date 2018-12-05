@@ -8,6 +8,9 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// 扩展
+    /// </summary>
     public class Extension : ObjectDescription, IComparable
     {
         private string path;

@@ -118,7 +118,9 @@ namespace Clamp.OSGI.Framework.Data.Description
         public string GetPropertyValue(string name, string locale)
         {
             locale = NormalizeLocale(locale);
+
             string lang = GetLocaleLang(locale);
+
             BundleProperty sameLangDifCountry = null;
             BundleProperty sameLang = null;
             BundleProperty defaultLoc = null;
@@ -129,7 +131,9 @@ namespace Clamp.OSGI.Framework.Data.Description
                 {
                     if (p.Locale == locale)
                         return ParseString(p.Value);
+
                     string plang = GetLocaleLang(p.Locale);
+
                     if (plang == p.Locale && plang == lang) // No country specified
                         sameLang = p;
                     else if (plang == lang)
@@ -138,6 +142,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                         defaultLoc = p;
                 }
             }
+
             if (sameLang != null)
                 return ParseString(sameLang.Value);
             else if (sameLangDifCountry != null)
@@ -160,6 +165,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         {
             if (string.IsNullOrEmpty(loc))
                 return null;
+
             return loc.Replace('_', '-');
         }
 
@@ -194,14 +200,17 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (p.Name == name && p.Locale == locale)
                 {
                     p.Value = value;
+
                     return;
                 }
             }
             BundleProperty prop = new BundleProperty();
+
             prop.Name = name;
             prop.Value = value;
             prop.Locale = locale;
-            Add(prop);
+
+            this.Add(prop);
         }
 
         public void RemoveProperty(string name)

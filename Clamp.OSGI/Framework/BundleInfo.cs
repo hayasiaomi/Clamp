@@ -72,13 +72,18 @@ namespace Clamp.OSGI.Framework
             get
             {
                 string s = Properties.GetPropertyValue("Name");
+
                 if (s.Length > 0)
                     return s;
+
                 if (name != null && name.Length > 0)
                     return name;
+
                 string sid = id;
+
                 if (sid.StartsWith("__"))
                     sid = sid.Substring(2);
+
                 return Bundle.GetFullId(namspace, sid, null);
             }
             set { name = value; }

@@ -10,9 +10,9 @@ namespace Clamp.OSGI.Framework.Data.Description
 {
     public class ExtensionNodeDescription : ObjectDescription, NodeElement
     {
-        ExtensionNodeDescriptionCollection childNodes;
-        string[] attributes;
-        string nodeName;
+        private ExtensionNodeDescriptionCollection childNodes;
+        private string[] attributes;
+        private string nodeName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionNodeDescription"/> class.

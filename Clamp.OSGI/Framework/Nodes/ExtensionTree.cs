@@ -142,6 +142,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 {
                     conds.Add(ReadComplexCondition(celem, null));
                 }
+
                 if (elem.NodeName == "Or")
                     return new OrCondition((BaseCondition[])conds.ToArray(typeof(BaseCondition)), parentCondition);
                 else if (elem.NodeName == "And")
@@ -156,11 +157,14 @@ namespace Clamp.OSGI.Framework.Nodes
                     return new NotCondition((BaseCondition)conds[0], parentCondition);
                 }
             }
+
             if (elem.NodeName == "Condition")
             {
                 return new Condition(BundleEngine, elem, parentCondition);
             }
+
             clampBundle.ReportError("Invalid complex condition element '" + elem.NodeName + "'.", null, null, false);
+
             return new NullCondition();
         }
 
@@ -176,6 +180,7 @@ namespace Clamp.OSGI.Framework.Nodes
 
                 ExtensionNode node;
                 node = Activator.CreateInstance(ntype.Type) as ExtensionNode;
+
                 if (node == null)
                 {
                     clampBundle.ReportError("Extension node type '" + ntype.Type + "' must be a subclass of ExtensionNode", addin, null, false);
@@ -185,6 +190,7 @@ namespace Clamp.OSGI.Framework.Nodes
                 tnode.AttachExtensionNode(node);
                 node.SetData(clampBundle, addin, ntype, module);
                 node.Read(elem);
+
                 return node;
             }
             catch (Exception ex)
@@ -197,13 +203,16 @@ namespace Clamp.OSGI.Framework.Nodes
         bool InitializeNodeType(ExtensionNodeType ntype)
         {
             RuntimeBundle p = clampBundle.GetBundle(ntype.BundleId);
+
             if (p == null)
             {
                 if (!clampBundle.IsBundleLoaded(ntype.BundleId))
                 {
                     if (!clampBundle.LoadBundle(ntype.BundleId, false))
                         return false;
+
                     p = clampBundle.GetBundle(ntype.BundleId);
+
                     if (p == null)
                     {
                         clampBundle.ReportError("Add-in not found", ntype.BundleId, null, false);
@@ -238,6 +247,7 @@ namespace Clamp.OSGI.Framework.Nodes
             else
             {
                 ntype.Type = p.GetType(ntype.TypeName, false);
+
                 if (ntype.Type == null)
                 {
                     clampBundle.ReportError("Extension node type '" + ntype.TypeName + "' not found.", ntype.BundleId, null, false);
@@ -249,6 +259,7 @@ namespace Clamp.OSGI.Framework.Nodes
             ExtensionNodeType.FieldData boundAttributeType = null;
             Dictionary<string, ExtensionNodeType.FieldData> fields = GetMembersMap(ntype.Type, out boundAttributeType);
             ntype.CustomAttributeMember = boundAttributeType;
+
             if (fields.Count > 0)
                 ntype.Fields = fields;
 
@@ -259,6 +270,7 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 if (ntype.ExtensionAttributeTypeName.Length == 0)
                     throw new InvalidOperationException("Extension node not bound to a custom attribute.");
+
                 if (ntype.ExtensionAttributeTypeName != boundAttributeType.MemberType.FullName)
                     throw new InvalidOperationException("Incorrect custom attribute type declaration in " + ntype.Type + ". Expected '" + ntype.ExtensionAttributeTypeName + "' found '" + boundAttributeType.MemberType.FullName + "'");
 
@@ -300,12 +312,14 @@ namespace Clamp.OSGI.Framework.Nodes
                 }
                 type = type.BaseType;
             }
+
             return fields;
         }
 
         ExtensionNodeType.FieldData CreateFieldData(MemberInfo member, NodeAttributeAttribute at, out string name, ref ExtensionNodeType.FieldData boundAttributeType)
         {
             ExtensionNodeType.FieldData fdata = new ExtensionNodeType.FieldData();
+
             fdata.Member = member;
             fdata.Required = at.Required;
             fdata.Localizable = at.Localizable;
@@ -319,7 +333,9 @@ namespace Clamp.OSGI.Framework.Nodes
             {
                 if (boundAttributeType != null)
                     throw new InvalidOperationException("Type '" + member.DeclaringType + "' has two members bound to a custom attribute. There can be only one.");
+
                 boundAttributeType = fdata;
+
                 return null;
             }
 

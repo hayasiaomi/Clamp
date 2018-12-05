@@ -25,7 +25,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal ExtensionNodeSet(XmlElement element)
         {
             Element = element;
-            id = element.GetAttribute(IdAttribute);
+            this.id = element.GetAttribute(IdAttribute);
         }
 
         /// <summary>
@@ -73,10 +73,13 @@ namespace Clamp.OSGI.Framework.Data.Description
                 Element = parent.OwnerDocument.CreateElement(nodeName);
                 parent.AppendChild(Element);
             }
+
             if (Id.Length > 0)
                 Element.SetAttribute(IdAttribute, Id);
+
             if (nodeTypes != null)
                 nodeTypes.SaveXml(Element);
+
             if (nodeSets != null)
             {
                 foreach (string s in nodeSets)
