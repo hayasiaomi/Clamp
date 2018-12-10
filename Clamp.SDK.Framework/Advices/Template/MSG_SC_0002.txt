@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-info",
-	NoticeCategory:12,
-	SerialNumber:"MSG_SC_0002",
-	Title:"扫码提醒",
-	ShutCount:-20,
-	Content:"<span>手机尾号</span><span class=\"font-color\">##TailNumber##</span> <span>的</span><span class=\"font-color\">##Level##</span><span>正在</span><span>##TableCode##</span>扫码。"
-}

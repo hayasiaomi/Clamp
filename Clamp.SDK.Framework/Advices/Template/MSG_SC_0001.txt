@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-info",
-	NoticeCategory:12,
-	SerialNumber:"MSG_SC_0001",
-	Title:"扫码提醒",
-	ShutCount:3,
-	Content:"<span class=\"font-color\">##TableCode##</span><span >正在扫码。</span>"
-}

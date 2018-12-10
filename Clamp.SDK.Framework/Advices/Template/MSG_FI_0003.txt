@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-success",
-	NoticeCategory:11,
-	SerialNumber:"MSG_FI_0003",
-	Title:"退款成功",
-	ShutCount:3,
-	Content:"<span class=\"font-color\">##Refund##</span><span>成功退款</span><span class=\"font-color\">##Price##</span><span>元。</span>"
-}

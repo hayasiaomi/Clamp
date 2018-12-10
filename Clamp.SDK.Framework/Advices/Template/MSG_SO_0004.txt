@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-success",
-	NoticeCategory:10,
-	SerialNumber:"MSG_SO_0004",
-	Title:"下单成功",
-	ShutCount:3,
-	Content:"<span class=\"font-color\">##TableCode##</span><span>扫码下单成功，</span><span class=\"font-color\"> ##Description##</span><span>，已成功支付</span><span class=\"font-color\">##Price##</span><span>元。</span>"
-}

@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-success",
-	NoticeCategory:11,
-	SerialNumber:"MSG_FI_0001",
-	Title:"支付成功",
-	ShutCount:3,
-	Content:"<span class=\"font-color\">##Business##</span><span>成功支付</span><span class=\"font-color\">##Price##</span><span>元。</span>"
-}

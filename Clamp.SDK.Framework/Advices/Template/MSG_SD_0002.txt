@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-error",
-	NoticeCategory:14,
-	SerialNumber:"MSG_SD_0002",
-	Title:"打印失败",
-	ShutCount:-1,
-	Content:"<span class=\"font-color\">##OrderName##</span><span>打印失败，编号：</span><span class=\"font-color\">##OrderCode##。</span> "
-}

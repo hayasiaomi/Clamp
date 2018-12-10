@@ -1,8 +1,0 @@
-﻿{
-	IconName:"icon-info",
-	NoticeCategory:14,
-	SerialNumber:"MSG_SD_0001",
-	Title:"网络异常",
-	ShutCount:-1,
-	Content:"<span>网络连接异常，请检查网络设置。</span>"
-}
