@@ -7,7 +7,7 @@
     <ProjectGuid>{73D1E6EA-C31A-4783-A84D-60C2F20A7A0D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Clamp.ChromiumRenderer</RootNamespace>
-    <AssemblyName>ClampCefRenderer</AssemblyName>
+    <AssemblyName>YEUXCefRenderer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

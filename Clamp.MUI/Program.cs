@@ -34,7 +34,7 @@ namespace Clamp.MUI
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                ChromiumSettings.InitializeClampSettings();
+                //ChromiumSettings.InitializeClampSettings();
 
                 string assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 
@@ -42,26 +42,31 @@ namespace Clamp.MUI
                 {
                     UILauncher.RegisterEmbeddedScheme(Assembly.GetExecutingAssembly(), schemeName: "embedded", domainName: "res.welcome.local");
 
-                    ChromiumSettings.SplashUIThread = new Thread(new ThreadStart(() =>
-                    {
-                        Application.Run(new Splash.FrmSplash());
-                    }));
+                    Application.Run(new FrmSimpleChromium("www.baidu.com"));
+                 
 
-                    ChromiumSettings.SplashUIThread.SetApartmentState(ApartmentState.STA);
-                    ChromiumSettings.SplashUIThread.Start();
+                    //    ChromiumSettings.SplashUIThread = new Thread(new ThreadStart(() =>
+                    //    {
+                    //        Application.Run(new Splash.FrmSplash());
+                    //    }));
 
-                    ChromiumSettings.FrmMainChromium = new FrmMainChromium();
-                    ChromiumSettings.FrmMainChromium.FrmOpacity = 0;
-                    ChromiumSettings.FrmMainChromium.OnChromiumLoadCompleted += FrmMain_OnChromiumLoadCompleted;
+                    //    ChromiumSettings.SplashUIThread.SetApartmentState(ApartmentState.STA);
+                    //    ChromiumSettings.SplashUIThread.Start();
 
-                    //启动主窗体
-                    Application.Run(ChromiumSettings.FrmMainChromium);
+                    //    ChromiumSettings.FrmMainChromium = new FrmMainChromium();
+                    //    ChromiumSettings.FrmMainChromium.FrmOpacity = 0;
+                    //    ChromiumSettings.FrmMainChromium.OnChromiumLoadCompleted += FrmMain_OnChromiumLoadCompleted;
 
-                    if (ChromiumSettings.SplashResult != null && !ChromiumSettings.SplashResult.Completed)
-                    {
-                        Application.Run(new FrmError(ChromiumSettings.SplashResult.ErrorMessage));
-                    }
+                    //    //启动主窗体
+                    //    Application.Run(ChromiumSettings.FrmMainChromium);
+
+                    //    if (ChromiumSettings.SplashResult != null && !ChromiumSettings.SplashResult.Completed)
+                    //    {
+                    //        Application.Run(new FrmError(ChromiumSettings.SplashResult.ErrorMessage));
+                    //    }
                 }
+
+        
 
                 mutex.ReleaseMutex();
             }

@@ -6,8 +6,5 @@ logs/
 logs/
 *.suo
 *.user
-ShanDian.Repertory/
-/Parts/Parts.Print/Hydra.Print.ServicesTests.Tests
-/DB
-/Clamp.MUI/Cef64
-/Clamp.MUI/Cef
+/libcfx/Debug
+/libcfx/x64
