@@ -252,7 +252,9 @@ namespace Clamp.OSGI.Framework.Data
         public object ReadSharedObject(string fullFileName, BinaryXmlTypeMap typeMap)
         {
             object result;
+
             OpenFileForPath(fullFileName, null, typeMap, false, out result);
+
             return result;
         }
 

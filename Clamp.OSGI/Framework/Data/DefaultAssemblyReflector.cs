@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data
 {
+    /// <summary>
+    /// 默认的反射器
+    /// </summary>
     class DefaultAssemblyReflector : IAssemblyReflector
     {
         public void Initialize(IAssemblyLocator locator)

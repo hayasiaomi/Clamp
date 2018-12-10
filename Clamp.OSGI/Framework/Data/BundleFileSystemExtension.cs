@@ -54,6 +54,11 @@ namespace Clamp.OSGI.Framework.Data
             return Directory.GetFiles(path);
         }
 
+        /// <summary>
+        /// 获得上一次写入的时间
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public virtual DateTime GetLastWriteTime(string filePath)
         {
             return File.GetLastWriteTime(filePath);
@@ -99,6 +104,7 @@ namespace Clamp.OSGI.Framework.Data
                 refName = "Mono.Bundles.CecilReflector.Reflector, Mono.Bundles.CecilReflector" + refName.Substring(i);
                 t = Type.GetType(refName, false);
             }
+
             if (t != null)
                 reflector = (IAssemblyReflector)Activator.CreateInstance(t);
             else

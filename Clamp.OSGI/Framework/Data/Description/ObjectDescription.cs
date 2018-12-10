@@ -100,6 +100,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal string ReadXmlDescription()
         {
             XmlElement de = Element["Description"];
+
             if (de != null)
                 return de.InnerText;
             else

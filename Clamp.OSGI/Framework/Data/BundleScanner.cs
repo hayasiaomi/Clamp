@@ -54,7 +54,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 检测文件夹
+        /// 检测指定文件夹和域
         /// </summary>
         /// <param name="path"></param>
         /// <param name="domain"></param>
@@ -91,6 +91,7 @@ namespace Clamp.OSGI.Framework.Data
                 folderInfo = new BundleScanFolderInfo(path);
             }
 
+            //指定的域不是公共的。并且 folderInfo是公共 或是 folderInfo的域不等指定的域
             if (!sharedFolder && (folderInfo.SharedFolder || folderInfo.Domain != domain))
             {
                 // 如果域为null的时候，新建一个域，如果folderInfo的域不为空的话，就重用
@@ -144,6 +145,7 @@ namespace Clamp.OSGI.Framework.Data
                 foreach (string file in files)
                 {
                     string ext = Path.GetExtension(file).ToLower();
+
                     if (ext == ".dll" || ext == ".exe")
                     {
                         RegisterFileToScan(file, scanResult, folderInfo);
@@ -161,11 +163,12 @@ namespace Clamp.OSGI.Framework.Data
             }
             else if (!scanResult.LocateAssembliesOnly)
             {
-                // The folder has been deleted. All add-ins defined in that folder should also be deleted.
                 scanResult.RegenerateRelationData = true;
                 scanResult.ChangesFound = true;
+
                 if (scanResult.CheckOnly)
                     return;
+
                 database.DeleteFolderInfo(folderInfo);
             }
 
@@ -555,15 +558,13 @@ namespace Clamp.OSGI.Framework.Data
                 if (asm == null)
                     throw new Exception("不能加载程序集: " + filePath);
 
-                // Get the config file from the resources, if there is one
-
                 if (!ScanEmbeddedDescription(filePath, reflector, asm, out bdesc))
                     return false;
 
                 if (bdesc == null || bdesc.IsExtensionModel)
                 {
                     // In this case, only scan the assembly if it has the Bundle attribute.
-                    BundleFragmentAttribute att = (BundleFragmentAttribute)reflector.GetCustomAttribute(asm, typeof(BundleFragmentAttribute), false);
+                    BundleAttribute att = (BundleAttribute)reflector.GetCustomAttribute(asm, typeof(BundleAttribute), false);
 
                     if (att == null)
                     {
@@ -619,8 +620,7 @@ namespace Clamp.OSGI.Framework.Data
 
                 if (database.BundleDescriptionExists(finfo.Domain, finfo.BundleId))
                 {
-                    // It is an add-in and it has not changed. Paths in the ignore list
-                    // are still valid, so they can be used.
+                    //如果是Bundle，并且还有任何变化的话，他的忽略的集合是要被用的。
                     if (finfo.IgnorePaths != null)
                         scanResult.AddPathsToIgnore(finfo.IgnorePaths);
 
@@ -836,7 +836,7 @@ namespace Clamp.OSGI.Framework.Data
         private void ScanAssemblyBundleHeaders(IAssemblyReflector reflector, BundleDescription config, object asm, BundleScanResult scanResult)
         {
             // Get basic add-in information
-            BundleBaseAttribute att = (BundleBaseAttribute)reflector.GetCustomAttribute(asm, typeof(BundleBaseAttribute), false);
+            BundleAttribute att = (BundleAttribute)reflector.GetCustomAttribute(asm, typeof(BundleAttribute), false);
 
             if (att != null)
             {
@@ -853,7 +853,7 @@ namespace Clamp.OSGI.Framework.Data
                 if (att.Url.Length > 0)
                     config.Url = att.Url;
 
-                config.IsBundle = att is BundleAttribute;
+                config.IsBundle = !(att is BundleFragmentAttribute);
                 config.EnabledByDefault = att.EnabledByDefault;
                 config.Flags = att.Flags;
             }
@@ -1328,7 +1328,7 @@ namespace Clamp.OSGI.Framework.Data
         #region static  method
 
         /// <summary>
-        /// 
+        /// 检测内嵌的Bundle信息
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="reflector"></param>
@@ -1345,20 +1345,20 @@ namespace Clamp.OSGI.Framework.Data
                 {
                     using (Stream s = reflector.GetResourceStream(asm, res))
                     {
-                        BundleDescription bd = BundleDescription.Read(s, Path.GetDirectoryName(filePath));
+                        BundleDescription bundleDescription = BundleDescription.Read(s, Path.GetDirectoryName(filePath));
 
                         if (bdesc != null)
                         {
                             //如果俩个都不是ExtensionModel的话，那说明有一个以上的bundle文件。这是不对的。
-                            if (!bdesc.IsExtensionModel && !bd.IsExtensionModel)
+                            if (!bdesc.IsExtensionModel && !bundleDescription.IsExtensionModel)
                             {
                                 return false;
                             }
 
-                            bdesc = BundleDescription.Merge(bdesc, bd);
+                            bdesc = BundleDescription.Merge(bdesc, bundleDescription);
                         }
                         else
-                            bdesc = bd;
+                            bdesc = bundleDescription;
                     }
                 }
             }

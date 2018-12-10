@@ -70,6 +70,9 @@ namespace Clamp.OSGI.Framework.Data
         /// </summary>
         internal ArrayList FilesToScan { get { return this.filesToScan; } }
 
+        /// <summary>
+        /// Bundlea激活的索引类
+        /// </summary>
         internal BundleActivationIndex ActivationIndex { set; get; }
 
         public BundleScanResult()
@@ -88,6 +91,10 @@ namespace Clamp.OSGI.Framework.Data
                 this.ModifiedFolderInfos.Add(folderInfo);
         }
 
+        /// <summary>
+        /// 增加需要移除的Bundle
+        /// </summary>
+        /// <param name="addinId"></param>
         public void AddRemovedBundle(string addinId)
         {
             if (!this.RemovedBundles.Contains(addinId))
@@ -106,6 +113,11 @@ namespace Clamp.OSGI.Framework.Data
                 this.BundlesToUpdateRelations.Add(addinId);
         }
 
+        /// <summary>
+        /// 是否可以访问
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
         public bool VisitFolder(string folder)
         {
             if (visitedFolders.Contains(folder) || IgnorePath(folder))

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// 扩展点集合
+    /// </summary>
     public class ExtensionPointCollection : ObjectDescriptionCollection<ExtensionPoint>
     {
         public ExtensionPointCollection()
@@ -20,12 +23,6 @@ namespace Clamp.OSGI.Framework.Data.Description
             get { return (ExtensionPoint)List[n]; }
         }
 
-        /// <summary>
-        /// Gets the <see cref="Mono.Bundles.Description.ExtensionPoint"/> with the specified path.
-        /// </summary>
-        /// <param name='path'>
-        /// Path.
-        /// </param>
         public ExtensionPoint this[string path]
         {
             get

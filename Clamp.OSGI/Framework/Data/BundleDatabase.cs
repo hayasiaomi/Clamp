@@ -234,6 +234,7 @@ namespace Clamp.OSGI.Framework.Data
         public bool BundleDescriptionExists(string domain, string bundleId)
         {
             string file = GetDescriptionPath(domain, bundleId);
+
             return fileDatabase.Exists(file);
         }
 
@@ -469,11 +470,8 @@ namespace Clamp.OSGI.Framework.Data
         /// <returns></returns>
         public bool GetBundleDescription(string domain, string bundleId, string bundleFile, out BundleDescription description)
         {
-            // If the same add-in is installed in different folders (in the same domain) there will be several .mbundle files for it,
-            // using the suffix "_X" where X is a number > 1 (for example: someBundle,1.0.mbundle, someBundle,1.0.mbundle_2, someBundle,1.0.mbundle_3, ...)
-            // We need to return the .mbundle whose BundleFile matches the one being requested
-
             bundleFile = Path.GetFullPath(bundleFile);
+
             int altNum = 1;
             string baseFile = GetDescriptionPath(domain, bundleId);
             string file = baseFile;
@@ -484,7 +482,6 @@ namespace Clamp.OSGI.Framework.Data
                 if (!ReadBundleDescription(file, out description))
                 {
                     //所以说当前这个文件是有问题，必须删除掉，这样子才可以保证调用SaveDescription不会被替掉。
-                    // Avoids creating alternate versions of corrupted files when later calling SaveDescription.
                     RemoveBundleDescriptionFile(file);
                     failed = true;
                     continue;
@@ -500,11 +497,11 @@ namespace Clamp.OSGI.Framework.Data
             }
             while (fileDatabase.Exists(file));
 
-            // File not found. Return false only if there has been any read error.
             description = null;
 
             return failed;
         }
+
         /// <summary>
         /// 根据文件路径读取 Bundle详细信息，如果有问题就是会返回false
         /// </summary>
@@ -1044,7 +1041,7 @@ namespace Clamp.OSGI.Framework.Data
                 }
             }
 
-            //查看对应的文件夹是否发生变化
+            //查看当前的根目录
             if (registry.BasePath != null)
                 scanner.ScanFolder(registry.BasePath, null, scanResult);
 
@@ -1052,6 +1049,7 @@ namespace Clamp.OSGI.Framework.Data
             if (scanResult.CheckOnly && scanResult.ChangesFound)
                 return;
 
+            //查看公共的目录
             if (scanResult.Domain == null)
                 scanner.ScanFolder(HostsPath, GlobalDomain, scanResult);
 
@@ -1060,8 +1058,10 @@ namespace Clamp.OSGI.Framework.Data
 
             foreach (string dir in registry.GlobalBundleDirectories)
             {
+
                 if (scanResult.CheckOnly && scanResult.ChangesFound)
                     return;
+
                 scanner.ScanFolderRec(dir, GlobalDomain, scanResult);
             }
 

@@ -1,4 +1,4 @@
 ﻿using System;
 using Clamp.OSGI.Framework.Data.Annotation;
 
-[assembly: Bundle("Clamp.Webwork", "1.0")]
+[assembly: Bundle1Attribute("Clamp.Webwork", "1.0")]

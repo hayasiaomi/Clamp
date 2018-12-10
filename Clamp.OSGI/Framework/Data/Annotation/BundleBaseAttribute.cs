@@ -9,7 +9,7 @@ namespace Clamp.OSGI.Framework.Data.Annotation
     /// Bundle注解的共用基类
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
-    public class BundleBaseAttribute : Attribute
+    public class BundleAttribute : Attribute
     {
         private string id;
         private string version;
@@ -21,18 +21,18 @@ namespace Clamp.OSGI.Framework.Data.Annotation
         private string url;
 
 
-        public BundleBaseAttribute()
+        public BundleAttribute()
         {
         }
 
 
-        public BundleBaseAttribute(string id)
+        public BundleAttribute(string id)
         {
             this.id = id;
         }
 
 
-        public BundleBaseAttribute(string id, string version)
+        public BundleAttribute(string id, string version)
         {
             this.id = id;
             this.version = version;

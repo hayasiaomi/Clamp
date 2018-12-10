@@ -86,11 +86,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the addin identifier.
+        /// Bundle的唯一标识
         /// </summary>
-        /// <value>
-        /// The addin identifier.
-        /// </value>
         public string BundleId
         {
             get { return Bundle.GetFullId(Namespace, LocalId, Version); }
@@ -109,11 +106,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the namespace.
+        /// 命名空间
         /// </summary>
-        /// <value>
-        /// The namespace.
-        /// </value>
         public string Namespace
         {
             get { return ns != null ? ParseString(ns) : string.Empty; }
@@ -121,11 +115,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the display name of the add-in.
+        /// Bundle的名称
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public string Name
         {
             get
@@ -146,11 +137,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the version.
+        /// 版本号
         /// </summary>
-        /// <value>
-        /// The version.
-        /// </value>
         public string Version
         {
             get { return version != null ? ParseString(version) : string.Empty; }
@@ -170,11 +158,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the author.
+        /// 作者
         /// </summary>
-        /// <value>
-        /// The author.
-        /// </value>
         public string Author
         {
             get
@@ -188,11 +173,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the Url where more information about the add-in can be found.
+        /// Bundel对应的链接
         /// </summary>
-        /// <value>
-        /// The URL.
-        /// </value>
         public string Url
         {
             get
@@ -206,11 +188,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the copyright.
+        /// 版权
         /// </summary>
-        /// <value>
-        /// The copyright.
-        /// </value>
         public string Copyright
         {
             get
@@ -224,11 +203,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the description of the add-in.
+        /// 说明
         /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
         public string Description
         {
             get
@@ -242,11 +218,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the category of the add-in.
+        /// 分类
         /// </summary>
-        /// <value>
-        /// The category.
-        /// </value>
         public string Category
         {
             get
@@ -286,11 +259,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this add-in is enabled by default.
+        /// 默认是否可以用
         /// </summary>
-        /// <value>
-        /// <c>true</c> if enabled by default; otherwise, <c>false</c>.
-        /// </value>
         public bool EnabledByDefault
         {
             get { return defaultEnabled; }
@@ -298,11 +268,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the add-in flags.
+        /// Bundle的状态
         /// </summary>
-        /// <value>
-        /// The flags.
-        /// </value>
         public BundleFlags Flags
         {
             get { return flags; }
@@ -316,38 +283,34 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets a value indicating whether this add-in can be disabled.
+        /// 是否可以禁止
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this add-in can be disabled; otherwise, <c>false</c>.
-        /// </value>
         public bool CanDisable
         {
             get { return (flags & BundleFlags.CantDisable) == 0 && !IsHidden; }
         }
 
         /// <summary>
-        /// Gets a value indicating whether this add-in can be uninstalled.
+        /// 是否可以卸载
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance can be uninstalled; otherwise, <c>false</c>.
-        /// </value>
         public bool CanUninstall
         {
             get { return (flags & BundleFlags.CantUninstall) == 0 && !IsHidden; }
         }
 
         /// <summary>
-        /// Gets a value indicating whether this add-in is hidden.
+        /// 是否是隐藏
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this add-in is hidden; otherwise, <c>false</c>.
-        /// </value>
         public bool IsHidden
         {
             get { return (flags & BundleFlags.Hidden) != 0; }
         }
 
+        /// <summary>
+        /// 指定的版本号是否支持
+        /// </summary>
+        /// <param name="ver"></param>
+        /// <returns></returns>
         internal bool SupportsVersion(string ver)
         {
             return Bundle.CompareVersions(ver, Version) >= 0 &&
@@ -355,19 +318,14 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets all external files
+        /// 获得所有关连的文件
         /// </summary>
-        /// <value>
-        /// All files.
-        /// </value>
-        /// <remarks>
-        /// External files are data files and assemblies explicitly referenced in the Runtime section of the add-in manifest.
-        /// </remarks>
         public StringCollection AllFiles
         {
             get
             {
                 StringCollection col = new StringCollection();
+
                 foreach (string s in MainModule.AllFiles)
                     col.Add(s);
 
@@ -381,16 +339,14 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets all paths to be ignored by the add-in scanner.
+        /// 获得所有的怱略的路径
         /// </summary>
-        /// <value>
-        /// All paths to be ignored.
-        /// </value>
         public StringCollection AllIgnorePaths
         {
             get
             {
                 StringCollection col = new StringCollection();
+
                 foreach (string s in MainModule.IgnorePaths)
                     col.Add(s);
 
@@ -624,6 +580,9 @@ namespace Clamp.OSGI.Framework.Data.Description
             return null;
         }
 
+        /// <summary>
+        /// 获得bundle的对应的XML的根目录
+        /// </summary>
         XmlElement RootElement
         {
             get
@@ -1158,14 +1117,17 @@ namespace Clamp.OSGI.Framework.Data.Description
                 return s == "true" || s == "yes";
         }
 
+
         internal static BundleDescription ReadBinary(FileDatabase fdb, string configFile)
         {
             BundleDescription description = (BundleDescription)fdb.ReadSharedObject(configFile, typeMap);
+
             if (description != null)
             {
                 description.FileName = configFile;
                 description.canWrite = !fdb.IgnoreDescriptionData;
             }
+
             return description;
         }
 

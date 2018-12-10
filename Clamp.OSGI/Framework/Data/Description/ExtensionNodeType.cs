@@ -243,34 +243,37 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal override void Write(BinaryXmlWriter writer)
         {
             base.Write(writer);
-            if (Id.Length == 0)
-                Id = "Type";
-            if (TypeName.Length == 0)
-                typeName = "Mono.Bundles.TypeExtensionNode";
-            writer.WriteValue("typeName", typeName);
-            writer.WriteValue("objectTypeName", objectTypeName);
-            writer.WriteValue("description", description);
-            writer.WriteValue("addinId", bundleId);
-            writer.WriteValue("Attributes", attributes);
-            writer.WriteValue("customAttributeType", customAttributeTypeName);
+
+            if (this.Id.Length == 0)
+                this.Id = "Type";
+
+            if (this.TypeName.Length == 0)
+                this.typeName = "Mono.Bundles.TypeExtensionNode";
+
+            writer.WriteValue("typeName", this.typeName);
+            writer.WriteValue("objectTypeName", this.objectTypeName);
+            writer.WriteValue("description", this.description);
+            writer.WriteValue("bundleId", this.bundleId);
+            writer.WriteValue("Attributes", this.attributes);
+            writer.WriteValue("customAttributeType", this.customAttributeTypeName);
         }
 
         internal override void Read(BinaryXmlReader reader)
         {
             base.Read(reader);
 
-            typeName = reader.ReadStringValue("typeName");
-            objectTypeName = reader.ReadStringValue("objectTypeName");
+            this.typeName = reader.ReadStringValue("typeName");
+            this.objectTypeName = reader.ReadStringValue("objectTypeName");
 
             if (!reader.IgnoreDescriptionData)
-                description = reader.ReadStringValue("description");
+                this.description = reader.ReadStringValue("description");
 
-            bundleId = reader.ReadStringValue("bundleId");
+            this.bundleId = reader.ReadStringValue("bundleId");
 
             if (!reader.IgnoreDescriptionData)
-                attributes = (NodeTypeAttributeCollection)reader.ReadValue("Attributes", new NodeTypeAttributeCollection(this));
+                this.attributes = (NodeTypeAttributeCollection)reader.ReadValue("Attributes", new NodeTypeAttributeCollection(this));
 
-            customAttributeTypeName = reader.ReadStringValue("customAttributeType");
+            this.customAttributeTypeName = reader.ReadStringValue("customAttributeType");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Clamp.OSGI.Framework.Data.Annotation
     /// 特殊Bundle注解
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
-    public class BundleFragmentAttribute : BundleBaseAttribute
+    public class BundleFragmentAttribute : BundleAttribute
     {
 
     }

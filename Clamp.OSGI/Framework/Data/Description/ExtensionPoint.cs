@@ -9,6 +9,9 @@ using System.Xml;
 
 namespace Clamp.OSGI.Framework.Data.Description
 {
+    /// <summary>
+    /// 扩展点
+    /// </summary>
     public sealed class ExtensionPoint : ObjectDescription
     {
         private string path;
@@ -26,11 +29,11 @@ namespace Clamp.OSGI.Framework.Data.Description
 
         internal ExtensionPoint(XmlElement elem) : base(elem)
         {
-            path = elem.GetAttribute("path");
-            name = elem.GetAttribute("name");
-            defaultInsertBefore = elem.GetAttribute("defaultInsertBefore");
-            defaultInsertAfter = elem.GetAttribute("defaultInsertAfter");
-            description = ReadXmlDescription();
+            this.path = elem.GetAttribute("path");
+            this.name = elem.GetAttribute("name");
+            this.defaultInsertBefore = elem.GetAttribute("defaultInsertBefore");
+            this.defaultInsertAfter = elem.GetAttribute("defaultInsertAfter");
+            this.description = ReadXmlDescription();
         }
 
         /// <summary>
@@ -48,23 +51,27 @@ namespace Clamp.OSGI.Framework.Data.Description
         /// </param>
         public void CopyFrom(ExtensionPoint ep)
         {
-            path = ep.path;
-            name = ep.name;
-            defaultInsertBefore = ep.defaultInsertBefore;
-            defaultInsertAfter = ep.defaultInsertAfter;
-            description = ep.description;
-            NodeSet.CopyFrom(ep.NodeSet);
-            Conditions.Clear();
+            this.path = ep.path;
+            this.name = ep.name;
+            this.defaultInsertBefore = ep.defaultInsertBefore;
+            this.defaultInsertAfter = ep.defaultInsertAfter;
+            this.description = ep.description;
+            this.NodeSet.CopyFrom(ep.NodeSet);
+            this.Conditions.Clear();
+
             foreach (ConditionTypeDescription cond in ep.Conditions)
             {
                 ConditionTypeDescription cc = new ConditionTypeDescription();
                 cc.CopyFrom(cond);
                 Conditions.Add(cc);
             }
-            Bundles.Clear();
+
+            this.Bundles.Clear();
+
             foreach (string s in ep.Bundles)
-                Bundles.Add(s);
-            rootBundle = ep.rootBundle;
+                this.Bundles.Add(s);
+
+            this.rootBundle = ep.rootBundle;
         }
 
         internal override void Verify(string location, StringCollection errors)

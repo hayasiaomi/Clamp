@@ -21,7 +21,7 @@ namespace Clamp.OSGI.Framework.Data.Description
 
         internal ModuleDescription(XmlElement element)
         {
-            Element = element;
+            this.Element = element;
         }
 
         /// <summary>
@@ -89,6 +89,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             get
             {
                 StringCollection col = new StringCollection();
+
                 foreach (string s in Assemblies)
                     col.Add(s);
 
@@ -340,11 +341,13 @@ namespace Clamp.OSGI.Framework.Data.Description
             assemblies = new StringCollection();
 
             XmlNodeList elems = Element.SelectNodes("Runtime/*");
+
             foreach (XmlElement elem in elems)
             {
                 if (elem.LocalName == "Import")
                 {
                     string asm = elem.GetAttribute("assembly");
+
                     if (asm.Length > 0)
                     {
                         assemblies.Add(asm);
@@ -352,6 +355,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                     else
                     {
                         string file = elem.GetAttribute("file");
+
                         if (file.Length > 0)
                             dataFiles.Add(file);
                     }
@@ -359,6 +363,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 else if (elem.LocalName == "ScanExclude")
                 {
                     string path = elem.GetAttribute("path");
+
                     if (path.Length > 0)
                         IgnorePaths.Add(path);
                 }

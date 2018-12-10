@@ -153,7 +153,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         /// <summary>
-        /// 获得删除的Bundle
+        /// 获得Bundle文件夹不存在文件。还有不在当前域内的文件
         /// </summary>
         /// <param name="fs"></param>
         /// <returns></returns>

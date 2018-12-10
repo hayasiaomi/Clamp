@@ -4,4 +4,4 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-[assembly: Bundle("Haya.Main", "1.0")]
+[assembly: Bundle1Attribute("Haya.Main", "1.0")]

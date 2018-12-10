@@ -24,7 +24,7 @@ namespace Clamp.OSGI.Framework.Data.Description
 
         internal ExtensionNodeSet(XmlElement element)
         {
-            Element = element;
+            this.Element = element;
             this.id = element.GetAttribute(IdAttribute);
         }
 
@@ -124,11 +124,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the node types allowed in this node set.
+        /// 扩展节点组对应的扩展节点集合
         /// </summary>
-        /// <value>
-        /// The node types.
-        /// </value>
         public ExtensionNodeTypeCollection NodeTypes
         {
             get
@@ -145,11 +142,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets a list of other node sets included in this node set.
+        /// 扩展节点ID集合
         /// </summary>
-        /// <value>
-        /// The node sets.
-        /// </value>
         public NodeSetIdCollection NodeSets
         {
             get

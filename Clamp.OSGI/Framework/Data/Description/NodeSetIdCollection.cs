@@ -7,56 +7,47 @@ using System.Text;
 namespace Clamp.OSGI.Framework.Data.Description
 {
     /// <summary>
-    /// A collection of node set identifiers
+    /// 扩展节点组的ID集合
     /// </summary>
     public class NodeSetIdCollection : IEnumerable
     {
-        // A list of string[2]. Item 0 is the node set id, item 1 is the addin that defines it.
-
+        /// <summary>
+        /// 这个集合是一个长度为2的字符串数组的集合，数组0为扩展节点的ID，数组1为扩展节点定义的Bundle
+        /// </summary>
         private ArrayList list = new ArrayList();
 
         /// <summary>
-        /// Gets the node set identifier at the specified index.
+        /// 获得指定位置的扩展节点组的ID
         /// </summary>
-        /// <param name='n'>
-        /// An index.
-        /// </param>
+        /// <param name="n"></param>
+        /// <returns></returns>
         public string this[int n]
         {
             get { return ((string[])list[n])[0]; }
         }
 
         /// <summary>
-        /// Gets the item count.
+        /// 长度
         /// </summary>
-        /// <value>
-        /// The count.
-        /// </value>
         public int Count
         {
             get { return list.Count; }
         }
 
-        /// <summary>
-        /// Gets the collection enumerator.
-        /// </summary>
-        /// <returns>
-        /// The enumerator.
-        /// </returns>
+
         public IEnumerator GetEnumerator()
         {
             ArrayList ll = new ArrayList(list.Count);
+
             foreach (string[] ns in list)
                 ll.Add(ns[0]);
+
             return ll.GetEnumerator();
         }
-
         /// <summary>
-        /// Add the specified node set identifier.
+        /// 增加
         /// </summary>
-        /// <param name='nodeSetId'>
-        /// Node set identifier.
-        /// </param>
+        /// <param name="nodeSetId"></param>
         public void Add(string nodeSetId)
         {
             if (!Contains(nodeSetId))
@@ -64,11 +55,9 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Remove a node set identifier
+        /// 移除指定的扩展节点组ID
         /// </summary>
-        /// <param name='nodeSetId'>
-        /// Node set identifier.
-        /// </param>
+        /// <param name="nodeSetId"></param>
         public void Remove(string nodeSetId)
         {
             int i = IndexOf(nodeSetId);
@@ -76,34 +65,27 @@ namespace Clamp.OSGI.Framework.Data.Description
                 list.RemoveAt(i);
         }
 
-        /// <summary>
-        /// Clears the collection
-        /// </summary>
+
         public void Clear()
         {
             list.Clear();
         }
 
         /// <summary>
-        /// Checks if the specified identifier is present in the collection
+        /// 是否含有指点定的扩展节点组
         /// </summary>
-        /// <param name='nodeSetId'>
-        /// <c>true</c> if the node set identifier is present.
-        /// </param>
+        /// <param name="nodeSetId"></param>
+        /// <returns></returns>
         public bool Contains(string nodeSetId)
         {
             return IndexOf(nodeSetId) != -1;
         }
 
         /// <summary>
-        /// Returns the index of the specified node set identifier
+        /// 获得指定扩展节点组ID的位置
         /// </summary>
-        /// <returns>
-        /// The index.
-        /// </returns>
-        /// <param name='nodeSetId'>
-        /// A node set identifier.
-        /// </param>
+        /// <param name="nodeSetId"></param>
+        /// <returns></returns>
         public int IndexOf(string nodeSetId)
         {
             for (int n = 0; n < list.Count; n++)
@@ -111,7 +93,10 @@ namespace Clamp.OSGI.Framework.Data.Description
                     return n;
             return -1;
         }
-
+        /// <summary>
+        /// 设置当前扩展节点组集合属于的Bundle
+        /// </summary>
+        /// <param name="id"></param>
         internal void SetExtensionsBundleId(string id)
         {
             foreach (string[] ns in list)
@@ -136,6 +121,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         internal void UnmergeExternalData(string bundleId, Hashtable addinsToUnmerge)
         {
             ArrayList newList = new ArrayList();
+
             foreach (string[] ns in list)
             {
                 if (ns[1] == bundleId || (addinsToUnmerge != null && !addinsToUnmerge.Contains(ns[1])))
