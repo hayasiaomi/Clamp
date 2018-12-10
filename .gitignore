@@ -8,3 +8,5 @@ logs/
 *.user
 /libcfx/Debug
 /libcfx/x64
+/Clamp.MUI/Cef64
+/Clamp.MUI/Cef
