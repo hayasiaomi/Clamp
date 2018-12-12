@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>17a2236d-1a63-4ff2-8046-edfd80f3c9ab</ProjectGuid>
+    <ProjectGuid>{17A2236D-1A63-4FF2-8046-EDFD80F3C9AB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Clamp</RootNamespace>
@@ -30,22 +30,190 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Initial\InitialElement.cs" />
+    <Compile Include="Initial\InitialFile.cs" />
+    <Compile Include="Initial\InitialFile.Load.cs" />
+    <Compile Include="Initial\InitialFile.Properties.cs" />
+    <Compile Include="Initial\InitialProperty.cs" />
+    <Compile Include="Initial\InitialPropertyCastException.cs" />
+    <Compile Include="Initial\InitialPropertyEnumerator.cs" />
+    <Compile Include="Initial\InitialReader.cs" />
+    <Compile Include="Initial\InitialWriter.cs" />
+    <Compile Include="Initial\ParserException.cs" />
+    <Compile Include="Initial\TypeConverter\BoolStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\CharStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DateTimeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DecimalStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DoubleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\EnumStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\FallbackStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int64StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ITypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SingleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\StringStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\TypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt64StringConverter.cs" />
+    <Compile Include="Injection\AssemblyExtensions.cs" />
+    <Compile Include="Injection\AutoRegistrationException.cs" />
+    <Compile Include="Injection\ConstructorAttribute.cs" />
+    <Compile Include="Injection\ConstructorResolutionException.cs" />
+    <Compile Include="Injection\DuplicateImplementationActions.cs" />
+    <Compile Include="Injection\Factories\CustomObjectLifetimeFactory.cs" />
+    <Compile Include="Injection\Factories\DelegateFactory.cs" />
+    <Compile Include="Injection\Factories\InstanceFactory.cs" />
+    <Compile Include="Injection\Factories\IObjectLifetimeProvider.cs" />
+    <Compile Include="Injection\Factories\MultiInstanceFactory.cs" />
+    <Compile Include="Injection\Factories\ObjectFactoryBase.cs" />
+    <Compile Include="Injection\Factories\SingletonFactory.cs" />
+    <Compile Include="Injection\Factories\WeakDelegateFactory.cs" />
+    <Compile Include="Injection\Factories\WeakInstanceFactory.cs" />
+    <Compile Include="Injection\MultiRegisterOptions.cs" />
+    <Compile Include="Injection\NamedParameterOverloads.cs" />
+    <Compile Include="Injection\NamedResolutionFailureActions.cs" />
+    <Compile Include="Injection\ObjectContainer.cs" />
+    <Compile Include="Injection\RegisterOptions.cs" />
+    <Compile Include="Injection\RegistrationException.cs" />
+    <Compile Include="Injection\RegistrationTypeException.cs" />
+    <Compile Include="Injection\ResolutionException.cs" />
+    <Compile Include="Injection\ResolveOptions.cs" />
+    <Compile Include="Injection\ReverseTypeExtender.cs" />
+    <Compile Include="Injection\SafeDictionary.cs" />
+    <Compile Include="Injection\TypeExtensions.cs" />
+    <Compile Include="Injection\TypeRegistration.cs" />
+    <Compile Include="Injection\UnregisteredResolutionActions.cs" />
+    <Compile Include="Injection\WeakReferenceException.cs" />
+    <Compile Include="OSGI\Bundle.cs" />
+    <Compile Include="OSGI\BundleActivator.cs" />
+    <Compile Include="OSGI\BundleContext.cs" />
+    <Compile Include="OSGI\BundleErrorEventArgs.cs" />
+    <Compile Include="OSGI\BundleEventArgs.cs" />
+    <Compile Include="OSGI\BundleInfo.cs" />
+    <Compile Include="OSGI\BundleRegistry.cs" />
+    <Compile Include="OSGI\BundleSearchFlags.cs" />
+    <Compile Include="OSGI\ClampBundle.cs" />
+    <Compile Include="OSGI\ClampBundleFactory.cs" />
+    <Compile Include="OSGI\ClampConstants.cs" />
+    <Compile Include="OSGI\ConditionType.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleAuthorAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleBaseAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleCategoryAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleDependencyAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleDescriptionAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleFlagsAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleFragmentAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleLocalizerGettextAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleModuleAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleNameAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundlePropertyAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleUrlAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\CustomExtensionAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ExtensionAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ExtensionAttributeAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ExtensionNodeAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ExtensionNodeChildAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ExtensionPointAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ImportAddinAssemblyAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\ImportAddinFileAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\NodeAttributeAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\TypeExtensionPointAttribute.cs" />
+    <Compile Include="OSGI\Data\BundleActivationIndex.cs" />
+    <Compile Include="OSGI\Data\BundleDatabase.cs" />
+    <Compile Include="OSGI\Data\BundleFileInfo.cs" />
+    <Compile Include="OSGI\Data\BundleFileSystemExtension.cs" />
+    <Compile Include="OSGI\Data\BundleFlags.cs" />
+    <Compile Include="OSGI\Data\BundleIndex.cs" />
+    <Compile Include="OSGI\Data\BundleScanFolderInfo.cs" />
+    <Compile Include="OSGI\Data\BundleScanner.cs" />
+    <Compile Include="OSGI\Data\BundleScanResult.cs" />
+    <Compile Include="OSGI\Data\BundleSearchFlagsInternal.cs" />
+    <Compile Include="OSGI\Data\BundleUpdateData.cs" />
+    <Compile Include="OSGI\Data\CustomAttribute.cs" />
+    <Compile Include="OSGI\Data\DatabaseConfiguration.cs" />
+    <Compile Include="OSGI\Data\DefaultAssemblyReflector.cs" />
+    <Compile Include="OSGI\Data\Description\AssemblyDependency.cs" />
+    <Compile Include="OSGI\Data\Description\BundleDependency.cs" />
+    <Compile Include="OSGI\Data\Description\BundleDescription.cs" />
+    <Compile Include="OSGI\Data\Description\BundleProperty.cs" />
+    <Compile Include="OSGI\Data\Description\BundlePropertyCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ConditionTypeDescription.cs" />
+    <Compile Include="OSGI\Data\Description\ConditionTypeDescriptionCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ContentType.cs" />
+    <Compile Include="OSGI\Data\Description\Dependency.cs" />
+    <Compile Include="OSGI\Data\Description\DependencyCollection.cs" />
+    <Compile Include="OSGI\Data\Description\Extension.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionNodeDescription.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionNodeDescriptionCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionNodeSet.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionNodeSetCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionNodeType.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionNodeTypeCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionPoint.cs" />
+    <Compile Include="OSGI\Data\Description\ExtensionPointCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ModuleCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ModuleDescription.cs" />
+    <Compile Include="OSGI\Data\Description\NodeElement.cs" />
+    <Compile Include="OSGI\Data\Description\NodeSetIdCollection.cs" />
+    <Compile Include="OSGI\Data\Description\NodeTypeAttribute.cs" />
+    <Compile Include="OSGI\Data\Description\NodeTypeAttributeCollection.cs" />
+    <Compile Include="OSGI\Data\Description\ObjectDescription.cs" />
+    <Compile Include="OSGI\Data\Description\ObjectDescriptionCollection.cs" />
+    <Compile Include="OSGI\Data\FileDatabase.cs" />
+    <Compile Include="OSGI\Data\IAssemblyLocator.cs" />
+    <Compile Include="OSGI\Data\IAssemblyReflector.cs" />
+    <Compile Include="OSGI\Data\PersistentObject.cs" />
+    <Compile Include="OSGI\Data\ProcessFailedException.cs" />
+    <Compile Include="OSGI\Data\Serialization\BinaryXmlReader.cs" />
+    <Compile Include="OSGI\Data\Serialization\BinaryXmlTypeMap.cs" />
+    <Compile Include="OSGI\Data\Serialization\BinaryXmlWriter.cs" />
+    <Compile Include="OSGI\Data\Serialization\IBinaryXmlElement.cs" />
+    <Compile Include="OSGI\Data\SetupDomain.cs" />
+    <Compile Include="OSGI\Data\SetupLocal.cs" />
+    <Compile Include="OSGI\Data\SingleFileAssemblyResolver.cs" />
+    <Compile Include="OSGI\Data\Util.cs" />
+    <Compile Include="OSGI\FrameworkException.cs" />
+    <Compile Include="OSGI\GettextCatalog.cs" />
+    <Compile Include="OSGI\IBundle.cs" />
+    <Compile Include="OSGI\IBundleActivator.cs" />
+    <Compile Include="OSGI\IBundleContext.cs" />
+    <Compile Include="OSGI\IClampBundle.cs" />
+    <Compile Include="OSGI\IServiceListener.cs" />
+    <Compile Include="OSGI\ISetupHandler.cs" />
+    <Compile Include="OSGI\Localization\BundleLocalizer.cs" />
+    <Compile Include="OSGI\Localization\IBundleLocalizer.cs" />
+    <Compile Include="OSGI\Localization\IBundleLocalizerFactory.cs" />
+    <Compile Include="OSGI\Localization\IPluralAddinLocalizer.cs" />
+    <Compile Include="OSGI\Localization\NullLocalizer.cs" />
+    <Compile Include="OSGI\Localization\StringResourceLocalizer.cs" />
+    <Compile Include="OSGI\Localization\StringTableLocalizer.cs" />
+    <Compile Include="OSGI\MissingDependencyException.cs" />
+    <Compile Include="OSGI\Nodes\ExtensionNode.cs" />
+    <Compile Include="OSGI\Nodes\ExtensionNodeList.cs" />
+    <Compile Include="OSGI\Nodes\ExtensionTree.cs" />
+    <Compile Include="OSGI\Nodes\InstanceExtensionNode.cs" />
+    <Compile Include="OSGI\Nodes\TreeNode.cs" />
+    <Compile Include="OSGI\Nodes\TreeNodeCollection.cs" />
+    <Compile Include="OSGI\Nodes\TypeExtensionNode.cs" />
+    <Compile Include="OSGI\RuntimeBundle.cs" />
+    <Compile Include="OSGI\ServiceEvent.cs" />
+    <Compile Include="OSGI\TreeClampBundle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+</Project>

@@ -170,6 +170,8 @@ namespace Clamp.OSGI
             }
         }
         #endregion
+
+
         #region internal Property
         internal ClampBundle ClampBundle
         {
@@ -222,6 +224,9 @@ namespace Clamp.OSGI
             }
         }
         #endregion
+
+
+
         #region public method
 
         /// <summary>
