@@ -50,7 +50,7 @@ namespace Clamp.MUI.Framework
                     e.Settings.CachePath = cachePath;
                     e.Settings.LogSeverity = CfxLogSeverity.Disable;
                     e.Settings.BrowserSubprocessPath = Path.Combine(localRuntimeDir, ClampBrowserSubprocessPath);
-                    e.Settings.RemoteDebuggingPort = 8888;
+                    //e.Settings.RemoteDebuggingPort = 8888;
                     //e.Settings.IgnoreCertificateErrors = true;
                     e.Settings.MultiThreadedMessageLoop = true;
                     e.Settings.WindowlessRenderingEnabled = true;

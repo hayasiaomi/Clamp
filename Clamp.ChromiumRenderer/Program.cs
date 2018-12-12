@@ -37,17 +37,32 @@ namespace Clamp.Explorer.ChromiumRenderer
         [STAThread]
         static void Main()
         {
-            Environment.CurrentDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-
             if (CfxRuntime.PlatformArch == CfxPlatformArch.x64)
                 CfxRuntime.LibCefDirPath = @"cef64";
             else
                 CfxRuntime.LibCefDirPath = @"cef";
 
-            ChromiumWebBrowser.OnBeforeCfxInitialize += ChromiumWebBrowser_OnBeforeCfxInitialize;
-            ChromiumWebBrowser.Initialize();
+            var app = new CfxApp();
+            var handler = new CfxRenderProcessHandler();
 
-            CfxRuntime.Shutdown();
+            app.GetRenderProcessHandler += (sender, args) => args.SetReturnValue(handler);
+
+            int retval = CfxRuntime.ExecuteProcess(app);
+
+            Environment.Exit(retval);
+
+
+            //Environment.CurrentDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+
+            //if (CfxRuntime.PlatformArch == CfxPlatformArch.x64)
+            //    CfxRuntime.LibCefDirPath = @"cef64";
+            //else
+            //    CfxRuntime.LibCefDirPath = @"cef";
+
+            //ChromiumWebBrowser.OnBeforeCfxInitialize += ChromiumWebBrowser_OnBeforeCfxInitialize;
+            //ChromiumWebBrowser.Initialize();
+
+            //CfxRuntime.Shutdown();
         }
 
         private static void ChromiumWebBrowser_OnBeforeCfxInitialize(OnBeforeCfxInitializeEventArgs e)

@@ -214,11 +214,15 @@ namespace Clamp.MUI.Framework.UI
         private void ContextMenuHandler_OnBeforeContextMenu(object sender, CfxOnBeforeContextMenuEventArgs e)
         {
             e.Model.Clear();
+            e.Model.AddItem(1000, "开发工具");
         }
 
         private void ContextMenuHandler_OnContextMenuCommand(object sender, CfxOnContextMenuCommandEventArgs e)
         {
-
+            if (e.CommandId == 1000)
+            {
+                this.ShowDebugTools();
+            }
         }
 
         private void KeyboardHandler_OnPreKeyEvent(object sender, CfxOnPreKeyEventEventArgs e)
@@ -692,6 +696,28 @@ namespace Clamp.MUI.Framework.UI
         {
             this.browser.LoadString(stringVal);
         }
+
+        public void ShowDebugTools()
+        {
+            var windowInfo = new CfxWindowInfo
+            {
+                Style = Chromium.WindowStyle.WS_OVERLAPPEDWINDOW | Chromium.WindowStyle.WS_CLIPCHILDREN | Chromium.WindowStyle.WS_CLIPSIBLINGS | Chromium.WindowStyle.WS_VISIBLE,
+                ParentWindow = IntPtr.Zero,
+                WindowName = "Dev Tools",
+                X = 200,
+                Y = 200,
+                Width = 800,
+                Height = 600
+            };
+
+            this.browser.BrowserHost.ShowDevTools(windowInfo, new CfxClient(), new CfxBrowserSettings(), null);
+        }
+
+        public void CloseDebugTools()
+        {
+            this.browser.BrowserHost.CloseDevTools();
+        }
+
 
         #endregion
 
