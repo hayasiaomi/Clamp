@@ -153,16 +153,20 @@ namespace Clamp.OSGI.Framework.Data.Description
                         foreach (XmlNode node in elems)
                         {
                             XmlElement elem = node as XmlElement;
-                            if (elem == null) continue;
+
+                            if (elem == null)
+                                continue;
 
                             if (elem.Name == "Bundle")
                             {
                                 BundleDependency dep = new BundleDependency(elem);
+
                                 dependencies.Add(dep);
                             }
                             else if (elem.Name == "Assembly")
                             {
                                 AssemblyDependency dep = new AssemblyDependency(elem);
+
                                 dependencies.Add(dep);
                             }
                         }
@@ -182,12 +186,14 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (extensions == null)
                 {
                     extensions = new ExtensionCollection(this);
+
                     if (Element != null)
                     {
                         foreach (XmlElement elem in Element.SelectNodes("Extension"))
                             extensions.Add(new Extension(elem));
                     }
                 }
+
                 return extensions;
             }
         }

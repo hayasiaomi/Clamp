@@ -10,7 +10,7 @@ using System.Xml;
 namespace Clamp.OSGI.Framework.Data.Description
 {
     /// <summary>
-    /// 扩展节点组
+    /// 扩展节点组的信息
     /// </summary>
     public class ExtensionNodeSet : ObjectDescription
     {
@@ -41,6 +41,7 @@ namespace Clamp.OSGI.Framework.Data.Description
             foreach (ExtensionNodeType nt in nset.NodeTypes)
             {
                 ExtensionNodeType cnt = new ExtensionNodeType();
+
                 cnt.CopyFrom(nt);
                 NodeTypes.Add(cnt);
             }
@@ -91,7 +92,9 @@ namespace Clamp.OSGI.Framework.Data.Description
                         Element.AppendChild(e);
                     }
                 }
+
                 ArrayList list = new ArrayList();
+
                 foreach (XmlElement e in Element.SelectNodes("ExtensionNodeSet"))
                 {
                     if (!nodeSets.Contains(e.GetAttribute("id")))
@@ -216,6 +219,10 @@ namespace Clamp.OSGI.Framework.Data.Description
             nodeTypes = null;
         }
 
+        /// <summary>
+        /// 设置扩展节点信息组属于哪个Bundle
+        /// </summary>
+        /// <param name="bundleId"></param>
         internal void SetExtensionsBundleId(string bundleId)
         {
             foreach (ExtensionNodeType nt in NodeTypes)
@@ -234,6 +241,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (nt.BundleId != bundleId && !NodeTypes.Contains(nt))
                     NodeTypes.Add(nt);
             }
+
             NodeSets.MergeWith(bundleId, other.NodeSets);
         }
 
@@ -242,11 +250,13 @@ namespace Clamp.OSGI.Framework.Data.Description
             // Removes extension types and extension sets coming from other add-ins.
 
             ArrayList todelete = new ArrayList();
+
             foreach (ExtensionNodeType nt in NodeTypes)
             {
                 if (nt.BundleId != bundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(nt.BundleId)))
                     todelete.Add(nt);
             }
+
             foreach (ExtensionNodeType nt in todelete)
                 NodeTypes.Remove(nt);
 

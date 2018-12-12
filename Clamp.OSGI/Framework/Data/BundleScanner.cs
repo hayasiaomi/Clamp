@@ -27,6 +27,7 @@ namespace Clamp.OSGI.Framework.Data
         }
 
         #region public mehtod
+
         /// <summary>
         /// 更新删除的Bundle
         /// </summary>
@@ -179,6 +180,7 @@ namespace Clamp.OSGI.Framework.Data
             UpdateDeletedBundles(folderInfo, scanResult);
         }
 
+
         public BundleDescription ScanSingleFile(string file, BundleScanResult scanResult)
         {
             BundleDescription bdesc = null;
@@ -217,6 +219,13 @@ namespace Clamp.OSGI.Framework.Data
             }
             return bdesc;
         }
+
+        /// <summary>
+        /// 检测当前需要指定的Bundle目录
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="domain"></param>
+        /// <param name="scanResult"></param>
         public void ScanBundlesFile(string file, string domain, BundleScanResult scanResult)
         {
             XmlTextReader r = null;
@@ -227,11 +236,16 @@ namespace Clamp.OSGI.Framework.Data
             try
             {
                 r = new XmlTextReader(fs.OpenTextFile(file));
+
                 r.MoveToContent();
+
                 if (r.IsEmptyElement)
                     return;
+
                 r.ReadStartElement();
+
                 r.MoveToContent();
+
                 while (r.NodeType != XmlNodeType.EndElement)
                 {
                     if (r.NodeType == XmlNodeType.Element && r.LocalName == "Directory")
@@ -239,6 +253,7 @@ namespace Clamp.OSGI.Framework.Data
                         string subs = r.GetAttribute("include-subdirs");
                         string sdom;
                         string share = r.GetAttribute("shared");
+
                         if (share == "true")
                             sdom = BundleDatabase.GlobalDomain;
                         else if (share == "false")
@@ -247,6 +262,7 @@ namespace Clamp.OSGI.Framework.Data
                             sdom = domain; // Inherit the domain
 
                         string path = r.ReadElementString().Trim();
+
                         if (path.Length > 0)
                         {
                             if (subs == "true")
@@ -258,6 +274,7 @@ namespace Clamp.OSGI.Framework.Data
                     else if (r.NodeType == XmlNodeType.Element && r.LocalName == "GacAssembly")
                     {
                         string aname = r.ReadElementString().Trim();
+
                         if (aname.Length > 0)
                         {
                             aname = Util.GetGacPath(aname);
@@ -275,11 +292,13 @@ namespace Clamp.OSGI.Framework.Data
                         {
                             if (!Path.IsPathRooted(path))
                                 path = Path.Combine(basePath, path);
+
                             scanResult.AddPathToIgnore(Path.GetFullPath(path));
                         }
                     }
                     else
                         r.Skip();
+
                     r.MoveToContent();
                 }
             }
@@ -296,10 +315,12 @@ namespace Clamp.OSGI.Framework.Data
             foreach (string[] d in directories)
             {
                 string dir = d[0];
+
                 if (!Path.IsPathRooted(dir))
                     dir = Path.Combine(basePath, dir);
                 ScanFolder(dir, d[1], scanResult);
             }
+
             foreach (string[] d in directoriesWithSubdirs)
             {
                 string dir = d[0];
@@ -385,7 +406,7 @@ namespace Clamp.OSGI.Framework.Data
 
                     if (database.IsGlobalRegistry && bdesc.BundleId.IndexOf('.') == -1)
                     {
-                        errors.Add("Add-ins registered in the global registry must have a namespace.");
+                        errors.Add("插件注册到公共域的时候，必须是有一个空间命名.");
                     }
 
                     if (errors.Count > 0)
@@ -393,20 +414,18 @@ namespace Clamp.OSGI.Framework.Data
                         scanSuccessful = false;
                     }
 
-                    // Make sure all extensions sets are initialized with the correct add-in id
+                    //确保所有的扩展信息所于的Bundle是正确的
 
                     bdesc.SetExtensionsBundleId(bdesc.BundleId);
 
                     scanResult.ChangesFound = true;
 
-                    // If the add-in already existed, try to reuse the relation data it had.
-                    // Also, the dependencies of the old add-in need to be re-analyzed
-
+                    // 如果以前的Bundle信息存在，那么就重用以前的Bundle信息。而依赖的信息需要重新分析
                     BundleDescription existingDescription = null;
 
                     bool res = database.GetBundleDescription(folderInfo.Domain, bdesc.BundleId, bdesc.BundleFile, out existingDescription);
 
-                    // If we can't get information about the old assembly, just regenerate all relation data
+                    // 如果不能加载到以前的Bundle信息就需要重新加载相关的数据
                     if (!res)
                         scanResult.RegenerateRelationData = true;
 
@@ -414,9 +433,11 @@ namespace Clamp.OSGI.Framework.Data
 
                     if (existingDescription != null)
                     {
-                        // Reuse old relation data
+                        // 重新利用以前的Bundle信息
                         bdesc.MergeExternalData(existingDescription);
+
                         Util.AddDependencies(existingDescription, scanResult);
+
                         replaceFileName = existingDescription.FileName;
                     }
 
@@ -426,7 +447,7 @@ namespace Clamp.OSGI.Framework.Data
                     {
                         database.UninstallBundle(folderInfo.Domain, fi.BundleId, fi.File, scanResult);
 
-                        // If the add-in version has changed, regenerate everything again since old data can't be reused
+                        // 因为Bundle的版本号发生了变，必须重新加载，不能在用以前的数据
                         if (Bundle.GetIdName(fi.BundleId) == Bundle.GetIdName(bdesc.BundleId))
                             scanResult.RegenerateRelationData = true;
                     }
@@ -454,6 +475,7 @@ namespace Clamp.OSGI.Framework.Data
                             foreach (string f in bdesc.MainModule.Assemblies)
                             {
                                 string asmFile = Path.Combine(bdesc.BasePath, f);
+
                                 scanResult.ActivationIndex.RegisterAssembly(asmFile, bdesc.BundleId, bdesc.BundleFile, bdesc.Domain);
                             }
                         }
@@ -462,9 +484,12 @@ namespace Clamp.OSGI.Framework.Data
                         {
                             // The new dependencies also have to be updated
                             Util.AddDependencies(bdesc, scanResult);
+
                             scanResult.AddBundleToUpdate(bdesc.BundleId);
+
                             scannedBundleId = bdesc.BundleId;
                             scannedIsBundle = bdesc.IsBundle;
+
                             return;
                         }
                     }

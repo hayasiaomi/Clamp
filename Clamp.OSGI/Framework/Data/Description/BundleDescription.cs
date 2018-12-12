@@ -428,11 +428,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets the extension node sets.
+        /// 获得当前Bundle定义的扩展节点组集合
         /// </summary>
-        /// <value>
-        /// The extension node sets.
-        /// </value>
         public ExtensionNodeSetCollection ExtensionNodeSets
         {
             get
@@ -451,7 +448,7 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// 扩展点集合
+        /// 获得当前Bundle定义的扩展点集合
         /// </summary>
         public ExtensionPointCollection ExtensionPoints
         {
@@ -1223,6 +1220,10 @@ namespace Clamp.OSGI.Framework.Data.Description
             return errors;
         }
 
+        /// <summary>
+        /// 设置当前Bundle的扩展点集合和扩展节点组集合所属的Bundle
+        /// </summary>
+        /// <param name="bundleId"></param>
         internal void SetExtensionsBundleId(string bundleId)
         {
             foreach (ExtensionPoint ep in ExtensionPoints)

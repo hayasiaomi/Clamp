@@ -59,8 +59,12 @@ namespace Clamp.OSGI.Framework.Data
                 foreach (Dependency dep in mod.Dependencies)
                 {
                     BundleDependency adep = dep as BundleDependency;
-                    if (adep == null) continue;
+
+                    if (adep == null)
+                        continue;
+
                     string depid = Bundle.GetFullId(desc.Namespace, adep.BundleId, adep.Version);
+
                     scanResult.AddBundleToUpdateRelations(depid);
                 }
             }

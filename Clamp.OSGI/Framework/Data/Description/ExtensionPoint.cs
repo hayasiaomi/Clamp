@@ -80,7 +80,10 @@ namespace Clamp.OSGI.Framework.Data.Description
             NodeSet.Verify(location + "ExtensionPoint (" + Path + ")/", errors);
             Conditions.Verify(location + "ExtensionPoint (" + Path + ")/", errors);
         }
-
+        /// <summary>
+        /// 设置扩展点是属于哪个Bundle
+        /// </summary>
+        /// <param name="bundleId"></param>
         internal void SetExtensionsBundleId(string bundleId)
         {
             NodeSet.SetExtensionsBundleId(bundleId);
@@ -100,6 +103,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (cond.BundleId != bundleId && !Conditions.Contains(cond))
                     Conditions.Add(cond);
             }
+
             foreach (string s in ep.Bundles)
             {
                 if (!Bundles.Contains(s))
@@ -112,11 +116,13 @@ namespace Clamp.OSGI.Framework.Data.Description
             NodeSet.UnmergeExternalData(bundleId, addinsToUnmerge);
 
             ArrayList todel = new ArrayList();
+
             foreach (ConditionTypeDescription cond in Conditions)
             {
                 if (cond.BundleId != bundleId && (addinsToUnmerge == null || addinsToUnmerge.Contains(cond.BundleId)))
                     todel.Add(cond);
             }
+
             foreach (ConditionTypeDescription cond in todel)
                 Conditions.Remove(cond);
 
@@ -127,6 +133,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                 foreach (string s in addinsToUnmerge.Keys)
                     Bundles.Remove(s);
             }
+
             if (bundleId != null && !Bundles.Contains(bundleId))
                 Bundles.Add(bundleId);
         }
@@ -169,11 +176,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the path that identifies the extension point.
+        /// 路径
         /// </summary>
-        /// <value>
-        /// The path.
-        /// </value>
         public string Path
         {
             get { return path != null ? path : string.Empty; }
@@ -181,11 +185,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the display name of the extension point.
+        /// 名称
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public string Name
         {
             get { return name != null ? name : string.Empty; }
@@ -193,11 +194,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the description of the extension point.
+        /// 说明
         /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
         public string Description
         {
             get { return description != null ? description : string.Empty; }
@@ -238,11 +236,8 @@ namespace Clamp.OSGI.Framework.Data.Description
         }
 
         /// <summary>
-        /// A node set which specifies the node types allowed in this extension point.
+        /// 扩展节点信息组
         /// </summary>
-        /// <value>
-        /// The node set.
-        /// </value>
         public ExtensionNodeSet NodeSet
         {
             get
@@ -253,6 +248,7 @@ namespace Clamp.OSGI.Framework.Data.Description
                         nodeSet = new ExtensionNodeSet(Element);
                     else
                         nodeSet = new ExtensionNodeSet();
+
                     nodeSet.SetParent(this);
                 }
                 return nodeSet;

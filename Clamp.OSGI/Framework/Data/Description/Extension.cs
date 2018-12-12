@@ -193,9 +193,12 @@ namespace Clamp.OSGI.Framework.Data.Description
                 Element = parent.OwnerDocument.CreateElement("Extension");
                 parent.AppendChild(Element);
             }
+
             Element.SetAttribute("path", path);
+
             if (nodes != null)
                 nodes.SaveXml(Element);
+
         }
 
         /// <summary>
@@ -211,11 +214,13 @@ namespace Clamp.OSGI.Framework.Data.Description
                 if (nodes == null)
                 {
                     nodes = new ExtensionNodeDescriptionCollection(this);
+
                     if (Element != null)
                     {
                         foreach (XmlNode node in Element.ChildNodes)
                         {
                             XmlElement e = node as XmlElement;
+
                             if (e != null)
                                 nodes.Add(new ExtensionNodeDescription(e));
                         }
