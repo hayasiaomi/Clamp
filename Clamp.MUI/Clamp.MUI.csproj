@@ -659,9 +659,9 @@
       <Project>{d9426667-170c-4cf3-9d13-5c266cb99421}</Project>
       <Name>Clamp.MUI.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Clamp.OSGI\Clamp.OSGI.csproj">
-      <Project>{95a3b367-febb-4f9e-b2eb-aced3565393e}</Project>
-      <Name>Clamp.OSGI</Name>
+    <ProjectReference Include="..\Clamp\Clamp.csproj">
+      <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
+      <Name>Clamp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
