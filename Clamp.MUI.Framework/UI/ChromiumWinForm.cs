@@ -21,7 +21,6 @@ namespace Clamp.MUI.Framework.UI
     public class ChromiumWinForm : Form
     {
         private ChromiumWebBrowser browser;
-        private CfrBrowser remoteBrowser;
         private Region draggableRegion = null;
         private BrowserWidgetMessageInterceptor messageInterceptor;
         private float scaleFactor = 1.0f;
