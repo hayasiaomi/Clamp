@@ -5,24 +5,21 @@ using System.Text;
 
 namespace Clamp.OSGI.Data.Annotation
 {
+    /// <summary>
+    /// 引入一个文件的标识
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class ImportBundleFileAttribute : Attribute
     {
         private string filePath;
 
-        /// <summary>
-        /// Initializes a new instance
-        /// </summary>
-        /// <param name="filePath">
-        /// Path to the file. Must be relative to the assembly declaring this attribute.
-        /// </param>
         public ImportBundleFileAttribute(string filePath)
         {
             this.filePath = filePath;
         }
 
         /// <summary>
-        /// Path to the file. Must be relative to the assembly declaring this attribute.
+        ///文件路径
         /// </summary>
         public string FilePath
         {

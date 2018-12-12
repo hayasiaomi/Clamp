@@ -199,6 +199,7 @@ namespace Clamp.OSGI.Data
                 {
 
                     bdesc.Domain = "global";
+
                     if (bdesc.Version.Length == 0)
                         bdesc.Version = "0.0.0.0";
 
@@ -441,8 +442,7 @@ namespace Clamp.OSGI.Data
                         replaceFileName = existingDescription.FileName;
                     }
 
-                    // If the scanned file results in an add-in version different from the one obtained from
-                    // previous scans, the old add-in needs to be uninstalled.
+                    //如果获得Bundle文件信息跟Bundle的详细信息不同的时就卸载掉当前的Bundle
                     if (fi != null && fi.IsNotNullBundleId && fi.BundleId != bdesc.BundleId)
                     {
                         database.UninstallBundle(folderInfo.Domain, fi.BundleId, fi.File, scanResult);
@@ -465,6 +465,7 @@ namespace Clamp.OSGI.Data
                                 else
                                     folderInfo.RootsDomain = database.GetUniqueDomainId();
                             }
+
                             bdesc.Domain = folderInfo.RootsDomain;
                         }
                         else
@@ -703,29 +704,33 @@ namespace Clamp.OSGI.Data
                     rootAsmFile = Path.GetFileName(config.BundleFile);
                 }
 
-                // The assembly list may be modified while scanning the headers, so
-                // we use a for loop instead of a foreach
+                //检测引入的程序集里面的信息
                 for (int n = 0; n < config.MainModule.Assemblies.Count; n++)
                 {
                     string s = config.MainModule.Assemblies[n];
                     string asmFile = Path.GetFullPath(Path.Combine(config.BasePath, s));
+
                     scanResult.AddPathToIgnore(asmFile);
+
                     if (s == rootAsmFile || config.MainModule.IgnorePaths.Contains(s))
                         continue;
+
                     object asm = reflector.LoadAssembly(asmFile);
+
                     assemblies.Add(asm);
+
                     ScanAssemblyBundleHeaders(reflector, config, asm, scanResult);
                     ScanAssemblyImports(reflector, config.MainModule, asm);
                 }
 
-                // Add all data files to the ignore file list. It avoids scanning assemblies
-                // which are included as 'data' in an add-in.
+                // 所有的数据文件都在加入忽略的列表里面，这样子在检测的时候，不会被分析
                 foreach (string df in config.MainModule.DataFiles)
                 {
                     string file = Path.Combine(config.BasePath, df);
 
                     scanResult.AddPathToIgnore(Path.GetFullPath(file));
                 }
+
                 foreach (string df in config.MainModule.IgnorePaths)
                 {
                     string path = Path.Combine(config.BasePath, df);
@@ -733,9 +738,7 @@ namespace Clamp.OSGI.Data
                     scanResult.AddPathToIgnore(Path.GetFullPath(path));
                 }
 
-                // The add-in id and version must be already assigned at this point
-
-                // Clean host data from the index. New data will be added.
+                // 清除在Bundle激活的索引类里面对应的Bundle.后面在增加新的进来
                 if (scanResult.ActivationIndex != null)
                     scanResult.ActivationIndex.RemoveHostData(config.BundleId, config.BundleFile);
 
@@ -755,10 +758,13 @@ namespace Clamp.OSGI.Data
             Hashtable internalNodeSets = new Hashtable();
 
             ArrayList setsCopy = new ArrayList();
+
             setsCopy.AddRange(config.ExtensionNodeSets);
+
             foreach (ExtensionNodeSet eset in setsCopy)
                 ScanNodeSet(reflector, config, eset, assemblies, internalNodeSets);
 
+            //检测扩展点里面的扩展节点的信息
             foreach (ExtensionPoint ep in config.ExtensionPoints)
             {
                 ScanNodeSet(reflector, config, ep.NodeSet, assemblies, internalNodeSets);
@@ -773,27 +779,36 @@ namespace Clamp.OSGI.Data
                     try
                     {
                         var asmList = new List<Tuple<string, object>>();
+
                         for (int n = 0; n < mod.Assemblies.Count; n++)
                         {
                             string s = mod.Assemblies[n];
+
                             if (mod.IgnorePaths.Contains(s))
                                 continue;
+
                             string asmFile = Path.Combine(config.BasePath, s);
+
                             object asm = reflector.LoadAssembly(asmFile);
+
                             asmList.Add(new Tuple<string, object>(asmFile, asm));
+
                             scanResult.AddPathToIgnore(Path.GetFullPath(asmFile));
+
                             ScanAssemblyImports(reflector, mod, asm);
                         }
-                        // Add all data files to the ignore file list. It avoids scanning assemblies
-                        // which are included as 'data' in an add-in.
+
                         foreach (string df in mod.DataFiles)
                         {
                             string file = Path.Combine(config.BasePath, df);
+
                             scanResult.AddPathToIgnore(Path.GetFullPath(file));
                         }
+
                         foreach (string df in mod.IgnorePaths)
                         {
                             string path = Path.Combine(config.BasePath, df);
+
                             scanResult.AddPathToIgnore(Path.GetFullPath(path));
                         }
 
@@ -814,10 +829,22 @@ namespace Clamp.OSGI.Data
             return true;
         }
 
+        /// <summary>
+        /// 检测Bundle的子模块，即是可选模块
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <param name="reflector"></param>
+        /// <param name="config"></param>
+        /// <param name="scanResult"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="asm"></param>
+        /// <returns></returns>
         private bool ScanSubmodule(ModuleDescription mod, IAssemblyReflector reflector, BundleDescription config, BundleScanResult scanResult, string assemblyName, object asm)
         {
             BundleDescription mconfig;
+
             ScanEmbeddedDescription(assemblyName, reflector, asm, out mconfig);
+
             if (mconfig != null)
             {
                 if (!mconfig.IsExtensionModel)
@@ -845,9 +872,12 @@ namespace Clamp.OSGI.Data
                     //monitor.ReportError("Submodules can't define extension points sets: " + assemblyName, null);
                     return false;
                 }
+
                 mod.MergeWith(mconfig.MainModule);
             }
+
             ScanAssemblyContents(reflector, config, mod, asm, scanResult);
+
             return true;
         }
 
@@ -860,7 +890,7 @@ namespace Clamp.OSGI.Data
         /// <param name="scanResult"></param>
         private void ScanAssemblyBundleHeaders(IAssemblyReflector reflector, BundleDescription config, object asm, BundleScanResult scanResult)
         {
-            // Get basic add-in information
+            // 获得最基本的Bundle信息
             BundleAttribute att = (BundleAttribute)reflector.GetCustomAttribute(asm, typeof(BundleAttribute), false);
 
             if (att != null)
@@ -883,8 +913,7 @@ namespace Clamp.OSGI.Data
                 config.Flags = att.Flags;
             }
 
-            // Author attributes
-
+            //获得作者
             object[] atts = reflector.GetCustomAttributes(asm, typeof(BundleAuthorAttribute), false);
             foreach (BundleAuthorAttribute author in atts)
             {
@@ -894,8 +923,7 @@ namespace Clamp.OSGI.Data
                     config.Author += ", " + author.Name;
             }
 
-            // Name
-
+            //获得名称
             atts = reflector.GetCustomAttributes(asm, typeof(BundleNameAttribute), false);
             foreach (BundleNameAttribute at in atts)
             {
@@ -905,8 +933,7 @@ namespace Clamp.OSGI.Data
                     config.Properties.SetPropertyValue("Name", at.Name, at.Locale);
             }
 
-            // Description
-
+            //获得说明
             object catt = reflector.GetCustomAttribute(asm, typeof(AssemblyDescriptionAttribute), false);
             if (catt != null && config.Description.Length == 0)
                 config.Description = ((AssemblyDescriptionAttribute)catt).Description;
@@ -921,30 +948,26 @@ namespace Clamp.OSGI.Data
             }
 
             // Copyright
-
             catt = reflector.GetCustomAttribute(asm, typeof(AssemblyCopyrightAttribute), false);
             if (catt != null && config.Copyright.Length == 0)
                 config.Copyright = ((AssemblyCopyrightAttribute)catt).Copyright;
 
-            // Category
-
+            // 分类
             catt = reflector.GetCustomAttribute(asm, typeof(BundleCategoryAttribute), false);
             if (catt != null && config.Category.Length == 0)
                 config.Category = ((BundleCategoryAttribute)catt).Category;
 
-            // Url
-
+            //路径
             catt = reflector.GetCustomAttribute(asm, typeof(BundleUrlAttribute), false);
             if (catt != null && config.Url.Length == 0)
                 config.Url = ((BundleUrlAttribute)catt).Url;
 
-            // Flags
-
+            //标识
             catt = reflector.GetCustomAttribute(asm, typeof(BundleFlagsAttribute), false);
             if (catt != null)
                 config.Flags |= ((BundleFlagsAttribute)catt).Flags;
 
-            // Localizer
+            //本地化
 
             BundleLocalizerGettextAttribute locat = (BundleLocalizerGettextAttribute)reflector.GetCustomAttribute(asm, typeof(BundleLocalizerGettextAttribute), false);
 
@@ -959,7 +982,7 @@ namespace Clamp.OSGI.Data
                 config.Localizer = node;
             }
 
-            // Optional modules
+            //可以选择的Bundle模块
 
             atts = reflector.GetCustomAttributes(asm, typeof(BundleModuleAttribute), false);
 
@@ -983,16 +1006,20 @@ namespace Clamp.OSGI.Data
         private void ScanAssemblyImports(IAssemblyReflector reflector, ModuleDescription module, object asm)
         {
             object[] atts = reflector.GetCustomAttributes(asm, typeof(ImportBundleAssemblyAttribute), false);
+
             foreach (ImportBundleAssemblyAttribute import in atts)
             {
                 if (!string.IsNullOrEmpty(import.FilePath))
                 {
                     module.Assemblies.Add(import.FilePath);
+
                     if (!import.Scan)
                         module.IgnorePaths.Add(import.FilePath);
                 }
             }
+
             atts = reflector.GetCustomAttributes(asm, typeof(ImportBundleFileAttribute), false);
+
             foreach (ImportBundleFileAttribute import in atts)
             {
                 if (!string.IsNullOrEmpty(import.FilePath))
@@ -1005,29 +1032,32 @@ namespace Clamp.OSGI.Data
         {
             bool isMainModule = module == config.MainModule;
 
-            // Get dependencies
+            // 获得依赖项
 
             object[] deps = reflector.GetCustomAttributes(asm, typeof(BundleDependencyAttribute), false);
 
             foreach (BundleDependencyAttribute dep in deps)
             {
                 BundleDependency adep = new BundleDependency();
+
                 adep.BundleId = dep.Id;
                 adep.Version = dep.Version;
+
                 module.Dependencies.Add(adep);
             }
 
             if (isMainModule)
             {
-                // Get properties
-
+                //获得属性数据
                 object[] props = reflector.GetCustomAttributes(asm, typeof(BundlePropertyAttribute), false);
+
                 foreach (BundlePropertyAttribute prop in props)
                     config.Properties.SetPropertyValue(prop.Name, prop.Value, prop.Locale);
 
-                // Get extension points
+                // 获得扩展点
 
                 object[] extPoints = reflector.GetCustomAttributes(asm, typeof(ExtensionPointAttribute), false);
+
                 foreach (ExtensionPointAttribute ext in extPoints)
                 {
                     ExtensionPoint ep = config.AddExtensionPoint(ext.Path);
@@ -1045,21 +1075,22 @@ namespace Clamp.OSGI.Data
             foreach (CustomAttribute att in reflector.GetRawCustomAttributes(asm, typeof(CustomExtensionAttribute), true))
                 AddCustomAttributeExtension(module, att, "Type");
 
-            // Get extensions or extension points applied to types
+            // 获取应用于类型的扩展节点或扩展点
 
             foreach (object t in reflector.GetAssemblyTypes(asm))
             {
 
                 string typeFullName = reflector.GetTypeFullName(t);
 
-                // Look for extensions
-
+                //寻找扩展
                 object[] extensionAtts = reflector.GetCustomAttributes(t, typeof(ExtensionAttribute), false);
 
                 if (extensionAtts.Length > 0)
                 {
                     Dictionary<string, ExtensionNodeDescription> nodes = new Dictionary<string, ExtensionNodeDescription>();
+
                     ExtensionNodeDescription uniqueNode = null;
+
                     foreach (ExtensionAttribute eatt in extensionAtts)
                     {
                         string path;
@@ -1072,6 +1103,7 @@ namespace Clamp.OSGI.Data
                         else if (eatt.Path.Length == 0)
                         {
                             path = GetBaseTypeNameList(reflector, t);
+
                             if (path == "$")
                             {
                                 // The type does not implement any interface and has no superclass.
@@ -1085,7 +1117,9 @@ namespace Clamp.OSGI.Data
                         }
 
                         ExtensionNodeDescription elem = module.AddExtensionNode(path, nodeName);
+
                         nodes[path] = elem;
+
                         uniqueNode = elem;
 
                         if (eatt.Id.Length > 0)
@@ -1097,17 +1131,20 @@ namespace Clamp.OSGI.Data
                         {
                             elem.SetAttribute("id", typeFullName);
                         }
+
                         if (eatt.InsertAfter.Length > 0)
                             elem.SetAttribute("insertafter", eatt.InsertAfter);
+
                         if (eatt.InsertBefore.Length > 0)
                             elem.SetAttribute("insertbefore", eatt.InsertBefore);
                     }
 
-                    // Get the node attributes
+                    //获得节点的属性值
 
                     foreach (ExtensionAttributeAttribute eat in reflector.GetCustomAttributes(t, typeof(ExtensionAttributeAttribute), false))
                     {
                         ExtensionNodeDescription node;
+
                         if (!string.IsNullOrEmpty(eat.Path))
                             nodes.TryGetValue(eat.Path, out node);
                         else if (eat.TypeName.Length > 0)
@@ -1116,8 +1153,10 @@ namespace Clamp.OSGI.Data
                         {
                             if (nodes.Count > 1)
                                 throw new Exception("Missing type or extension path value in ExtensionAttribute for type '" + typeFullName + "'.");
+
                             node = uniqueNode;
                         }
+
                         if (node == null)
                             throw new Exception("Invalid type or path value in ExtensionAttribute for type '" + typeFullName + "'.");
 
@@ -1126,9 +1165,10 @@ namespace Clamp.OSGI.Data
                 }
                 else
                 {
-                    // Look for extension points
+                    //获得应用类型的扩展点
 
                     extensionAtts = reflector.GetCustomAttributes(t, typeof(TypeExtensionPointAttribute), false);
+
                     if (extensionAtts.Length > 0 && isMainModule)
                     {
                         foreach (TypeExtensionPointAttribute epa in extensionAtts)
@@ -1150,6 +1190,7 @@ namespace Clamp.OSGI.Data
                             nt.Id = epa.NodeName;
                             nt.TypeName = epa.NodeTypeName;
                             nt.ExtensionAttributeTypeName = epa.ExtensionAttributeTypeName;
+
                             ep.NodeSet.NodeTypes.Add(nt);
                             ep.Description = epa.Description;
                             ep.Name = epa.Name;
@@ -1163,7 +1204,9 @@ namespace Clamp.OSGI.Data
                         foreach (CustomAttribute att in reflector.GetRawCustomAttributes(t, typeof(CustomExtensionAttribute), false))
                         {
                             ExtensionNodeDescription elem = AddCustomAttributeExtension(module, att, "Type");
+
                             elem.SetAttribute("type", typeFullName);
+
                             if (string.IsNullOrEmpty(elem.GetAttribute("id")))
                                 elem.SetAttribute("id", typeFullName);
                         }
@@ -1175,37 +1218,66 @@ namespace Clamp.OSGI.Data
         private ExtensionNodeDescription AddCustomAttributeExtension(ModuleDescription module, CustomAttribute att, string nameName)
         {
             string path;
+
             if (!att.TryGetValue(CustomExtensionAttribute.PathFieldKey, out path))
                 path = "%" + att.TypeName;
+
             ExtensionNodeDescription elem = module.AddExtensionNode(path, nameName);
+
             foreach (KeyValuePair<string, string> prop in att)
             {
                 if (prop.Key != CustomExtensionAttribute.PathFieldKey)
                     elem.SetAttribute(prop.Key, prop.Value);
             }
+
             return elem;
         }
 
+        /// <summary>
+        /// 获得基类全名和接口集合的全名
+        /// </summary>
+        /// <param name="reflector"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private string GetBaseTypeNameList(IAssemblyReflector reflector, object type)
         {
             StringBuilder sb = new StringBuilder("$");
+
             foreach (string tn in reflector.GetBaseTypeFullNameList(type))
                 sb.Append(tn).Append(',');
+
             if (sb.Length > 0)
                 sb.Remove(sb.Length - 1, 1);
+
             return sb.ToString();
         }
 
+        /// <summary>
+        /// 检测扩展节点组的信息
+        /// </summary>
+        /// <param name="reflector"></param>
+        /// <param name="config"></param>
+        /// <param name="nset"></param>
+        /// <param name="assemblies"></param>
+        /// <param name="internalNodeSets"></param>
         private void ScanNodeSet(IAssemblyReflector reflector, BundleDescription config, ExtensionNodeSet nset, ArrayList assemblies, Hashtable internalNodeSets)
         {
             foreach (ExtensionNodeType nt in nset.NodeTypes)
                 ScanNodeType(reflector, config, nt, assemblies, internalNodeSets);
         }
 
+        /// <summary>
+        /// 检测每一个扩展节点的信息
+        /// </summary>
+        /// <param name="reflector"></param>
+        /// <param name="config"></param>
+        /// <param name="nt"></param>
+        /// <param name="assemblies"></param>
+        /// <param name="internalNodeSets"></param>
         private void ScanNodeType(IAssemblyReflector reflector, BundleDescription config, ExtensionNodeType nt, ArrayList assemblies, Hashtable internalNodeSets)
         {
             if (nt.TypeName.Length == 0)
-                nt.TypeName = "Mono.Bundles.TypeExtensionNode";
+                nt.TypeName = "Clamp.OSGI.Nodes.TypeExtensionNode";
 
             object ntype = FindBundleType(reflector, nt.TypeName, assemblies);
 
@@ -1214,12 +1286,15 @@ namespace Clamp.OSGI.Data
 
             // Add type information declared with attributes in the code
             ExtensionNodeAttribute nodeAtt = (ExtensionNodeAttribute)reflector.GetCustomAttribute(ntype, typeof(ExtensionNodeAttribute), true);
+
             if (nodeAtt != null)
             {
                 if (nt.Id.Length == 0 && nodeAtt.NodeName.Length > 0)
                     nt.Id = nodeAtt.NodeName;
+
                 if (nt.Description.Length == 0 && nodeAtt.Description.Length > 0)
                     nt.Description = nodeAtt.Description;
+
                 if (nt.ExtensionAttributeTypeName.Length == 0 && nodeAtt.ExtensionAttributeTypeName.Length > 0)
                     nt.ExtensionAttributeTypeName = nodeAtt.ExtensionAttributeTypeName;
             }
@@ -1231,16 +1306,22 @@ namespace Clamp.OSGI.Data
             }
 
             // Add information about attributes
+
             object[] fieldAtts = reflector.GetCustomAttributes(ntype, typeof(NodeAttributeAttribute), true);
+
             foreach (NodeAttributeAttribute fatt in fieldAtts)
             {
                 NodeTypeAttribute natt = new NodeTypeAttribute();
+
                 natt.Name = fatt.Name;
                 natt.Required = fatt.Required;
+
                 if (fatt.TypeName != null)
                     natt.Type = fatt.TypeName;
+
                 if (fatt.Description.Length > 0)
                     natt.Description = fatt.Description;
+
                 nt.Attributes.Add(natt);
             }
 
@@ -1248,17 +1329,21 @@ namespace Clamp.OSGI.Data
             foreach (object field in reflector.GetFields(ntype))
             {
                 NodeAttributeAttribute fatt = (NodeAttributeAttribute)reflector.GetCustomAttribute(field, typeof(NodeAttributeAttribute), false);
+
                 if (fatt != null)
                 {
                     NodeTypeAttribute natt = new NodeTypeAttribute();
+
                     if (fatt.Name.Length > 0)
                         natt.Name = fatt.Name;
                     else
                         natt.Name = reflector.GetFieldName(field);
                     if (fatt.Description.Length > 0)
                         natt.Description = fatt.Description;
+
                     natt.Type = reflector.GetFieldTypeFullName(field);
                     natt.Required = fatt.Required;
+
                     nt.Attributes.Add(natt);
                 }
             }
@@ -1271,21 +1356,28 @@ namespace Clamp.OSGI.Data
             if (childSet == null)
             {
                 object[] ats = reflector.GetCustomAttributes(ntype, typeof(ExtensionNodeChildAttribute), true);
+
                 if (ats.Length > 0)
                 {
                     // Create a new node set for this type. It is necessary to create a new node set
                     // instead of just adding child ExtensionNodeType objects to the this node type
                     // because child types references can be recursive.
                     ExtensionNodeSet internalSet = new ExtensionNodeSet();
+
                     internalSet.Id = reflector.GetTypeName(ntype) + "_" + Guid.NewGuid().ToString();
+
                     foreach (ExtensionNodeChildAttribute at in ats)
                     {
                         ExtensionNodeType internalType = new ExtensionNodeType();
+
                         internalType.Id = at.NodeName;
                         internalType.TypeName = at.ExtensionNodeTypeName;
+
                         internalSet.NodeTypes.Add(internalType);
                     }
+
                     config.ExtensionNodeSets.Add(internalSet);
+
                     nt.NodeSets.Add(internalSet.Id);
 
                     // Register the new set in a hashtable, to allow recursive references to the
@@ -1311,15 +1403,22 @@ namespace Clamp.OSGI.Data
             ScanNodeSet(reflector, config, nt, assemblies, internalNodeSets);
         }
 
-
+        /// <summary>
+        /// 从Bundle寻找指定的类型
+        /// </summary>
+        /// <param name="reflector"></param>
+        /// <param name="typeName"></param>
+        /// <param name="assemblies"></param>
+        /// <returns></returns>
         private object FindBundleType(IAssemblyReflector reflector, string typeName, ArrayList assemblies)
         {
-            // Look in the current assembly
+            //从当前的程序集里面找
             object etype = reflector.GetType(coreAssemblies[reflector], typeName);
+
             if (etype != null)
                 return etype;
 
-            // Look in referenced assemblies
+            //从他依赖的程序集里面找
             foreach (object asm in assemblies)
             {
                 etype = reflector.GetType(asm, typeName);
@@ -1329,18 +1428,22 @@ namespace Clamp.OSGI.Data
 
             Hashtable visited = new Hashtable();
 
-            // Look in indirectly referenced assemblies
+            // 从他依赖的程序集的依赖程序里面找
             foreach (object asm in assemblies)
             {
                 foreach (object aref in reflector.GetAssemblyReferences(asm))
                 {
                     if (visited.Contains(aref))
                         continue;
+
                     visited.Add(aref, aref);
+
                     object rasm = reflector.LoadAssemblyFromReference(aref);
+
                     if (rasm != null)
                     {
                         etype = reflector.GetType(rasm, typeName);
+
                         if (etype != null)
                             return etype;
                     }

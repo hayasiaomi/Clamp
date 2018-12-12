@@ -199,39 +199,25 @@ namespace Clamp.OSGI.Data.Description
         }
 
         /// <summary>
-        /// Adds an extension node to the module.
+        /// 增加扩展节点
         /// </summary>
-        /// <returns>
-        /// The extension node.
-        /// </returns>
-        /// <param name='path'>
-        /// Path that identifies the extension point.
-        /// </param>
-        /// <param name='nodeName'>
-        /// Node name.
-        /// </param>
-        /// <remarks>
-        /// This method creates a new Extension object for the provided path if none exist.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
         public ExtensionNodeDescription AddExtensionNode(string path, string nodeName)
         {
             ExtensionNodeDescription node = new ExtensionNodeDescription(nodeName);
+
             GetExtension(path).ExtensionNodes.Add(node);
+
             return node;
         }
 
         /// <summary>
-        /// Gets an extension instance.
+        /// 获得指定路径的扩展
         /// </summary>
-        /// <returns>
-        /// The extension instance.
-        /// </returns>
-        /// <param name='path'>
-        /// Path that identifies the extension point that the extension extends.
-        /// </param>
-        /// <remarks>
-        /// This method creates a new Extension object for the provided path if none exist.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public Extension GetExtension(string path)
         {
             foreach (Extension e in Extensions)

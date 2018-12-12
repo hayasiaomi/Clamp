@@ -5,25 +5,22 @@ using System.Text;
 
 namespace Clamp.OSGI.Data.Annotation
 {
+    /// <summary>
+    /// 引入一个程序集的标识
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class ImportBundleAssemblyAttribute : Attribute
     {
         private string filePath;
         private bool scan = true;
 
-        /// <summary>
-        /// Initializes a new instance
-        /// </summary>
-        /// <param name="filePath">
-        /// Path to the assembly. Must be relative to the assembly declaring this attribute.
-        /// </param>
         public ImportBundleAssemblyAttribute(string filePath)
         {
             this.filePath = filePath;
         }
 
         /// <summary>
-        /// Path to the assembly. Must be relative to the assembly declaring this attribute.
+        /// 程序集路径
         /// </summary>
         public string FilePath
         {
@@ -32,8 +29,7 @@ namespace Clamp.OSGI.Data.Annotation
         }
 
         /// <summary>
-        /// When set to true (the default), the included assembly will be scanned
-        /// looking for extension point declarations.
+        /// 是否要检测
         /// </summary>
         public bool Scan
         {

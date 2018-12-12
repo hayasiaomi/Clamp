@@ -6,7 +6,7 @@ using System.Text;
 namespace Clamp.OSGI.Data.Annotation
 {
     /// <summary>
-    /// 
+    /// 扩展属性
     /// </summary>
     public class ExtensionAttributeAttribute : Attribute
     {

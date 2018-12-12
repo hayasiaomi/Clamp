@@ -5,24 +5,21 @@ using System.Text;
 
 namespace Clamp.OSGI.Data.Annotation
 {
+    /// <summary>
+    /// Bundle对应的模块标识
+    /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class BundleModuleAttribute : Attribute
     {
         private string assemblyFile;
 
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
-        /// <param name="assemblyFile">
-        /// Relative path to the assembly that implements the optional module
-        /// </param>
         public BundleModuleAttribute(string assemblyFile)
         {
             this.assemblyFile = assemblyFile;
         }
 
         /// <summary>
-        /// Relative path to the assembly that implements the optional module
+        /// 模块的文件
         /// </summary>
         public string AssemblyFile
         {

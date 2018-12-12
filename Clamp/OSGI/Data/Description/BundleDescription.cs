@@ -382,16 +382,8 @@ namespace Clamp.OSGI.Data.Description
         }
 
         /// <summary>
-        /// Gets the optional modules.
+        /// 获得可选的Bundle模块集合
         /// </summary>
-        /// <value>
-        /// The optional modules.
-        /// </value>
-        /// <remarks>
-        /// Optional modules can be used to declare extensions which will be registered only if some specified
-        /// add-in dependencies can be satisfied. Dependencies specified in optional modules are 'soft dependencies',
-        /// which means that they don't need to be satisfied in order to load the add-in.
-        /// </remarks>
         public ModuleCollection OptionalModules
         {
             get

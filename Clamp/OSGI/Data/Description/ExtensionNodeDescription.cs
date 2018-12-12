@@ -8,6 +8,9 @@ using System.Xml;
 
 namespace Clamp.OSGI.Data.Description
 {
+    /// <summary>
+    /// 扩展节点说明
+    /// </summary>
     public class ExtensionNodeDescription : ObjectDescription, NodeElement
     {
         private ExtensionNodeDescriptionCollection childNodes;
