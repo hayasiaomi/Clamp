@@ -225,8 +225,11 @@ namespace Clamp.OSGI.Data.Description
                 if (e.Path == path)
                     return e;
             }
+
             Extension ex = new Extension(path);
+
             Extensions.Add(ex);
+
             return ex;
         }
 

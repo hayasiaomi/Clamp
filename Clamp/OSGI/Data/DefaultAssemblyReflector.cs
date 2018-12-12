@@ -125,16 +125,21 @@ namespace Clamp.OSGI.Data
         public IEnumerable GetBaseTypeFullNameList(object type)
         {
             ArrayList list = new ArrayList();
+
             Type btype = ((Type)type).BaseType;
+
             while (btype != typeof(object))
             {
                 list.Add(btype.FullName);
+
                 btype = btype.BaseType;
             }
+
             foreach (Type iterf in ((Type)type).GetInterfaces())
             {
                 list.Add(iterf.FullName);
             }
+
             return list;
         }
 
