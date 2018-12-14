@@ -73,15 +73,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChromiumFX\Generated\CfxApi.cs" />
@@ -418,15 +421,12 @@
     <Compile Include="UI\BrowserWidgetHandleFinder.cs" />
     <Compile Include="UI\BrowserWidgetMessageInterceptor.cs" />
     <Compile Include="UI\ChromeWidgetMessageInterceptor.cs" />
-    <Compile Include="UI\ChromiumWinForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="UI\ChromiumFxControl.xaml.cs">
+      <DependentUpon>ChromiumFxControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ClampResourceHandler.cs" />
     <Compile Include="UI\ClampSchemeHandlerFactory.cs" />
     <Compile Include="UI\ControlExtension.cs" />
-    <Compile Include="UI\ChromiumShadowDecorator.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="UI\EmbeddedResourceHandler.cs" />
     <Compile Include="UI\EmbeddedSchemeHandlerFactory.cs" />
     <Compile Include="UI\FormNCAreaDecorator.cs" />
@@ -457,6 +457,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\ChromiumFxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

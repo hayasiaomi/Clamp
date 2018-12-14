@@ -612,6 +612,10 @@ namespace Clamp.OSGI
             RemoveExtensionNodeHandler(path, handler);
         }
 
+        public void Dispose()
+        {
+        }
+
         #endregion
 
 
@@ -1267,6 +1271,8 @@ namespace Clamp.OSGI
 
             return dstNode;
         }
+
+      
 
 
 

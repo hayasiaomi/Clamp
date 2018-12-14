@@ -39,17 +39,16 @@ namespace Clamp.MUI.Framework
             {
                 ChromiumWebBrowser.OnBeforeCfxInitialize += (e) =>
                 {
-                    var cachePath = Path.Combine(ApplicationDataDir, Application.ProductName, "Cache");
-
                     //if (!Directory.Exists(cachePath))
                     //    Directory.CreateDirectory(cachePath);
 
                     e.Settings.LocalesDirPath = ClampLocalesDir;
                     e.Settings.ResourcesDirPath = ClampLibCefDirPath;
                     e.Settings.Locale = "zh-CN";
-                    e.Settings.CachePath = cachePath;
+                    e.Settings.CachePath = Path.Combine(ApplicationDataDir, Application.ProductName, "Cache");
                     e.Settings.LogSeverity = CfxLogSeverity.Disable;
                     e.Settings.BrowserSubprocessPath = Path.Combine(localRuntimeDir, ClampBrowserSubprocessPath);
+                    e.Settings.NoSandbox = true;
                     //e.Settings.RemoteDebuggingPort = 8888;
                     //e.Settings.IgnoreCertificateErrors = true;
                     e.Settings.MultiThreadedMessageLoop = true;

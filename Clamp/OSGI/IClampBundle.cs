@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Clamp.OSGI
 {
-    public interface IClampBundle : IBundle
+    public interface IClampBundle : IBundle, IDisposable
     {
         //ExtensionNode GetExtensionNode(string path);
 

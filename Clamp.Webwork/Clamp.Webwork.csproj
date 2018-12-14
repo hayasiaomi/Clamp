@@ -538,5 +538,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Clamp\Clamp.csproj">
+      <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
+      <Name>Clamp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

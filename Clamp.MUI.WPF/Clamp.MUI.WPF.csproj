@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5CE0FEC1-290B-47C7-AC05-71583EA2B407}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>Clamp.MUI</RootNamespace>
-    <AssemblyName>Clamp.MUI</AssemblyName>
+    <ProjectGuid>{DC51AA2D-884E-4316-AD07-D80D1D3CEF9C}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>Clamp.MUI.WPF</RootNamespace>
+    <AssemblyName>Clamp.MUI.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -48,32 +46,51 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\BundleInfo.cs" />
+    <Compile Include="WindowAuthority.xaml.cs">
+      <DependentUpon>WindowAuthority.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowSplash.xaml.cs">
+      <DependentUpon>WindowSplash.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPFAppManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clamp.AppCenter\Clamp.AppCenter.csproj">
-      <Project>{4b81748f-84ba-4118-992d-c7fd039a746c}</Project>
+      <Project>{4B81748F-84BA-4118-992D-C7FD039A746C}</Project>
       <Name>Clamp.AppCenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
-      <Project>{d9426667-170c-4cf3-9d13-5c266cb99421}</Project>
-      <Name>Clamp.MUI.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.Webwork\Clamp.Webwork.csproj">
-      <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
-      <Name>Clamp.Webwork</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Clamp\Clamp.csproj">
-      <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
+      <Project>{17A2236D-1A63-4FF2-8046-EDFD80F3C9AB}</Project>
       <Name>Clamp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Page Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowAuthority.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowSplash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

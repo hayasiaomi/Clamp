@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5CE0FEC1-290B-47C7-AC05-71583EA2B407}</ProjectGuid>
+    <ProjectGuid>{1DF1607B-2E1E-4184-889F-BD2E955F348C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Clamp.MUI</RootNamespace>
-    <AssemblyName>Clamp.MUI</AssemblyName>
+    <RootNamespace>Clamp.Shell</RootNamespace>
+    <AssemblyName>Clamp.Shell</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -48,32 +48,45 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\BundleInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Clamp.AppCenter\Clamp.AppCenter.csproj">
-      <Project>{4b81748f-84ba-4118-992d-c7fd039a746c}</Project>
-      <Name>Clamp.AppCenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
-      <Project>{d9426667-170c-4cf3-9d13-5c266cb99421}</Project>
-      <Name>Clamp.MUI.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.Webwork\Clamp.Webwork.csproj">
-      <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
-      <Name>Clamp.Webwork</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp\Clamp.csproj">
-      <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
-      <Name>Clamp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

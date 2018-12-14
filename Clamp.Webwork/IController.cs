@@ -2,8 +2,8 @@ namespace Clamp.Webwork
 {
     using System.Collections.Generic;
     using System.ComponentModel;
-    using Clamp.OSGI.Framework.Data.Annotation;
-    using Clamp.OSGI.Framework.Data.Description;
+    using Clamp.OSGI.Data.Annotation;
+    using Clamp.OSGI.Data.Description;
     using Clamp.Webwork.ModelBinding;
     using Clamp.Webwork.Responses.Negotiation;
     using Clamp.Webwork.Routing;
