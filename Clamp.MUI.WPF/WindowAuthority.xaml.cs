@@ -18,9 +18,21 @@ namespace Clamp.MUI.WPF
     /// </summary>
     public partial class WindowAuthority : Window
     {
+        private string password;
+
         public WindowAuthority()
         {
             InitializeComponent();
+        }
+
+        private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox text = (sender as TextBox).Text
         }
     }
 }

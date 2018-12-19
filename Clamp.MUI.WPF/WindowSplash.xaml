@@ -5,8 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clamp.MUI.WPF"
         mc:Ignorable="d"
-        Title="WindowSplash" Height="450" Width="800">
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Title="WindowSplash" 
+        Loaded="Window_Loaded"
+        Height="260"
+        Background="White"
+        Width="460">
     <Grid>
-        
+        <Image Stretch="UniformToFill" Source="E:\Develop\Clamp\Clamp.MUI.WPF\Resources\start.png" />
+
+        <TextBlock Text="YEYE" FontSize="60" VerticalAlignment="Center"  HorizontalAlignment="Center" Focusable="False" Foreground="Aqua"/>
+        <ProgressBar  Height="10" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

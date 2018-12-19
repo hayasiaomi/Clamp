@@ -84,6 +84,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Clamp.AppCenter\Clamp.AppCenter.csproj">
+      <Project>{4b81748f-84ba-4118-992d-c7fd039a746c}</Project>
+      <Name>Clamp.AppCenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
       <Project>{D9426667-170C-4CF3-9D13-5C266CB99421}</Project>
       <Name>Clamp.Explorer.Framework</Name>

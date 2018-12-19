@@ -4,9 +4,111 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clamp.MUI.WPF"
+        Icon="/Clamp.MUI.WPF;component/clamp.ico"
         mc:Ignorable="d"
-        Title="WindowAuthority" Height="450" Width="800">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent" 
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        Title="登录"
+         Height="460" Width="320"
+       >
+
+    <Window.Resources>
+        <Style x:Key="WaterMarkTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" BorderBrush="#E4E4E4" BorderThickness="0,0,0,1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
+                            <ScrollViewer x:Name="PART_ContentHost"  VerticalAlignment="Center" />
+                            <Label Margin="5,0,0,0" x:Name="WaterMarkLabel" Content="{TemplateBinding Tag}" VerticalAlignment="Center"  Visibility="Collapsed" Foreground="Gray" FontFamily="Arial"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value=""/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Visibility" TargetName="WaterMarkLabel" Value="Visible"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="DimGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="Header" Grid.Row="0" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+            <Border Height="42"  CornerRadius="5,5,0,0" Background="{StaticResource WindowHeaderGradient}" Margin="10,10,10,0"  >
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Color="Black" Opacity="0.6" ShadowDepth="2"/>
+                </Border.Effect>
+            </Border>
+            <TextBlock Style="{StaticResource Heading2}" Text="登录" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="20,10,0,0"  />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,20,0" >
+                <Button  Width="20" Style="{StaticResource SystemButton}"  Foreground="#FFFFFF" HorizontalAlignment="Right">
+                    <Button.Content>
+                        <Grid Width="13" Height="12" RenderTransform="1,0,0,1,0,1">
+                            <Path Data="M 0 0 L 4 4 L 8 0 Z"
+                                  Width="8"
+                                  Height="7"
+                                  VerticalAlignment="Center" 
+                                  HorizontalAlignment="Center"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                  StrokeThickness="2"  />
+                        </Grid>
+                    </Button.Content>
+                </Button>
+                <Button  Width="20" Style="{StaticResource SystemButton}"  Foreground="#FFFFFF" HorizontalAlignment="Right">
+                    <Button.Content>
+                        <Grid Width="13" Height="12" RenderTransform="1,0,0,1,0,1">
+                            <Path Data="M0,6 L8,6 Z" Width="8" Height="7" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="2"  />
+                        </Grid>
+                    </Button.Content>
+                </Button>
+                <Button Width="20"  Style="{StaticResource SystemCloseButton}"  Foreground="#FFFFFF" HorizontalAlignment="Right" >
+                    <Button.Content>
+                        <Grid Width="13" Height="12" RenderTransform="1,0,0,1,0,1">
+                            <Path Data="M0,0 L8,7 M8,0 L0,7 Z" 
+                              Width="8"
+                              Height="7"
+                              VerticalAlignment="Center" 
+                              HorizontalAlignment="Center"
+                              Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" 
+                              StrokeThickness="1.5"  />
+                        </Grid>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Background="Transparent" >
+            <Border Background="#FFFFFF"  CornerRadius="0,0,5,5" Margin="10,0,10,10"  >
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Color="Black" Opacity="0.4" ShadowDepth="2"/>
+                </Border.Effect>
+            </Border>
+
+            <StackPanel>
+                <Image Source="/Clamp.MUI.WPF;component/Resources/clamp.png" Width="126" Height="126"  Margin="0,20,0,0" HorizontalAlignment="Center"  />
+                <TextBlock Text="YEYE" FontSize="30" HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="{StaticResource Accent}" />
+
+                <TextBox Style="{StaticResource WaterMarkTextBox}" Tag="输入用户名" Width="200" Height="28" FontSize="16" Background="#FFFFFF" BorderThickness="0,0,0,1" Margin="5,10,0,0" />
+
+                <TextBox Style="{StaticResource WaterMarkTextBox}" Tag="输入密码" Width="200" Height="28" FontSize="16" Background="#FFFFFF" BorderThickness="0,0,0,1" Margin="5,10,0,0" TextChanged="TextBox_TextChanged" />
+            </StackPanel>
+        </Grid>
     </Grid>
+
+
 </Window>

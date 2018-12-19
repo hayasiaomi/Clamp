@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Clamp.Explorer.ChromiumRenderer
+namespace Clamp.ChromiumRenderer
 {
     class Program
     {
