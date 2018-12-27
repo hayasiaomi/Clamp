@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clamp.MUI.WPF"
         xmlns:controls="clr-namespace:Clamp.MUI.WPF.Controls"
+        xmlns:vm="clr-namespace:Clamp.MUI.WPF.ViewModel"
+        xmlns:convt="clr-namespace:Clamp.MUI.WPF.Converters"
         Icon="/Clamp.MUI.WPF;component/clamp.ico"
         mc:Ignorable="d"
         WindowStyle="None"
@@ -15,6 +17,14 @@
         Title="登录"
          Height="460" Width="320"
        >
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <convt:NotBooleanConverter x:Key="NotBooleanConverter" />
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:AuthorityVM />
+    </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -76,9 +86,35 @@
             <StackPanel>
                 <Image Source="/Clamp.MUI.WPF;component/Resources/clamp.png" Width="126" Height="126"  Margin="0,20,0,0" HorizontalAlignment="Center"  />
                 <TextBlock Text="YEYE" FontSize="30" HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="{StaticResource Accent}" />
-                <TextBox controls:TextBoxHelper.Watermark="输入用户名" Foreground="Gray"  Width="200" Height="28" FontSize="16" Background="#FFFFFF" BorderThickness="0,0,0,1" Margin="5,10,0,0" />
-                <PasswordBox controls:TextBoxHelper.Watermark="输入密码" Foreground="Gray"  Width="200" Height="28" FontSize="16" Background="#FFFFFF" BorderThickness="0,0,0,1" Margin="5,10,0,0"  />
-                <Button Content="登录" Width="200" Margin="5,25,0,0" />
+                <TextBox  x:Name="TBUsername" 
+                          controls:TextBoxHelper.Watermark="输入用户名"
+                          Text="{Binding Username}" 
+                          Width="200"
+                          Height="28" 
+                          FontSize="16" 
+                          Background="#FFFFFF" 
+                          BorderThickness="0,0,0,1" 
+                          Margin="5,10,0,0" TextChanged="TBUsername_TextChanged" IsEnabled="{Binding IsLogining,Converter={StaticResource NotBooleanConverter} }" />
+                <PasswordBox x:Name="PBPassword" 
+                             controls:TextBoxHelper.Watermark="输入密码"
+                             Width="200" 
+                             Height="28" 
+                             FontSize="16"
+                             Background="#FFFFFF"
+                             BorderThickness="0,0,0,1"
+                             Margin="5,10,0,0"  PasswordChanged="PBPassword_PasswordChanged" IsEnabled="{Binding IsLogining,Converter={StaticResource NotBooleanConverter} }" />
+
+                <Button Content="登录" Width="200" Margin="5,25,0,0" Click="BtnLogin_Click" IsEnabled="{Binding IsLogining,Converter={StaticResource NotBooleanConverter} }" />
+
+                <Grid Margin="10,25,10,10">
+                    <TextBlock x:Name="TBMistake"  
+                               Text="{Binding Mistake}" 
+                               TextAlignment="Center"
+                               HorizontalAlignment="Stretch" 
+                               Foreground="Red" 
+                               Visibility="{Binding IsFault,Converter={ StaticResource BooleanToVisibilityConverter}}"   />
+                    <ProgressBar Minimum="0" Maximum="1"  Height="16" IsIndeterminate="True" Visibility="{Binding IsLogining,Converter={ StaticResource BooleanToVisibilityConverter}}"  />
+                </Grid>
             </StackPanel>
         </Grid>
     </Grid>

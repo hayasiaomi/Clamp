@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clamp.MUI.WPF.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,8 +19,6 @@ namespace Clamp.MUI.WPF
     /// </summary>
     public partial class WindowAuthority : Window
     {
-        private string password;
-
         public WindowAuthority()
         {
             InitializeComponent();
@@ -29,10 +28,23 @@ namespace Clamp.MUI.WPF
         {
             this.DragMove();
         }
+        private void BtnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            AuthorityVM authorityVM = this.DataContext as AuthorityVM;
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        { 
-           
+            authorityVM.Password = this.PBPassword.Password;
+
+            authorityVM.Login();
+        }
+
+        private void TBUsername_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            (this.DataContext as AuthorityVM).ClearFault();
+        }
+
+        private void PBPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as AuthorityVM).ClearFault();
         }
     }
 }

@@ -11,8 +11,7 @@ namespace Clamp.MUI.WPF.Converters
     /// <summary>
     /// Converts boolean to visibility values.
     /// </summary>
-    public class BooleanToVisibilityConverter
-        : IValueConverter
+    public class BooleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
         /// Converts a value.

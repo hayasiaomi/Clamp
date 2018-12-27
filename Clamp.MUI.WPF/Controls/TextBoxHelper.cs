@@ -25,7 +25,7 @@ namespace Clamp.MUI.WPF.Controls
         public static readonly DependencyProperty HasTextProperty = DependencyProperty.RegisterAttached("HasText", typeof(bool), typeof(TextBoxHelper), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
         public static readonly DependencyProperty TextLengthProperty = DependencyProperty.RegisterAttached("TextLength", typeof(int), typeof(TextBoxHelper), new UIPropertyMetadata(0));
         public static readonly DependencyProperty SelectAllOnFocusProperty = DependencyProperty.RegisterAttached("SelectAllOnFocus", typeof(bool), typeof(TextBoxHelper), new FrameworkPropertyMetadata(false));
-
+        public static readonly DependencyProperty WatermarkForegroundProperty = DependencyProperty.RegisterAttached("WatermarkForeground", typeof(Brush), typeof(TextBoxHelper), new FrameworkPropertyMetadata(default(Brush), FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.Inherits));
         public static void SetSelectAllOnFocus(DependencyObject obj, bool value)
         {
             obj.SetValue(SelectAllOnFocusProperty, value);
@@ -40,6 +40,19 @@ namespace Clamp.MUI.WPF.Controls
         {
             obj.SetValue(IsMonitoringProperty, value);
         }
+
+        [AttachedPropertyBrowsableForType(typeof(TextBoxBase))]
+        [AttachedPropertyBrowsableForType(typeof(PasswordBox))]
+        public static Brush GetWatermarkForeground(DependencyObject obj)
+        {
+            return (Brush)obj.GetValue(WatermarkProperty);
+        }
+
+        public static void SetWatermarkForeground(DependencyObject obj, Brush value)
+        {
+            obj.SetValue(WatermarkProperty, value);
+        }
+
 
         [AttachedPropertyBrowsableForType(typeof(TextBoxBase))]
         [AttachedPropertyBrowsableForType(typeof(PasswordBox))]
@@ -75,7 +88,7 @@ namespace Clamp.MUI.WPF.Controls
             return (TextTrimming)obj.GetValue(WatermarkTrimmingProperty);
         }
 
-      
+
         [AttachedPropertyBrowsableForType(typeof(TextBoxBase))]
         [AttachedPropertyBrowsableForType(typeof(PasswordBox))]
         public static void SetWatermarkTrimming(DependencyObject obj, TextTrimming value)
@@ -94,7 +107,7 @@ namespace Clamp.MUI.WPF.Controls
         {
             obj.SetValue(WatermarkWrappingProperty, value);
         }
-  
+
         [AttachedPropertyBrowsableForType(typeof(TextBoxBase))]
         [AttachedPropertyBrowsableForType(typeof(PasswordBox))]
         public static bool GetHasText(DependencyObject obj)
