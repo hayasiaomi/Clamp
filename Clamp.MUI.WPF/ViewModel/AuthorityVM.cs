@@ -91,35 +91,30 @@ namespace Clamp.MUI.WPF.ViewModel
             }
         }
 
-        public void Login()
+        public bool CheckValidation()
         {
-            this.ClearFault();
-
-            this.IsLogining = true;
-
             if (string.IsNullOrWhiteSpace(this.Username))
             {
                 this.Mistake = "用户名不能为空";
-                this.IsLogining = false;
-                return;
+                return false;
             }
             else if (string.IsNullOrWhiteSpace(this.Password))
             {
                 this.Mistake = "密码不能为空";
-                this.IsLogining = false;
-                return;
+                return false;
             }
 
-            Thread thread = new Thread(new ThreadStart(() =>
-            {
-                Thread.Sleep(3000);
-                this.Mistake = "用户或密码不正确";
-                this.IsLogining = false;
+            return true;
+        }
 
-            }));
+        public void BeginLogin()
+        {
+            this.IsLogining = true;
+        }
 
-            thread.IsBackground = true;
-            thread.Start();
+        public void EndLogin()
+        {
+            this.IsLogining = false;
         }
 
         public void ClearFault()
