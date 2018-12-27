@@ -88,76 +88,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="INI\Annotation\IgnoreAttribute.cs" />
-    <Compile Include="INI\ParserException.cs" />
-    <Compile Include="INI\Section.cs" />
-    <Compile Include="INI\SectionArrayEnumerator.cs" />
-    <Compile Include="INI\SectionValueCastException.cs" />
-    <Compile Include="INI\INIElement.cs" />
-    <Compile Include="INI\INIFile.cs" />
-    <Compile Include="INI\INIFile.Load.cs" />
-    <Compile Include="INI\INIFile.Properties.cs" />
-    <Compile Include="INI\INIReader.cs" />
-    <Compile Include="INI\INIWriter.cs" />
-    <Compile Include="INI\TypeConverter\BoolStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\ByteStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\CharStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\DateTimeStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\DecimalStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\DoubleStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\EnumStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\FallbackStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\Int16StringConverter.cs" />
-    <Compile Include="INI\TypeConverter\Int32StringConverter.cs" />
-    <Compile Include="INI\TypeConverter\Int64StringConverter.cs" />
-    <Compile Include="INI\TypeConverter\ITypeStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\SByteStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\SingleStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\StringStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\TypeStringConverter.cs" />
-    <Compile Include="INI\TypeConverter\UInt16StringConverter.cs" />
-    <Compile Include="INI\TypeConverter\UInt32StringConverter.cs" />
-    <Compile Include="INI\TypeConverter\UInt64StringConverter.cs" />
-    <Compile Include="Network\HttpContentTypes.cs" />
-    <Compile Include="Network\HttpExtension.cs" />
-    <Compile Include="Network\HttpMethod.cs" />
-    <Compile Include="Network\HttpModule.cs" />
-    <Compile Include="Network\HttpRequest.cs" />
-    <Compile Include="Network\HttpResponse.cs" />
-    <Compile Include="Network\HttpResult.cs" />
-    <Compile Include="Network\HttpWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Shortcuts\Hotkey.cs" />
-    <Compile Include="Shortcuts\HotkeyAlreadyBoundException.cs" />
-    <Compile Include="Shortcuts\HotkeyBinder.cs" />
-    <Compile Include="Shortcuts\HotkeyCallback.cs" />
-    <Compile Include="Shortcuts\HotkeyContainer.cs" />
-    <Compile Include="Shortcuts\HotkeyConverter.cs" />
-    <Compile Include="Shortcuts\HotkeyEditor.cs" />
-    <Compile Include="Shortcuts\HotkeyNotBoundException.cs" />
-    <Compile Include="Shortcuts\HotkeyPressedEventArgs.cs" />
-    <Compile Include="Shortcuts\HotkeyWindow.cs" />
-    <Compile Include="Shortcuts\Modifiers.cs" />
-    <Compile Include="Win32\BITMAPINFOHEADER.cs" />
-    <Compile Include="Win32\BLENDFUNCTION.cs" />
-    <Compile Include="Win32\GDI32Dll.cs" />
-    <Compile Include="Win32\GUITHREADINFO.cs" />
-    <Compile Include="Win32\Kernal32Dll.cs" />
-    <Compile Include="Win32\MOUSE_POISTION_CODES.cs" />
-    <Compile Include="Win32\NativeConstant.cs" />
-    <Compile Include="Win32\NativeDelegate.cs" />
-    <Compile Include="Win32\POINT.cs" />
-    <Compile Include="Win32\RECT.cs" />
-    <Compile Include="Win32\SIZE.cs" />
-    <Compile Include="Win32\User32Dll.cs" />
-    <Compile Include="Win32\WINDOWPLACEMENT.cs" />
-    <Compile Include="Win32\WINOWSHOWSTYLE.cs" />
-    <Compile Include="Win32\WNDCLASSEX.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\StringResources.resx">

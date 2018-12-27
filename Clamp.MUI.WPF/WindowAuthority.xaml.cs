@@ -31,8 +31,8 @@ namespace Clamp.MUI.WPF
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox text = (sender as TextBox).Text
+        { 
+           
         }
     }
 }
