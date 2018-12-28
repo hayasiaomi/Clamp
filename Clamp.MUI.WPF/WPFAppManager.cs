@@ -32,18 +32,19 @@ namespace Clamp.MUI.WPF
             {
                 UILauncher.RegisterEmbeddedScheme(Assembly.GetExecutingAssembly(), schemeName: "embedded", domainName: "res.clamp.local");
 
-                WindowSplash windowSplash = new WindowSplash();
+                //WindowSplash windowSplash = new WindowSplash();
+                WindowAuthority windowAuthority = new WindowAuthority();
 
-                app.MainWindow = windowSplash;
+                app.MainWindow = windowAuthority;
 
-                app.Run(windowSplash);
+                app.Run(windowAuthority);
             }
         }
 
         private void BeforeChromiumInitialize(OnBeforeCfxInitializeEventArgs e)
         {
             e.Settings.LogSeverity = global::Chromium.CfxLogSeverity.Default;
-            //e.Settings.SingleProcess = true;
+            e.Settings.SingleProcess = true;
         }
     }
 }
