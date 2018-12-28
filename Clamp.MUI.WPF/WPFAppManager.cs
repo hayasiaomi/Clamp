@@ -1,8 +1,12 @@
-﻿using Clamp.AppCenter;
+﻿using Chromium.WebBrowser.Event;
+using Clamp.AppCenter;
+using Clamp.MUI.WPF.UI;
 using Clamp.OSGI.Data.Annotation;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Clamp.MUI.WPF
@@ -22,11 +26,24 @@ namespace Clamp.MUI.WPF
 
         public void Run(params string[] commandLines)
         {
-            WindowSplash windowSplash = new WindowSplash();
+            string assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 
-            app.MainWindow = windowSplash;
+            if (UILauncher.InitializeChromium(assemblyDir, BeforeChromiumInitialize))
+            {
+                UILauncher.RegisterEmbeddedScheme(Assembly.GetExecutingAssembly(), schemeName: "embedded", domainName: "res.clamp.local");
 
-            app.Run(windowSplash);
+                WindowSplash windowSplash = new WindowSplash();
+
+                app.MainWindow = windowSplash;
+
+                app.Run(windowSplash);
+            }
+        }
+
+        private void BeforeChromiumInitialize(OnBeforeCfxInitializeEventArgs e)
+        {
+            e.Settings.LogSeverity = global::Chromium.CfxLogSeverity.Default;
+            //e.Settings.SingleProcess = true;
         }
     }
 }

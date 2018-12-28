@@ -3,6 +3,7 @@ using Chromium.Event;
 using Chromium.WebBrowser;
 using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
+using Clamp.AppCenter.CFX;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,7 @@ namespace Clamp.MUI.WPF.UI
 
         internal static string ClampLibCefDirPath = null;
         internal static string ClampLocalesDir = null;
-        internal static string ClampBrowserSubprocessPath = "YEUXCefRenderer.exe";
+        internal static string ClampBrowserSubprocessPath = "YEYECefRenderer.exe";
         internal static readonly string ApplicationDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         internal static readonly RuntimeArch PlatformArch = CfxRuntime.PlatformArch == CfxPlatformArch.x64 ? RuntimeArch.x64 : RuntimeArch.x86;
 
@@ -86,7 +87,7 @@ namespace Clamp.MUI.WPF.UI
 
                     RegisterLocalScheme();
 
-                    //RegisterClampScheme();
+                    RegisterClampScheme();
 
                     return true;
                 }

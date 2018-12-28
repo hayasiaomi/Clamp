@@ -51,13 +51,21 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CFX\BrowserWidgetMessageInterceptor.cs" />
+    <Compile Include="CFX\ChromeWidgetHandleFinder.cs" />
+    <Compile Include="CFX\NativeMethods.cs" />
+    <Compile Include="CFX\Resilient.cs" />
+    <Compile Include="Controls\ControlExtension.cs" />
+    <Compile Include="Controls\HdiHelper.cs" />
     <Compile Include="Controls\RelativeAnimatingContentControl.cs" />
     <Compile Include="Controls\TextBoxHelper.cs" />
+    <Compile Include="Controls\UILauncher.cs" />
     <Compile Include="Converters\BooleanToFontWeightConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NotBooleanConverter.cs" />

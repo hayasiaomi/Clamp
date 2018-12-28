@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Clamp.MUI.WPF"
+        xmlns:controls="clr-namespace:Clamp.MUI.WPF.Controls"
+        xmlns:cfx="clr-namespace:Chromium.WebBrowser;assembly=Clamp.AppCenter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="YEYE" Height="450" Width="800">
+    <WindowsFormsHost x:Name="Host" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+        <cfx:ChromiumWebBrowser x:Name="ChromiumWebBrowser"   Dock="Fill" />
+    </WindowsFormsHost>
 </Window>

@@ -104,7 +104,7 @@
                              BorderThickness="0,0,0,1"
                              Margin="5,10,0,0"  PasswordChanged="PBPassword_PasswordChanged" IsEnabled="{Binding IsLogining,Converter={StaticResource NotBooleanConverter} }" />
 
-                <Button Content="登录" Width="200" Margin="5,25,0,0" Click="BtnLogin_Click" IsEnabled="{Binding IsLogining,Converter={StaticResource NotBooleanConverter} }" />
+                <Button Content="登录" Width="200" Margin="5,25,0,0" IsDefault="True" Click="BtnLogin_Click" IsEnabled="{Binding IsLogining,Converter={StaticResource NotBooleanConverter} }" />
 
                 <Grid Margin="10,25,10,10">
                     <TextBlock x:Name="TBMistake"  
