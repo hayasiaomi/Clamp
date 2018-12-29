@@ -55,20 +55,12 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\BundleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clamp.AppCenter\Clamp.AppCenter.csproj">
       <Project>{4b81748f-84ba-4118-992d-c7fd039a746c}</Project>
       <Name>Clamp.AppCenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
-      <Project>{d9426667-170c-4cf3-9d13-5c266cb99421}</Project>
-      <Name>Clamp.MUI.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.Webwork\Clamp.Webwork.csproj">
-      <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
-      <Name>Clamp.Webwork</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Clamp\Clamp.csproj">
       <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
@@ -77,6 +69,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="clamp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Clamp.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clamp.MUI.bundle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

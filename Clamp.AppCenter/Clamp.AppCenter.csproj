@@ -48,6 +48,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppManager.cs" />
     <Compile Include="CFX\ClampResourceHandler.cs" />
     <Compile Include="CFX\ClampSchemeHandlerFactory.cs" />
     <Compile Include="CFX\EmbeddedResourceHandler.cs" />
@@ -304,7 +305,37 @@
     <Compile Include="ChromiumWebBrowser\RenderProcess\RenderProcess.cs" />
     <Compile Include="ChromiumWebBrowser\RenderProcess\RenderProcessHandler.cs" />
     <Compile Include="ChromiumWebBrowser\WebResource.cs" />
+    <Compile Include="AppCenterConstant.cs" />
     <Compile Include="IAppManager.cs" />
+    <Compile Include="Initial\InitialElement.cs" />
+    <Compile Include="Initial\InitialFile.cs" />
+    <Compile Include="Initial\InitialFile.Load.cs" />
+    <Compile Include="Initial\InitialFile.Properties.cs" />
+    <Compile Include="Initial\InitialProperty.cs" />
+    <Compile Include="Initial\InitialPropertyCastException.cs" />
+    <Compile Include="Initial\InitialPropertyEnumerator.cs" />
+    <Compile Include="Initial\InitialReader.cs" />
+    <Compile Include="Initial\InitialWriter.cs" />
+    <Compile Include="Initial\ParserException.cs" />
+    <Compile Include="Initial\TypeConverter\BoolStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\CharStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DateTimeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DecimalStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\DoubleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\EnumStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\FallbackStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\Int64StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\ITypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SByteStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\SingleStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\StringStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\TypeStringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt16StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt32StringConverter.cs" />
+    <Compile Include="Initial\TypeConverter\UInt64StringConverter.cs" />
     <Compile Include="Inputs\IInputDeviceStateAdaptor.cs" />
     <Compile Include="Inputs\IInputMessageDispatcher.cs" />
     <Compile Include="Inputs\IInputSimulator.cs" />

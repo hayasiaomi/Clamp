@@ -13,20 +13,18 @@ namespace Clamp.AppCenter.CFX
     public class EmbeddedResourceHandler : CfxResourceHandler
     {
         private int readResponseStreamOffset;
-        private Assembly resourceAssembly;
         private string requestUrl = null;
         private WebResource webResource;
         private ChromiumWebBrowser browser;
         private GCHandle gcHandle;
+        private Dictionary<string, Assembly> asmCaches = new Dictionary<string, Assembly>();
+        private Assembly mainAssembly;
 
-        private string domain = null;
-
-        public EmbeddedResourceHandler(Assembly resourceAssembly, ChromiumWebBrowser browser, string domain = null)
+        public EmbeddedResourceHandler(Assembly mainAssembly, ChromiumWebBrowser browser)
         {
+            this.mainAssembly = mainAssembly;
             this.gcHandle = GCHandle.Alloc(this);
-            this.domain = domain;
             this.browser = browser;
-            this.resourceAssembly = resourceAssembly;
             this.GetResponseHeaders += EmbeddedResourceHandler_GetResponseHeaders;
             this.ProcessRequest += EmbeddedResourceHandler_ProcessRequest;
             this.ReadResponse += EmbeddedResourceHandler_ReadResponse;
@@ -53,7 +51,26 @@ namespace Clamp.AppCenter.CFX
                 fileName = fileName.Substring(1);
             }
 
-            var ass = resourceAssembly;
+            Assembly ass = null;
+
+            string domainName = uri.Host;
+
+            if (asmCaches.ContainsKey(domainName))
+            {
+                ass = asmCaches[domainName];
+            }
+            else
+            {
+                Assembly domainAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => string.Equals(asm.GetName().Name, domainName));
+
+                if (domainAssembly != null)
+                {
+                    asmCaches.Add(domainName, domainAssembly);
+
+                    ass = domainAssembly;
+                }
+            }
+
             var endTrimIndex = fileName.LastIndexOf('/');
 
             if (endTrimIndex > -1)

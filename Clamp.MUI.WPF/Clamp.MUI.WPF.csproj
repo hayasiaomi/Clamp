@@ -99,6 +99,7 @@
     <ProjectReference Include="..\Clamp\Clamp.csproj">
       <Project>{17A2236D-1A63-4FF2-8046-EDFD80F3C9AB}</Project>
       <Name>Clamp</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

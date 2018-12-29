@@ -12,15 +12,12 @@ namespace Clamp.AppCenter.CFX
     {
         public string SchemeName { private set; get; }
 
-        public string DomainName { private set; get; }
+        private readonly Assembly mainAssembly;
 
-        private readonly Assembly resourceAssembly;
-
-        public EmbeddedSchemeHandlerFactory(string schemeName, string domainName, Assembly resourceAssembly)
+        public EmbeddedSchemeHandlerFactory(string schemeName, Assembly mainAssembly)
         {
-            this.resourceAssembly = resourceAssembly;
+            this.mainAssembly = mainAssembly;
             this.SchemeName = schemeName;
-            this.DomainName = domainName;
             this.Create += EmbeddedSchemeHandlerFactory_Create;
         }
 
@@ -29,7 +26,7 @@ namespace Clamp.AppCenter.CFX
             if (e.SchemeName == SchemeName && e.Browser != null)
             {
                 ChromiumWebBrowser browser = ChromiumWebBrowser.GetBrowser(e.Browser.Identifier);
-                EmbeddedResourceHandler handler = new EmbeddedResourceHandler(resourceAssembly, browser, DomainName);
+                EmbeddedResourceHandler handler = new EmbeddedResourceHandler(mainAssembly, browser);
 
                 e.SetReturnValue(handler);
             }

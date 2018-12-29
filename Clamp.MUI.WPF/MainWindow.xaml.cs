@@ -1,4 +1,5 @@
 ﻿using Chromium.Event;
+using Clamp.AppCenter;
 using Clamp.MUI.WPF.CFX;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,7 @@ namespace Clamp.MUI.WPF
             this.ChromiumWebBrowser.RequestHandler.OnQuotaRequest += RequestHandler_OnQuotaRequest;
 
             var dragHandler = this.ChromiumWebBrowser.DragHandler;
+
             dragHandler.OnDragEnter += (o, e) => { e.SetReturnValue(true); };
             dragHandler.OnDraggableRegionsChanged += DragHandler_OnDraggableRegionsChanged;
         }
@@ -50,7 +52,7 @@ namespace Clamp.MUI.WPF
 
         private void DragHandler_OnDraggableRegionsChanged(object sender, Chromium.Event.CfxOnDraggableRegionsChangedEventArgs args)
         {
-            draggableRegion = args.Regions.Aggregate(new Region(), (current, region) =>
+            this.draggableRegion = args.Regions.Aggregate(new Region(), (current, region) =>
             {
                 var rect = new Rectangle(region.Bounds.X, region.Bounds.Y, region.Bounds.Width, region.Bounds.Height);
 
@@ -62,24 +64,30 @@ namespace Clamp.MUI.WPF
                 return current;
             });
 
-            draggableRegion.Transform(this.matrix);
+            this.draggableRegion.Transform(this.matrix);
         }
 
         private void ChromiumWebBrowser_BrowserCreated(object sender, Chromium.WebBrowser.Event.BrowserCreatedEventArgs e)
         {
             this.browserHandle = e.Browser.Host.WindowHandle;
 
-            var resilientGetHandle = new Resilient(() => ChromeWidgetHandleFinder.TryFindHandle(this.browserHandle, out this.chromeWidgetHostHandle));
+            new Resilient(() => ChromeWidgetHandleFinder.TryFindHandle(this.browserHandle, out this.chromeWidgetHostHandle)).WithTimeOut(100).StartIn(100);
 
-            resilientGetHandle.WithTimeOut(100).StartIn(100);
-            chromeWidgetMessageInterceptor = new BrowserWidgetMessageInterceptor(this.ChromiumWebBrowser, this.chromeWidgetHostHandle, OnWebBroswerMessage);
+            this.chromeWidgetMessageInterceptor = new BrowserWidgetMessageInterceptor(this.ChromiumWebBrowser, this.chromeWidgetHostHandle, OnWebBroswerMessage);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= Window_Loaded;
 
-            this.ChromiumWebBrowser.LoadUrl("www.baidu.com");
+            if (AppManager.Current.ClampConfs.ContainsKey(AppCenterConstant.CFX_INIT_URL))
+            {
+                this.ChromiumWebBrowser.LoadUrl(AppManager.Current.ClampConfs[AppCenterConstant.CFX_INIT_URL]);
+            }
+            else
+            {
+                this.ChromiumWebBrowser.LoadUrl("about:blank");
+            }
 
             this.windowHandle = new WindowInteropHelper(this).Handle;
             this.Closed += Window_Closed;
@@ -94,6 +102,7 @@ namespace Clamp.MUI.WPF
                 return;
 
             Thread.Sleep(10);
+
             this.ChromiumWebBrowser.Refresh();
         }
 
@@ -115,7 +124,7 @@ namespace Clamp.MUI.WPF
                     if (!IsInDragRegion(message))
                         break;
 
-                    Dispatcher.BeginInvoke(new Action(ToogleMaximize));
+                    this.Dispatcher.BeginInvoke(new Action(ToogleMaximize));
                     return true;
 
                 case NativeMethods.WindowsMessage.WM_LBUTTONDOWN:
@@ -131,11 +140,11 @@ namespace Clamp.MUI.WPF
 
         private bool IsInDragRegion(Forms.Message message)
         {
-            if (draggableRegion == null)
+            if (this.draggableRegion == null)
                 return false;
 
             var point = GetPoint(message);
-            return draggableRegion.IsVisible(point);
+            return this.draggableRegion.IsVisible(point);
         }
 
         private static System.Drawing.Point GetPoint(Forms.Message message)
@@ -160,5 +169,6 @@ namespace Clamp.MUI.WPF
             this.chromeWidgetMessageInterceptor?.DestroyHandle();
             this.chromeWidgetMessageInterceptor = null;
         }
+
     }
 }

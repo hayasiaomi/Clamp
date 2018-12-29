@@ -353,24 +353,25 @@ namespace Clamp.OSGI
 
                     if (!Registry.IsBundleEnabled(id))
                     {
-                        string msg = GettextCatalog.GetString("Disabled add-ins can't be loaded.");
+                        string msg = GettextCatalog.GetString("加载不了不能使用的Bundle");
+
                         if (throwExceptions)
                             throw new InvalidOperationException(msg);
                         return false;
                     }
 
-                    ArrayList addins = new ArrayList();
+                    ArrayList bundles = new ArrayList();
                     Stack depCheck = new Stack();
-                    ResolveLoadDependencies(addins, depCheck, id, false);
-                    addins.Reverse();
+                    ResolveLoadDependencies(bundles, depCheck, id, false);
+                    bundles.Reverse();
 
-                    for (int n = 0; n < addins.Count; n++)
+                    for (int n = 0; n < bundles.Count; n++)
                     {
-                        Bundle iad = (Bundle)addins[n];
-                        if (IsBundleLoaded(iad.Id))
+                        Bundle bundle = (Bundle)bundles[n];
+                        if (IsBundleLoaded(bundle.Id))
                             continue;
 
-                        if (!InsertBundle(iad))
+                        if (!InsertBundle(bundle))
                             return false;
                     }
                     return true;
@@ -432,25 +433,25 @@ namespace Clamp.OSGI
 
         #region private method
 
-        private bool InsertBundle(Bundle iad)
+        private bool InsertBundle(Bundle bundle)
         {
             try
             {
                 RuntimeBundle p = new RuntimeBundle(this);
 
                 // Read the config file and load the add-in assemblies
-                BundleDescription description = p.Load(iad);
+                BundleDescription description = p.Load(bundle);
 
                 // Register the add-in
-                var loadedBundlesCopy = new Dictionary<string, RuntimeBundle>(loadedBundles);
+                var loadedBundlesCopy = new Dictionary<string, RuntimeBundle>(this.loadedBundles);
                 loadedBundlesCopy[Bundle.GetIdName(p.Id)] = p;
-                loadedBundles = loadedBundlesCopy;
+                this.loadedBundles = loadedBundlesCopy;
 
                 if (!BundleDatabase.RunningSetupProcess)
                 {
                     // Load the extension points and other addin data
 
-                    RegisterNodeSets(iad.Id, description.ExtensionNodeSets);
+                    RegisterNodeSets(bundle.Id, description.ExtensionNodeSets);
 
                     foreach (ConditionTypeDescription cond in description.ConditionTypes)
                     {
@@ -469,7 +470,7 @@ namespace Clamp.OSGI
             }
             catch (Exception ex)
             {
-                ReportError("Add-in could not be loaded", iad.Id, ex, false);
+                ReportError("Add-in could not be loaded", bundle.Id, ex, false);
                 return false;
             }
         }
@@ -490,7 +491,7 @@ namespace Clamp.OSGI
         }
 
 
-        private bool ResolveLoadDependencies(ArrayList addins, Stack depCheck, string id, bool optional)
+        private bool ResolveLoadDependencies(ArrayList bundles, Stack depCheck, string id, bool optional)
         {
             if (IsBundleLoaded(id))
                 return true;
@@ -500,13 +501,13 @@ namespace Clamp.OSGI
 
             depCheck.Push(id);
 
-            Bundle iad = Registry.GetBundle(id);
+            Bundle bundle = Registry.GetBundle(id);
 
-            if (iad == null || !iad.Enabled)
+            if (bundle == null || !bundle.Enabled)
             {
                 if (optional)
                     return false;
-                else if (iad != null && !iad.Enabled)
+                else if (bundle != null && !bundle.Enabled)
                     throw new MissingDependencyException(GettextCatalog.GetString("当前请求的Bundle'{0}'是不可用的.", id));
                 else
                     throw new MissingDependencyException(GettextCatalog.GetString("当前请求的Bundle'{0}'没有被安装.", id));
@@ -514,18 +515,20 @@ namespace Clamp.OSGI
 
             // If this addin has already been requested, bring it to the head
             // of the list, so it is loaded earlier than before.
-            addins.Remove(iad);
-            addins.Add(iad);
+            bundles.Remove(bundle);
+            bundles.Add(bundle);
 
-            foreach (Dependency dep in iad.BundleInfo.Dependencies)
+            foreach (Dependency dep in bundle.BundleInfo.Dependencies)
             {
-                BundleDependency adep = dep as BundleDependency;
-                if (adep != null)
+                BundleDependency bdep = dep as BundleDependency;
+
+                if (bdep != null)
                 {
                     try
                     {
-                        string adepid = Bundle.GetFullId(iad.BundleInfo.Namespace, adep.BundleId, adep.Version);
-                        ResolveLoadDependencies(addins, depCheck, adepid, false);
+                        string adepid = Bundle.GetFullId(bundle.BundleInfo.Namespace, bdep.BundleId, bdep.Version);
+
+                        ResolveLoadDependencies(bundles, depCheck, adepid, false);
                     }
                     catch (MissingDependencyException)
                     {
@@ -537,15 +540,17 @@ namespace Clamp.OSGI
                 }
             }
 
-            if (iad.BundleInfo.OptionalDependencies != null)
+            if (bundle.BundleInfo.OptionalDependencies != null)
             {
-                foreach (Dependency dep in iad.BundleInfo.OptionalDependencies)
+                foreach (Dependency dep in bundle.BundleInfo.OptionalDependencies)
                 {
                     BundleDependency adep = dep as BundleDependency;
+
                     if (adep != null)
                     {
-                        string adepid = Bundle.GetFullId(iad.Namespace, adep.BundleId, adep.Version);
-                        if (!ResolveLoadDependencies(addins, depCheck, adepid, true))
+                        string adepid = Bundle.GetFullId(bundle.Namespace, adep.BundleId, adep.Version);
+
+                        if (!ResolveLoadDependencies(bundles, depCheck, adepid, true))
                             return false;
                     }
                 }

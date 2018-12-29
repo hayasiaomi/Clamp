@@ -118,22 +118,23 @@ namespace Clamp.MUI.WPF.UI
 
             SchemeHandlerGCHandles.Add(gchandle);
 
-            RegisterScheme("local", null, scheme);
+            RegisterScheme("local", "res.clamp.local", scheme);
         }
 
-        public static void RegisterEmbeddedScheme(Assembly assembly, string schemeName = "http", string domainName = null)
+        public static void RegisterEmbeddedScheme(Assembly assembly, string schemeName)
         {
             if (string.IsNullOrEmpty(schemeName))
             {
                 throw new ArgumentNullException("schemeName", "必须为scheme指定名称。");
             }
 
-            EmbeddedSchemeHandlerFactory embedded = new EmbeddedSchemeHandlerFactory(schemeName, domainName, assembly);
+            EmbeddedSchemeHandlerFactory embedded = new EmbeddedSchemeHandlerFactory(schemeName, assembly);
+
             GCHandle gchandle = GCHandle.Alloc(embedded);
 
             SchemeHandlerGCHandles.Add(gchandle);
 
-            RegisterScheme(embedded.SchemeName, domainName, embedded);
+            RegisterScheme(embedded.SchemeName, "res.clamp.embedded", embedded);
         }
 
         public static void RegisterScheme(string schemeName, string domain, CfxSchemeHandlerFactory factory)

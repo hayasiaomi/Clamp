@@ -12,11 +12,14 @@ using System.Text;
 namespace Clamp.MUI.WPF
 {
     [Extension]
-    public class WPFAppManager : IAppManager
+    public class WPFAppManager : AppManager
     {
         private App app;
-        public void Initialize()
+
+        public override void Initialize()
         {
+            base.Initialize();
+
             if (this.app == null)
             {
                 app = new App();
@@ -24,13 +27,13 @@ namespace Clamp.MUI.WPF
             }
         }
 
-        public void Run(params string[] commandLines)
+        public override void Run(params string[] commandLines)
         {
             string assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 
             if (UILauncher.InitializeChromium(assemblyDir, BeforeChromiumInitialize))
             {
-                UILauncher.RegisterEmbeddedScheme(Assembly.GetExecutingAssembly(), schemeName: "embedded", domainName: "res.clamp.local");
+                UILauncher.RegisterEmbeddedScheme(typeof(WPFAppManager).Assembly, "embedded");
 
                 //WindowSplash windowSplash = new WindowSplash();
                 WindowAuthority windowAuthority = new WindowAuthority();

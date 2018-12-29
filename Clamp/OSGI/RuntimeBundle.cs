@@ -578,6 +578,7 @@ namespace Clamp.OSGI
 
             return description;
         }
+
         internal void UnloadExtensions()
         {
             clampBundle.UnregisterBundleNodeSets(id);

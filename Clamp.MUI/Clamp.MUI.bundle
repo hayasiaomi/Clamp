@@ -1,0 +1,15 @@
+﻿<Bundle id="Clamp.MUI"
+        name="YEUX"
+        namespace="YEUX"
+        version="1.0.0.0"
+        author="aomi"
+        description="工具平台"
+        isBundle="true"
+        defaultEnabled="true"
+        >
+  <Dependencies>
+    <Bundle id="Clamp.AppCenter" verion="1.0.0.0" />
+    <Bundle id="Clamp.MUI.WPF" verion="1.0.0.0" />
+    <Bundle id="Clamp.MUI.Pages" verion="1.0.0.0" preload="true" />
+  </Dependencies>
+</Bundle>
