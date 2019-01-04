@@ -27,6 +27,7 @@ namespace Clamp.OSGI
         private RuntimeBundle[] depBundles;
         private ResourceManager[] resourceManagers;
         private BundleLocalizer localizer;
+        private IBundleActivator bundleActivator;
         private ModuleDescription module;
         private ClampBundle clampBundle;
 
@@ -40,12 +41,12 @@ namespace Clamp.OSGI
             this.clampBundle = clampBundle;
             this.parentBundle = parentBundle;
             this.module = module;
-            id = parentBundle.id;
-            baseDirectory = parentBundle.baseDirectory;
-            privatePath = parentBundle.privatePath;
-            bundle = parentBundle.bundle;
-            localizer = parentBundle.localizer;
-            module.RuntimeBundle = this;
+            this.id = parentBundle.id;
+            this.baseDirectory = parentBundle.baseDirectory;
+            this.privatePath = parentBundle.privatePath;
+            this.bundle = parentBundle.bundle;
+            this.localizer = parentBundle.localizer;
+            this.module.RuntimeBundle = this;
         }
 
         /// <summary>
@@ -82,6 +83,7 @@ namespace Clamp.OSGI
             }
         }
 
+
         /// <summary>
         /// Localizer which can be used to localize strings defined in this add-in
         /// </summary>
@@ -95,6 +97,16 @@ namespace Clamp.OSGI
                     return clampBundle.DefaultLocalizer;
             }
         }
+
+        public IBundleActivator BundleActivator
+        {
+            get
+            {
+                return this.bundleActivator;
+            }
+        }
+
+
 
         internal Bundle Bundle
         {
@@ -331,9 +343,9 @@ namespace Clamp.OSGI
             }
 
             // Look in the dependent add-ins
-            foreach (RuntimeBundle addin in GetAllDependencies())
+            foreach (RuntimeBundle rb in GetAllDependencies())
             {
-                Type t = addin.GetType(typeName, false);
+                Type t = rb.GetType(typeName, false);
                 if (t != null)
                     return t;
             }
@@ -545,15 +557,16 @@ namespace Clamp.OSGI
             return addin;
         }
 
-        internal BundleDescription Load(Bundle iad)
+        internal BundleDescription Load(Bundle bundle)
         {
-            bundle = iad;
+            this.bundle = bundle;
 
-            BundleDescription description = iad.Description;
-            id = description.BundleId;
-            baseDirectory = description.BasePath;
-            module = description.MainModule;
-            module.RuntimeBundle = this;
+            BundleDescription description = bundle.Description;
+
+            this.id = description.BundleId;
+            this.baseDirectory = description.BasePath;
+            this.module = description.MainModule;
+            this.module.RuntimeBundle = this;
 
             if (description.Localizer != null)
             {
@@ -573,8 +586,17 @@ namespace Clamp.OSGI
                 if (factory == null)
                     throw new InvalidOperationException("Localizer factory type '" + cls + "' must implement IBundleLocalizerFactory");
 
-                localizer = new BundleLocalizer(factory.CreateLocalizer(this, description.Localizer));
+                this.localizer = new BundleLocalizer(factory.CreateLocalizer(this, description.Localizer));
             }
+
+            if (description.Activator != null)
+            {
+                string cls = description.Activator.GetAttribute("type");
+
+                this.bundleActivator = this.CreateInstance(cls, true) as IBundleActivator;
+            }
+
+            this.EnsureAssembliesLoaded();
 
             return description;
         }

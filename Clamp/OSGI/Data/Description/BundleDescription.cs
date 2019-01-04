@@ -35,6 +35,7 @@ namespace Clamp.OSGI.Data.Description
         private bool hasUserId;
         private bool canWrite = true;
         private bool defaultEnabled = true;
+        private int startLevel = 1;
         private BundleFlags flags = BundleFlags.None;
         private string domain;
 
@@ -44,6 +45,7 @@ namespace Clamp.OSGI.Data.Description
         private ConditionTypeDescriptionCollection conditionTypes;
         private ExtensionPointCollection extensionPoints;
         private ExtensionNodeDescription localizer;
+        private ExtensionNodeDescription activator;
         private object[] fileInfo;
 
         private BundlePropertyCollectionImpl properties;
@@ -266,6 +268,14 @@ namespace Clamp.OSGI.Data.Description
             get { return defaultEnabled; }
             set { defaultEnabled = value; }
         }
+        /// <summary>
+        /// 启动等级
+        /// </summary>
+        public int StartLevel
+        {
+            get { return startLevel; }
+            set { startLevel = value; }
+        }
 
         /// <summary>
         /// Bundle的状态
@@ -375,8 +385,10 @@ namespace Clamp.OSGI.Data.Description
                         mainModule = new ModuleDescription();
                     else
                         mainModule = new ModuleDescription(RootElement);
+
                     mainModule.SetParent(this);
                 }
+
                 return mainModule;
             }
         }
@@ -493,6 +505,12 @@ namespace Clamp.OSGI.Data.Description
         {
             get { return localizer; }
             set { localizer = value; }
+        }
+
+        public ExtensionNodeDescription Activator
+        {
+            get { return activator; }
+            set { activator = value; }
         }
 
         /// <summary>
@@ -813,6 +831,12 @@ namespace Clamp.OSGI.Data.Description
             else
                 elem.RemoveAttribute("category");
 
+            if (startLevel <= 0)
+                elem.SetAttribute("startLevel", "1");
+            else
+                elem.SetAttribute("startLevel", Convert.ToString(startLevel));
+
+
             if (localizer == null || localizer.Element == null)
             {
                 // Remove old element if it exists
@@ -822,6 +846,18 @@ namespace Clamp.OSGI.Data.Description
             }
             if (localizer != null)
                 localizer.SaveXml(elem);
+
+            if (activator == null || activator.Element == null)
+            {
+                // Remove old element if it exists
+                XmlElement oldLoc = (XmlElement)elem.SelectSingleNode("Activator");
+                if (oldLoc != null)
+                    elem.RemoveChild(oldLoc);
+            }
+
+            if (activator != null)
+                activator.SaveXml(elem);
+
 
             if (mainModule != null)
             {
@@ -1010,10 +1046,22 @@ namespace Clamp.OSGI.Data.Description
             else
                 bdesc.flags = (BundleFlags)Enum.Parse(typeof(BundleFlags), prot);
 
+            string sl = elem.GetAttribute("startLevel");
+
+            if (sl.Length == 0)
+                bdesc.startLevel = 1;
+            else
+                bdesc.startLevel = Convert.ToInt32(elem.GetAttribute("startLevel"));
+
             XmlElement localizerElem = (XmlElement)elem.SelectSingleNode("Localizer");
 
             if (localizerElem != null)
                 bdesc.localizer = new ExtensionNodeDescription(localizerElem);
+
+            XmlElement activatorElem = (XmlElement)elem.SelectSingleNode("Activator");
+
+            if (activatorElem != null)
+                bdesc.activator = new ExtensionNodeDescription(activatorElem);
 
             XmlElement headerElem = (XmlElement)elem.SelectSingleNode("Header");
 
@@ -1194,7 +1242,13 @@ namespace Clamp.OSGI.Data.Description
 
             if (localizer != null && localizer.GetAttribute("type").Length == 0)
             {
-                errors.Add("The attribute 'type' in the Location element is required.");
+                errors.Add("Location节点的type属性必须要指定");
+            }
+
+
+            if (activator != null && activator.GetAttribute("type").Length == 0)
+            {
+                errors.Add("Activator节点的type属性必须要指定");
             }
 
             // Ensure that there are no duplicated properties
@@ -1310,6 +1364,7 @@ namespace Clamp.OSGI.Data.Description
             writer.WriteValue("sourceBundleFile", sourceBundleFile);
             writer.WriteValue("defaultEnabled", defaultEnabled);
             writer.WriteValue("domain", domain);
+            writer.WriteValue("startLevel", startLevel);
             writer.WriteValue("MainModule", MainModule);
             writer.WriteValue("OptionalModules", OptionalModules);
             writer.WriteValue("NodeSets", ExtensionNodeSets);
@@ -1317,8 +1372,10 @@ namespace Clamp.OSGI.Data.Description
             writer.WriteValue("ConditionTypes", ConditionTypes);
             writer.WriteValue("FilesInfo", fileInfo);
             writer.WriteValue("Localizer", localizer);
+            writer.WriteValue("Activator", activator);
             writer.WriteValue("flags", (int)flags);
             writer.WriteValue("Properties", properties);
+
         }
 
         void IBinaryXmlElement.Read(BinaryXmlReader reader)
@@ -1339,6 +1396,7 @@ namespace Clamp.OSGI.Data.Description
             sourceBundleFile = reader.ReadStringValue("sourceBundleFile");
             defaultEnabled = reader.ReadBooleanValue("defaultEnabled");
             domain = reader.ReadStringValue("domain");
+            startLevel = reader.ReadInt32Value("startLevel");
             mainModule = (ModuleDescription)reader.ReadValue("MainModule");
             optionalModules = (ModuleCollection)reader.ReadValue("OptionalModules", new ModuleCollection(this));
             nodeSets = (ExtensionNodeSetCollection)reader.ReadValue("NodeSets", new ExtensionNodeSetCollection(this));
@@ -1346,6 +1404,7 @@ namespace Clamp.OSGI.Data.Description
             conditionTypes = (ConditionTypeDescriptionCollection)reader.ReadValue("ConditionTypes", new ConditionTypeDescriptionCollection(this));
             fileInfo = (object[])reader.ReadValue("FilesInfo", null);
             localizer = (ExtensionNodeDescription)reader.ReadValue("Localizer");
+            activator = (ExtensionNodeDescription)reader.ReadValue("Activator");
             flags = (BundleFlags)reader.ReadInt32Value("flags");
             properties = (BundlePropertyCollectionImpl)reader.ReadValue("Properties", new BundlePropertyCollectionImpl(this));
 

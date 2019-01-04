@@ -89,12 +89,15 @@ namespace Clamp.OSGI.Data
             lists.Remove(BundleDatabase.GlobalDomain);
 
             List<BundleDescription> sortedBundles = new List<BundleDescription>();
+
             foreach (var dl in lists.Values)
             {
                 sortedBundles.AddRange(dl);
             }
+
             if (global != null)
                 sortedBundles.AddRange(global);
+
             return sortedBundles;
         }
 

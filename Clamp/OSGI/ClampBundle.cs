@@ -155,7 +155,7 @@ namespace Clamp.OSGI
             }
         }
 
-        public void WaitForStop()
+        public override void WaitForStop()
         {
 
         }
@@ -266,8 +266,43 @@ namespace Clamp.OSGI
             lock (pendingAssemblyBundlesChecks)
                 pendingAssemblyBundlesChecks.Clear();
 
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-                CheckBundleAssembly(asm);
+            //foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            //    CheckBundleAssembly(asm);
+
+            List<Bundle> pendingActivateBundles = Registry.GetPendingActivateBundles();
+
+            List<Bundle> sortedPendingActivateBundles = pendingActivateBundles.OrderByDescending(b => b.StartLevel).ToList();
+
+            foreach (Bundle bundle in sortedPendingActivateBundles)
+            {
+                if (bundle != null && !IsBundleLoaded(bundle.Id))
+                {
+                    BundleDescription bdesc = null;
+
+                    try
+                    {
+                        bdesc = bundle.Description;
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    if (bdesc == null || bdesc.FilesChanged())
+                    {
+                        // If the add-in has changed, update the add-in database.
+                        // We do it here because once loaded, add-in roots can't be
+                        // reloaded like regular add-ins.
+                        Registry.Update();
+
+                        this.ActivateBundles();
+
+                        break;
+                    }
+
+                    LoadBundle(bundle.Id, false);
+                }
+            }
         }
 
         /// <summary>
@@ -360,14 +395,23 @@ namespace Clamp.OSGI
                         return false;
                     }
 
-                    ArrayList bundles = new ArrayList();
+                    List<Bundle> bundles = new List<Bundle>();
                     Stack depCheck = new Stack();
-                    ResolveLoadDependencies(bundles, depCheck, id, false);
-                    bundles.Reverse();
 
-                    for (int n = 0; n < bundles.Count; n++)
+                    ResolveLoadDependencies(bundles, depCheck, id, false);
+
+                    Bundle currentBundle = bundles.FirstOrDefault(b => b.Id == id);
+
+                    bundles.Remove(currentBundle);
+
+                    List<Bundle> sortedBundles = bundles.OrderByDescending(b => b.StartLevel).ToList();
+
+                    sortedBundles.Add(currentBundle);
+
+                    for (int n = 0; n < sortedBundles.Count; n++)
                     {
-                        Bundle bundle = (Bundle)bundles[n];
+                        Bundle bundle = sortedBundles[n];
+
                         if (IsBundleLoaded(bundle.Id))
                             continue;
 
@@ -444,8 +488,15 @@ namespace Clamp.OSGI
 
                 // Register the add-in
                 var loadedBundlesCopy = new Dictionary<string, RuntimeBundle>(this.loadedBundles);
+
                 loadedBundlesCopy[Bundle.GetIdName(p.Id)] = p;
+
                 this.loadedBundles = loadedBundlesCopy;
+
+                if (p.BundleActivator != null)
+                {
+                    p.BundleActivator.Start(new BundleContext(p, this));
+                }
 
                 if (!BundleDatabase.RunningSetupProcess)
                 {
@@ -466,6 +517,7 @@ namespace Clamp.OSGI
                 // Fire loaded event
                 NotifyBundleLoaded(p);
                 ReportBundleLoad(p.Id);
+
                 return true;
             }
             catch (Exception ex)
@@ -491,7 +543,7 @@ namespace Clamp.OSGI
         }
 
 
-        private bool ResolveLoadDependencies(ArrayList bundles, Stack depCheck, string id, bool optional)
+        private bool ResolveLoadDependencies(List<Bundle> bundles, Stack depCheck, string id, bool optional)
         {
             if (IsBundleLoaded(id))
                 return true;
@@ -637,6 +689,7 @@ namespace Clamp.OSGI
                     // We do it here because once loaded, add-in roots can't be
                     // reloaded like regular add-ins.
                     Registry.Update();
+
                     bundle = Registry.GetBundleForHostAssembly(asmFile);
                     if (bundle == null)
                         return;

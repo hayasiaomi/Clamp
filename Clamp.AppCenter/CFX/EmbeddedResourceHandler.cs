@@ -61,7 +61,7 @@ namespace Clamp.AppCenter.CFX
             }
             else
             {
-                Assembly domainAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => string.Equals(asm.GetName().Name, domainName));
+                Assembly domainAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => string.Equals(asm.GetName().Name, domainName, StringComparison.CurrentCultureIgnoreCase));
 
                 if (domainAssembly != null)
                 {

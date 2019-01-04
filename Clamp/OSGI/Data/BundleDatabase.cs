@@ -285,6 +285,29 @@ namespace Clamp.OSGI.Data
             return bundle;
         }
 
+        /// <summary>
+        /// 获得将要激活的Bundle
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        public List<Bundle> GetPendingActivateBundles(string domain)
+        {
+            InternalCheck(domain);
+
+            List<Bundle> bundles = new List<Bundle>();
+
+            BundleActivationIndex index = GetBundleActivationIndex();
+
+            foreach (string id in index.Identities)
+            {
+                Bundle bundle = GetBundleForHostAssembly(domain, id);
+
+                bundles.Add(bundle);
+            }
+
+            return bundles;
+        }
+
         public IEnumerable<Bundle> GetInstalledBundles(string domain, BundleSearchFlagsInternal flags)
         {
             if (domain == null)
@@ -1267,6 +1290,7 @@ namespace Clamp.OSGI.Data
                 // have changed. This data will be re-added later.
 
                 conf.UnmergeExternalData(changedBundles);
+
                 descriptionsToSave.Add(conf);
 
                 bundleHash.Add(conf);

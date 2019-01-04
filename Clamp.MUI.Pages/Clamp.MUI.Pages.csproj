@@ -62,9 +62,9 @@
     <Compile Include="Properties\BundleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Index.html">
+    <EmbeddedResource Include="Index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clamp\Clamp.csproj">

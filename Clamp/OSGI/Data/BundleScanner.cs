@@ -509,6 +509,7 @@ namespace Clamp.OSGI.Data
                     foreach (string df in bdesc.AllIgnorePaths)
                     {
                         string path = Path.Combine(bdesc.BasePath, df);
+
                         ainfo.AddPathToIgnore(Path.GetFullPath(path));
                     }
                 }
@@ -910,6 +911,7 @@ namespace Clamp.OSGI.Data
 
                 config.IsBundle = !(att is BundleFragmentAttribute);
                 config.EnabledByDefault = att.EnabledByDefault;
+                config.StartLevel = att.StartLevel;
                 config.Flags = att.Flags;
             }
 
@@ -967,6 +969,11 @@ namespace Clamp.OSGI.Data
             if (catt != null)
                 config.Flags |= ((BundleFlagsAttribute)catt).Flags;
 
+            //启动等级
+            catt = reflector.GetCustomAttribute(asm, typeof(BundleStartLevelAttribute), false);
+            if (catt != null)
+                config.StartLevel = ((BundleStartLevelAttribute)catt).StartLevel > 0 ? ((BundleStartLevelAttribute)catt).StartLevel : 1;
+
             //本地化
 
             BundleLocalizerGettextAttribute locat = (BundleLocalizerGettextAttribute)reflector.GetCustomAttribute(asm, typeof(BundleLocalizerGettextAttribute), false);
@@ -981,6 +988,20 @@ namespace Clamp.OSGI.Data
                     node.SetAttribute("location", locat.Location);
                 config.Localizer = node;
             }
+
+            //激活类
+
+            BundleActivatorAttribute activ = (BundleActivatorAttribute)reflector.GetCustomAttribute(asm, typeof(BundleActivatorAttribute), false);
+
+            if (activ != null)
+            {
+                ExtensionNodeDescription node = new ExtensionNodeDescription();
+
+                node.SetAttribute("type", activ.TypeName);
+               
+                config.Activator = node;
+            }
+
 
             //可以选择的Bundle模块
 

@@ -17,6 +17,8 @@ namespace Clamp.OSGI.Data
 
         private Hashtable index = new Hashtable();
 
+        public ICollection Identities { get { return index.Keys; } }
+
         /// <summary>
         /// 注册住宿程序集相关的Bundle信息
         /// </summary>

@@ -24,6 +24,7 @@ namespace Clamp.OSGI
         private string category = "";
         private bool defaultEnabled = true;
         private bool isBundle;
+        private int startLevel = 1;
         private DependencyCollection dependencies;
         private DependencyCollection optionalDependencies;
         private BundlePropertyCollection properties;
@@ -165,6 +166,8 @@ namespace Clamp.OSGI
             set { description = value; }
         }
 
+
+
         /// <summary>
         /// 种类
         /// </summary>
@@ -190,6 +193,16 @@ namespace Clamp.OSGI
             get { return defaultEnabled; }
             set { defaultEnabled = value; }
         }
+
+        /// <summary>
+        /// 启动等级
+        /// </summary>
+        public int StartLevel
+        {
+            get { return startLevel; }
+            set { startLevel = value; }
+        }
+
 
         /// <summary>
         /// 当前依赖项
@@ -230,6 +243,7 @@ namespace Clamp.OSGI
             info.baseVersion = description.CompatVersion;
             info.isBundle = description.IsBundle;
             info.defaultEnabled = description.EnabledByDefault;
+            info.startLevel = description.StartLevel;
 
             foreach (Dependency dep in description.MainModule.Dependencies)
                 info.Dependencies.Add(dep);

@@ -89,6 +89,17 @@ namespace Clamp.OSGI
         }
 
         /// <summary>
+        /// 启动等级
+        /// </summary>
+        public int StartLevel
+        {
+            get
+            {
+                return this.bundleInfo.StartLevel;
+            }
+        }
+
+        /// <summary>
         /// Custom properties specified in the add-in header
         /// </summary>
         public BundlePropertyCollection Properties

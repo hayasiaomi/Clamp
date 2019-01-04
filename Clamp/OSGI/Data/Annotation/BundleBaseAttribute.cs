@@ -19,6 +19,7 @@ namespace Clamp.OSGI.Data.Annotation
         private BundleFlags flags;
         private string compatVersion;
         private string url;
+        private int startLevel;
 
 
         public BundleAttribute()
@@ -74,6 +75,7 @@ namespace Clamp.OSGI.Data.Annotation
             set { ns = value; }
         }
 
+
         /// <summary>
         /// 种类
         /// </summary>
@@ -108,6 +110,23 @@ namespace Clamp.OSGI.Data.Annotation
         {
             get { return this.flags; }
             set { this.flags = value; }
+        }
+
+        /// <summary>
+        /// 启动等级
+        /// </summary>
+        public int StartLevel
+        {
+            get
+            {
+                if (this.startLevel <= 0)
+                    return 1;
+                return this.startLevel;
+            }
+            set
+            {
+                this.startLevel = value;
+            }
         }
     }
 }

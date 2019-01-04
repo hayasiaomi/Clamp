@@ -117,10 +117,12 @@
     <Compile Include="OSGI\Data\Annotation\BundleDescriptionAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundleFlagsAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundleFragmentAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleActivatorAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundleLocalizerGettextAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundleModuleAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundleNameAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundlePropertyAttribute.cs" />
+    <Compile Include="OSGI\Data\Annotation\BundleStartLevelAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\BundleUrlAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\CustomExtensionAttribute.cs" />
     <Compile Include="OSGI\Data\Annotation\ExtensionAttribute.cs" />

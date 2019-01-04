@@ -16,7 +16,7 @@ namespace Clamp.AppCenter.Initial.TypeConverter
         {
             if (!string.IsNullOrWhiteSpace(value))
                 return long.Parse(value, InitialFile.CultureInfo.NumberFormat);
-            return 0l;
+            return 0L;
         }
     }
 }

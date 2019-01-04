@@ -213,6 +213,15 @@ namespace Clamp.OSGI
 
             return database.GetBundleForHostAssembly(currentDomain, filePath);
         }
+
+        internal List<Bundle> GetPendingActivateBundles()
+        {
+            if (currentDomain == BundleDatabase.UnknownDomain)
+                return null;
+
+            return database.GetPendingActivateBundles(currentDomain);
+        }
+
         #endregion
 
         #region  public method
