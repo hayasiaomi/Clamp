@@ -62,16 +62,202 @@
     <Compile Include="Properties\BundleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Clamp\Clamp.csproj">
       <Project>{17A2236D-1A63-4FF2-8046-EDFD80F3C9AB}</Project>
       <Name>Clamp</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="data\flot-data.js" />
+    <EmbeddedResource Include="data\morris-data.js" />
+    <EmbeddedResource Include="dist\css\sb-admin-2.css" />
+    <EmbeddedResource Include="dist\css\sb-admin-2.min.css" />
+    <EmbeddedResource Include="dist\js\sb-admin-2.js" />
+    <EmbeddedResource Include="dist\js\sb-admin-2.min.js" />
+    <EmbeddedResource Include="gulpfile.js" />
+    <EmbeddedResource Include="js\sb-admin-2.js" />
+    <EmbeddedResource Include="vendor\bootstrap-social\bootstrap-social.css" />
+    <EmbeddedResource Include="vendor\bootstrap\css\bootstrap.css" />
+    <EmbeddedResource Include="vendor\bootstrap\css\bootstrap.min.css" />
+    <EmbeddedResource Include="vendor\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <EmbeddedResource Include="vendor\bootstrap\js\bootstrap.js" />
+    <EmbeddedResource Include="vendor\bootstrap\js\bootstrap.min.js" />
+    <EmbeddedResource Include="vendor\datatables-plugins\dataTables.bootstrap.css" />
+    <EmbeddedResource Include="vendor\datatables-plugins\dataTables.bootstrap.js" />
+    <EmbeddedResource Include="vendor\datatables-plugins\dataTables.bootstrap.min.js" />
+    <EmbeddedResource Include="vendor\datatables-plugins\index.html" />
+    <EmbeddedResource Include="vendor\datatables-responsive\dataTables.responsive.css" />
+    <EmbeddedResource Include="vendor\datatables-responsive\dataTables.responsive.js" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.bootstrap.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.bootstrap.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.bootstrap4.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.bootstrap4.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.foundation.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.foundation.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.jqueryui.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.jqueryui.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.material.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.material.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.semanticui.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.semanticui.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.uikit.css" />
+    <EmbeddedResource Include="vendor\datatables\css\dataTables.uikit.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\jquery.dataTables.css" />
+    <EmbeddedResource Include="vendor\datatables\css\jquery.dataTables.min.css" />
+    <EmbeddedResource Include="vendor\datatables\css\jquery.dataTables_themeroller.css" />
+    <EmbeddedResource Include="vendor\datatables\images\favicon.ico" />
+    <EmbeddedResource Include="vendor\datatables\images\sort_asc.png" />
+    <EmbeddedResource Include="vendor\datatables\images\sort_asc_disabled.png" />
+    <EmbeddedResource Include="vendor\datatables\images\sort_both.png" />
+    <EmbeddedResource Include="vendor\datatables\images\sort_desc.png" />
+    <EmbeddedResource Include="vendor\datatables\images\sort_desc_disabled.png" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.bootstrap.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.bootstrap.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.bootstrap4.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.bootstrap4.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.foundation.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.foundation.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.jqueryui.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.jqueryui.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.material.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.material.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.semanticui.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.semanticui.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.uikit.js" />
+    <EmbeddedResource Include="vendor\datatables\js\dataTables.uikit.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\jquery.dataTables.js" />
+    <EmbeddedResource Include="vendor\datatables\js\jquery.dataTables.min.js" />
+    <EmbeddedResource Include="vendor\datatables\js\jquery.js" />
+    <EmbeddedResource Include="vendor\flot-tooltip\jquery.flot.tooltip.js" />
+    <EmbeddedResource Include="vendor\flot-tooltip\jquery.flot.tooltip.min.js" />
+    <EmbeddedResource Include="vendor\flot-tooltip\jquery.flot.tooltip.source.js" />
+    <EmbeddedResource Include="vendor\flot\excanvas.js" />
+    <EmbeddedResource Include="vendor\flot\excanvas.min.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.colorhelpers.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.canvas.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.categories.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.crosshair.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.errorbars.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.fillbetween.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.image.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.navigate.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.pie.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.resize.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.selection.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.stack.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.symbol.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.threshold.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.flot.time.js" />
+    <EmbeddedResource Include="vendor\flot\jquery.js" />
+    <EmbeddedResource Include="vendor\font-awesome\css\font-awesome.css" />
+    <EmbeddedResource Include="vendor\font-awesome\css\font-awesome.min.css" />
+    <EmbeddedResource Include="vendor\font-awesome\fonts\fontawesome-webfont.svg" />
+    <EmbeddedResource Include="vendor\jquery\jquery.js" />
+    <EmbeddedResource Include="vendor\jquery\jquery.min.js" />
+    <EmbeddedResource Include="vendor\metisMenu\metisMenu.css" />
+    <EmbeddedResource Include="vendor\metisMenu\metisMenu.js" />
+    <EmbeddedResource Include="vendor\metisMenu\metisMenu.min.css" />
+    <EmbeddedResource Include="vendor\metisMenu\metisMenu.min.js" />
+    <EmbeddedResource Include="vendor\morrisjs\morris.css" />
+    <EmbeddedResource Include="vendor\morrisjs\morris.js" />
+    <EmbeddedResource Include="vendor\morrisjs\morris.min.js" />
+    <EmbeddedResource Include="vendor\raphael\raphael.js" />
+    <EmbeddedResource Include="vendor\raphael\raphael.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="less\mixins.less" />
+    <EmbeddedResource Include="less\sb-admin-2.less" />
+    <EmbeddedResource Include="less\variables.less" />
+    <EmbeddedResource Include="vendor\bootstrap-social\bootstrap-social.less" />
+    <EmbeddedResource Include="vendor\bootstrap-social\bootstrap-social.scss" />
+    <EmbeddedResource Include="vendor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="vendor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <EmbeddedResource Include="vendor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <EmbeddedResource Include="vendor\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <EmbeddedResource Include="vendor\datatables-responsive\dataTables.responsive.scss" />
+    <EmbeddedResource Include="vendor\datatables\images\Sorting icons.psd" />
+    <EmbeddedResource Include="vendor\font-awesome\css\font-awesome.css.map" />
+    <EmbeddedResource Include="vendor\font-awesome\fonts\fontawesome-webfont.eot" />
+    <EmbeddedResource Include="vendor\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <EmbeddedResource Include="vendor\font-awesome\fonts\fontawesome-webfont.woff" />
+    <EmbeddedResource Include="vendor\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <EmbeddedResource Include="vendor\font-awesome\fonts\FontAwesome.otf" />
+    <EmbeddedResource Include="vendor\font-awesome\less\animated.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\bordered-pulled.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\core.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\extras.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\fixed-width.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\font-awesome.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\icons.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\larger.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\list.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\mixins.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\path.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\rotated-flipped.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\screen-reader.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\spinning.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\stacked.less" />
+    <EmbeddedResource Include="vendor\font-awesome\less\variables.less" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\font-awesome.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_animated.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_bordered-pulled.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_core.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_extras.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_fixed-width.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_icons.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_larger.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_list.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_mixins.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_path.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_rotated-flipped.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_screen-reader.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_spinning.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_stacked.scss" />
+    <EmbeddedResource Include="vendor\font-awesome\scss\_variables.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="blank.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="buttons.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="flot.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="forms.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="grid.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="login.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="morris.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="notifications.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="panels-wells.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="tables.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="typography.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="index2.html" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

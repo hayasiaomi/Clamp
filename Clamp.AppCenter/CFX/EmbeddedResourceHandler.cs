@@ -100,19 +100,10 @@ namespace Clamp.AppCenter.CFX
                         browser.SetWebResource(requestUrl, webResource);
                     }
                 }
-
-                Console.WriteLine($"[加载]:\t{requestUrl}");
-
-                callback.Continue();
-                e.SetReturnValue(true);
             }
-            else
-            {
-                Console.WriteLine($"[未找到]:\t{requestUrl}");
 
-                callback.Continue();
-                e.SetReturnValue(false);
-            }
+            callback.Continue();
+            e.SetReturnValue(true);
         }
 
         private void EmbeddedResourceHandler_GetResponseHeaders(object sender, Chromium.Event.CfxGetResponseHeadersEventArgs e)
@@ -121,12 +112,14 @@ namespace Clamp.AppCenter.CFX
             if (webResource == null)
             {
                 e.Response.Status = 404;
+                e.Response.StatusText = "Not Found";
             }
             else
             {
                 e.ResponseLength = webResource.data.Length;
                 e.Response.MimeType = webResource.mimeType;
                 e.Response.Status = 200;
+                e.Response.StatusText = "OK";
 
                 if (!browser.webResources.ContainsKey(requestUrl))
                 {
@@ -139,8 +132,10 @@ namespace Clamp.AppCenter.CFX
         private void EmbeddedResourceHandler_ReadResponse(object sender, Chromium.Event.CfxReadResponseEventArgs e)
         {
             int bytesToCopy = webResource.data.Length - readResponseStreamOffset;
+
             if (bytesToCopy > e.BytesToRead)
                 bytesToCopy = e.BytesToRead;
+
             System.Runtime.InteropServices.Marshal.Copy(webResource.data, readResponseStreamOffset, e.DataOut, bytesToCopy);
             e.BytesRead = bytesToCopy;
             readResponseStreamOffset += bytesToCopy;

@@ -50,6 +50,7 @@ namespace Clamp.MUI.WPF.CFX
             var gcHandle = GCHandle.Alloc(classDetails);
 
             var childProc = new EnumWindowProc(EnumWindow);
+
             EnumChildWindows(browserHandle, childProc, GCHandle.ToIntPtr(gcHandle));
 
             chromeWidgetHostHandle = classDetails.DescendantFound;

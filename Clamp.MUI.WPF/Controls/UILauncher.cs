@@ -47,7 +47,7 @@ namespace Clamp.MUI.WPF.UI
                     e.Settings.ResourcesDirPath = ClampLibCefDirPath;
                     e.Settings.Locale = "zh-CN";
                     e.Settings.CachePath = Path.Combine(ApplicationDataDir, typeof(UILauncher).Assembly.GetName().Name, "Cache");
-                    e.Settings.LogSeverity = CfxLogSeverity.Disable;
+                    //e.Settings.LogSeverity = CfxLogSeverity.Disable;
                     e.Settings.BrowserSubprocessPath = Path.Combine(localRuntimeDir, ClampBrowserSubprocessPath);
                     e.Settings.NoSandbox = true;
                     //e.Settings.RemoteDebuggingPort = 8888;
@@ -62,14 +62,8 @@ namespace Clamp.MUI.WPF.UI
                 {
                     Console.WriteLine("处理命令行参数。。。");
 
-                    args.CommandLine.AppendSwitchWithValue("--no-proxy-server", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-local-storage", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-application-cache", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-gpu-program-cache", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-cache", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-cache", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-surfaces", "1");
-                    args.CommandLine.AppendSwitchWithValue("--disable-web-security", "1");
+                    args.CommandLine.AppendSwitch("disable-gpu");
+                    args.CommandLine.AppendSwitch("disable-web-security");
 
                     BeforeCommandLineProcessing?.Invoke(args);
 

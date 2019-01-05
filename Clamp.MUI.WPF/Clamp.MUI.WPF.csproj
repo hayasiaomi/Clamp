@@ -58,8 +58,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="CFX\BrowserWidgetMessageInterceptor.cs" />
+    <Compile Include="CFX\CfxContextMenu.cs" />
     <Compile Include="CFX\ChromeWidgetHandleFinder.cs" />
+    <Compile Include="CFX\ContextMenuId.cs" />
+    <Compile Include="CFX\ContextMenuItem.cs" />
     <Compile Include="CFX\NativeMethods.cs" />
+    <Compile Include="CFX\NativeWindowHelper.cs" />
     <Compile Include="CFX\Resilient.cs" />
     <Compile Include="Controls\ControlExtension.cs" />
     <Compile Include="Controls\HdiHelper.cs" />

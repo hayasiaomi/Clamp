@@ -36,11 +36,13 @@ namespace Clamp.MUI.WPF
                 UILauncher.RegisterEmbeddedScheme(typeof(WPFAppManager).Assembly, "embedded");
 
                 //WindowSplash windowSplash = new WindowSplash();
-                WindowAuthority windowAuthority = new WindowAuthority();
+                //WindowAuthority windowAuthority = new WindowAuthority();
 
-                app.MainWindow = windowAuthority;
+                MainWindow mainWindow = new MainWindow();
 
-                app.Run(windowAuthority);
+                app.MainWindow = mainWindow;
+
+                app.Run(mainWindow);
             }
         }
 

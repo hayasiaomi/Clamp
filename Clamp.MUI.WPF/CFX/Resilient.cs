@@ -24,18 +24,12 @@ namespace Clamp.MUI.WPF.CFX
 
         public void StartIn(int firstTimeOut)
         {
-            Thread thread = new Thread(new ThreadStart(() =>
+            Thread.Sleep(firstTimeOut);
+
+            while (!_Do())
             {
-                Thread.Sleep(firstTimeOut);
-
-                while (!_Do())
-                {
-                    Thread.Sleep(_TimeOut);
-                }
-            }));
-
-            thread.IsBackground = true;
-            thread.Start();
+                Thread.Sleep(_TimeOut);
+            }
         }
     }
 }
