@@ -1,7 +1,6 @@
 ﻿using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
 using Clamp.AppCenter.CFX;
-using Clamp.MUI.WPF.UI;
 using Clamp.OSGI.Data.Annotation;
 using System;
 using System.Collections.Generic;
@@ -9,23 +8,19 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
-namespace Clamp.MUI.WPF
+namespace Clamp.MUI.WF
 {
     [Extension]
     public class WPFAppManager : AppManager
     {
-        private App app;
-
         public override void Initialize()
         {
             base.Initialize();
 
-            if (this.app == null)
-            {
-                app = new App();
-                app.InitializeComponent();
-            }
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
         }
 
         public override void Run(params string[] commandLines)
@@ -36,14 +31,7 @@ namespace Clamp.MUI.WPF
             {
                 CFXLauncher.RegisterEmbeddedScheme(typeof(WPFAppManager).Assembly, "embedded");
 
-                //WindowSplash windowSplash = new WindowSplash();
-                //WindowAuthority windowAuthority = new WindowAuthority();
-
-                MainWindow mainWindow = new MainWindow();
-
-                app.MainWindow = mainWindow;
-
-                app.Run(mainWindow);
+                Application.Run(new FrmMain());
             }
         }
 

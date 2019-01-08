@@ -56,6 +56,7 @@
     <Compile Include="CFX\EmbeddedSchemeHandlerFactory.cs" />
     <Compile Include="CFX\LocalResourceHandler.cs" />
     <Compile Include="CFX\LocalSchemeHandlerFactory.cs" />
+    <Compile Include="CFX\CFXLauncher.cs" />
     <Compile Include="ChromiumFX\Generated\CfxApi.cs" />
     <Compile Include="ChromiumFX\Generated\CfxApiLoader.cs" />
     <Compile Include="ChromiumFX\Generated\CfxApp.cs" />
