@@ -44,6 +44,8 @@ namespace Clamp.AppCenter.CFX
 
             this.requestUrl = request.Url;
 
+           
+
             var fileName = uri.AbsolutePath;
 
             if (fileName.StartsWith("/") && fileName.Length > 1)

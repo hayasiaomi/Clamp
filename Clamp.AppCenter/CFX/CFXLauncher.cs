@@ -96,12 +96,12 @@ namespace Clamp.AppCenter.CFX
 
         private static void RegisterClampScheme()
         {
-            ClampSchemeHandlerFactory scheme = new ClampSchemeHandlerFactory("http");
+            ClampSchemeHandlerFactory scheme = new ClampSchemeHandlerFactory("clamp");
             GCHandle gchandle = GCHandle.Alloc(scheme);
 
             SchemeHandlerGCHandles.Add(gchandle);
 
-            RegisterScheme("http", null, scheme);
+            RegisterScheme("clamp", null, scheme);
         }
 
 
@@ -159,12 +159,12 @@ namespace Clamp.AppCenter.CFX
             //Application.Idle += Application_Idle;
             //Application.Current.Exit += Application_ApplicationExit;
 
-            System.Windows.Forms.Application.ApplicationExit += Application_ApplicationExit;
+            //System.Windows.Forms.Application.ApplicationExit += Application_ApplicationExit;
 
             return true;
         }
 
-        private static void Application_ApplicationExit(object sender, EventArgs e)
+        public static void Exit()
         {
             foreach (var handle in SchemeHandlerGCHandles)
             {

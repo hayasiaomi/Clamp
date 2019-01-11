@@ -1,26 +1,25 @@
 ﻿using Chromium;
 using Chromium.Event;
+using Chromium.WebBrowser;
 using Clamp.AppCenter;
+using Clamp.AppCenter.Handlers;
 using Clamp.MUI.WF.CFX;
-using Clamp.MUI.WF.Controls;
 using Clamp.MUI.WF.Windows;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Clamp.MUI.WF
+namespace Clamp.MUI.WF.Controls
 {
-    public partial class FrmMain : Form
+    public partial class FrmBase : Form, IClampHandlerFactory
     {
         private readonly List<ContextMenuItem> menuCommands = new List<ContextMenuItem>();
         private readonly List<int> menuSeparatorIndex = new List<int>();
@@ -34,44 +33,54 @@ namespace Clamp.MUI.WF
 
         private CfxLifeSpanHandler debugCfxLifeSpanHandler;
         private CfxClient debugCfxClient;
-        private IntPtr windowHandle;
+        private IntPtr formHandle;
         private FormGlowBorderDecorator shadowDecorator;
-        public bool CanResize { get { return true; } }
+        private bool creatingHandle = false;
+        private FormWindowState displayWindowState;
+
+        protected bool IsDesignMode => DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
         protected IntPtr BrowserHandle
         {
             get
             {
-                return this.ChromiumWebBrowser.BrowserHost.WindowHandle;
+                return this.chromium.BrowserHost.WindowHandle;
             }
         }
 
-        public FrmMain()
+        protected IntPtr FormHandle
+        {
+            get
+            {
+                return this.formHandle;
+            }
+        }
+
+        public ChromiumWebBrowser ChromiumWebBrowser { get { return this.chromium; } }
+
+
+        public FrmBase()
         {
             InitializeComponent();
 
-            this.menuCommands.Add(new ContextMenuItem(() =>
+            if (!IsDesignMode)
             {
-                this.OpenDebugTools();
+                this.chromium.BrowserCreated += ChromiumWebBrowser_BrowserCreated;
+                this.chromium.LoadHandler.OnLoadError += LoadHandler_OnLoadError;
+                this.chromium.RequestHandler.OnQuotaRequest += RequestHandler_OnQuotaRequest;
+                this.chromium.ContextMenuHandler.OnBeforeContextMenu += OnBeforeContextMenu;
+                this.chromium.ContextMenuHandler.OnContextMenuCommand += ContextMenuHandler_OnContextMenuCommand;
 
-            }, "开发工具"));
+                var dragHandler = this.chromium.DragHandler;
 
-            this.Load += FrmMain_Load;
+                dragHandler.OnDragEnter += (o, e) => { e.SetReturnValue(true); };
+                dragHandler.OnDraggableRegionsChanged += DragHandler_OnDraggableRegionsChanged;
 
-            this.ChromiumWebBrowser.BrowserCreated += ChromiumWebBrowser_BrowserCreated;
-            this.ChromiumWebBrowser.LoadHandler.OnLoadError += LoadHandler_OnLoadError;
-            this.ChromiumWebBrowser.RequestHandler.OnQuotaRequest += RequestHandler_OnQuotaRequest;
-            this.ChromiumWebBrowser.ContextMenuHandler.OnBeforeContextMenu += OnBeforeContextMenu;
-            this.ChromiumWebBrowser.ContextMenuHandler.OnContextMenuCommand += ContextMenuHandler_OnContextMenuCommand;
-
-            var dragHandler = this.ChromiumWebBrowser.DragHandler;
-
-            dragHandler.OnDragEnter += (o, e) => { e.SetReturnValue(true); };
-            dragHandler.OnDraggableRegionsChanged += DragHandler_OnDraggableRegionsChanged;
-
-            this.OnShadowEffectChanged();
+                this.OnShadowEffectChanged();
+            }
         }
 
+        #region 公有方法
         public void RegisterContextMenuItem(IEnumerable<ContextMenuItem> contextMenuItens)
         {
             this.menuCommands.AddRange(contextMenuItens);
@@ -99,22 +108,22 @@ namespace Clamp.MUI.WF
         /// </summary>
         public void CloseDebugTools()
         {
-            this.ChromiumWebBrowser.BrowserHost.CloseDevTools();
+            this.chromium.BrowserHost.CloseDevTools();
         }
 
-
-        const int WS_MINIMIZEBOX = 0x20000;
-        const int CS_DBLCLKS = 0x8;
-        protected override CreateParams CreateParams
+        /// <summary>
+        /// 加载指定的URL
+        /// </summary>
+        /// <param name="url"></param>
+        public void LoadUrl(string url)
         {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.Style |= WS_MINIMIZEBOX;
-                cp.ClassStyle |= CS_DBLCLKS;
-                return cp;
-            }
+            this.chromium.LoadUrl(url);
         }
+
+        #endregion
+
+
+        #region 私有方法
 
         #region 私有方法 开发工具
 
@@ -139,7 +148,7 @@ namespace Clamp.MUI.WF
             debugCfxClient = new CfxClient();
             debugCfxClient.GetLifeSpanHandler += DebugClient_GetLifeSpanHandler;
             if (handler != null) debugCfxClient.GetLoadHandler += handler;
-            this.ChromiumWebBrowser.BrowserHost.ShowDevTools(cfxWindowInfo, debugCfxClient, new CfxBrowserSettings(), null);
+            this.chromium.BrowserHost.ShowDevTools(cfxWindowInfo, debugCfxClient, new CfxBrowserSettings(), null);
         }
 
 
@@ -196,7 +205,7 @@ namespace Clamp.MUI.WF
                 shadowDecorator.InitializeShadows();
             }
         }
-       
+
 
         private void RequestHandler_OnQuotaRequest(object sender, CfxOnQuotaRequestEventArgs e)
         {
@@ -228,7 +237,7 @@ namespace Clamp.MUI.WF
 
                 new Resilient(() => ChromeWidgetHandleFinder.TryFindHandle(this.browserHandle, out this.chromeWidgetHostHandle)).WithTimeOut(100).StartIn(100);
 
-                this.chromeWidgetMessageInterceptor = new BrowserWidgetMessageInterceptor(this.ChromiumWebBrowser, this.windowHandle, this.chromeWidgetHostHandle, OnWebBroswerMessage);
+                this.chromeWidgetMessageInterceptor = new BrowserWidgetMessageInterceptor(this.chromium, this.formHandle, this.chromeWidgetHostHandle, OnWebBroswerMessage);
             });
 
             thread.IsBackground = true;
@@ -269,25 +278,11 @@ namespace Clamp.MUI.WF
         }
 
         #endregion
-        private void FrmMain_Load(object sender, EventArgs e)
+
+
+        private void UpdateDpiMatrix()
         {
-            this.Load -= FrmMain_Load;
-
-            this.windowHandle = this.Handle;
-
-            if (AppManager.Current.ClampConfs.ContainsKey(AppCenterConstant.CFX_INIT_URL))
-            {
-                this.ChromiumWebBrowser.LoadUrl(AppManager.Current.ClampConfs[AppCenterConstant.CFX_INIT_URL]);
-            }
-            else
-            {
-                this.ChromiumWebBrowser.LoadUrl("about:blank");
-            }
-
-            this.Closed += FrmMain_Closed;
-            this.LocationChanged += Window_LocationChanged;
-            this.ClientSizeChanged += Window_StateChanged;
-            this.UpdateDpiMatrix();
+            this.matrix = HdiHelper.GetDisplayScaleFactor(this.formHandle);
         }
 
         /// <summary>
@@ -307,45 +302,29 @@ namespace Clamp.MUI.WF
             if (!e.Frame.IsMain)
                 return;
         }
+
+
+        #region 消息处理
+
         /// <summary>
-        /// Window 状态发生变化事件
+        /// 处理CEF传来的消息
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-                return;
-
-            Thread.Sleep(10);
-
-            this.ChromiumWebBrowser.Refresh();
-        }
-
-        private void Window_LocationChanged(object sender, EventArgs e)
-        {
-            this.UpdateDpiMatrix();
-        }
-
-        private void UpdateDpiMatrix()
-        {
-            this.matrix = HdiHelper.GetDisplayScaleFactor(this.windowHandle);
-        }
-
+        /// <param name="message"></param>
+        /// <returns></returns>
         private bool OnWebBroswerMessage(ref Message message)
         {
             if (BrowserHandle != IntPtr.Zero)
             {
                 var msg = (WindowsMessages)message.Msg;
-                if (CanResize && msg == WindowsMessages.WM_MOUSEMOVE)
+                if (msg == WindowsMessages.WM_MOUSEMOVE)
                 {
                     var pt = Win32.GetPostionFromPtr(message.LParam);
                     var mode = GetSizeMode(pt);
 
                     if (mode != HitTest.HTCLIENT)
                     {
-                        User32.ClientToScreen(this.windowHandle, ref pt);
-                        User32.PostMessage(this.windowHandle, (uint)WindowsMessages.WM_NCHITTEST, IntPtr.Zero, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
+                        User32.ClientToScreen(this.formHandle, ref pt);
+                        User32.PostMessage(this.formHandle, (uint)WindowsMessages.WM_NCHITTEST, IntPtr.Zero, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
                         return true;
                     }
                 }
@@ -356,34 +335,34 @@ namespace Clamp.MUI.WF
                     var dragable = (this.draggableRegion != null && this.draggableRegion.IsVisible(new Point(pt.x, pt.y)));
 
                     var mode = GetSizeMode(pt);
-                    if (CanResize && mode != HitTest.HTCLIENT)
+                    if (mode != HitTest.HTCLIENT)
                     {
 
-                        User32.ClientToScreen(this.windowHandle, ref pt);
+                        User32.ClientToScreen(this.formHandle, ref pt);
 
-                        User32.PostMessage(this.windowHandle, (uint)WindowsMessages.WM_NCLBUTTONDOWN, (IntPtr)mode, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
+                        User32.PostMessage(this.formHandle, (uint)WindowsMessages.WM_NCLBUTTONDOWN, (IntPtr)mode, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
 
                         return true;
 
                     }
                     else if (dragable && !(FormBorderStyle == FormBorderStyle.None && WindowState == FormWindowState.Maximized))
                     {
-                        this.ChromiumWebBrowser.Browser.Host.NotifyMoveOrResizeStarted();
+                        this.chromium.Browser.Host.NotifyMoveOrResizeStarted();
 
-                        User32.PostMessage(this.windowHandle, (uint)DefMessages.WM_NANUI_DRAG_APP_REGION, IntPtr.Zero, IntPtr.Zero);
+                        User32.PostMessage(this.formHandle, (uint)DefMessages.WM_NANUI_DRAG_APP_REGION, IntPtr.Zero, IntPtr.Zero);
 
                         return true;
 
                     }
                 }
 
-                if (CanResize && msg == WindowsMessages.WM_LBUTTONDBLCLK)
+                if (msg == WindowsMessages.WM_LBUTTONDBLCLK)
                 {
                     var pt = Win32.GetPostionFromPtr(message.LParam);
                     var dragable = (this.draggableRegion != null && this.draggableRegion.IsVisible(new Point(pt.x, pt.y)));
                     if (dragable)
                     {
-                        User32.SendMessage(this.windowHandle, (uint)WindowsMessages.WM_NCLBUTTONDBLCLK, (IntPtr)HitTest.HTCAPTION, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
+                        User32.SendMessage(this.formHandle, (uint)WindowsMessages.WM_NCLBUTTONDBLCLK, (IntPtr)HitTest.HTCAPTION, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
                         return true;
                     }
                 }
@@ -395,7 +374,7 @@ namespace Clamp.MUI.WF
                     if (dragable)
                     {
 
-                        User32.SendMessage(this.windowHandle, (uint)DefMessages.WM_NANUI_APP_REGION_RBUTTONDOWN, IntPtr.Zero, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
+                        User32.SendMessage(this.formHandle, (uint)DefMessages.WM_NANUI_APP_REGION_RBUTTONDOWN, IntPtr.Zero, Win32.MakeParam((IntPtr)pt.x, (IntPtr)pt.y));
                         return true;
                     }
                 }
@@ -403,7 +382,43 @@ namespace Clamp.MUI.WF
             return false;
         }
 
-        protected HitTest GetSizeMode(POINT point)
+
+
+        protected override void DefWndProc(ref Message m)
+        {
+            if (m.Msg == (int)DefMessages.WM_NANUI_DRAG_APP_REGION)
+            {
+
+                User32.ReleaseCapture();
+                User32.SendMessage(Handle, (uint)WindowsMessages.WM_NCLBUTTONDOWN, (IntPtr)HitTest.HTCAPTION, (IntPtr)0);
+            }
+
+            if (m.Msg == (int)DefMessages.WM_NANUI_APP_REGION_RBUTTONDOWN)
+            {
+                var pt = Win32.GetPostionFromPtr(m.LParam);
+
+                var ptToScr = PointToScreen(new Point(pt.x, pt.y));
+
+                ShowSystemMenu(this, ptToScr);
+            }
+
+            base.DefWndProc(ref m);
+        }
+
+        private bool ShowSystemMenu(Form frm, Point pt)
+        {
+            const int TPM_LEFTALIGN = 0x0000, TPM_TOPALIGN = 0x0000, TPM_RETURNCMD = 0x0100;
+            if (frm == null)
+                return false;
+            IntPtr menuHandle = GetSystemMenu(frm.Handle, false);
+            IntPtr command = User32.TrackPopupMenu(menuHandle, TPM_RETURNCMD | TPM_TOPALIGN | TPM_LEFTALIGN, pt.X, pt.Y, 0, frm.Handle, IntPtr.Zero);
+            if (frm.IsDisposed)
+                return false;
+            User32.PostMessage(frm.Handle, (uint)WindowsMessages.WM_SYSCOMMAND, command, IntPtr.Zero);
+            return true;
+        }
+
+        private HitTest GetSizeMode(POINT point)
         {
             HitTest mode = HitTest.HTCLIENT;
 
@@ -411,7 +426,7 @@ namespace Clamp.MUI.WF
 
             var CornerAreaSize = Win32.CornerAreaSize;
 
-            if (WindowState == FormWindowState.Normal && CanResize)
+            if (WindowState == FormWindowState.Normal)
             {
                 if (x < CornerAreaSize & y < CornerAreaSize)
                 {
@@ -457,87 +472,87 @@ namespace Clamp.MUI.WF
             return mode;
         }
 
-        #region 消息处理
-
-        protected override void DefWndProc(ref Message m)
-        {
-            if (m.Msg == (int)DefMessages.WM_NANUI_DRAG_APP_REGION)
-            {
-
-                User32.ReleaseCapture();
-                User32.SendMessage(Handle, (uint)WindowsMessages.WM_NCLBUTTONDOWN, (IntPtr)HitTest.HTCAPTION, (IntPtr)0);
-            }
-
-            if (m.Msg == (int)DefMessages.WM_NANUI_APP_REGION_RBUTTONDOWN)
-            {
-                var pt = Win32.GetPostionFromPtr(m.LParam);
-
-                var ptToScr = PointToScreen(new Point(pt.x, pt.y));
-
-                ShowSystemMenu(this, ptToScr);
-            }
-
-            base.DefWndProc(ref m);
-        }
-
-        protected bool ShowSystemMenu(Form frm, Point pt)
-        {
-            const int TPM_LEFTALIGN = 0x0000, TPM_TOPALIGN = 0x0000, TPM_RETURNCMD = 0x0100;
-            if (frm == null)
-                return false;
-            IntPtr menuHandle = GetSystemMenu(frm.Handle, false);
-            IntPtr command = User32.TrackPopupMenu(menuHandle, TPM_RETURNCMD | TPM_TOPALIGN | TPM_LEFTALIGN, pt.X, pt.Y, 0, frm.Handle, IntPtr.Zero);
-            if (frm.IsDisposed)
-                return false;
-            User32.PostMessage(frm.Handle, (uint)WindowsMessages.WM_SYSCOMMAND, command, IntPtr.Zero);
-            return true;
-        }
-
 
         [DllImport("USER32.dll")]
         private static extern bool DestroyMenu(IntPtr menu);
         [DllImport("user32.dll", EntryPoint = "GetSystemMenu")]
         private static extern IntPtr GetSystemMenuCore(IntPtr hWnd, bool bRevert);
         [System.Security.SecuritySafeCritical]
-        internal static IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert)
+        private static IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert)
         {
             return GetSystemMenuCore(hWnd, bRevert);
         }
 
         #endregion
 
-        //private bool IsInDragRegion(Message message)
-        //{
-        //    if (this.draggableRegion == null)
-        //        return false;
+        #endregion
 
-        //    var point = GetPoint(message);
-        //    return this.draggableRegion.IsVisible(point);
-        //}
+        #region 重写方法
 
-        //private static System.Drawing.Point GetPoint(Message message)
-        //{
-        //    var lparam = message.LParam;
-        //    var x = NativeMethods.LoWord(lparam.ToInt32());
-        //    var y = NativeMethods.HiWord(lparam.ToInt32());
-        //    return new System.Drawing.Point(x, y);
-        //}
-
-        private void ToogleMaximize()
+        const int WS_MINIMIZEBOX = 0x20000;
+        const int CS_DBLCLKS = 0x8;
+        protected override CreateParams CreateParams
         {
-            this.WindowState = (this.WindowState == FormWindowState.Maximized) ? FormWindowState.Normal : FormWindowState.Maximized;
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.Style |= WS_MINIMIZEBOX;
+                cp.ClassStyle |= CS_DBLCLKS;
+                return cp;
+            }
         }
 
-        private void FrmMain_Closed(object sender, System.EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            this.Closed -= FrmMain_Closed;
-            this.LocationChanged -= Window_LocationChanged;
-            this.ClientSizeChanged -= Window_StateChanged;
+            base.OnLoad(e);
+
+            this.displayWindowState = this.WindowState;
+            this.formHandle = this.Handle;
+
+            this.UpdateDpiMatrix();
+        }
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+
+            this.UpdateDpiMatrix();
+        }
+
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            base.OnClientSizeChanged(e);
+
+            if (this.WindowState != this.displayWindowState)
+            {
+                this.displayWindowState = this.WindowState;
+
+                if (this.WindowState == FormWindowState.Minimized)
+                    return;
+
+                Thread.Sleep(10);
+
+                this.chromium.Refresh();
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
             this.chromeWidgetMessageInterceptor?.ReleaseHandle();
             this.chromeWidgetMessageInterceptor?.DestroyHandle();
             this.chromeWidgetMessageInterceptor = null;
+
+            this.chromium.Dispose();
         }
 
+        #endregion
+
+        public virtual IClampHandler GetClampHandler()
+        {
+            return null;
+        }
 
     }
 }

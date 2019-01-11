@@ -308,6 +308,11 @@
     <Compile Include="ChromiumWebBrowser\RenderProcess\RenderProcessHandler.cs" />
     <Compile Include="ChromiumWebBrowser\WebResource.cs" />
     <Compile Include="AppCenterConstant.cs" />
+    <Compile Include="Handlers\ClampHandlerContext.cs" />
+    <Compile Include="Handlers\DefaultClampHandler.cs" />
+    <Compile Include="Handlers\IClampHandler.cs" />
+    <Compile Include="Handlers\IClampHandlerFactory.cs" />
+    <Compile Include="Handlers\MehtodClampHandler.cs" />
     <Compile Include="IAppManager.cs" />
     <Compile Include="Initial\InitialElement.cs" />
     <Compile Include="Initial\InitialFile.cs" />

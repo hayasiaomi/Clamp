@@ -1,5 +1,6 @@
 ﻿using Chromium;
 using Chromium.WebBrowser;
+using Clamp.AppCenter.Handlers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,13 +19,16 @@ namespace Clamp.AppCenter.CFX
         private ChromiumWebBrowser browser;
         private GCHandle gcHandle;
         private string schemeName;
+        private IClampHandler clampHandler;
         private HttpStatusCode httpStatusCode;
 
-        internal ClampResourceHandler(ChromiumWebBrowser browser, string schemeName)
+
+        internal ClampResourceHandler(ChromiumWebBrowser browser, string schemeName, IClampHandler clampHandler)
         {
             this.gcHandle = GCHandle.Alloc(this);
             this.browser = browser;
             this.schemeName = schemeName;
+            this.clampHandler = clampHandler;
             this.GetResponseHeaders += ClampResourceHandler_GetResponseHeaders;
             this.ProcessRequest += ClampResourceHandler_ProcessRequest;
             this.ReadResponse += ClampResourceHandler_ReadResponse;
@@ -37,111 +41,18 @@ namespace Clamp.AppCenter.CFX
         {
             this.readResponseStreamOffset = 0;
 
-            CfxRequest request = e.Request;
-            CfxCallback callback = e.Callback;
-
-            Uri uri;
-
-            if (Uri.TryCreate(request.Url, UriKind.RelativeOrAbsolute, out uri))
+            if (this.clampHandler != null)
             {
-                this.requestUrl = request.Url;
+                this.clampHandler.Handle(new ClampHandlerContext() { ChromiumWebBrowser = this.browser, CfxRequest = e.Request });
 
-                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create($"{this.schemeName}://127.0.0.1:31234{uri.PathAndQuery}");
+                this.webResource = new WebResource(Encoding.UTF8.GetBytes("aomi"), MimeHelper.GetMimeType(".txt"));
 
-                httpWebRequest.Method = request.Method;
+                this.httpStatusCode = HttpStatusCode.OK;
 
-                List<string[]> headerMaps = request.GetHeaderMap();
-
-                if (headerMaps != null && headerMaps.Count > 0)
-                {
-                    foreach (string[] headers in headerMaps)
-                    {
-                        if (headers.Length == 1)
-                        {
-                            httpWebRequest.Headers.Add(headers[0]);
-                        }
-                        else if (headers.Length > 1)
-                        {
-                            string headerName = headers[0];
-                            string headerValue = headers[1];
-
-                            if (String.Compare(headerName, "Accept", true) == 0)
-                            {
-                                httpWebRequest.Accept = headerValue;
-                            }
-                            else if (String.Compare(headerName, "User-Agent", true) == 0 || String.Compare(headerName, "UserAgent", true) == 0)
-                            {
-                                httpWebRequest.UserAgent = headerValue;
-                            }
-                            else
-                            {
-                                httpWebRequest.Headers.Add(headers[0], headers[1]);
-                            }
-                        }
-                    }
-                }
-
-                try
-                {
-                    CfxPostData cfxPostData = request.PostData;
-
-                    if (cfxPostData != null && cfxPostData.ElementCount > 0)
-                    {
-                        using (Stream rStream = httpWebRequest.GetRequestStream())
-                        {
-                            foreach (var item in cfxPostData.Elements)
-                            {
-                                var size = item.GetBytes(item.BytesCount, item.NativePtr);
-                                byte[] buffer = new byte[item.BytesCount];
-                                Marshal.Copy(item.NativePtr, buffer, 0, (int)item.BytesCount);
-                                rStream.Write(buffer, 0, buffer.Length);
-                            }
-                        }
-                    }
-
-                    HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                    using (var stream = httpWebRequest.GetResponse().GetResponseStream())
-                    {
-                        if (stream != null)
-                        {
-                            string responseText;
-
-                            using (var reader = new StreamReader(stream, Encoding.UTF8))
-                            {
-                                responseText = reader.ReadToEnd();
-                            }
-
-                            byte[] buffers = Encoding.UTF8.GetBytes(responseText);
-
-                            webResource = new WebResource(buffers.ToArray(), httpWebResponse.ContentType);
-
-                            if (!browser.webResources.ContainsKey(requestUrl))
-                            {
-                                browser.SetWebResource(requestUrl, webResource);
-                            }
-                        }
-                    }
-
-                    this.httpStatusCode = httpWebResponse.StatusCode;
-
-                    Console.WriteLine($"[加载]:\t{requestUrl}");
-
-                    callback.Continue();
-                    e.SetReturnValue(true);
-
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[加载发生异常]:\t{requestUrl}，原因:{ex.Message}");
-
-                    callback.Continue();
-                    e.SetReturnValue(false);
-                }
+                return;
             }
 
-
-
+            this.httpStatusCode = HttpStatusCode.NotFound;
         }
 
         private void ClampResourceHandler_GetResponseHeaders(object sender, Chromium.Event.CfxGetResponseHeadersEventArgs e)

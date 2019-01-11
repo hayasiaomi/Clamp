@@ -69,7 +69,6 @@
     <Compile Include="Controls\HdiHelper.cs" />
     <Compile Include="Controls\RelativeAnimatingContentControl.cs" />
     <Compile Include="Controls\TextBoxHelper.cs" />
-    <Compile Include="Controls\UILauncher.cs" />
     <Compile Include="Converters\BooleanToFontWeightConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NotBooleanConverter.cs" />

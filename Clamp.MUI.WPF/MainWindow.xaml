@@ -6,22 +6,13 @@
         xmlns:controls="clr-namespace:Clamp.MUI.WPF.Controls"
         xmlns:cfx="clr-namespace:Chromium.WebBrowser;assembly=Clamp.AppCenter"
         mc:Ignorable="d"
-        AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="CanMinimize"
         Height="680" 
         Width="1024"
         Title="YEYE">
-    <Grid>
-        <Border  Background="{StaticResource WindowHeaderGradient}" Margin="10,10,10,10"   >
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Color="Black" Opacity="0.6" ShadowDepth="2"/>
-            </Border.Effect>
-        </Border>
-        <WindowsFormsHost Opacity="0" x:Name="Host" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-            <cfx:ChromiumWebBrowser x:Name="ChromiumWebBrowser"   Dock="Fill" />
-        </WindowsFormsHost>
-    </Grid>
-   
+    <WindowsFormsHost Opacity="0" x:Name="Host" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+        <cfx:ChromiumWebBrowser x:Name="ChromiumWebBrowser"   Dock="Fill" />
+    </WindowsFormsHost>
 </Window>

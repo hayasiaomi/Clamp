@@ -1,4 +1,5 @@
-﻿using Chromium.WebBrowser.Event;
+﻿using Chromium;
+using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
 using Clamp.AppCenter.CFX;
 using Clamp.OSGI.Data.Annotation;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 namespace Clamp.MUI.WF
 {
     [Extension]
-    public class WPFAppManager : AppManager
+    public class WFAppManager : AppManager
     {
         public override void Initialize()
         {
@@ -21,6 +22,13 @@ namespace Clamp.MUI.WF
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.ApplicationExit += Application_ApplicationExit;
+
+        }
+
+        private void Application_ApplicationExit(object sender, EventArgs e)
+        {
+            CFXLauncher.Exit();
         }
 
         public override void Run(params string[] commandLines)
@@ -29,9 +37,9 @@ namespace Clamp.MUI.WF
 
             if (CFXLauncher.InitializeChromium(assemblyDir, BeforeChromiumInitialize))
             {
-                CFXLauncher.RegisterEmbeddedScheme(typeof(WPFAppManager).Assembly, "embedded");
+                CFXLauncher.RegisterEmbeddedScheme(typeof(WFAppManager).Assembly, "embedded");
 
-                Application.Run(new FrmMain());
+                Application.Run(new FrmLogin());
             }
         }
 

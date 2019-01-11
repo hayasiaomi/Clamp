@@ -1,7 +1,6 @@
 ﻿using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
 using Clamp.AppCenter.CFX;
-using Clamp.MUI.WPF.UI;
 using Clamp.OSGI.Data.Annotation;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,13 @@ namespace Clamp.MUI.WPF
             {
                 app = new App();
                 app.InitializeComponent();
+                app.Exit += App_Exit;
             }
+        }
+
+        private void App_Exit(object sender, System.Windows.ExitEventArgs e)
+        {
+            CFXLauncher.Exit();
         }
 
         public override void Run(params string[] commandLines)
