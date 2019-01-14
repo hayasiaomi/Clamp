@@ -72,6 +72,7 @@
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\FrmLoginClampHandler.cs" />
+    <Compile Include="Handlers\FrmMainClampHandler.cs" />
     <Compile Include="WFActivator.cs" />
     <Compile Include="Windows\DefMessages.cs" />
     <Compile Include="CFX\NativeWindowHelper.cs" />

@@ -31,12 +31,12 @@
             this.chromium = new Chromium.WebBrowser.ChromiumWebBrowser();
             this.SuspendLayout();
             // 
-            // ChromiumWebBrowser
+            // chromium
             // 
             this.chromium.BackColor = System.Drawing.Color.White;
             this.chromium.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chromium.Location = new System.Drawing.Point(0, 0);
-            this.chromium.Name = "ChromiumWebBrowser";
+            this.chromium.Name = "chromium";
             this.chromium.RemoteCallbackInvokeMode = Chromium.WebBrowser.JSInvokeMode.Inherit;
             this.chromium.Size = new System.Drawing.Size(800, 450);
             this.chromium.TabIndex = 0;
@@ -50,6 +50,7 @@
             this.Controls.Add(this.chromium);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FrmBase";
+            this.Opacity = 0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmBase";
             this.ResumeLayout(false);

@@ -1,4 +1,5 @@
-﻿using Clamp.AppCenter;
+﻿using Chromium.Event;
+using Clamp.AppCenter;
 using Clamp.AppCenter.Handlers;
 using Clamp.MUI.WF.Controls;
 using Clamp.MUI.WF.Handlers;
@@ -34,6 +35,11 @@ namespace Clamp.MUI.WF
             {
                 this.LoadUrl("about:blank");
             }
+        }
+
+        protected override void OnChromiumLoadEnd(object sender, CfxOnLoadEndEventArgs e)
+        {
+           
         }
 
         public override IClampHandler GetClampHandler()

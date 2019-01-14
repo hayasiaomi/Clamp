@@ -55,7 +55,7 @@ namespace Clamp.MUI.WPF
         private void BeforeChromiumInitialize(OnBeforeCfxInitializeEventArgs e)
         {
             e.Settings.LogSeverity = global::Chromium.CfxLogSeverity.Default;
-            e.Settings.SingleProcess = true;
+            e.Settings.SingleProcess = false;
         }
     }
 }

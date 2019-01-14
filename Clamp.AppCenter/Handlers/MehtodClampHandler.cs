@@ -39,15 +39,18 @@ namespace Clamp.AppCenter.Handlers
 
             if (!string.IsNullOrWhiteSpace(url))
             {
-                MethodInfo methodInfo = this.GetMethodInfoByName(this.GetMethodName(url));
+                MethodInfo mi = this.GetMethodInfoByName(this.GetMethodName(url));
 
-                if (methodInfo != null)
+                if (mi != null)
                 {
-                    object[] parameters = this.GetMethodParameterInfos(context.CfxRequest, methodInfo);
+                    object[] parameters = this.GetMethodParameterInfos(context.CfxRequest, mi);
 
-                    object result = methodInfo.Invoke(this, parameters);
+                    if (!typeof(void).IsAssignableFrom(mi.ReturnType))
+                    {
+                        return mi.Invoke(this, parameters);
+                    }
 
-                    return result;
+                    mi.Invoke(this, parameters);
                 }
             }
 
@@ -85,16 +88,20 @@ namespace Clamp.AppCenter.Handlers
 
         private object[] GetMethodParameterInfos(CfxRequest cfxRequest, MethodInfo methodInfo)
         {
-            int indexQ = cfxRequest.Url.LastIndexOf('?');
-            string queryData = cfxRequest.Url.Substring(indexQ);
-
             NameValueCollection mParameters = new NameValueCollection();
 
-            NameValueCollection queryNameValueCollection = this.ParseQueryString(queryData, Encoding.UTF8, false);
+            int indexQ = cfxRequest.Url.LastIndexOf('?');
 
-            if (queryNameValueCollection != null && queryNameValueCollection.Count > 0)
+            if (indexQ > 0)
             {
-                mParameters.Add(queryNameValueCollection);
+                string queryData = cfxRequest.Url.Substring(indexQ);
+
+                NameValueCollection queryNameValueCollection = this.ParseQueryString(queryData, Encoding.UTF8, false);
+
+                if (queryNameValueCollection != null && queryNameValueCollection.Count > 0)
+                {
+                    mParameters.Add(queryNameValueCollection);
+                }
             }
 
             if (cfxRequest.PostData != null)
@@ -119,7 +126,7 @@ namespace Clamp.AppCenter.Handlers
 
                             if (formNameValueCollection != null && formNameValueCollection.Count > 0)
                             {
-                                mParameters.Add(queryNameValueCollection);
+                                mParameters.Add(formNameValueCollection);
                             }
                         }
                     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Clamp.MUI.WF.Handlers
@@ -16,13 +17,39 @@ namespace Clamp.MUI.WF.Handlers
             this.frmLogin = frmLogin;
         }
 
-        public object Login(string username, string password)
+        public object Login(string username, string password, bool remember)
         {
-            frmLogin.Invoke(new Action(() =>
+            if ("00000" != username || "1234" != password)
             {
-                MessageBox.Show("aaa");
+                return "用户或密码不正确！";
+            }
+
+            Thread mainThread = new Thread(new ThreadStart(() =>
+            {
+                FrmMain frmMain = new FrmMain();
+
+                frmMain.FrmLogin = this.frmLogin;
+
+                Application.Run(frmMain);
             }));
+
+            mainThread.SetApartmentState(ApartmentState.STA);
+            mainThread.Start();
+
+            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
+
             return null;
+        }
+
+        public void Close()
+        {
+            this.frmLogin.BeginInvoke(new Action(() =>
+            {
+                if (MessageBox.Show(this.frmLogin, "确定退出?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    this.frmLogin.Close();
+                }
+            }));
         }
     }
 }

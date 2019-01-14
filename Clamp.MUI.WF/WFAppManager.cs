@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Clamp.MUI.WF
@@ -16,6 +17,8 @@ namespace Clamp.MUI.WF
     [Extension]
     public class WFAppManager : AppManager
     {
+        public Thread CurrentThread { set; get; }
+
         public override void Initialize()
         {
             base.Initialize();
@@ -39,14 +42,28 @@ namespace Clamp.MUI.WF
             {
                 CFXLauncher.RegisterEmbeddedScheme(typeof(WFAppManager).Assembly, "embedded");
 
-                Application.Run(new FrmLogin());
+                Thread loginThread = new Thread(new ThreadStart(() =>
+                {
+                    Application.Run(new FrmLogin());
+                }));
+
+                loginThread.SetApartmentState(ApartmentState.STA);
+                loginThread.Start();
+
+                CurrentThread = loginThread;
+
+                do
+                {
+                    CurrentThread.Join();
+                }
+                while (CurrentThread != null);
             }
         }
 
         private void BeforeChromiumInitialize(OnBeforeCfxInitializeEventArgs e)
         {
             e.Settings.LogSeverity = global::Chromium.CfxLogSeverity.Default;
-            e.Settings.SingleProcess = true;
+            e.Settings.SingleProcess = false;
         }
     }
 }

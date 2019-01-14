@@ -40,19 +40,25 @@ namespace Clamp.AppCenter.CFX
         private void ClampResourceHandler_ProcessRequest(object sender, Chromium.Event.CfxProcessRequestEventArgs e)
         {
             this.readResponseStreamOffset = 0;
+            this.requestUrl = e.Request.Url;
 
             if (this.clampHandler != null)
             {
-                this.clampHandler.Handle(new ClampHandlerContext() { ChromiumWebBrowser = this.browser, CfxRequest = e.Request });
+                object result = this.clampHandler.Handle(new ClampHandlerContext() { ChromiumWebBrowser = this.browser, CfxRequest = e.Request });
 
-                this.webResource = new WebResource(Encoding.UTF8.GetBytes("aomi"), MimeHelper.GetMimeType(".txt"));
+                string rText = Convert.ToString(result);
+
+                this.webResource = new WebResource(Encoding.UTF8.GetBytes(rText), MimeHelper.GetMimeType(".txt"));
 
                 this.httpStatusCode = HttpStatusCode.OK;
-
-                return;
+            }
+            else
+            {
+                this.httpStatusCode = HttpStatusCode.NotFound;
             }
 
-            this.httpStatusCode = HttpStatusCode.NotFound;
+            e.Callback.Continue();
+            e.SetReturnValue(true);
         }
 
         private void ClampResourceHandler_GetResponseHeaders(object sender, Chromium.Event.CfxGetResponseHeadersEventArgs e)
@@ -62,11 +68,6 @@ namespace Clamp.AppCenter.CFX
                 e.ResponseLength = webResource.data.Length;
                 e.Response.MimeType = webResource.mimeType;
                 e.Response.Status = 200;
-
-                if (!browser.webResources.ContainsKey(requestUrl))
-                {
-                    browser.SetWebResource(requestUrl, webResource);
-                }
             }
             else
             {
@@ -89,7 +90,6 @@ namespace Clamp.AppCenter.CFX
             readResponseStreamOffset += bytesToCopy;
 
             e.SetReturnValue(true);
-
 
             if (readResponseStreamOffset == webResource.data.Length)
             {

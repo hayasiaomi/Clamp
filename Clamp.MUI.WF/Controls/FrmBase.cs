@@ -34,9 +34,47 @@ namespace Clamp.MUI.WF.Controls
         private CfxLifeSpanHandler debugCfxLifeSpanHandler;
         private CfxClient debugCfxClient;
         private IntPtr formHandle;
-        private FormGlowBorderDecorator shadowDecorator;
         private bool creatingHandle = false;
         private FormWindowState displayWindowState;
+        private string displayUrl;
+
+        private const int WM_NCHITTEST = 0x84;
+        private const int HTCLIENT = 0x1;
+        private const int HTCAPTION = 0x2;
+        private bool m_aeroEnabled;
+        private const int CS_DROPSHADOW = 0x00020000;
+        private const int WM_NCPAINT = 0x0085;
+        private const int WM_ACTIVATEAPP = 0x001C;
+
+        #region 阴影功能
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int pfEnabled);
+        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+
+        private static extern IntPtr CreateRoundRectRgn
+        (
+            int nLeftRect,
+            int nTopRect,
+            int nRightRect,
+            int nBottomRect,
+            int nWidthEllipse,
+            int nHeightEllipse
+         );
+
+        public struct MARGINS
+        {
+            public int leftWidth;
+            public int rightWidth;
+            public int topHeight;
+            public int bottomHeight;
+        }
+
+        #endregion
 
         protected bool IsDesignMode => DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
@@ -65,20 +103,28 @@ namespace Clamp.MUI.WF.Controls
 
             if (!IsDesignMode)
             {
+                List<ContextMenuItem> mCommands = new List<ContextMenuItem>(){  new ContextMenuItem(() =>
+                {
+                    this.OpenDebugTools();
+
+                }, "开发工具") };
+
+                this.RegisterContextMenuItem(mCommands);
+
                 this.chromium.BrowserCreated += ChromiumWebBrowser_BrowserCreated;
                 this.chromium.LoadHandler.OnLoadError += LoadHandler_OnLoadError;
                 this.chromium.RequestHandler.OnQuotaRequest += RequestHandler_OnQuotaRequest;
                 this.chromium.ContextMenuHandler.OnBeforeContextMenu += OnBeforeContextMenu;
                 this.chromium.ContextMenuHandler.OnContextMenuCommand += ContextMenuHandler_OnContextMenuCommand;
+                this.chromium.LoadHandler.OnLoadEnd += LoadHandler_OnLoadEnd;
 
                 var dragHandler = this.chromium.DragHandler;
 
                 dragHandler.OnDragEnter += (o, e) => { e.SetReturnValue(true); };
                 dragHandler.OnDraggableRegionsChanged += DragHandler_OnDraggableRegionsChanged;
-
-                this.OnShadowEffectChanged();
             }
         }
+
 
         #region 公有方法
         public void RegisterContextMenuItem(IEnumerable<ContextMenuItem> contextMenuItens)
@@ -117,13 +163,28 @@ namespace Clamp.MUI.WF.Controls
         /// <param name="url"></param>
         public void LoadUrl(string url)
         {
-            this.chromium.LoadUrl(url);
+            this.displayUrl = url;
+
+            this.chromium.LoadUrl(this.displayUrl);
         }
 
         #endregion
 
 
         #region 私有方法
+
+        private void LoadHandler_OnLoadEnd(object sender, CfxOnLoadEndEventArgs e)
+        {
+            if (this.displayUrl.StartsWith(e.Frame.Url, StringComparison.CurrentCultureIgnoreCase))
+            {
+                this.Invoke(new Action(() =>
+                {
+                    this.Opacity = 1;
+                }));
+              
+                this.OnChromiumLoadEnd(sender, e);
+            }
+        }
 
         #region 私有方法 开发工具
 
@@ -181,30 +242,6 @@ namespace Clamp.MUI.WF.Controls
 
 
         #region 私有方法  右击菜单
-
-        private void OnShadowEffectChanged()
-        {
-            var isInitd = true;
-            var isEnabled = true;
-
-            if (shadowDecorator != null)
-            {
-                isInitd = shadowDecorator.IsInitialized;
-                isEnabled = shadowDecorator.IsEnabled;
-
-                shadowDecorator.Dispose();
-            }
-
-            shadowDecorator = new FormGlowBorderDecorator(this, isEnabled);
-
-            shadowDecorator.InactiveColor = Color.Black;
-            shadowDecorator.ActiveColor = Color.Black;
-
-            if (isInitd)
-            {
-                shadowDecorator.InitializeShadows();
-            }
-        }
 
 
         private void RequestHandler_OnQuotaRequest(object sender, CfxOnQuotaRequestEventArgs e)
@@ -491,15 +528,65 @@ namespace Clamp.MUI.WF.Controls
 
         const int WS_MINIMIZEBOX = 0x20000;
         const int CS_DBLCLKS = 0x8;
+
         protected override CreateParams CreateParams
         {
             get
             {
+                m_aeroEnabled = CheckAeroEnabled();
+
                 CreateParams cp = base.CreateParams;
                 cp.Style |= WS_MINIMIZEBOX;
                 cp.ClassStyle |= CS_DBLCLKS;
+
+                if (!m_aeroEnabled)
+                    cp.ClassStyle |= CS_DROPSHADOW;
+
                 return cp;
             }
+        }
+       
+        private bool CheckAeroEnabled()
+        {
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                int enabled = 0;
+
+                DwmIsCompositionEnabled(ref enabled);
+
+                return (enabled == 1) ? true : false;
+            }
+            return false;
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                case WM_NCPAINT:
+
+                    if (m_aeroEnabled)
+                    {
+                        var v = 2;
+
+                        DwmSetWindowAttribute(this.Handle, 2, ref v, 4);
+
+                        MARGINS margins = new MARGINS()
+                        {
+                            bottomHeight = 1,
+                            leftWidth = 0,
+                            rightWidth = 0,
+                            topHeight = 0
+                        };
+
+                        DwmExtendFrameIntoClientArea(this.Handle, ref margins);
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+            base.WndProc(ref m);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -552,6 +639,11 @@ namespace Clamp.MUI.WF.Controls
         public virtual IClampHandler GetClampHandler()
         {
             return null;
+        }
+
+        protected virtual void OnChromiumLoadEnd(object sender, CfxOnLoadEndEventArgs e)
+        {
+
         }
 
     }
