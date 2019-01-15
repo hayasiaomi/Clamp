@@ -17,12 +17,12 @@ namespace Clamp.AppCenter.CFX
         private WebResource webResource;
         private ChromiumWebBrowser browser;
         private GCHandle gcHandle;
-        private Dictionary<string, Assembly> asmCaches = new Dictionary<string, Assembly>();
-        private Assembly mainAssembly;
+        private Assembly assembly;
+        private string domainName;
 
-        public EmbeddedResourceHandler(Assembly mainAssembly, ChromiumWebBrowser browser)
+        public EmbeddedResourceHandler(ChromiumWebBrowser browser, string domainName)
         {
-            this.mainAssembly = mainAssembly;
+            this.domainName = domainName;
             this.gcHandle = GCHandle.Alloc(this);
             this.browser = browser;
             this.GetResponseHeaders += EmbeddedResourceHandler_GetResponseHeaders;
@@ -44,8 +44,6 @@ namespace Clamp.AppCenter.CFX
 
             this.requestUrl = request.Url;
 
-           
-
             var fileName = uri.AbsolutePath;
 
             if (fileName.StartsWith("/") && fileName.Length > 1)
@@ -53,53 +51,41 @@ namespace Clamp.AppCenter.CFX
                 fileName = fileName.Substring(1);
             }
 
-            Assembly ass = null;
-
-            string domainName = uri.Host;
-
-            if (asmCaches.ContainsKey(domainName))
+            if (this.assembly == null)
             {
-                ass = asmCaches[domainName];
+                this.assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => string.Equals(asm.GetName().Name, this.domainName, StringComparison.CurrentCultureIgnoreCase));
             }
-            else
+
+            if (this.assembly != null)
             {
-                Assembly domainAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => string.Equals(asm.GetName().Name, domainName, StringComparison.CurrentCultureIgnoreCase));
+                var endTrimIndex = fileName.LastIndexOf('/');
 
-                if (domainAssembly != null)
+                if (endTrimIndex > -1)
                 {
-                    asmCaches.Add(domainName, domainAssembly);
+                    var tmp = fileName.Substring(0, endTrimIndex);
+                    tmp = tmp.Replace("-", "_");
 
-                    ass = domainAssembly;
+                    fileName = string.Format("{0}{1}", tmp, fileName.Substring(endTrimIndex));
                 }
-            }
 
-            var endTrimIndex = fileName.LastIndexOf('/');
+                var resourcePath = string.Format("{0}.{1}", uri.Host, fileName.Replace('/', '.'));
 
-            if (endTrimIndex > -1)
-            {
-                var tmp = fileName.Substring(0, endTrimIndex);
-                tmp = tmp.Replace("-", "_");
+                var resourceName = this.assembly.GetManifestResourceNames().SingleOrDefault(p => p.Equals(resourcePath, StringComparison.CurrentCultureIgnoreCase));
 
-                fileName = string.Format("{0}{1}", tmp, fileName.Substring(endTrimIndex));
-            }
-
-            var resourcePath = string.Format("{0}.{1}", uri.Host, fileName.Replace('/', '.'));
-
-            var resourceName = ass.GetManifestResourceNames().SingleOrDefault(p => p.Equals(resourcePath, StringComparison.CurrentCultureIgnoreCase));
-
-            if (!string.IsNullOrEmpty(resourceName) && ass.GetManifestResourceInfo(resourceName) != null)
-            {
-                using (var reader = new System.IO.BinaryReader(ass.GetManifestResourceStream(resourceName)))
+                if (!string.IsNullOrEmpty(resourceName) && this.assembly.GetManifestResourceInfo(resourceName) != null)
                 {
-                    var buff = reader.ReadBytes((int)reader.BaseStream.Length);
-
-                    webResource = new WebResource(buff, MimeHelper.GetMimeType(Path.GetExtension(fileName)));
-
-                    reader.Close();
-
-                    if (!browser.webResources.ContainsKey(requestUrl))
+                    using (var reader = new System.IO.BinaryReader(this.assembly.GetManifestResourceStream(resourceName)))
                     {
-                        browser.SetWebResource(requestUrl, webResource);
+                        var buff = reader.ReadBytes((int)reader.BaseStream.Length);
+
+                        webResource = new WebResource(buff, MimeHelper.GetMimeType(Path.GetExtension(fileName)));
+
+                        reader.Close();
+
+                        if (!browser.webResources.ContainsKey(requestUrl))
+                        {
+                            browser.SetWebResource(requestUrl, webResource);
+                        }
                     }
                 }
             }
@@ -110,7 +96,6 @@ namespace Clamp.AppCenter.CFX
 
         private void EmbeddedResourceHandler_GetResponseHeaders(object sender, Chromium.Event.CfxGetResponseHeadersEventArgs e)
         {
-
             if (webResource == null)
             {
                 e.Response.Status = 404;

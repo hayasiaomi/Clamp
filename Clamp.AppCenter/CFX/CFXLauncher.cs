@@ -70,18 +70,16 @@ namespace Clamp.AppCenter.CFX
                     Console.WriteLine(args.CommandLine.CommandLineString);
                 };
 
-                ChromiumWebBrowser.OnRegisterCustomSchemes += args =>
-                {
-                    args.Registrar.AddCustomScheme("embedded", false, false, false);
-                };
+                //ChromiumWebBrowser.OnRegisterCustomSchemes += args =>
+                //{
+                //    args.Registrar.AddCustomScheme("embedded", false, false, false);
+                //    args.Registrar.AddCustomScheme("clamp", false, false, false);
+                //    args.Registrar.AddCustomScheme("local", false, false, false);
+                //};
 
                 try
                 {
                     ChromiumWebBrowser.Initialize();
-
-                    RegisterLocalScheme();
-
-                    RegisterClampScheme();
 
                     return true;
                 }
@@ -94,41 +92,42 @@ namespace Clamp.AppCenter.CFX
             return false;
         }
 
-        private static void RegisterClampScheme()
+        public static void RegisterClampScheme(string schemeName, string domainName)
         {
-            ClampSchemeHandlerFactory scheme = new ClampSchemeHandlerFactory("clamp");
-            GCHandle gchandle = GCHandle.Alloc(scheme);
+            ClampSchemeHandlerFactory clamp = new ClampSchemeHandlerFactory(schemeName, domainName);
+
+            GCHandle gchandle = GCHandle.Alloc(clamp);
 
             SchemeHandlerGCHandles.Add(gchandle);
 
-            RegisterScheme("clamp", null, scheme);
+            RegisterScheme(clamp.SchemeName, clamp.DomainName, clamp);
         }
 
 
-        private static void RegisterLocalScheme()
+        public static void RegisterLocalScheme(string schemeName, string domainName)
         {
-            LocalSchemeHandlerFactory scheme = new LocalSchemeHandlerFactory();
-            GCHandle gchandle = GCHandle.Alloc(scheme);
+            LocalSchemeHandlerFactory local = new LocalSchemeHandlerFactory(schemeName, domainName);
+            GCHandle gchandle = GCHandle.Alloc(local);
 
             SchemeHandlerGCHandles.Add(gchandle);
 
-            RegisterScheme("local", "res.clamp.local", scheme);
+            RegisterScheme(local.SchemeName, local.SchemeName, local);
         }
 
-        public static void RegisterEmbeddedScheme(Assembly assembly, string schemeName)
+        public static void RegisterEmbeddedScheme(string schemeName, string domainName)
         {
             if (string.IsNullOrEmpty(schemeName))
             {
                 throw new ArgumentNullException("schemeName", "必须为scheme指定名称。");
             }
 
-            EmbeddedSchemeHandlerFactory embedded = new EmbeddedSchemeHandlerFactory(schemeName, assembly);
+            EmbeddedSchemeHandlerFactory embedded = new EmbeddedSchemeHandlerFactory(schemeName, domainName);
 
             GCHandle gchandle = GCHandle.Alloc(embedded);
 
             SchemeHandlerGCHandles.Add(gchandle);
 
-            RegisterScheme(embedded.SchemeName, "res.clamp.embedded", embedded);
+            RegisterScheme(embedded.SchemeName, embedded.DomainName, embedded);
         }
 
         public static void RegisterScheme(string schemeName, string domain, CfxSchemeHandlerFactory factory)

@@ -9,14 +9,22 @@ namespace Clamp.AppCenter.CFX
 {
     public class LocalSchemeHandlerFactory : CfxSchemeHandlerFactory
     {
-        public LocalSchemeHandlerFactory()
+        public string SchemeName { private set; get; }
+
+        public string DomainName { private set; get; }
+
+        public LocalSchemeHandlerFactory(string schemeName,string domainName)
         {
+            this.SchemeName = schemeName;
+            this.DomainName = domainName;
             this.Create += LocalSchemeHandlerFactory_Create;
         }
 
         private void LocalSchemeHandlerFactory_Create(object sender, Chromium.Event.CfxSchemeHandlerFactoryCreateEventArgs e)
         {
-            if (e.SchemeName.Equals("local") && e.Browser != null)
+            Uri uri = new Uri(e.Request.Url);
+
+            if (e.SchemeName.Equals(this.SchemeName, StringComparison.CurrentCultureIgnoreCase) && uri.Host.Equals(this.DomainName, StringComparison.CurrentCultureIgnoreCase) && e.Browser != null)
             {
                 ChromiumWebBrowser browser = ChromiumWebBrowser.GetBrowser(e.Browser.Identifier);
                 LocalResourceHandler handler = new LocalResourceHandler(browser);

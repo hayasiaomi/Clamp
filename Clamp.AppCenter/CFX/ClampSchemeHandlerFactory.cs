@@ -12,15 +12,21 @@ namespace Clamp.AppCenter.CFX
     public class ClampSchemeHandlerFactory : CfxSchemeHandlerFactory
     {
         public string SchemeName { private set; get; }
-        public ClampSchemeHandlerFactory(string schemeName)
+
+        public string DomainName { private set; get; }
+
+        public ClampSchemeHandlerFactory(string schemeName, string domainName)
         {
             this.SchemeName = schemeName;
+            this.DomainName = domainName;
             this.Create += ClampSchemeHandlerFactory_Create;
         }
 
         private void ClampSchemeHandlerFactory_Create(object sender, Chromium.Event.CfxSchemeHandlerFactoryCreateEventArgs e)
         {
-            if (e.SchemeName.Equals(this.SchemeName))
+            Uri uri = new Uri(e.Request.Url);
+
+            if (e.SchemeName.Equals(this.SchemeName, StringComparison.CurrentCultureIgnoreCase) && uri.Host.Equals(this.DomainName, StringComparison.CurrentCultureIgnoreCase))
             {
                 ChromiumWebBrowser browser = ChromiumWebBrowser.GetBrowser(e.Browser.Identifier);
 
@@ -35,7 +41,7 @@ namespace Clamp.AppCenter.CFX
 
                     control = control.Parent;
                 }
-                  
+
                 if (control != null)
                     clampHandlerFactory = control as IClampHandlerFactory;
 
@@ -46,12 +52,9 @@ namespace Clamp.AppCenter.CFX
                     if (clampHandler != null)
                     {
                         e.SetReturnValue(new ClampResourceHandler(browser, this.SchemeName, clampHandler));
-                        return;
                     }
                 }
             }
-
-            e.SetReturnValue(new CfxResourceHandler());
         }
 
         private string GetHost(string url)

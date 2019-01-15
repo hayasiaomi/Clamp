@@ -40,7 +40,35 @@ namespace Clamp.MUI.WF
 
             if (CFXLauncher.InitializeChromium(assemblyDir, BeforeChromiumInitialize))
             {
-                CFXLauncher.RegisterEmbeddedScheme(typeof(WFAppManager).Assembly, "embedded");
+                Dictionary<string, string> configMap = this.GetClampConfiguration();
+
+                if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED))
+                {
+                    string domainValues = configMap[AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED];
+
+                    if (!string.IsNullOrWhiteSpace(domainValues))
+                    {
+                        string[] domainNames = domainValues.Split(',');
+
+                        if (domainNames != null && domainNames.Length > 0)
+                        {
+                            foreach (string domainName in domainNames)
+                            {
+                                CFXLauncher.RegisterEmbeddedScheme("http", domainName);
+                            }
+                        }
+                    }
+                }
+
+                if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_LOCAL))
+                    CFXLauncher.RegisterLocalScheme("http", configMap[AppCenterConstant.CFX_RESOURCE_HANDLER_LOCAL]);
+                else
+                    CFXLauncher.RegisterLocalScheme("http", "res.clamp.local");
+
+                if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_MUI))
+                    CFXLauncher.RegisterClampScheme("http", configMap[AppCenterConstant.CFX_RESOURCE_HANDLER_MUI]);
+                else
+                    CFXLauncher.RegisterClampScheme("http", "res.clamp.mui");
 
                 Thread loginThread = new Thread(new ThreadStart(() =>
                 {

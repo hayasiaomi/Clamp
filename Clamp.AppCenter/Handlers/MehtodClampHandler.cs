@@ -120,7 +120,7 @@ namespace Clamp.AppCenter.Handlers
 
                         string data = Encoding.UTF8.GetString(buffer);
 
-                        if (string.IsNullOrWhiteSpace(data))
+                        if (!string.IsNullOrWhiteSpace(data))
                         {
                             NameValueCollection formNameValueCollection = this.ParseQueryString(data, Encoding.UTF8, false);
 
@@ -143,7 +143,31 @@ namespace Clamp.AppCenter.Handlers
                 {
                     if (string.Equals(pi.Name, key, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        mParams[pi.Position] = mParameters[key];
+
+                        if (pi.ParameterType.IsAssignableFrom(typeof(string)))
+                        {
+                            mParams[pi.Position] = mParameters[key];
+                        }
+                        else if (pi.ParameterType.IsAssignableFrom(typeof(int)))
+                        {
+                            mParams[pi.Position] = Convert.ToInt32(mParameters[key]);
+                        }
+                        else if (pi.ParameterType.IsAssignableFrom(typeof(long)))
+                        {
+                            mParams[pi.Position] = Convert.ToInt64(mParameters[key]);
+                        }
+                        else if (pi.ParameterType.IsAssignableFrom(typeof(decimal)))
+                        {
+                            mParams[pi.Position] = Convert.ToDecimal(mParameters[key]);
+                        }
+                        else if (pi.ParameterType.IsAssignableFrom(typeof(double)))
+                        {
+                            mParams[pi.Position] = Convert.ToDouble(mParameters[key]);
+                        }
+                        else if (pi.ParameterType.IsAssignableFrom(typeof(bool)))
+                        {
+                            mParams[pi.Position] = Convert.ToBoolean(mParameters[key]);
+                        }
                     }
                 }
             }
