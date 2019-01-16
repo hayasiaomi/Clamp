@@ -35,15 +35,13 @@ namespace Clamp.AppCenter.Handlers
 
         public override object Handle(ClampHandlerContext context)
         {
-            string url = context.CfxRequest.Url;
-
-            if (!string.IsNullOrWhiteSpace(url))
+            if (!string.IsNullOrWhiteSpace(context.Url))
             {
-                MethodInfo mi = this.GetMethodInfoByName(this.GetMethodName(url));
+                MethodInfo mi = this.GetMethodInfoByName(this.GetMethodName(context.Url));
 
                 if (mi != null)
                 {
-                    object[] parameters = this.GetMethodParameterInfos(context.CfxRequest, mi);
+                    object[] parameters = this.GetMethodParameterInfos(context.Url, context.Datas, mi);
 
                     if (!typeof(void).IsAssignableFrom(mi.ReturnType))
                     {
@@ -86,15 +84,15 @@ namespace Clamp.AppCenter.Handlers
             return methodInfo;
         }
 
-        private object[] GetMethodParameterInfos(CfxRequest cfxRequest, MethodInfo methodInfo)
+        private object[] GetMethodParameterInfos(string url, List<string> datas, MethodInfo methodInfo)
         {
             NameValueCollection mParameters = new NameValueCollection();
 
-            int indexQ = cfxRequest.Url.LastIndexOf('?');
+            int indexQ = url.LastIndexOf('?');
 
             if (indexQ > 0)
             {
-                string queryData = cfxRequest.Url.Substring(indexQ);
+                string queryData = url.Substring(indexQ);
 
                 NameValueCollection queryNameValueCollection = this.ParseQueryString(queryData, Encoding.UTF8, false);
 
@@ -104,30 +102,17 @@ namespace Clamp.AppCenter.Handlers
                 }
             }
 
-            if (cfxRequest.PostData != null)
+            if (datas != null && datas.Count > 0)
             {
-                CfxPostDataElement[] cfxPostDataElements = cfxRequest.PostData.Elements;
-
-                foreach (CfxPostDataElement cfxPostDataElement in cfxPostDataElements)
+                foreach (string data in datas)
                 {
-                    if (cfxPostDataElement.Type == CfxPostdataElementType.Bytes)
+                    if (!string.IsNullOrWhiteSpace(data))
                     {
-                        var size = cfxPostDataElement.GetBytes(cfxPostDataElement.BytesCount, cfxPostDataElement.NativePtr);
+                        NameValueCollection formNameValueCollection = this.ParseQueryString(data, Encoding.UTF8, false);
 
-                        byte[] buffer = new byte[cfxPostDataElement.BytesCount];
-
-                        Marshal.Copy(cfxPostDataElement.NativePtr, buffer, 0, (int)cfxPostDataElement.BytesCount);
-
-                        string data = Encoding.UTF8.GetString(buffer);
-
-                        if (!string.IsNullOrWhiteSpace(data))
+                        if (formNameValueCollection != null && formNameValueCollection.Count > 0)
                         {
-                            NameValueCollection formNameValueCollection = this.ParseQueryString(data, Encoding.UTF8, false);
-
-                            if (formNameValueCollection != null && formNameValueCollection.Count > 0)
-                            {
-                                mParameters.Add(formNameValueCollection);
-                            }
+                            mParameters.Add(formNameValueCollection);
                         }
                     }
                 }

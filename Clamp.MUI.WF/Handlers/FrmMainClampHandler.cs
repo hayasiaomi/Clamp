@@ -16,5 +16,25 @@ namespace Clamp.MUI.WF.Handlers
         {
             this.frmMain = frmMain;
         }
+
+        public object Logout(string username, string password, bool remember)
+        {
+
+            Thread mainThread = new Thread(new ThreadStart(() =>
+            {
+                FrmLogin frmLogin = new FrmLogin();
+
+                frmLogin.FrmMain = this.frmMain;
+
+                Application.Run(frmLogin);
+            }));
+
+            mainThread.SetApartmentState(ApartmentState.STA);
+            mainThread.Start();
+
+            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
+
+            return null;
+        }
     }
 }

@@ -87,11 +87,17 @@ namespace Clamp.AppCenter.CFX
                             browser.SetWebResource(requestUrl, webResource);
                         }
                     }
+
+
+                    callback.Continue();
+                    e.SetReturnValue(true);
+
+                    return;
                 }
             }
 
             callback.Continue();
-            e.SetReturnValue(true);
+            e.SetReturnValue(false);
         }
 
         private void EmbeddedResourceHandler_GetResponseHeaders(object sender, Chromium.Event.CfxGetResponseHeadersEventArgs e)
@@ -126,12 +132,14 @@ namespace Clamp.AppCenter.CFX
             System.Runtime.InteropServices.Marshal.Copy(webResource.data, readResponseStreamOffset, e.DataOut, bytesToCopy);
             e.BytesRead = bytesToCopy;
             readResponseStreamOffset += bytesToCopy;
-            e.SetReturnValue(true);
 
+            e.SetReturnValue(true);
 
             if (readResponseStreamOffset == webResource.data.Length)
             {
+                //if (gcHandle.IsAllocated && gcHandle.Target != null)
                 gcHandle.Free();
+
                 Console.WriteLine($"[完成]:\t{requestUrl}");
             }
         }

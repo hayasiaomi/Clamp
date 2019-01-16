@@ -25,8 +25,14 @@ namespace Clamp.MUI.WF
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.Idle += Application_Idle;
             Application.ApplicationExit += Application_ApplicationExit;
 
+        }
+
+        private void Application_Idle(object sender, EventArgs e)
+        {
+            CfxRuntime.DoMessageLoopWork();
         }
 
         private void Application_ApplicationExit(object sender, EventArgs e)

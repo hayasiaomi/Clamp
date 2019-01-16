@@ -21,11 +21,14 @@ namespace Clamp.AppCenter.CFX
         private string schemeName;
         private IClampHandler clampHandler;
         private HttpStatusCode httpStatusCode;
+        private List<string> datas;
 
 
-        internal ClampResourceHandler(ChromiumWebBrowser browser, string schemeName, IClampHandler clampHandler)
+
+        internal ClampResourceHandler(ChromiumWebBrowser browser, string schemeName, IClampHandler clampHandler, List<string> datas)
         {
             this.gcHandle = GCHandle.Alloc(this);
+            this.datas = datas;
             this.browser = browser;
             this.schemeName = schemeName;
             this.clampHandler = clampHandler;
@@ -44,7 +47,7 @@ namespace Clamp.AppCenter.CFX
 
             if (this.clampHandler != null)
             {
-                object result = this.clampHandler.Handle(new ClampHandlerContext() { ChromiumWebBrowser = this.browser, CfxRequest = e.Request });
+                object result = this.clampHandler.Handle(new ClampHandlerContext() { ChromiumWebBrowser = this.browser, Url = this.requestUrl, Datas = this.datas });
 
                 string rText = Convert.ToString(result);
 

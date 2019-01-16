@@ -31,6 +31,8 @@
 
 
 using System;
+using System.Runtime.InteropServices;
+
 namespace Chromium {
     /// <summary>
     /// Base class for all wrapper classes for ref counted CEF structs.

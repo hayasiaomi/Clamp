@@ -33,6 +33,8 @@ namespace Clamp.MUI.WF.Handlers
                 Application.Run(frmMain);
             }));
 
+
+
             mainThread.SetApartmentState(ApartmentState.STA);
             mainThread.Start();
 
@@ -41,6 +43,24 @@ namespace Clamp.MUI.WF.Handlers
             return null;
         }
 
+        public object Redirect()
+        {
+            Thread mainThread = new Thread(new ThreadStart(() =>
+            {
+                FrmMain frmMain = new FrmMain();
+
+                frmMain.FrmLogin = this.frmLogin;
+
+                Application.Run(frmMain);
+            }));
+
+            mainThread.SetApartmentState(ApartmentState.STA);
+            mainThread.Start();
+
+            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
+
+            return null;
+        }
         public void Close()
         {
             this.frmLogin.BeginInvoke(new Action(() =>

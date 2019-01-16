@@ -4,6 +4,7 @@ using Clamp.AppCenter.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -51,7 +52,37 @@ namespace Clamp.AppCenter.CFX
 
                     if (clampHandler != null)
                     {
-                        e.SetReturnValue(new ClampResourceHandler(browser, this.SchemeName, clampHandler));
+                        List<string> datas = new List<string>();
+
+                        if (e.Request.PostData != null)
+                        {
+                            CfxPostDataElement[] cfxPostDataElements = e.Request.PostData.Elements;
+
+                            foreach (CfxPostDataElement cfxPostDataElement in cfxPostDataElements)
+                            {
+                                if (cfxPostDataElement.Type == CfxPostdataElementType.Bytes)
+                                {
+                                    byte[] buffer = new byte[cfxPostDataElement.BytesCount];
+
+                                    GCHandle bufferGCHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                                    IntPtr bufferIntPtr = bufferGCHandle.AddrOfPinnedObject();
+
+                                    var size = cfxPostDataElement.GetBytes(cfxPostDataElement.BytesCount, bufferIntPtr);
+
+                                    string data = Encoding.UTF8.GetString(buffer);
+
+                                    bufferGCHandle.Free();
+
+
+                                    if (!string.IsNullOrWhiteSpace(data))
+                                    {
+                                        datas.Add(data);
+                                    }
+                                }
+                            }
+                        }
+
+                        e.SetReturnValue(new ClampResourceHandler(browser, this.SchemeName, clampHandler, datas));
                     }
                 }
             }

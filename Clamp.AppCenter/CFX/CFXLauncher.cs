@@ -49,7 +49,7 @@ namespace Clamp.AppCenter.CFX
                     e.Settings.CachePath = Path.Combine(ApplicationDataDir, typeof(CFXLauncher).Assembly.GetName().Name, "Cache");
                     //e.Settings.LogSeverity = CfxLogSeverity.Disable;
                     e.Settings.BrowserSubprocessPath = Path.Combine(localRuntimeDir, ClampBrowserSubprocessPath);
-                    e.Settings.NoSandbox = true;
+                    e.Settings.NoSandbox = false;
                     //e.Settings.RemoteDebuggingPort = 8888;
                     //e.Settings.IgnoreCertificateErrors = true;
                     e.Settings.MultiThreadedMessageLoop = true;

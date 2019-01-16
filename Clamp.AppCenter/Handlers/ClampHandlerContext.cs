@@ -11,7 +11,9 @@ namespace Clamp.AppCenter.Handlers
     {
         public ChromiumWebBrowser ChromiumWebBrowser { set; get; }
 
-        public CfxRequest CfxRequest { set; get; }
+        public string Url { set; get; }
+
+        public List<string> Datas { set; get; }
 
         public ClampHandlerContext()
         {

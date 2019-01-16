@@ -259,6 +259,9 @@
   <ItemGroup>
     <EmbeddedResource Include="index2.html" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="vendor\jquery\jquery-2.2.3.js" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

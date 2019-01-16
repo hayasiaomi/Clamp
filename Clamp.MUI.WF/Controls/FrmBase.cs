@@ -34,7 +34,6 @@ namespace Clamp.MUI.WF.Controls
         private CfxLifeSpanHandler debugCfxLifeSpanHandler;
         private CfxClient debugCfxClient;
         private IntPtr formHandle;
-        private bool creatingHandle = false;
         private FormWindowState displayWindowState;
         private string displayUrl;
 
@@ -181,7 +180,7 @@ namespace Clamp.MUI.WF.Controls
                 {
                     this.Opacity = 1;
                 }));
-              
+
                 this.OnChromiumLoadEnd(sender, e);
             }
         }
@@ -545,7 +544,7 @@ namespace Clamp.MUI.WF.Controls
                 return cp;
             }
         }
-       
+
         private bool CheckAeroEnabled()
         {
             if (Environment.OSVersion.Version.Major >= 6)
@@ -627,11 +626,13 @@ namespace Clamp.MUI.WF.Controls
         {
             base.OnClosed(e);
 
+            this.ChromiumWebBrowser?.Dispose();
+
             this.chromeWidgetMessageInterceptor?.ReleaseHandle();
             this.chromeWidgetMessageInterceptor?.DestroyHandle();
             this.chromeWidgetMessageInterceptor = null;
 
-            this.chromium.Dispose();
+
         }
 
         #endregion

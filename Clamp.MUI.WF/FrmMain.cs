@@ -59,6 +59,7 @@ namespace Clamp.MUI.WF
                 this.FrmLogin.Invoke(new Action(() =>
                 {
                     this.FrmLogin.Close();
+                    this.FrmLogin.Dispose();
                 }));
             }
         }
