@@ -36,5 +36,20 @@ namespace Clamp.MUI.WF.Handlers
 
             return null;
         }
+
+        public object Exit()
+        {
+            this.frmMain.Invoke(new Action(() =>
+            {
+                if (MessageBox.Show(this.frmMain, "确定退出?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    (WFAppManager.Current as WFAppManager).CurrentThread = null;
+
+                    this.frmMain.Close();
+                }
+            }));
+
+            return null;
+        }
     }
 }

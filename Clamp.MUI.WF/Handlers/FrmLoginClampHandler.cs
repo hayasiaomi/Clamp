@@ -33,40 +33,21 @@ namespace Clamp.MUI.WF.Handlers
                 Application.Run(frmMain);
             }));
 
-
+            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
 
             mainThread.SetApartmentState(ApartmentState.STA);
             mainThread.Start();
-
-            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
-
+         
             return null;
         }
-
-        public object Redirect()
+        public void Exit()
         {
-            Thread mainThread = new Thread(new ThreadStart(() =>
-            {
-                FrmMain frmMain = new FrmMain();
-
-                frmMain.FrmLogin = this.frmLogin;
-
-                Application.Run(frmMain);
-            }));
-
-            mainThread.SetApartmentState(ApartmentState.STA);
-            mainThread.Start();
-
-            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
-
-            return null;
-        }
-        public void Close()
-        {
-            this.frmLogin.BeginInvoke(new Action(() =>
+            this.frmLogin.Invoke(new Action(() =>
             {
                 if (MessageBox.Show(this.frmLogin, "确定退出?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
+                    (WFAppManager.Current as WFAppManager).CurrentThread = null;
+
                     this.frmLogin.Close();
                 }
             }));

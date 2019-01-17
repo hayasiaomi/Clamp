@@ -39,7 +39,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmLogin";
             this.ShowIcon = false;
-            this.Text = "FrmLogin";
+            this.Text = "YEUX";
             this.ResumeLayout(false);
 
         }

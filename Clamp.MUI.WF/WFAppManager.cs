@@ -26,7 +26,6 @@ namespace Clamp.MUI.WF
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Idle += Application_Idle;
-            Application.ApplicationExit += Application_ApplicationExit;
 
         }
 
@@ -35,10 +34,6 @@ namespace Clamp.MUI.WF
             CfxRuntime.DoMessageLoopWork();
         }
 
-        private void Application_ApplicationExit(object sender, EventArgs e)
-        {
-            CFXLauncher.Exit();
-        }
 
         public override void Run(params string[] commandLines)
         {
@@ -79,6 +74,7 @@ namespace Clamp.MUI.WF
                 Thread loginThread = new Thread(new ThreadStart(() =>
                 {
                     Application.Run(new FrmLogin());
+
                 }));
 
                 loginThread.SetApartmentState(ApartmentState.STA);
@@ -91,6 +87,8 @@ namespace Clamp.MUI.WF
                     CurrentThread.Join();
                 }
                 while (CurrentThread != null);
+
+                CFXLauncher.Exit();
             }
         }
 

@@ -166,7 +166,10 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
+                            <a href="#" onclick="return logout()"><i class="fa fa-sign-out fa-fw"></i>注销</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="return shutdown()"><i class="glyphicon glyphicon-remove"></i> 退出</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -294,5 +297,20 @@
     <script src="data/morris-data.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="dist/js/sb-admin-2.js"></script>
+    <script type="text/javascript" >
+        function shutdown() {
+
+            $.get("http://res.clamp.mui/exit");
+
+            return false;
+        }
+
+        function logout() {
+
+            $.get("http://res.clamp.mui/logout");
+
+            return false;
+        }
+    </script>
 </body>
 </html>

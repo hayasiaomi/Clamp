@@ -42,14 +42,14 @@ namespace Clamp.MUI.WF
 
         protected override void OnChromiumLoadEnd(object sender, CfxOnLoadEndEventArgs e)
         {
-            //if (this.FrmMain != null && !this.FrmMain.IsDisposed)
-            //{
-            //    this.FrmMain.Invoke(new Action(() =>
-            //    {
-            //        this.FrmMain.Close();
-            //        this.FrmMain.Dispose();
-            //    }));
-            //}
+            if (this.FrmMain != null && !this.FrmMain.IsDisposed)
+            {
+                this.FrmMain.Invoke(new Action(() =>
+                {
+                    this.FrmMain.Close();
+                    this.FrmMain.Dispose();
+                }));
+            }
         }
 
         public override IClampHandler GetClampHandler()
