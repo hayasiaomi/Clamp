@@ -7,7 +7,7 @@
     <ProjectGuid>{73D1E6EA-C31A-4783-A84D-60C2F20A7A0D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Clamp.ChromiumRenderer</RootNamespace>
-    <AssemblyName>YEYECefRenderer</AssemblyName>
+    <AssemblyName>YEUXRenderer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -87,10 +87,6 @@
     <ProjectReference Include="..\Clamp.AppCenter\Clamp.AppCenter.csproj">
       <Project>{4b81748f-84ba-4118-992d-c7fd039a746c}</Project>
       <Name>Clamp.AppCenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
-      <Project>{D9426667-170C-4CF3-9D13-5C266CB99421}</Project>
-      <Name>Clamp.Explorer.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

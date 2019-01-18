@@ -21,7 +21,7 @@ namespace Clamp.AppCenter.CFX
 
         internal static string ClampLibCefDirPath = null;
         internal static string ClampLocalesDir = null;
-        internal static string ClampBrowserSubprocessPath = "YEYECefRenderer.exe";
+        internal static string ClampBrowserSubprocessPath = "YEUXRenderer.exe";
         internal static readonly string ApplicationDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         internal static readonly RuntimeArch PlatformArch = CfxRuntime.PlatformArch == CfxPlatformArch.x64 ? RuntimeArch.x64 : RuntimeArch.x86;
 

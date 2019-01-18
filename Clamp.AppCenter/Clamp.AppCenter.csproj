@@ -367,36 +367,20 @@
     <Compile Include="Inputs\WindowsInputDeviceStateAdaptor.cs" />
     <Compile Include="Inputs\WindowsInputMessageDispatcher.cs" />
     <Compile Include="MimeHelper.cs" />
-    <Compile Include="NI\BalloonIcon.cs" />
-    <Compile Include="NI\Interop\BalloonFlags.cs" />
-    <Compile Include="NI\Interop\IconDataMembers.cs" />
-    <Compile Include="NI\Interop\IconState.cs" />
-    <Compile Include="NI\Interop\MouseEvent.cs" />
-    <Compile Include="NI\Interop\NotifyCommand.cs" />
-    <Compile Include="NI\Interop\NotifyIconData.cs" />
-    <Compile Include="NI\Interop\NotifyIconVersion.cs" />
-    <Compile Include="NI\Interop\Point.cs" />
-    <Compile Include="NI\Interop\SystemInfo.cs" />
-    <Compile Include="NI\Interop\TrayInfo.cs" />
-    <Compile Include="NI\Interop\WinApi.cs" />
-    <Compile Include="NI\Interop\WindowClass.cs" />
-    <Compile Include="NI\Interop\WindowMessageSink.cs" />
-    <Compile Include="NI\PopupActivationMode.cs" />
-    <Compile Include="NI\RoutedEventHelper.cs" />
-    <Compile Include="NI\TaskbarIcon.cs" />
-    <Compile Include="NI\TaskbarIcon.Declarations.cs" />
-    <Compile Include="NI\NIUtil.cs" />
+    <Compile Include="MVC\AutomaticUrlReservationCreationFailureException.cs" />
+    <Compile Include="MVC\FileSystemRootPathProvider.cs" />
+    <Compile Include="MVC\HostConfiguration.cs" />
+    <Compile Include="MVC\IgnoredHeaders.cs" />
+    <Compile Include="MVC\NancyHost.cs" />
+    <Compile Include="MVC\NetSh.cs" />
+    <Compile Include="MVC\UacHelper.cs" />
+    <Compile Include="MVC\UriExtensions.cs" />
+    <Compile Include="MVC\UrlReservations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\BundleInfo.cs" />
     <Compile Include="RuntimeArch.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Clamp\Clamp.csproj">
-      <Project>{17A2236D-1A63-4FF2-8046-EDFD80F3C9AB}</Project>
-      <Name>Clamp</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Cef64\cef.pak" />
@@ -538,6 +522,16 @@
     <Content Include="Cef\libGLESv2.dll" />
     <Content Include="Cef\widevinecdmadapter.dll" />
     <Content Include="Cef\wow_helper.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClampMVC\ClampMVC.csproj">
+      <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
+      <Name>ClampMVC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Clamp\Clamp.csproj">
+      <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
+      <Name>Clamp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

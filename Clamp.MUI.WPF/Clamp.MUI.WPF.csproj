@@ -79,6 +79,25 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NI\BalloonIcon.cs" />
+    <Compile Include="NI\Interop\BalloonFlags.cs" />
+    <Compile Include="NI\Interop\IconDataMembers.cs" />
+    <Compile Include="NI\Interop\IconState.cs" />
+    <Compile Include="NI\Interop\MouseEvent.cs" />
+    <Compile Include="NI\Interop\NotifyCommand.cs" />
+    <Compile Include="NI\Interop\NotifyIconData.cs" />
+    <Compile Include="NI\Interop\NotifyIconVersion.cs" />
+    <Compile Include="NI\Interop\Point.cs" />
+    <Compile Include="NI\Interop\SystemInfo.cs" />
+    <Compile Include="NI\Interop\TrayInfo.cs" />
+    <Compile Include="NI\Interop\WinApi.cs" />
+    <Compile Include="NI\Interop\WindowClass.cs" />
+    <Compile Include="NI\Interop\WindowMessageSink.cs" />
+    <Compile Include="NI\NIUtil.cs" />
+    <Compile Include="NI\PopupActivationMode.cs" />
+    <Compile Include="NI\RoutedEventHelper.cs" />
+    <Compile Include="NI\TaskbarIcon.cs" />
+    <Compile Include="NI\TaskbarIcon.Declarations.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
