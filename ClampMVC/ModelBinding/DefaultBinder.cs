@@ -65,7 +65,7 @@ namespace ClampMVC.ModelBinding
         /// <param name="configuration">The <see cref="BindingConfig"/> that should be applied during binding.</param>
         /// <param name="blackList">Blacklisted binding property names</param>
         /// <returns>Bound model</returns>
-        public object Bind(WebworkContext context, Type modelType, object instance, BindingConfig configuration, params string[] blackList)
+        public object Bind(ClampWebContext context, Type modelType, object instance, BindingConfig configuration, params string[] blackList)
         {
             Type genericType = null;
             if (modelType.IsArray() || modelType.IsCollection() || modelType.IsEnumerable())
@@ -206,7 +206,7 @@ namespace ClampMVC.ModelBinding
         /// </summary>
         /// <param name="context">Current Context </param>
         /// <returns>An int containing the number of elements</returns>
-        private int GetBindingListInstanceCount(WebworkContext context)
+        private int GetBindingListInstanceCount(ClampWebContext context)
         {
             var dictionary = context.Request.Form as IDictionary<string, object>;
 
@@ -332,7 +332,7 @@ namespace ClampMVC.ModelBinding
                 : existingValue == null;
         }
 
-        private BindingContext CreateBindingContext(WebworkContext context, Type modelType, object instance, BindingConfig configuration, IEnumerable<string> blackList, Type genericType)
+        private BindingContext CreateBindingContext(ClampWebContext context, Type modelType, object instance, BindingConfig configuration, IEnumerable<string> blackList, Type genericType)
         {
             return new BindingContext
             {
@@ -347,7 +347,7 @@ namespace ClampMVC.ModelBinding
             };
         }
 
-        private IDictionary<string, string> GetDataFields(WebworkContext context)
+        private IDictionary<string, string> GetDataFields(ClampWebContext context)
         {
             var dictionaries = new IDictionary<string, string>[]
                 {
@@ -493,7 +493,7 @@ namespace ClampMVC.ModelBinding
                 : null;
         }
 
-        private static string GetRequestContentType(WebworkContext context)
+        private static string GetRequestContentType(ClampWebContext context)
         {
             if (context == null || context.Request == null)
             {

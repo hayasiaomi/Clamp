@@ -30,7 +30,7 @@
         {
             cryptographyConfiguration = cryptographyConfiguration ?? CsrfApplicationStartup.CryptographyConfiguration;
 
-            var postHook = new PipelineItem<Action<WebworkContext>>(
+            var postHook = new PipelineItem<Action<ClampWebContext>>(
                 CsrfHookName,
                 context =>
                 {

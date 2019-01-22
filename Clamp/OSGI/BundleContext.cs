@@ -99,6 +99,9 @@ namespace Clamp.OSGI
             return this.clampBundle.GetExtensionObjects<T>(path, reuseCachedInstance);
         }
 
-
+        public Dictionary<string, string> GetConfigMaps()
+        {
+            return this.clampBundle.ConfigProps;
+        }
     }
 }

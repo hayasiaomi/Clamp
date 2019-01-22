@@ -50,7 +50,7 @@ namespace ClampMVC.Responses
         /// <param name="filePath">The name of the file, including path relative to the root of the application, that should be returned.</param>
         /// <remarks>The <see cref="MimeTypes.GetMimeType"/> method will be used to determine the mimetype of the file and will be used as the content-type of the response. If no match if found the content-type will be set to application/octet-stream.</remarks>
         /// <param name="context">Current context</param>
-        public GenericFileResponse(string filePath, WebworkContext context)
+        public GenericFileResponse(string filePath, ClampWebContext context)
             : this(filePath, MimeTypes.GetMimeType(filePath), context)
         {
         }
@@ -62,7 +62,7 @@ namespace ClampMVC.Responses
         /// <param name="filePath">The name of the file, including path relative to the root of the application, that should be returned.</param>
         /// <param name="contentType">The content-type of the response.</param>
         /// <param name="context">Current context</param>
-        public GenericFileResponse(string filePath, string contentType, WebworkContext context = null)
+        public GenericFileResponse(string filePath, string contentType, ClampWebContext context = null)
         {
             InitializeGenericFileResponse(filePath, contentType, context);
         }
@@ -96,7 +96,7 @@ namespace ClampMVC.Responses
             return fullPath.StartsWith(Path.GetFullPath(rootPath), StringComparison.OrdinalIgnoreCase);
         }
 
-        private void InitializeGenericFileResponse(string filePath, string contentType, WebworkContext context)
+        private void InitializeGenericFileResponse(string filePath, string contentType, ClampWebContext context)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -132,7 +132,7 @@ namespace ClampMVC.Responses
             StatusCode = HttpStatusCode.NotFound;
         }
 
-        private void SetResponseValues(string contentType, string fullPath, WebworkContext context)
+        private void SetResponseValues(string contentType, string fullPath, ClampWebContext context)
         {
             // TODO - set a standard caching time and/or public?
             var fi = new FileInfo(fullPath);

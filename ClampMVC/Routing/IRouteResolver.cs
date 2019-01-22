@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>A <see cref="ResolveResult"/> containing the resolved route information.</returns>
-        ResolveResult Resolve(WebworkContext context);
+        ResolveResult Resolve(ClampWebContext context);
 
         void BuildTrie();
 

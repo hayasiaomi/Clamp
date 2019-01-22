@@ -1,5 +1,6 @@
 ﻿using Chromium;
 using Chromium.WebBrowser;
+using ClampMVC;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,64 +41,24 @@ namespace Clamp.AppCenter.CFX
             CfxRequest request = e.Request;
             CfxCallback callback = e.Callback;
 
-            Uri uri = new Uri(request.Url);
-
-            this.requestUrl = request.Url;
-
-            var fileName = uri.AbsolutePath;
-
-            if (fileName.StartsWith("/") && fileName.Length > 1)
+            using (ClampWebContext context = HTMLAnalyzer.Analyze(request))
             {
-                fileName = fileName.Substring(1);
-            }
-
-            if (this.assembly == null)
-            {
-                this.assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(asm => string.Equals(asm.GetName().Name, this.domainName, StringComparison.CurrentCultureIgnoreCase));
-            }
-
-            if (this.assembly != null)
-            {
-                var endTrimIndex = fileName.LastIndexOf('/');
-
-                if (endTrimIndex > -1)
+                if (context.Response != null)
                 {
-                    var tmp = fileName.Substring(0, endTrimIndex);
-                    tmp = tmp.Replace("-", "_");
-
-                    fileName = string.Format("{0}{1}", tmp, fileName.Substring(endTrimIndex));
-                }
-
-                var resourcePath = string.Format("{0}.{1}", uri.Host, fileName.Replace('/', '.'));
-
-                var resourceName = this.assembly.GetManifestResourceNames().SingleOrDefault(p => p.Equals(resourcePath, StringComparison.CurrentCultureIgnoreCase));
-
-                if (!string.IsNullOrEmpty(resourceName) && this.assembly.GetManifestResourceInfo(resourceName) != null)
-                {
-                    using (var reader = new System.IO.BinaryReader(this.assembly.GetManifestResourceStream(resourceName)))
+                    using (MemoryStream reader = new MemoryStream())
                     {
-                        var buff = reader.ReadBytes((int)reader.BaseStream.Length);
+                        context.Response.Contents.Invoke(reader);
 
-                        webResource = new WebResource(buff, MimeHelper.GetMimeType(Path.GetExtension(fileName)));
-
-                        reader.Close();
-
-                        if (!browser.webResources.ContainsKey(requestUrl))
+                        if (reader.Length > 0)
                         {
-                            browser.SetWebResource(requestUrl, webResource);
+                            webResource = new WebResource(reader.ToArray(), context.Response.ContentType);
                         }
                     }
-
-
-                    callback.Continue();
-                    e.SetReturnValue(true);
-
-                    return;
                 }
             }
 
             callback.Continue();
-            e.SetReturnValue(false);
+            e.SetReturnValue(true);
         }
 
         private void EmbeddedResourceHandler_GetResponseHeaders(object sender, Chromium.Event.CfxGetResponseHeadersEventArgs e)
@@ -137,7 +98,6 @@ namespace Clamp.AppCenter.CFX
 
             if (readResponseStreamOffset == webResource.data.Length)
             {
-                //if (gcHandle.IsAllocated && gcHandle.Target != null)
                 gcHandle.Free();
 
                 Console.WriteLine($"[完成]:\t{requestUrl}");

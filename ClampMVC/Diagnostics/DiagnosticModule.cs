@@ -1,6 +1,6 @@
 ﻿namespace ClampMVC.Diagnostics
 {
-    public abstract class DiagnosticController : Controller
+    public abstract class DiagnosticController : BaseController
     {
         protected DiagnosticController()
         {

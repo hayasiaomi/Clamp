@@ -71,6 +71,15 @@ namespace Clamp.OSGI
             }
         }
 
+        internal Dictionary<string, string> ConfigProps
+        {
+            get
+            {
+                CheckInitialized();
+                return configProps;
+            }
+        }
+
         internal ClampBundle(Dictionary<string, string> configProps) : base(null)
         {
             this.configProps = configProps;
@@ -283,7 +292,9 @@ namespace Clamp.OSGI
                     {
                         bdesc = bundle.Description;
                     }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                     catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                     {
 
                     }
@@ -663,7 +674,9 @@ namespace Clamp.OSGI
             {
                 bundle = Registry.GetBundleForHostAssembly(asmFile);
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 Registry.Update();
 
@@ -678,7 +691,9 @@ namespace Clamp.OSGI
                 {
                     bdesc = bundle.Description;
                 }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                 catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                 {
 
                 }

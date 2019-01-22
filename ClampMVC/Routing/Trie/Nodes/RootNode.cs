@@ -32,7 +32,7 @@ namespace ClampMVC.Routing.Trie.Nodes
         /// <param name="capturedParameters">Currently captured parameters</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of <see cref="MatchResult"/> objects</returns>
-        public override IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, WebworkContext context)
+        public override IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, ClampWebContext context)
         {
             if (segments.Length == 0)
             {

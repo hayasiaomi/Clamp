@@ -21,7 +21,7 @@ namespace ClampMVC.Bootstrapper
         /// <summary>
         /// Nancy core assembly
         /// </summary>
-        private static Assembly mWebworkAssembly = typeof(WebworkEngine).Assembly;
+        private static Assembly mWebworkAssembly = typeof(ClampWebEngine).Assembly;
 
         /// <summary>
         /// App domain type cache
@@ -237,7 +237,9 @@ namespace ClampMVC.Bootstrapper
                     {
                         inspectedAssembly = Assembly.ReflectionOnlyLoadFrom(unloadedAssembly);
                     }
+#pragma warning disable CS0168 // 声明了变量“biEx”，但从未使用过
                     catch (BadImageFormatException biEx)
+#pragma warning restore CS0168 // 声明了变量“biEx”，但从未使用过
                     {
                         //the assembly maybe it's not managed code
                     }

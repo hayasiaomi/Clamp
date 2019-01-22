@@ -1,11 +1,9 @@
-﻿namespace Clamp.AppCenter.MVC
-{
-    using System;
-    using System.Security.Principal;
+﻿using System;
+using System.Security.Principal;
 
-    /// <summary>
-    /// Configuration for automatic url reservation creation
-    /// </summary>
+namespace Clamp.AppCenter
+{
+
     public class UrlReservations
     {
         private const string EveryoneAccountName = "Everyone";

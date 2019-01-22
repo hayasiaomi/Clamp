@@ -24,7 +24,7 @@
         /// <param name="viewName">View name</param>
         /// <param name="model">Model object (or null)</param>
         /// <returns>Response object containing the rendered view (if found)</returns>
-        public Response RenderView(WebworkContext context, string viewName, object model = null)
+        public Response RenderView(ClampWebContext context, string viewName, object model = null)
         {
             var viewContext = new ViewLocationContext { Context = context };
 

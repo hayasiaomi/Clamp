@@ -210,7 +210,7 @@ namespace ClampMVC.Session
         /// </summary>
         /// <param name="context">Nancy context</param>
         /// <param name="sessionStore">Session store</param>
-        private static void SaveSession(WebworkContext context, CookieBasedSessions sessionStore)
+        private static void SaveSession(ClampWebContext context, CookieBasedSessions sessionStore)
         {
             sessionStore.Save(context.Request.Session, context.Response);
         }
@@ -221,7 +221,7 @@ namespace ClampMVC.Session
         /// <param name="context">Nancy context</param>
         /// <param name="sessionStore">Session store</param>
         /// <returns>Always returns null</returns>
-        private static Response LoadSession(WebworkContext context, CookieBasedSessions sessionStore)
+        private static Response LoadSession(ClampWebContext context, CookieBasedSessions sessionStore)
         {
             if (context.Request == null)
             {

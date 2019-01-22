@@ -12,6 +12,6 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo</returns>
-        CultureInfo DetermineCurrentCulture(WebworkContext context);
+        CultureInfo DetermineCurrentCulture(ClampWebContext context);
     }
 }

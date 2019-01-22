@@ -1,7 +1,10 @@
-﻿namespace Clamp.AppCenter.MVC
+﻿
+using System;
+using System.Diagnostics;
+
+namespace Clamp.AppCenter
 {
-    using System;
-    using System.Diagnostics;
+
 
     /// <summary>
     /// Helpers for UAC

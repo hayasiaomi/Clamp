@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>Response if serving content, null otherwise</returns>
-        public Response GetContent(WebworkContext context)
+        public Response GetContent(ClampWebContext context)
         {
             foreach (var convention in this.conventions)
             {

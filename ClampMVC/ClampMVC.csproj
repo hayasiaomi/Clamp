@@ -60,7 +60,7 @@
     <Compile Include="Bootstrapper\ContainerRegistration.cs" />
     <Compile Include="Bootstrapper\IApplicationRegistrations.cs" />
     <Compile Include="Bootstrapper\IApplicationStartup.cs" />
-    <Compile Include="Bootstrapper\IWebworkBootstrapper.cs" />
+    <Compile Include="Bootstrapper\IClampWebBootstrapper.cs" />
     <Compile Include="Bootstrapper\InstanceRegistration.cs" />
     <Compile Include="Bootstrapper\IPipelines.cs" />
     <Compile Include="Bootstrapper\IRegistrations.cs" />
@@ -68,10 +68,10 @@
     <Compile Include="Bootstrapper\Lifetime.cs" />
     <Compile Include="Bootstrapper\ModuleRegistrationType.cs" />
     <Compile Include="Bootstrapper\MultipleRootPathProvidersLocatedException.cs" />
-    <Compile Include="Bootstrapper\WebworkBootstrapperBase.cs" />
-    <Compile Include="Bootstrapper\WebwrokBootstrapperLocator.cs" />
-    <Compile Include="Bootstrapper\WebworkBootstrapperWithRequestContainerBase.cs" />
-    <Compile Include="Bootstrapper\WebworkInternalConfiguration.cs" />
+    <Compile Include="Bootstrapper\ClampWebBootstrapperBase.cs" />
+    <Compile Include="Bootstrapper\ClampWebBootstrapperLocator.cs" />
+    <Compile Include="Bootstrapper\ClampWebBootstrapperWithRequestContainerBase.cs" />
+    <Compile Include="Bootstrapper\ClampWebInternalConfiguration.cs" />
     <Compile Include="Bootstrapper\Pipelines.cs" />
     <Compile Include="Bootstrapper\Registrations.cs" />
     <Compile Include="Bootstrapper\ScanMode.cs" />
@@ -108,8 +108,8 @@
     <Compile Include="Cryptography\RijndaelEncryptionProvider.cs" />
     <Compile Include="Culture\DefaultCultureService.cs" />
     <Compile Include="Culture\ICultureService.cs" />
-    <Compile Include="DefaultWebworkBootstrapper.cs" />
-    <Compile Include="DefaultWebworkContextFactory.cs" />
+    <Compile Include="DefaultClampWebBootstrapper.cs" />
+    <Compile Include="DefaultClampWebContextFactory.cs" />
     <Compile Include="DefaultObjectSerializer.cs" />
     <Compile Include="DefaultResponseFormatter.cs" />
     <Compile Include="DefaultResponseFormatterFactory.cs" />
@@ -182,8 +182,8 @@
     <Compile Include="HttpMultipartSubStream.cs" />
     <Compile Include="HttpStatusCode.cs" />
     <Compile Include="IHideObjectMembers.cs" />
-    <Compile Include="IWebworkContextFactory.cs" />
-    <Compile Include="IWebworkEngine.cs" />
+    <Compile Include="IClampWebContextFactory.cs" />
+    <Compile Include="IClampWebEngine.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="IControllerCatalog.cs" />
     <Compile Include="IObjectSerializer.cs" />
@@ -241,10 +241,10 @@
     <Compile Include="ModelBinding\PropertyBindingException.cs" />
     <Compile Include="NamedPipelineBase.cs" />
     <Compile Include="Properties\BundleInfo.cs" />
-    <Compile Include="WebworkContext.cs" />
-    <Compile Include="WebworkEngine.cs" />
-    <Compile Include="WebworkEngineExtensions.cs" />
-    <Compile Include="Controller.cs" />
+    <Compile Include="ClampWebContext.cs" />
+    <Compile Include="ClampWebEngine.cs" />
+    <Compile Include="ClampWebEngineExtensions.cs" />
+    <Compile Include="BaseController.cs" />
     <Compile Include="NegotiatorExtensions.cs" />
     <Compile Include="NotFoundResponse.cs" />
     <Compile Include="Owin\DelegateExtensions.cs" />
@@ -433,7 +433,7 @@
     <Compile Include="ViewEngines\ViewNotFoundException.cs" />
     <Compile Include="ViewEngines\ViewRenderException.cs" />
     <Compile Include="ViewRenderer.cs" />
-    <Compile Include="WebworkController.cs" />
+    <Compile Include="DefaultController.cs" />
     <Compile Include="Xml\XmlSettings.cs" />
   </ItemGroup>
   <ItemGroup>

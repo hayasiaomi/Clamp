@@ -35,19 +35,19 @@
         /// <summary>
         /// Gets or sets the conventions for locating and serving static content
         /// </summary>
-        public IList<Func<WebworkContext, string, Response>> StaticContentsConventions { get; set; }
+        public IList<Func<ClampWebContext, string, Response>> StaticContentsConventions { get; set; }
 
         /// <summary>
         /// Gets or sets the conventions for coercing accept headers from their source
         /// values to the real values for content negotiation
         /// <seealso cref="BuiltInAcceptHeaderCoercions"/>
         /// </summary>
-        public IList<Func<IEnumerable<Tuple<string, decimal>>, WebworkContext, IEnumerable<Tuple<string, decimal>>>> AcceptHeaderCoercionConventions { get; set; }
+        public IList<Func<IEnumerable<Tuple<string, decimal>>, ClampWebContext, IEnumerable<Tuple<string, decimal>>>> AcceptHeaderCoercionConventions { get; set; }
 
         /// <summary>
         /// Gets or sets the conventions for determining request culture
         /// </summary>
-        public IList<Func<WebworkContext, CultureInfo>> CultureConventions { get; set; }
+        public IList<Func<ClampWebContext, CultureInfo>> CultureConventions { get; set; }
 
         /// <summary>
         /// Validates the conventions

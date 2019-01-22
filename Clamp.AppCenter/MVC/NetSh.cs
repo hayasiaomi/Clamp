@@ -1,10 +1,8 @@
-﻿namespace Clamp.AppCenter.MVC
-{
-    using System;
+﻿using System;
 
-    /// <summary>
-    /// Executes NetSh commands
-    /// </summary>
+namespace Clamp.AppCenter
+{
+ 
     public static class NetSh
     {
         private const string NetshCommand = "netsh";

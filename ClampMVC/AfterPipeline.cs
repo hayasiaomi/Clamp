@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class AfterPipeline : AsyncNamedPipelineBase<Func<WebworkContext, CancellationToken, Task>, Action<WebworkContext>>
+    public class AfterPipeline : AsyncNamedPipelineBase<Func<ClampWebContext, CancellationToken, Task>, Action<ClampWebContext>>
     {
         private static readonly Task completeTask;
 
@@ -25,25 +25,25 @@
         {
         }
 
-        public static implicit operator Func<WebworkContext, CancellationToken, Task>(AfterPipeline pipeline)
+        public static implicit operator Func<ClampWebContext, CancellationToken, Task>(AfterPipeline pipeline)
         {
             return pipeline.Invoke;
         }
 
-        public static implicit operator AfterPipeline(Func<WebworkContext, CancellationToken, Task> func)
+        public static implicit operator AfterPipeline(Func<ClampWebContext, CancellationToken, Task> func)
         {
             var pipeline = new AfterPipeline();
             pipeline.AddItemToEndOfPipeline(func);
             return pipeline;
         }
 
-        public static AfterPipeline operator +(AfterPipeline pipeline, Func<WebworkContext, CancellationToken, Task> func)
+        public static AfterPipeline operator +(AfterPipeline pipeline, Func<ClampWebContext, CancellationToken, Task> func)
         {
             pipeline.AddItemToEndOfPipeline(func);
             return pipeline;
         }
 
-        public static AfterPipeline operator +(AfterPipeline pipeline, Action<WebworkContext> action)
+        public static AfterPipeline operator +(AfterPipeline pipeline, Action<ClampWebContext> action)
         {
             pipeline.AddItemToEndOfPipeline(action);
             return pipeline;
@@ -59,7 +59,7 @@
             return pipelineToAddTo;
         }
 
-        public Task Invoke(WebworkContext context, CancellationToken cancellationToken)
+        public Task Invoke(ClampWebContext context, CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<object>();
 
@@ -77,7 +77,7 @@
             return tcs.Task;
         }
 
-        private static void ExecuteTasksInternal(WebworkContext context, CancellationToken cancellationToken, IEnumerator<Func<WebworkContext, CancellationToken, Task>> enumerator, TaskCompletionSource<object> tcs)
+        private static void ExecuteTasksInternal(ClampWebContext context, CancellationToken cancellationToken, IEnumerator<Func<ClampWebContext, CancellationToken, Task>> enumerator, TaskCompletionSource<object> tcs)
         {
             while (true)
             {
@@ -116,7 +116,7 @@
             }
         }
 
-        private static Action<Task> ExecuteTasksContinuation(WebworkContext context, CancellationToken cancellationToken, IEnumerator<Func<WebworkContext, CancellationToken, Task>> enumerator, TaskCompletionSource<object> tcs)
+        private static Action<Task> ExecuteTasksContinuation(ClampWebContext context, CancellationToken cancellationToken, IEnumerator<Func<ClampWebContext, CancellationToken, Task>> enumerator, TaskCompletionSource<object> tcs)
         {
             return current =>
             {
@@ -140,10 +140,10 @@
         /// </summary>
         /// <param name="pipelineItem">Sync pipeline item instance</param>
         /// <returns>Async pipeline item instance</returns>
-        protected override PipelineItem<Func<WebworkContext, CancellationToken, Task>> Wrap(PipelineItem<Action<WebworkContext>> pipelineItem)
+        protected override PipelineItem<Func<ClampWebContext, CancellationToken, Task>> Wrap(PipelineItem<Action<ClampWebContext>> pipelineItem)
         {
             var syncDelegate = pipelineItem.Delegate;
-            Func<WebworkContext, CancellationToken, Task> asyncDelegate = (ctx, ct) =>
+            Func<ClampWebContext, CancellationToken, Task> asyncDelegate = (ctx, ct) =>
             {
                 try
                 {
@@ -157,7 +157,7 @@
                     return tcs.Task;
                 }
             };
-            return new PipelineItem<Func<WebworkContext, CancellationToken, Task>>(pipelineItem.Name, asyncDelegate);
+            return new PipelineItem<Func<ClampWebContext, CancellationToken, Task>>(pipelineItem.Name, asyncDelegate);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace ClampMVC.Diagnostics
     /// </summary>
     public class DiagnosticsViewRenderer
     {
-        private readonly WebworkContext context;
+        private readonly ClampWebContext context;
         private static readonly IViewResolver ViewResolver = new DiagnosticsViewResolver();
 
         private static readonly IViewEngine Engine = new SuperSimpleViewEngineWrapper(Enumerable.Empty<ISuperSimpleViewEngineMatcher>());
@@ -22,8 +22,8 @@ namespace ClampMVC.Diagnostics
         /// <summary>
         /// Creates a new instance of the <see cref="DiagnosticsViewRenderer"/> class.
         /// </summary>
-        /// <param name="context">A <see cref="WebworkContext"/> instance.</param>
-        public DiagnosticsViewRenderer(WebworkContext context)
+        /// <param name="context">A <see cref="ClampWebContext"/> instance.</param>
+        public DiagnosticsViewRenderer(ClampWebContext context)
         {
             this.context = context;
         }
@@ -49,7 +49,7 @@ namespace ClampMVC.Diagnostics
             get { return RenderView(name, model, this.context); }
         }
 
-        private static Response RenderView(string name, dynamic model, WebworkContext context)
+        private static Response RenderView(string name, dynamic model, ClampWebContext context)
         {
             var fullName = string.Concat(name, ".sshtml");
 
@@ -108,7 +108,7 @@ namespace ClampMVC.Diagnostics
 
         internal class DummyTextResource : ITextResource
         {
-            public string this[string key, WebworkContext context]
+            public string this[string key, ClampWebContext context]
             {
                 get
                 {

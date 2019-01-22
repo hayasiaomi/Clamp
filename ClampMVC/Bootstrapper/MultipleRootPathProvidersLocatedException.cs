@@ -7,7 +7,7 @@
     using System.Text;
 
     /// <summary>
-    /// Exception raised when the <see cref="WebworkBootstrapperBase{T}"/> discovers more than one
+    /// Exception raised when the <see cref="ClampWebBootstrapperBase{T}"/> discovers more than one
     /// <see cref="IRootPathProvider"/> implementation in the loaded assemblies.
     /// </summary>
     public class MultipleRootPathProvidersLocatedException : BootstrapperException

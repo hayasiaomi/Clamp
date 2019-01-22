@@ -13,7 +13,7 @@ namespace ClampMVC.Responses.Negotiation
         /// with the provided <paramref name="context"/>.
         /// </summary>
         /// <param name="context">The context that should be negotiated.</param>
-        public Negotiator(WebworkContext context)
+        public Negotiator(ClampWebContext context)
         {
             if (context == null)
             {

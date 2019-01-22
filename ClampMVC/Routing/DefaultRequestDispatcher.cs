@@ -43,8 +43,8 @@ namespace ClampMVC.Routing
         /// <summary>
         /// Dispatches a requests.
         /// </summary>
-        /// <param name="context">The <see cref="WebworkContext"/> for the current request.</param>
-        public Task<Response> Dispatch(WebworkContext context, CancellationToken cancellationToken)
+        /// <param name="context">The <see cref="ClampWebContext"/> for the current request.</param>
+        public Task<Response> Dispatch(ClampWebContext context, CancellationToken cancellationToken)
         {
             // TODO - May need to make this run off context rather than response .. seems a bit icky currently
             var tcs = new TaskCompletionSource<Response>();
@@ -89,7 +89,7 @@ namespace ClampMVC.Routing
             return tcs.Task;
         }
 
-        private void ExecutePost(WebworkContext context, CancellationToken cancellationToken, AfterPipeline postHook, Func<WebworkContext, Exception, dynamic> onError, TaskCompletionSource<Response> tcs)
+        private void ExecutePost(ClampWebContext context, CancellationToken cancellationToken, AfterPipeline postHook, Func<ClampWebContext, Exception, dynamic> onError, TaskCompletionSource<Response> tcs)
         {
             if (postHook == null)
             {
@@ -102,7 +102,7 @@ namespace ClampMVC.Routing
                 completedTask => this.HandlePostHookFaultedTask(context, onError, completedTask, tcs));
         }
 
-        private void HandlePostHookFaultedTask(WebworkContext context, Func<WebworkContext, Exception, dynamic> onError, Task completedTask, TaskCompletionSource<Response> tcs)
+        private void HandlePostHookFaultedTask(ClampWebContext context, Func<ClampWebContext, Exception, dynamic> onError, Task completedTask, TaskCompletionSource<Response> tcs)
         {
             var response = this.ResolveErrorResult(context, onError, completedTask.Exception);
 
@@ -118,12 +118,12 @@ namespace ClampMVC.Routing
             }
         }
 
-        private Action<Task<Response>> HandleFaultedTask(WebworkContext context, Func<WebworkContext, Exception, dynamic> onError, TaskCompletionSource<Response> tcs)
+        private Action<Task<Response>> HandleFaultedTask(ClampWebContext context, Func<ClampWebContext, Exception, dynamic> onError, TaskCompletionSource<Response> tcs)
         {
             return task => this.HandlePostHookFaultedTask(context, onError, task, tcs);
         }
 
-        private static Task<Response> ExecuteRoutePreReq(WebworkContext context, CancellationToken cancellationToken, BeforePipeline resolveResultPreReq)
+        private static Task<Response> ExecuteRoutePreReq(ClampWebContext context, CancellationToken cancellationToken, BeforePipeline resolveResultPreReq)
         {
             if (resolveResultPreReq == null)
             {
@@ -133,7 +133,7 @@ namespace ClampMVC.Routing
             return resolveResultPreReq.Invoke(context, cancellationToken);
         }
 
-        private Response ResolveErrorResult(WebworkContext context, Func<WebworkContext, Exception, dynamic> resolveResultOnError, Exception exception)
+        private Response ResolveErrorResult(ClampWebContext context, Func<ClampWebContext, Exception, dynamic> resolveResultOnError, Exception exception)
         {
             if (resolveResultOnError != null)
             {
@@ -149,7 +149,7 @@ namespace ClampMVC.Routing
             return null;
         }
 
-        private ResolveResult Resolve(WebworkContext context)
+        private ResolveResult Resolve(ClampWebContext context)
         {
             var extension = context.Request.Path.IndexOfAny(Path.GetInvalidPathChars()) >= 0 ? null
                : Path.GetExtension(context.Request.Path);
@@ -192,7 +192,7 @@ namespace ClampMVC.Routing
                 .Distinct();
         }
 
-        private ResolveResult InvokeRouteResolver(WebworkContext context, string path, IEnumerable<Tuple<string, decimal>> acceptHeaders)
+        private ResolveResult InvokeRouteResolver(ClampWebContext context, string path, IEnumerable<Tuple<string, decimal>> acceptHeaders)
         {
             context.Request.Headers.Accept = acceptHeaders.ToList();
             context.Request.Url.Path = path;

@@ -9,11 +9,11 @@
 
     public static class Jsonp
     {
-        private static readonly PipelineItem<Action<WebworkContext>> JsonpItem;
+        private static readonly PipelineItem<Action<ClampWebContext>> JsonpItem;
 
         static Jsonp()
         {
-            JsonpItem = new PipelineItem<Action<WebworkContext>>("JSONP", PrepareJsonp);
+            JsonpItem = new PipelineItem<Action<ClampWebContext>>("JSONP", PrepareJsonp);
         }
 
         private static string Encoding
@@ -48,7 +48,7 @@
         /// Transmogrify original response and apply JSONP Padding
         /// </summary>
         /// <param name="context">Current Nancy Context</param>
-        private static void PrepareJsonp(WebworkContext context)
+        private static void PrepareJsonp(ClampWebContext context)
         {
             var isJson = Json.Json.IsJsonContentType(context.Response.ContentType);
             bool hasCallback = context.Request.Query["callback"].HasValue;

@@ -16,8 +16,8 @@
         /// <summary>
         /// Gets the context for which the response is being formatted.
         /// </summary>
-        /// <value>A <see cref="WebworkContext"/> instance.</value>
-        WebworkContext Context { get; }
+        /// <value>A <see cref="ClampWebContext"/> instance.</value>
+        ClampWebContext Context { get; }
 
         /// <summary>
         /// Gets the root path of the application.

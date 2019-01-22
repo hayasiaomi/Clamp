@@ -1,8 +1,8 @@
-﻿namespace Clamp.AppCenter.MVC
-{
-    using System;
-    using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
+namespace Clamp.AppCenter
+{
     /// <summary>
     /// Host configuration for the self host
     /// </summary>

@@ -35,7 +35,7 @@ namespace ClampMVC.Diagnostics
             IEnumerable<IDiagnosticsProvider> providers,
             IRootPathProvider rootPathProvider,
             IRequestTracing requestTracing,
-            WebworkInternalConfiguration configuration,
+            ClampWebInternalConfiguration configuration,
             IModelBinderLocator modelBinderLocator,
             IEnumerable<IResponseProcessor> responseProcessors,
             IEnumerable<IRouteSegmentConstraint> routeSegmentConstraints,
@@ -48,7 +48,7 @@ namespace ClampMVC.Diagnostics
 
             var diagnosticsRouteCache = new RouteCache(
                 diagnosticsModuleCatalog,
-                new DefaultWebworkContextFactory(cultureService, requestTraceFactory, textResource),
+                new DefaultClampWebContextFactory(cultureService, requestTraceFactory, textResource),
                 new DefaultRouteSegmentExtractor(),
                 new DefaultRouteDescriptionProvider(),
                 cultureService,
@@ -63,7 +63,7 @@ namespace ClampMVC.Diagnostics
             var serializer = new DefaultObjectSerializer();
 
             pipelines.BeforeRequest.AddItemToStartOfPipeline(
-                new PipelineItem<Func<WebworkContext, Response>>(
+                new PipelineItem<Func<ClampWebContext, Response>>(
                     PipelineKey,
                     ctx =>
                     {
@@ -107,21 +107,21 @@ namespace ClampMVC.Diagnostics
             pipelines.BeforeRequest.RemoveByName(PipelineKey);
         }
 
-        private static Response GetDiagnosticsHelpView(WebworkContext ctx)
+        private static Response GetDiagnosticsHelpView(ClampWebContext ctx)
         {
             return (StaticConfiguration.IsRunningDebug)
                        ? new DiagnosticsViewRenderer(ctx)["help"]
                        : HttpStatusCode.NotFound;
         }
 
-        private static Response GetDiagnosticsLoginView(WebworkContext ctx)
+        private static Response GetDiagnosticsLoginView(ClampWebContext ctx)
         {
             var renderer = new DiagnosticsViewRenderer(ctx);
 
             return renderer["login"];
         }
 
-        private static Response ExecuteDiagnostics(WebworkContext ctx, IRouteResolver routeResolver, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static Response ExecuteDiagnostics(ClampWebContext ctx, IRouteResolver routeResolver, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             var session = GetSession(ctx, diagnosticsConfiguration, serializer);
 
@@ -162,7 +162,7 @@ namespace ClampMVC.Diagnostics
             return ctx.Response;
         }
 
-        private static void AddUpdateSessionCookie(DiagnosticsSession session, WebworkContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static void AddUpdateSessionCookie(DiagnosticsSession session, ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             if (context.Response == null)
             {
@@ -178,10 +178,12 @@ namespace ClampMVC.Diagnostics
 
             var cookie = new WebworkCookie(diagnosticsConfiguration.CookieName, String.Format("{1}{0}", encryptedSession, hmacString), true);
 
+#pragma warning disable CS0618 // “Response.AddCookie(IWebworkCookie)”已过时:“This method has been replaced with Response.WithCookie and will be removed in a subsequent release.”
             context.Response.AddCookie(cookie);
+#pragma warning restore CS0618 // “Response.AddCookie(IWebworkCookie)”已过时:“This method has been replaced with Response.WithCookie and will be removed in a subsequent release.”
         }
 
-        private static DiagnosticsSession GetSession(WebworkContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static DiagnosticsSession GetSession(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             if (context.Request == null)
             {
@@ -230,7 +232,7 @@ namespace ClampMVC.Diagnostics
             return (newHash.Length == session.Hash.Length && newHash.SequenceEqual(session.Hash));
         }
 
-        private static DiagnosticsSession ProcessLogin(WebworkContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static DiagnosticsSession ProcessLogin(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             string password = context.Request.Form.Password;
 
@@ -251,14 +253,14 @@ namespace ClampMVC.Diagnostics
             return session;
         }
 
-        private static bool IsLoginRequest(WebworkContext context, DiagnosticsConfiguration diagnosticsConfiguration)
+        private static bool IsLoginRequest(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration)
         {
             return context.Request.Method == "POST" &&
                 context.Request.Url.BasePath.TrimEnd(new[] { '/' }).EndsWith(diagnosticsConfiguration.Path) &&
                 context.Request.Url.Path == "/";
         }
 
-        private static void ExecuteRoutePreReq(WebworkContext context, CancellationToken cancellationToken, BeforePipeline resolveResultPreReq)
+        private static void ExecuteRoutePreReq(ClampWebContext context, CancellationToken cancellationToken, BeforePipeline resolveResultPreReq)
         {
             if (resolveResultPreReq == null)
             {
@@ -273,7 +275,7 @@ namespace ClampMVC.Diagnostics
             }
         }
 
-        private static void RewriteDiagnosticsUrl(DiagnosticsConfiguration diagnosticsConfiguration, WebworkContext ctx)
+        private static void RewriteDiagnosticsUrl(DiagnosticsConfiguration diagnosticsConfiguration, ClampWebContext ctx)
         {
             ctx.Request.Url.BasePath =
                 string.Concat(ctx.Request.Url.BasePath, diagnosticsConfiguration.Path);

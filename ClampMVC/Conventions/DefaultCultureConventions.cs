@@ -38,7 +38,7 @@
         /// <param name="conventions"></param>
         private static void ConfigureDefaultConventions(WebworkConventions conventions)
         {
-            conventions.CultureConventions = new List<Func<WebworkContext, CultureInfo>>
+            conventions.CultureConventions = new List<Func<ClampWebContext, CultureInfo>>
             {
                 BuiltInCultureConventions.FormCulture,
                 BuiltInCultureConventions.HeaderCulture,

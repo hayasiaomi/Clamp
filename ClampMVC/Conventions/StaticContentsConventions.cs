@@ -7,16 +7,16 @@ namespace ClampMVC.Conventions
     /// <summary>
     /// Collection class for static content conventions
     /// </summary>
-    public class StaticContentsConventions : IEnumerable<Func<WebworkContext, string, Response>>
+    public class StaticContentsConventions : IEnumerable<Func<ClampWebContext, string, Response>>
     {
-        private readonly IEnumerable<Func<WebworkContext, string, Response>> conventions;
+        private readonly IEnumerable<Func<ClampWebContext, string, Response>> conventions;
 
-        public StaticContentsConventions(IEnumerable<Func<WebworkContext, string, Response>> conventions)
+        public StaticContentsConventions(IEnumerable<Func<ClampWebContext, string, Response>> conventions)
         {
             this.conventions = conventions;
         }
 
-        public IEnumerator<Func<WebworkContext, string, Response>> GetEnumerator()
+        public IEnumerator<Func<ClampWebContext, string, Response>> GetEnumerator()
         {
             return conventions.GetEnumerator();
         }

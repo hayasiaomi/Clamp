@@ -33,7 +33,7 @@
             this.ReasonPhrase = response.ReasonPhrase;
         }
 
-        public override Task PreExecute(WebworkContext context)
+        public override Task PreExecute(ClampWebContext context)
         {
             return this.innerResponse.PreExecute(context);
         }

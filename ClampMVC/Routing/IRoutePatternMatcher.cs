@@ -14,8 +14,8 @@
         /// <param name="requestedPath">The path that was requested.</param>
         /// <param name="routePath">The route pattern that the requested path should be attempted to be matched with.</param>
         /// <param name="segments"> </param>
-        /// <param name="context">The <see cref="WebworkContext"/> instance for the current request.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> instance for the current request.</param>
         /// <returns>An <see cref="IRoutePatternMatchResult"/> instance, containing the outcome of the match.</returns>
-        IRoutePatternMatchResult Match(string requestedPath, string routePath, IEnumerable<string> segments, WebworkContext context);
+        IRoutePatternMatchResult Match(string requestedPath, string routePath, IEnumerable<string> segments, ClampWebContext context);
     }
 }

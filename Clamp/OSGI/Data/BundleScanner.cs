@@ -210,7 +210,9 @@ namespace Clamp.OSGI.Data
                     }
                 }
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
 
             }
@@ -303,7 +305,9 @@ namespace Clamp.OSGI.Data
                     r.MoveToContent();
                 }
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return;
             }
@@ -496,7 +500,9 @@ namespace Clamp.OSGI.Data
                     }
                 }
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
             }
             finally
@@ -559,7 +565,9 @@ namespace Clamp.OSGI.Data
 
                 return ScanDescription(reflector, config, null, scanResult);
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -613,7 +621,9 @@ namespace Clamp.OSGI.Data
 
                 return ScanDescription(reflector, bdesc, asm, scanResult);
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }

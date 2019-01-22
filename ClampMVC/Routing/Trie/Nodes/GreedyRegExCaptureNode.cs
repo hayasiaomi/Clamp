@@ -40,7 +40,7 @@
         /// <param name="capturedParameters">Currently captured parameters</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of <see cref="MatchResult"/> objects</returns>
-        public override IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, WebworkContext context)
+        public override IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, ClampWebContext context)
         {
             var value = segments.Skip(currentIndex).Aggregate((seg1, seg2) => seg1 + "/" + seg2);
             var match = this.expression.Match(value);

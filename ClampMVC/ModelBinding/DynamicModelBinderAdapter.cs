@@ -9,7 +9,7 @@
     public class DynamicModelBinderAdapter : DynamicObject
     {
         private readonly IModelBinderLocator locator;
-        private readonly WebworkContext context;
+        private readonly ClampWebContext context;
         private readonly object instance;
         private readonly BindingConfig configuration;
         private readonly string[] blacklistedProperties;
@@ -22,7 +22,7 @@
         /// <param name="instance">Optional existing instance, or null</param>
         /// <param name="configuration">The <see cref="BindingConfig"/> that should be applied during binding.</param>
         /// <param name="blacklistedProperties">Blacklisted property names</param>
-        public DynamicModelBinderAdapter(IModelBinderLocator locator, WebworkContext context, object instance, BindingConfig configuration, params string[] blacklistedProperties)
+        public DynamicModelBinderAdapter(IModelBinderLocator locator, ClampWebContext context, object instance, BindingConfig configuration, params string[] blacklistedProperties)
         {
             if (locator == null)
             {

@@ -20,7 +20,7 @@ namespace ClampMVC.Routing.Trie
         /// <param name="path">Requested path</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>An array of <see cref="MatchResult"/> elements</returns>
-        MatchResult[] GetMatches(string method, string path, WebworkContext context);
+        MatchResult[] GetMatches(string method, string path, ClampWebContext context);
 
         /// <summary>
         /// Get all method options for the given path
@@ -28,6 +28,6 @@ namespace ClampMVC.Routing.Trie
         /// <param name="path">Requested path</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of strings, each representing an allowed method</returns>
-        IEnumerable<string> GetOptions(string path, WebworkContext context);
+        IEnumerable<string> GetOptions(string path, ClampWebContext context);
     }
 }

@@ -14,7 +14,7 @@
     /// composite pipelines.
     /// </para>
     /// </summary>
-    public class ErrorPipeline : NamedPipelineBase<Func<WebworkContext, Exception, dynamic>>
+    public class ErrorPipeline : NamedPipelineBase<Func<ClampWebContext, Exception, dynamic>>
     {
         public ErrorPipeline()
         {
@@ -24,19 +24,19 @@
         {
         }
 
-        public static implicit operator Func<WebworkContext, Exception, dynamic>(ErrorPipeline pipeline)
+        public static implicit operator Func<ClampWebContext, Exception, dynamic>(ErrorPipeline pipeline)
         {
             return pipeline.Invoke;
         }
 
-        public static implicit operator ErrorPipeline(Func<WebworkContext, Exception, dynamic> func)
+        public static implicit operator ErrorPipeline(Func<ClampWebContext, Exception, dynamic> func)
         {
             var pipeline = new ErrorPipeline();
             pipeline.AddItemToEndOfPipeline(func);
             return pipeline;
         }
 
-        public static ErrorPipeline operator +(ErrorPipeline pipeline, Func<WebworkContext, Exception, dynamic> func)
+        public static ErrorPipeline operator +(ErrorPipeline pipeline, Func<ClampWebContext, Exception, dynamic> func)
         {
             pipeline.AddItemToEndOfPipeline(func);
             return pipeline;
@@ -65,7 +65,7 @@
         /// <returns>
         /// Response from an item invocation, or null if no response was generated.
         /// </returns>
-        public dynamic Invoke(WebworkContext context, Exception ex)
+        public dynamic Invoke(ClampWebContext context, Exception ex)
         {
             dynamic returnValue = null;
 

@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>Response if serving content, null otherwise</returns>
-        Response GetContent(WebworkContext context);
+        Response GetContent(ClampWebContext context);
     }
 }

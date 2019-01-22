@@ -9,11 +9,11 @@
     public interface IRequestTracing
     {
         /// <summary>
-        /// Adds the <see cref="IRequestTrace"/>, of the provided, <see cref="WebworkContext"/> to the trace log.
+        /// Adds the <see cref="IRequestTrace"/>, of the provided, <see cref="ClampWebContext"/> to the trace log.
         /// </summary>
         /// <param name="sessionId">The identifier of the trace.</param>
-        /// <param name="context">A <see cref="WebworkContext"/> instance.</param>
-        void AddRequestDiagnosticToSession(Guid sessionId, WebworkContext context);
+        /// <param name="context">A <see cref="ClampWebContext"/> instance.</param>
+        void AddRequestDiagnosticToSession(Guid sessionId, ClampWebContext context);
 
         /// <summary>
         /// Clears the trace log.

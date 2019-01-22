@@ -146,7 +146,9 @@ namespace Clamp.OSGI.Data
                         }
                     }
                 }
+#pragma warning disable CS0642 // 空语句可能有错误
                 if (!found) ;
+#pragma warning restore CS0642 // 空语句可能有错误
                 //TODO 记录日志
 
             }
@@ -173,7 +175,9 @@ namespace Clamp.OSGI.Data
                         }
                     }
                 }
+#pragma warning disable CS0642 // 空语句可能有错误
                 if (!found) ;
+#pragma warning restore CS0642 // 空语句可能有错误
                 //TODO 记录日志
             }
         }
@@ -204,7 +208,9 @@ namespace Clamp.OSGI.Data
                     //TODO 记录日志
                 }
             }
+#pragma warning disable CS0642 // 空语句可能有错误
             if (!found) ;
+#pragma warning restore CS0642 // 空语句可能有错误
             //TODO 记录日志
         }
 

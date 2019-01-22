@@ -22,6 +22,6 @@ namespace ClampMVC.ViewEngines
         /// <summary>
         /// The request/response context
         /// </summary>
-        public WebworkContext Context { get; set; }
+        public ClampWebContext Context { get; set; }
     }
 }

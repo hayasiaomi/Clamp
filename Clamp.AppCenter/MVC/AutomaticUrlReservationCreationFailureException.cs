@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Clamp.AppCenter.MVC
+namespace Clamp.AppCenter
 {
-    /// <summary>
-    /// Exception for when automatic address reservation creation fails.
-    /// Provides the user with manual instructions.
-    /// </summary>
+
     public class AutomaticUrlReservationCreationFailureException : Exception
     {
         private readonly IEnumerable<string> prefixes;

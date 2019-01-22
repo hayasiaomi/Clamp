@@ -366,7 +366,9 @@ namespace Clamp.OSGI.Data
                 folderInfo = BundleScanFolderInfo.Read(fileDatabase, file);
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 folderInfo = null;
                 return false;
@@ -408,7 +410,9 @@ namespace Clamp.OSGI.Data
                 folderInfo = BundleScanFolderInfo.Read(fileDatabase, BundleFolderCachePath, path);
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 folderInfo = null;
                 return false;
@@ -542,7 +546,9 @@ namespace Clamp.OSGI.Data
 
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 description = null;
                 return false;
@@ -561,7 +567,9 @@ namespace Clamp.OSGI.Data
                 fileDatabase.Delete(file);
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -574,7 +582,9 @@ namespace Clamp.OSGI.Data
                 fileDatabase.DeleteDir(dir);
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -645,7 +655,9 @@ namespace Clamp.OSGI.Data
                 }
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -663,7 +675,9 @@ namespace Clamp.OSGI.Data
                 folderInfo.Write(fileDatabase, BundleFolderCachePath);
                 return true;
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -898,7 +912,9 @@ namespace Clamp.OSGI.Data
                 {
                     fileDatabase.Rename(file + "_" + dversion, newFile);
                 }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                 catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                 {
                 }
 
@@ -997,7 +1013,9 @@ namespace Clamp.OSGI.Data
                 InternalScanFolders2(scanResult);
 
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
 
             }
@@ -1022,7 +1040,9 @@ namespace Clamp.OSGI.Data
             {
                 scanResult.ActivationIndex = GetBundleActivationIndex();
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 if (scanResult.CheckOnly)
                 {
@@ -1118,7 +1138,9 @@ namespace Clamp.OSGI.Data
 
                 GenerateBundleExtensionMapsInternal(scanResult.Domain, scanResult.BundlesToUpdate, scanResult.BundlesToUpdateRelations, scanResult.RemovedBundles);
             }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 fatalDatabseError = true;
             }
@@ -1669,7 +1691,9 @@ namespace Clamp.OSGI.Data
                     setup.Scan(registry, null, (string[])pparams.ToArray(typeof(string)));
                     retry = false;
                 }
+#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                 catch (Exception ex)
+#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                 {
                     //ProcessFailedException pex = ex as ProcessFailedException;
 

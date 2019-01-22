@@ -54,9 +54,9 @@ namespace ClampMVC.Localization
         /// Used to return a string value from *.resx files
         /// </summary>
         /// <param name="key">The key to look for in the resource file</param>
-        /// <param name="context">The <see cref="WebworkContext"/> used to determine the culture for returning culture specific values.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> used to determine the culture for returning culture specific values.</param>
         /// <returns>Returns a string value from culture specific or default file or null if key does not exist as determined by <see cref="ResourceManager"/>.</returns>
-        public string this[string key, WebworkContext context]
+        public string this[string key, ClampWebContext context]
         {
             get
             {

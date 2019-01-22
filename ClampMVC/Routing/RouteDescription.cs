@@ -19,7 +19,7 @@ namespace ClampMVC.Routing
         /// <param name="method">The request method of the route.</param>
         /// <param name="path">The path that the route will be invoked for.</param>
         /// <param name="condition">The condition that has to be fulfilled for the route to be a valid match.</param>
-        public RouteDescription(string name, string method, string path, Func<WebworkContext, bool> condition)
+        public RouteDescription(string name, string method, string path, Func<ClampWebContext, bool> condition)
         {
             if (String.IsNullOrEmpty(method))
             {
@@ -45,8 +45,8 @@ namespace ClampMVC.Routing
         /// <summary>
         /// The condition that has to be fulfilled inorder for the route to be a valid match.
         /// </summary>
-        /// <value>A function that evaluates the condition when a <see cref="WebworkContext"/> instance is passed in.</value>
-        public Func<WebworkContext, bool> Condition { get; private set; }
+        /// <value>A function that evaluates the condition when a <see cref="ClampWebContext"/> instance is passed in.</value>
+        public Func<ClampWebContext, bool> Condition { get; private set; }
 
         /// <summary>
         /// The description of what the route is for.

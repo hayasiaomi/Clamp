@@ -21,8 +21,8 @@
         /// Validates the specified instance.
         /// </summary>
         /// <param name="instance">The instance that should be validated.</param>
-        /// <param name="context">The <see cref="WebworkContext"/> of the current request.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> of the current request.</param>
         /// <returns>A <see cref="ModelValidationResult"/> with the result of the validation.</returns>
-        ModelValidationResult Validate(object instance, WebworkContext context);
+        ModelValidationResult Validate(object instance, ClampWebContext context);
     }
 }

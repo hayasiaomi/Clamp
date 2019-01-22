@@ -25,7 +25,7 @@
 
         private void ConfigureDefaultConventions(WebworkConventions conventions)
         {
-            conventions.AcceptHeaderCoercionConventions = new List<Func<IEnumerable<Tuple<string, decimal>>, WebworkContext, IEnumerable<Tuple<string, decimal>>>>(2)
+            conventions.AcceptHeaderCoercionConventions = new List<Func<IEnumerable<Tuple<string, decimal>>, ClampWebContext, IEnumerable<Tuple<string, decimal>>>>(2)
                                                               {
                                                                   BuiltInAcceptHeaderCoercions.BoostHtml,
                                                                   BuiltInAcceptHeaderCoercions.CoerceBlankAcceptHeader,

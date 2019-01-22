@@ -47,7 +47,7 @@ namespace ClampMVC
         /// <summary>
         /// Gets or sets the current Nancy context
         /// </summary><value>A <see cref="T:Nancy.NancyContext" /> instance.</value>
-        WebworkContext Context { get; set; }
+        ClampWebContext Context { get; set; }
 
         /// <summary>
         /// An extension point for adding support for formatting response contents.

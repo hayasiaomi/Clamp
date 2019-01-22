@@ -46,9 +46,9 @@ namespace ClampMVC.ErrorHandling
         /// Whether the status code is handled
         /// </summary>
         /// <param name="statusCode">Status code</param>
-        /// <param name="context">The <see cref="WebworkContext"/> instance of the current request.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
         /// <returns>True if handled, false otherwise</returns>
-        public bool HandlesStatusCode(HttpStatusCode statusCode, WebworkContext context)
+        public bool HandlesStatusCode(HttpStatusCode statusCode, ClampWebContext context)
         {
             return this.supportedStatusCodes.Any(s => s == statusCode);
         }
@@ -57,9 +57,9 @@ namespace ClampMVC.ErrorHandling
         /// Handle the error code
         /// </summary>
         /// <param name="statusCode">Status code</param>
-        /// <param name="context">The <see cref="WebworkContext"/> instance of the current request.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
         /// <returns>Nancy Response</returns>
-        public void Handle(HttpStatusCode statusCode, WebworkContext context)
+        public void Handle(HttpStatusCode statusCode, ClampWebContext context)
         {
             if (context.Response != null && context.Response.Contents != null && !ReferenceEquals(context.Response.Contents, Response.NoBody))
             {
@@ -103,7 +103,7 @@ namespace ClampMVC.ErrorHandling
             this.ModifyResponse(statusCode, context, result);
         }
 
-        private void ModifyResponse(HttpStatusCode statusCode, WebworkContext context, DefaultStatusCodeHandlerResult result)
+        private void ModifyResponse(HttpStatusCode statusCode, ClampWebContext context, DefaultStatusCodeHandlerResult result)
         {
             if (context.Response == null)
             {
@@ -129,7 +129,7 @@ namespace ClampMVC.ErrorHandling
 
         private static string LoadResource(string filename)
         {
-            var resourceStream = typeof(IWebworkEngine).Assembly.GetManifestResourceStream(string.Format("Nancy.ErrorHandling.Resources.{0}", filename));
+            var resourceStream = typeof(IClampWebEngine).Assembly.GetManifestResourceStream(string.Format("Nancy.ErrorHandling.Resources.{0}", filename));
 
             if (resourceStream == null)
             {

@@ -40,7 +40,7 @@
         /// <param name="model">The model for the given media range</param>
         /// <param name="context">The nancy context</param>
         /// <returns>A ProcessorMatch result that determines the priority of the processor</returns>
-        public ProcessorMatch CanProcess(MediaRange requestedMediaRange, dynamic model, WebworkContext context)
+        public ProcessorMatch CanProcess(MediaRange requestedMediaRange, dynamic model, ClampWebContext context)
         {
             if (IsExactJsonContentType(requestedMediaRange))
             {
@@ -74,7 +74,7 @@
         /// <param name="model">The model for the given media range</param>
         /// <param name="context">The nancy context</param>
         /// <returns>A response</returns>
-        public Response Process(MediaRange requestedMediaRange, dynamic model, WebworkContext context)
+        public Response Process(MediaRange requestedMediaRange, dynamic model, ClampWebContext context)
         {
             return new JsonResponse(model, this.serializer);
         }

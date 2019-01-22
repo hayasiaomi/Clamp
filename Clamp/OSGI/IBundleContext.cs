@@ -9,6 +9,9 @@ namespace Clamp.OSGI
     public interface IBundleContext
     {
         RuntimeBundle GetRuntimeBundle(string id);
+
+        Dictionary<string, string> GetConfigMaps();
+
         IBundle GetBundle(string id);
 
         IBundle[] GetBundles();

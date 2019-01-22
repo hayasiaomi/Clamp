@@ -17,7 +17,7 @@
         private readonly Response sourceResponse;
         private byte[] oldResponseOutput;
 
-        public override Task PreExecute(WebworkContext context)
+        public override Task PreExecute(ClampWebContext context)
         {
             try
             {

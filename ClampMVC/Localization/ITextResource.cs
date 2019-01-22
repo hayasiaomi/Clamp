@@ -9,7 +9,7 @@ namespace ClampMVC.Localization
         /// Gets a translation based on the provided key.
         /// </summary>
         /// <param name="key">The key to look up the translation for.</param>
-        /// <param name="context">The current <see cref="WebworkContext"/> instance.</param>
-        string this[string key, WebworkContext context] { get; }
+        /// <param name="context">The current <see cref="ClampWebContext"/> instance.</param>
+        string this[string key, ClampWebContext context] { get; }
     }
 }

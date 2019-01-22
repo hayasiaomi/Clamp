@@ -12,7 +12,7 @@ namespace ClampMVC.Diagnostics
     {
         private readonly TinyIoCContainer container;
 
-        public DiagnosticsModuleCatalog(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, WebworkInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
+        public DiagnosticsModuleCatalog(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, ClampWebInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
         {
             this.container = ConfigureContainer(providers, rootPathProvider, requestTracing, configuration, diagnosticsConfiguration);
         }
@@ -22,7 +22,7 @@ namespace ClampMVC.Diagnostics
         /// </summary>
         /// <param name="context">The current context</param>
         /// <returns>An <see cref="IEnumerable{T}"/> instance containing <see cref="IController"/> instances.</returns>
-        public IEnumerable<IController> GetAllModules(WebworkContext context)
+        public IEnumerable<IController> GetAllModules(ClampWebContext context)
         {
             return this.container.ResolveAll<IController>(false);
         }
@@ -33,19 +33,19 @@ namespace ClampMVC.Diagnostics
         /// <param name="moduleType">Module type</param>
         /// <param name="context">The current context</param>
         /// <returns>The <see cref="IController"/> instance</returns>
-        public IController GetModule(Type moduleType, WebworkContext context)
+        public IController GetModule(Type moduleType, ClampWebContext context)
         {
             return this.container.Resolve<IController>(moduleType.FullName);
         }
 
-        private static TinyIoCContainer ConfigureContainer(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, WebworkInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
+        private static TinyIoCContainer ConfigureContainer(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, ClampWebInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
         {
             var diagContainer = new TinyIoCContainer();
 
             diagContainer.Register<IInteractiveDiagnostics, InteractiveDiagnostics>();
             diagContainer.Register<IRequestTracing>(requestTracing);
             diagContainer.Register<IRootPathProvider>(rootPathProvider);
-            diagContainer.Register<WebworkInternalConfiguration>(configuration);
+            diagContainer.Register<ClampWebInternalConfiguration>(configuration);
             diagContainer.Register<IModelBinderLocator, DefaultModelBinderLocator>();
             diagContainer.Register<IBinder, DefaultBinder>();
             diagContainer.Register<IFieldNameConverter, DefaultFieldNameConverter>();

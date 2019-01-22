@@ -7,16 +7,16 @@
     /// <summary>
     /// Collection of accept header coercions
     /// </summary>
-    public class AcceptHeaderCoercionConventions : IEnumerable<Func<IEnumerable<Tuple<string, decimal>>, WebworkContext, IEnumerable<Tuple<string, decimal>>>>
+    public class AcceptHeaderCoercionConventions : IEnumerable<Func<IEnumerable<Tuple<string, decimal>>, ClampWebContext, IEnumerable<Tuple<string, decimal>>>>
     {
-        private readonly IList<Func<IEnumerable<Tuple<string, decimal>>, WebworkContext, IEnumerable<Tuple<string, decimal>>>> conventions;
+        private readonly IList<Func<IEnumerable<Tuple<string, decimal>>, ClampWebContext, IEnumerable<Tuple<string, decimal>>>> conventions;
 
-        public AcceptHeaderCoercionConventions(IList<Func<IEnumerable<Tuple<string, decimal>>, WebworkContext, IEnumerable<Tuple<string, decimal>>>> conventions)
+        public AcceptHeaderCoercionConventions(IList<Func<IEnumerable<Tuple<string, decimal>>, ClampWebContext, IEnumerable<Tuple<string, decimal>>>> conventions)
         {
             this.conventions = conventions;
         }
 
-        public IEnumerator<Func<IEnumerable<Tuple<string, decimal>>, WebworkContext, IEnumerable<Tuple<string, decimal>>>> GetEnumerator()
+        public IEnumerator<Func<IEnumerable<Tuple<string, decimal>>, ClampWebContext, IEnumerable<Tuple<string, decimal>>>> GetEnumerator()
         {
             return this.conventions.GetEnumerator();
         }

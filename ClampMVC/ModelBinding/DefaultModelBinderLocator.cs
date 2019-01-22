@@ -34,9 +34,9 @@ namespace ClampMVC.ModelBinding
         /// Gets a binder for the given type
         /// </summary>
         /// <param name="modelType">Destination type to bind to</param>
-        /// <param name="context">The <see cref="WebworkContext"/> instance of the current request.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
         /// <returns>IModelBinder instance or null if none found</returns>
-        public IBinder GetBinderForType(Type modelType, WebworkContext context)
+        public IBinder GetBinderForType(Type modelType, ClampWebContext context)
         {
             return this.binders.FirstOrDefault(modelBinder => modelBinder.CanBind(modelType)) ?? this.fallbackBinder;
         }

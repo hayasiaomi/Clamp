@@ -119,9 +119,9 @@
         /// <param name="performPassThrough">A predicate that will allow the caller to determine if the request passes through to the 
         /// next stage in the owin pipeline.</param>
         /// <returns>Delegate</returns>
-        private static Action<WebworkContext> RequestComplete(
+        private static Action<ClampWebContext> RequestComplete(
             IDictionary<string, object> environment,
-            Func<WebworkContext, bool> performPassThrough,
+            Func<ClampWebContext, bool> performPassThrough,
             AppFunc next,
             TaskCompletionSource<int> tcs)
         {
@@ -252,7 +252,7 @@
         /// </summary>
         /// <param name="environment">OWIN Environment</param>
         /// <returns>Delegate</returns>
-        private static Func<WebworkContext, WebworkContext> StoreEnvironment(IDictionary<string, object> environment)
+        private static Func<ClampWebContext, ClampWebContext> StoreEnvironment(IDictionary<string, object> environment)
         {
             return context =>
             {

@@ -11,8 +11,8 @@
         /// <summary>
         /// Dispatches a requests.
         /// </summary>
-        /// <param name="context">The <see cref="WebworkContext"/> for the current request.</param>
+        /// <param name="context">The <see cref="ClampWebContext"/> for the current request.</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        Task<Response> Dispatch(WebworkContext context, CancellationToken cancellationToken);
+        Task<Response> Dispatch(ClampWebContext context, CancellationToken cancellationToken);
     }
 }

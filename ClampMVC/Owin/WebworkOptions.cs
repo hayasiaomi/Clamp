@@ -8,22 +8,22 @@
     /// </summary>
     public class WebworkOptions
     {
-        private IWebworkBootstrapper bootstrapper;
-        private Func<WebworkContext, bool> performPassThrough;
+        private IClampWebBootstrapper bootstrapper;
+        private Func<ClampWebContext, bool> performPassThrough;
 
         /// <summary>
         /// Gets or sets the bootstrapper. If none is set, NancyBootstrapperLocator.Bootstrapper is used.
         /// </summary>
-        public IWebworkBootstrapper Bootstrapper
+        public IClampWebBootstrapper Bootstrapper
         {
-            get { return this.bootstrapper ?? WebwrokBootstrapperLocator.Bootstrapper; }
+            get { return this.bootstrapper ?? ClampWebBootstrapperLocator.Bootstrapper; }
             set { this.bootstrapper = value; }
         }
 
         /// <summary>
         /// Gets or sets the delegate that determines if NancyMiddleware performs pass through.
         /// </summary>
-        public Func<WebworkContext, bool> PerformPassThrough
+        public Func<ClampWebContext, bool> PerformPassThrough
         {
             get { return this.performPassThrough ?? (context => false); }
             set { this.performPassThrough = value; }

@@ -1,12 +1,10 @@
-namespace Clamp.AppCenter.MVC
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-    /// <summary>
-    /// Extension methods for working with <see cref="Uri"/> instances.
-    /// </summary>
+namespace Clamp.AppCenter
+{
+
     public static class UriExtensions
     {
         public static bool IsCaseInsensitiveBaseOf(this Uri source, Uri value)

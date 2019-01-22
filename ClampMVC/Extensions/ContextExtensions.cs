@@ -5,7 +5,7 @@ namespace ClampMVC.Extensions
     using ClampMVC.Responses;
 
     /// <summary>
-    /// Containing extensions for the <see cref="WebworkContext"/> object
+    /// Containing extensions for the <see cref="ClampWebContext"/> object
     /// </summary>
     public static class ContextExtensions
     {
@@ -14,7 +14,7 @@ namespace ClampMVC.Extensions
         /// </summary>
         /// <param name="context">The current nancy context</param>
         /// <returns>True if the request was done using ajax, false otherwise</returns>
-        public static bool IsAjaxRequest(this WebworkContext context)
+        public static bool IsAjaxRequest(this ClampWebContext context)
         {
             return context.Request != null && context.Request.IsAjaxRequest();
         }
@@ -25,7 +25,7 @@ namespace ClampMVC.Extensions
         /// <param name="context">Nancy context</param>
         /// <param name="path">Path to expand</param>
         /// <returns>Expanded path</returns>
-        public static string ToFullPath(this WebworkContext context, string path)
+        public static string ToFullPath(this ClampWebContext context, string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -57,7 +57,7 @@ namespace ClampMVC.Extensions
         /// <param name="context">Nancy context</param>
         /// <param name="path">Path to redirect to</param>
         /// <returns>Redirect response</returns>
-        public static RedirectResponse GetRedirect(this WebworkContext context, string path)
+        public static RedirectResponse GetRedirect(this ClampWebContext context, string path)
         {
             return new RedirectResponse(context.ToFullPath(path));
         }
@@ -67,10 +67,10 @@ namespace ClampMVC.Extensions
         /// </summary>
         /// <param name="context">Nancy context</param>
         /// <returns>Exception details</returns>
-        public static string GetExceptionDetails(this WebworkContext context)
+        public static string GetExceptionDetails(this ClampWebContext context)
         {
             object errorObject;
-            context.Items.TryGetValue(WebworkEngine.ERROR_KEY, out errorObject);
+            context.Items.TryGetValue(ClampWebEngine.ERROR_KEY, out errorObject);
 
             return (errorObject as string) ?? string.Empty;
         }
@@ -80,7 +80,7 @@ namespace ClampMVC.Extensions
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The thrown exception or <c>null</c> if not exception has been thrown.</returns>
-        public static Exception GetException(this WebworkContext context)
+        public static Exception GetException(this ClampWebContext context)
         {
             return GetException<Exception>(context);
         }
@@ -91,7 +91,7 @@ namespace ClampMVC.Extensions
         /// <typeparam name="T">The type of exception to get.</typeparam>
         /// <param name="context">The context.</param>
         /// <returns>The thrown exception or <c>null</c> if not exception has been thrown.</returns>
-        public static T GetException<T>(this WebworkContext context) where T : Exception
+        public static T GetException<T>(this ClampWebContext context) where T : Exception
         {
             T exception;
             return TryGetException(context, out exception) ? exception : null;
@@ -103,7 +103,7 @@ namespace ClampMVC.Extensions
         /// <param name="context">The context.</param>
         /// <param name="exception">The thrown exception.</param>
         /// <returns><c>true</c> if an exception has been thrown during the request, <c>false</c> otherwise.</returns>
-        public static bool TryGetException(this WebworkContext context, out Exception exception)
+        public static bool TryGetException(this ClampWebContext context, out Exception exception)
         {
             return TryGetException<Exception>(context, out exception);
         }
@@ -115,10 +115,10 @@ namespace ClampMVC.Extensions
         /// <param name="context">The context.</param>
         /// <param name="exception">The thrown exception.</param>
         /// <returns><c>true</c> if an exception of the given type has been thrown during the request, <c>false</c> otherwise.</returns>
-        public static bool TryGetException<T>(this WebworkContext context, out T exception) where T : Exception
+        public static bool TryGetException<T>(this ClampWebContext context, out T exception) where T : Exception
         {
             object exceptionObject;
-            if (context.Items.TryGetValue(WebworkEngine.ERROR_EXCEPTION, out exceptionObject) && exceptionObject is T)
+            if (context.Items.TryGetValue(ClampWebEngine.ERROR_EXCEPTION, out exceptionObject) && exceptionObject is T)
             {
                 exception = exceptionObject as T;
                 return true;
@@ -133,7 +133,7 @@ namespace ClampMVC.Extensions
         /// </summary>
         /// <param name="context">Nancy context</param>
         /// <param name="logDelegate">Log delegate</param>
-        public static void WriteTraceLog(this WebworkContext context, Action<StringBuilder> logDelegate)
+        public static void WriteTraceLog(this ClampWebContext context, Action<StringBuilder> logDelegate)
         {
             context.Trace.TraceLog.WriteLog(logDelegate);
         }
@@ -144,7 +144,7 @@ namespace ClampMVC.Extensions
         /// <param name="context">Nancy context</param>
         /// <param name="url">Url string (relative or absolute)</param>
         /// <returns>True if local, false otherwise</returns>
-        public static bool IsLocalUrl(this WebworkContext context, string url)
+        public static bool IsLocalUrl(this ClampWebContext context, string url)
         {
             if (string.IsNullOrEmpty(url))
             {

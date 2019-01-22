@@ -43,7 +43,7 @@
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>A <see cref="ResolveResult"/> containing the resolved route information.</returns>
-        public ResolveResult Resolve(WebworkContext context)
+        public ResolveResult Resolve(ClampWebContext context)
         {
             var pathDecoded = HttpUtility.UrlDecode(context.Request.Path);
 
@@ -76,7 +76,7 @@
             return GetNotFoundResult(context);
         }
 
-        private static ResolveResult BuildMethodNotAllowedResult(WebworkContext context, IEnumerable<string> allowedMethods)
+        private static ResolveResult BuildMethodNotAllowedResult(ClampWebContext context, IEnumerable<string> allowedMethods)
         {
             var route = new MethodNotAllowedRoute(context.Request.Path, context.Request.Method, allowedMethods);
 
@@ -88,7 +88,7 @@
             return allowedMethods.Any() && !StaticConfiguration.DisableMethodNotAllowedResponses;
         }
 
-        private static bool IsOptionsRequest(WebworkContext context)
+        private static bool IsOptionsRequest(ClampWebContext context)
         {
             return context.Request.Method.Equals("OPTIONS", StringComparison.Ordinal);
         }
@@ -98,7 +98,7 @@
             this.trie.BuildTrie(this.routeCache);
         }
 
-        private static ResolveResult BuildOptionsResult(IEnumerable<string> allowedMethods, WebworkContext context)
+        private static ResolveResult BuildOptionsResult(IEnumerable<string> allowedMethods, ClampWebContext context)
         {
             var path = context.Request.Path;
 
@@ -107,7 +107,7 @@
             return new ResolveResult(optionsResult, new DynamicDictionary(), null, null, null);
         }
 
-        private ResolveResult BuildResult(WebworkContext context, MatchResult result)
+        private ResolveResult BuildResult(ClampWebContext context, MatchResult result)
         {
             var associatedModule = this.GetModuleFromMatchResult(context, result);
 
@@ -126,14 +126,14 @@
             };
         }
 
-        private IController GetModuleFromMatchResult(WebworkContext context, MatchResult result)
+        private IController GetModuleFromMatchResult(ClampWebContext context, MatchResult result)
         {
             var module = this.catalog.GetModule(result.ModuleType, context);
 
             return this.moduleBuilder.BuildModule(module, context);
         }
 
-        private static ResolveResult GetNotFoundResult(WebworkContext context)
+        private static ResolveResult GetNotFoundResult(ClampWebContext context)
         {
             return new ResolveResult
             {
@@ -145,7 +145,7 @@
             };
         }
 
-        private static string GetMethod(WebworkContext context)
+        private static string GetMethod(ClampWebContext context)
         {
             var requestedMethod = context.Request.Method;
 

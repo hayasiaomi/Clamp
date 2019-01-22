@@ -17,7 +17,7 @@
         /// <summary>
         /// Current Nancy context
         /// </summary>
-        public WebworkContext Context { get; set; }
+        public ClampWebContext Context { get; set; }
 
         /// <summary>
         /// Binding destination type

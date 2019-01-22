@@ -84,7 +84,7 @@ namespace ClampMVC
         /// </summary>
         /// <param name="context">Nancy context</param>
         /// <returns>Task for completion/erroring</returns>
-        public virtual Task PreExecute(WebworkContext context)
+        public virtual Task PreExecute(ClampWebContext context)
         {
             return TaskHelpers.GetCompletedTask();
         }
