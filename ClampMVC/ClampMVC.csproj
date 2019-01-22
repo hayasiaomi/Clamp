@@ -168,6 +168,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="FormatterExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HeadResponse.cs" />
     <Compile Include="Helpers\CacheHelpers.cs" />
     <Compile Include="Helpers\ExceptionExtensions.cs" />

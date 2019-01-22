@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Initial\InitialElement.cs" />
     <Compile Include="Initial\InitialFile.cs" />
     <Compile Include="Initial\InitialFile.Load.cs" />
