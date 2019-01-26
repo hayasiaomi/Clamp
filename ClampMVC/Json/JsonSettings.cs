@@ -1,10 +1,10 @@
-namespace ClampMVC.Json
+namespace Clamp.Linker.Json
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
-    using ClampMVC.Json.Converters;
+    using Clamp.Linker.Json.Converters;
 
     /// <summary>
     /// JSON serializer settings

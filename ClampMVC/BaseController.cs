@@ -1,17 +1,18 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
-
-    using ClampMVC.ModelBinding;
-    using ClampMVC.Responses.Negotiation;
-    using ClampMVC.Routing;
-    using ClampMVC.Session;
-    using ClampMVC.Validation;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.Annotation;
+    using Clamp.Linker.ModelBinding;
+    using Clamp.Linker.Responses.Negotiation;
+    using Clamp.Linker.Routing;
+    using Clamp.Linker.Session;
+    using Clamp.Linker.Validation;
+    using Clamp.Linker.ViewEngines;
+    using Clamp.OSGI.Data.Annotation;
 
     /// <summary>
     /// Basic class containing the functionality for defining routes and actions in Nancy.
@@ -377,21 +378,56 @@ namespace ClampMVC
 
             public string GetFullPath(string path)
             {
-                var relativePath = (path ?? string.Empty).Trim('/');
-                var parentPath = (this.parentModule.ModulePath ?? string.Empty).Trim('/');
+                string actionPath = (path ?? string.Empty).Trim('/');
 
-                if (string.IsNullOrEmpty(parentPath))
+                string bundlePath = (this.GetBundleName() ?? string.Empty).Trim('/'); ;
+
+                string controllerPath = (this.GetControllerName() ?? string.Empty).Trim('/');
+
+                if (string.IsNullOrEmpty(actionPath))
                 {
-                    return string.Concat("/", relativePath);
+                    return string.Concat("/", bundlePath, "/", controllerPath);
                 }
 
-                if (string.IsNullOrEmpty(relativePath))
-                {
-                    return string.Concat("/", parentPath);
-                }
-
-                return string.Concat("/", parentPath, "/", relativePath);
+                return string.Concat("/", bundlePath, "/", controllerPath, "/", actionPath);
             }
+
+            private string GetControllerName()
+            {
+                object[] controllerAttributes = this.parentModule.GetType().GetCustomAttributes(typeof(ControllerAttribute), false);
+
+                if (controllerAttributes != null && controllerAttributes.Length > 0)
+                {
+                    ControllerAttribute controllerAttribute = controllerAttributes[0] as ControllerAttribute;
+
+                    if (controllerAttribute != null && !string.IsNullOrWhiteSpace(controllerAttribute.ControllerName))
+                    {
+                        return controllerAttribute.ControllerName;
+                    }
+                }
+
+                int ctlIndex = this.parentModule.GetType().Name.LastIndexOf("Controller", StringComparison.CurrentCultureIgnoreCase);
+
+                return this.parentModule.GetType().Name.Substring(0, ctlIndex);
+            }
+
+            private string GetBundleName()
+            {
+                object[] bundleNameAttributes = this.parentModule.GetType().Assembly.GetCustomAttributes(typeof(BundleNameAttribute), false);
+
+                if (bundleNameAttributes != null && bundleNameAttributes.Length > 0)
+                {
+                    BundleNameAttribute bundleNameAttribute = bundleNameAttributes[0] as BundleNameAttribute;
+
+                    if (bundleNameAttribute != null)
+                    {
+                        return bundleNameAttribute.Name;
+                    }
+                }
+
+                return null;
+            }
+
         }
     }
 }

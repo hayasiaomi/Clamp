@@ -1,5 +1,6 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
+    using Clamp.OSGI;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -27,8 +28,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceViewLocationProvider"/> class.
         /// </summary>
-        public ResourceViewLocationProvider()
-            : this(new DefaultResourceReader(), new ResourceAssemblyProvider())
+        public ResourceViewLocationProvider() : this(new DefaultResourceReader(), new ResourceAssemblyProvider())
         {
         }
 
@@ -56,11 +56,7 @@
                 return Enumerable.Empty<ViewLocationResult>();
             }
 
-            return this.resourceAssemblyProvider
-                .GetAssembliesToScan()
-                .Union(RootNamespaces.Keys)
-                .Where(x => !Ignore.Contains(x))
-                .SelectMany(x => GetViewLocations(x, supportedViewExtensions));
+            return this.resourceAssemblyProvider.GetAssembliesToScan().Union(RootNamespaces.Keys).Where(x => !Ignore.Contains(x)).SelectMany(x => GetViewLocations(x, supportedViewExtensions));
         }
 
         /// <summary>
@@ -74,14 +70,12 @@
         {
             var allResults = this.GetLocatedViews(supportedViewExtensions);
 
-            return allResults.Where(vlr => vlr.Location.Equals(location, StringComparison.OrdinalIgnoreCase) &&
-                                           vlr.Name.Equals(viewName, StringComparison.OrdinalIgnoreCase));
+            return allResults.Where(vlr => vlr.Location.Equals(location, StringComparison.OrdinalIgnoreCase) && vlr.Name.Equals(viewName, StringComparison.OrdinalIgnoreCase));
         }
 
         private IEnumerable<ViewLocationResult> GetViewLocations(Assembly assembly, IEnumerable<string> supportedViewExtensions)
         {
-            var resourceStreams =
-                this.resourceReader.GetResourceStreamMatches(assembly, supportedViewExtensions);
+            var resourceStreams = this.resourceReader.GetResourceStreamMatches(assembly, supportedViewExtensions);
 
             if (!resourceStreams.Any())
             {
@@ -90,8 +84,7 @@
 
             if (resourceStreams.Count() == 1 && !RootNamespaces.ContainsKey(assembly))
             {
-                var errorMessage =
-                    string.Format("Only one view was found in assembly {0}, but no rootnamespace had been registered.", assembly.FullName);
+                var errorMessage = string.Format("Only one view was found in assembly {0}, but no rootnamespace had been registered.", assembly.FullName);
 
                 throw new InvalidOperationException(errorMessage);
             }
@@ -120,11 +113,7 @@
 
         private static string GetResourceLocation(string commonNamespace, string resource, string resourceName)
         {
-            return resource
-                .Replace(commonNamespace, string.Empty)
-                .Replace(resourceName, string.Empty)
-                .Trim(new[] { '.' })
-                .Replace(".", "/");
+            return resource.Replace(commonNamespace, string.Empty).Replace(resourceName, string.Empty).Trim(new[] { '.' }).Replace(".", "/");
         }
 
         private static string ExtractCommonResourceNamespace(IEnumerable<string> resources)
@@ -133,53 +122,105 @@
             {
                 var resource = resources.First();
 
-                return resource
-                    .Replace(GetResourceFileName(resource), string.Empty)
-                    .TrimEnd(new[] { '.' });
+                return resource.Replace(GetResourceFileName(resource), string.Empty).TrimEnd(new[] { '.' });
             }
 
             var commonPathSegments = resources.Select(s => new { parts = s.Split('.') })
                 .Aggregate((previous, current) => new { parts = current.parts.TakeWhile((step, index) => step == previous.parts.ElementAtOrDefault(index)).ToArray() });
 
-            var commonResourceNamespace =
-                string.Join(".", commonPathSegments.parts);
+            var commonResourceNamespace = string.Join(".", commonPathSegments.parts);
 
             return commonResourceNamespace;
         }
 
         private static string ExtractAssemblyRootNamespace(Assembly assembly)
         {
-            var resources = assembly
-                .GetTypes()
-                .Where(x => !x.IsAnonymousType())
-                .Select(x => x.FullName)
-                .ToList();
+            var resources = assembly.GetTypes().Where(x => !x.IsAnonymousType()).Select(x => x.FullName).ToList();
 
             return ExtractCommonResourceNamespace(resources);
         }
 
         private static string GetResourceFileName(string resourceName)
         {
-            var nameSegments =
-                resourceName.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            var nameSegments = resourceName.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
 
-            var segmentCount =
-                nameSegments.Count();
+            var segmentCount = nameSegments.Count();
 
-            return (segmentCount < 2) ?
-                string.Empty :
-                string.Concat(nameSegments[segmentCount - 2], ".", nameSegments[segmentCount - 1]);
+            return (segmentCount < 2) ? string.Empty : string.Concat(nameSegments[segmentCount - 2], ".", nameSegments[segmentCount - 1]);
         }
 
         private static string GetResourceExtension(string resourceName)
         {
             var extension = Path.GetExtension(resourceName);
+
             return extension != null ? extension.Substring(1) : string.Empty;
         }
 
         public string GetLocatedViewLocation(string location)
         {
+            //string asmName = Path.GetFileNameWithoutExtension(location);
+
+            //Assembly assembly = Assembly.Load(asmName);
+
+            //List<string> resourceNames = assembly.GetManifestResourceNames().Where(mrn => mrn)
+
             return string.Empty;
         }
+
+        public ViewLocationResult GetLocatedViewLocation(string viewName, IEnumerable<string> extensions, ViewLocationContext viewLocationContext)
+        {
+            RuntimeBundle runtimeBundle = viewLocationContext.Context.RuntimeBundle;
+
+            if (runtimeBundle != null)
+            {
+                List<string> viewResourceNames = runtimeBundle.GetResourceNames()
+                                                              .Where(rn => this.MatchViewNameWithExtension(rn, viewName, extensions))
+                                                              .Where(rn => this.MatchViewLocation(rn, viewName))
+                                                              .ToList();
+
+                if (viewResourceNames != null && viewResourceNames.Count > 0)
+                {
+                    return new ResourceViewLocationResult(viewResourceNames[0], viewName, GetResourceExtension(viewResourceNames[0]), runtimeBundle);
+                }
+
+            }
+
+            return null;
+
+        }
+
+        private bool MatchViewNameWithExtension(string resourceName, string viewName, IEnumerable<string> extensions)
+        {
+            string name = Path.GetFileNameWithoutExtension(viewName);
+
+            foreach (string ext in extensions)
+            {
+                if (resourceName.EndsWith(string.Concat(name, ".", ext), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool MatchViewLocation(string resourceName, string viewName)
+        {
+            string viewLocation = Path.GetDirectoryName(viewName);
+            string name = Path.GetFileNameWithoutExtension(viewName);
+
+            string resViewLocation = viewLocation.Replace('/', '.').Replace("\\", ".");
+
+            int nIndex = resourceName.LastIndexOf(name);
+
+            string locaction = resourceName.Substring(0, nIndex).TrimEnd('.');
+
+            if (locaction.EndsWith(resViewLocation, StringComparison.CurrentCultureIgnoreCase))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
     }
 }

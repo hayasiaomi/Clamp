@@ -1,4 +1,4 @@
-namespace ClampMVC.Localization
+namespace Clamp.Linker.Localization
 {
     using System;
     using System.Collections.Generic;

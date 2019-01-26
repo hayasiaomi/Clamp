@@ -1,8 +1,8 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System.IO;
 
-    using ClampMVC.Responses.Negotiation;
+    using Clamp.Linker.Responses.Negotiation;
 
     /// <summary>
     /// Helper class for rendering a view from a route handler.

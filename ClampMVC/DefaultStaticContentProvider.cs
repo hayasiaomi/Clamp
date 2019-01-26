@@ -1,11 +1,11 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System.Linq;
 
-    using ClampMVC.Conventions;
+    using Clamp.Linker.Conventions;
 
     /// <summary>
-    /// The default static content provider that uses <see cref="ClampMVC.Conventions.StaticContentConventions"/>
+    /// The default static content provider that uses <see cref="Clamp.Linker.Conventions.StaticContentConventions"/>
     /// to determine what static content to serve.
     /// </summary>
     public class DefaultStaticContentProvider : IStaticContentProvider

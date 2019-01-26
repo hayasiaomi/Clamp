@@ -1,4 +1,4 @@
-namespace ClampMVC.Localization
+namespace Clamp.Linker.Localization
 {
     /// <summary>
     /// Used to return string values

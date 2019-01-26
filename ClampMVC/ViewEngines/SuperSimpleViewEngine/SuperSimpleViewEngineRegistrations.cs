@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines.SuperSimpleViewEngine
+﻿namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
 {
     using System.Collections.Generic;
     using Bootstrapper;

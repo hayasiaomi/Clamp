@@ -1,5 +1,5 @@
-﻿using ClampMVC.Annotation;
-using ClampMVC.ModelBinding;
+﻿using Clamp.Linker.Annotation;
+using Clamp.Linker.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
     public class DefaultController : BaseController
     {

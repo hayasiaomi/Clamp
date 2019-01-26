@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Bin\Bundles\Authority\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,13 +46,15 @@
     <Compile Include="ViewModel\AuthorityVM.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ClampMVC\ClampMVC.csproj">
+    <ProjectReference Include="..\..\..\ClampMVC\Clamp.Linker.csproj">
       <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
-      <Name>ClampMVC</Name>
+      <Name>Clamp.Linker</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Clamp\Clamp.csproj">
       <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>
       <Name>Clamp</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

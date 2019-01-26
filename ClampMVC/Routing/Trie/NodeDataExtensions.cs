@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing.Trie
+﻿namespace Clamp.Linker.Routing.Trie
 {
     using System.Collections.Generic;
 

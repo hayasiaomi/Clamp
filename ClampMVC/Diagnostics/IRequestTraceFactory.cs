@@ -1,4 +1,4 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     /// <summary>
     /// Defines the functionality for creating an <see cref="IRequestTrace"/> instance.

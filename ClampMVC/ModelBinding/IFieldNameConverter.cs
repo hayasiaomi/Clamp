@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ModelBinding
+﻿namespace Clamp.Linker.ModelBinding
 {
     /// <summary>
     /// Provides the capability to supply a convention to

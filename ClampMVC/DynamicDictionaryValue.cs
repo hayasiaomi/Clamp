@@ -1,4 +1,4 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System;
     using System.ComponentModel;
@@ -6,7 +6,7 @@
     using System.Globalization;
     using System.Linq.Expressions;
     using Microsoft.CSharp.RuntimeBinder;
-    using ClampMVC.Routing.Trie.Nodes;
+    using Clamp.Linker.Routing.Trie.Nodes;
 
     public class DynamicDictionaryValue : DynamicObject, IEquatable<DynamicDictionaryValue>, IHideObjectMembers, IConvertible
     {

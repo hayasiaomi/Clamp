@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ModelBinding
+﻿namespace Clamp.Linker.ModelBinding
 {
     /// <summary>
     /// Configurations that controls the behavior of the binder at runtime.

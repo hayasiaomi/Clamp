@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Extensions
+﻿namespace Clamp.Linker.Extensions
 {
     using System.IO;
     using System.Text;
 
-    using ClampMVC.IO;
+    using Clamp.Linker.IO;
 
     /// <summary>
     /// Extensions for RequestStream.

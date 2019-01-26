@@ -1,11 +1,11 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Linq;
     using System.IO;
 
     using Extensions;
-    using ClampMVC.Responses;
+    using Clamp.Linker.Responses;
 
     public static class FormatterExtensions
     {
@@ -48,7 +48,7 @@ namespace ClampMVC
         	return r;
         }
 
-        public static Response AsRedirect(this IResponseFormatter formatter, string location, ClampMVC.Responses.RedirectResponse.RedirectType type = RedirectResponse.RedirectType.SeeOther)
+        public static Response AsRedirect(this IResponseFormatter formatter, string location, Clamp.Linker.Responses.RedirectResponse.RedirectType type = RedirectResponse.RedirectType.SeeOther)
         {
             return new RedirectResponse(formatter.Context.ToFullPath(location), type);
         }

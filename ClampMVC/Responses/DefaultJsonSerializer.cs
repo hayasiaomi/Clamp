@@ -1,11 +1,11 @@
-﻿namespace ClampMVC.Responses
+﻿namespace Clamp.Linker.Responses
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using Json;
 
-    using ClampMVC.IO;
+    using Clamp.Linker.IO;
 
     public class DefaultJsonSerializer : ISerializer
     {

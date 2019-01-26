@@ -1,4 +1,4 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace ClampMVC
     using System.Security.Cryptography.X509Certificates;
 
     using IO;
-    using ClampMVC.Extensions;
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Extensions;
+    using Clamp.Linker.Helpers;
     using Session;
     using Newtonsoft.Json;
 

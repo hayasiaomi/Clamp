@@ -1,4 +1,4 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     /// <summary>
     /// Stores request trace information about the request.

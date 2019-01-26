@@ -1,9 +1,9 @@
-namespace ClampMVC.Responses
+namespace Clamp.Linker.Responses
 {
     /// <summary>
     /// A response representing an HTTP redirect
-    /// <seealso cref="ClampMVC.Extensions.ContextExtensions.ToFullPath"/>
-    /// <seealso cref="ClampMVC.Extensions.ContextExtensions.GetRedirect"/>
+    /// <seealso cref="Clamp.Linker.Extensions.ContextExtensions.ToFullPath"/>
+    /// <seealso cref="Clamp.Linker.Extensions.ContextExtensions.GetRedirect"/>
     /// </summary>
     public class RedirectResponse : Response
     {

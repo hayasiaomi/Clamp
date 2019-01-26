@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System.Collections.Generic;
     using System.IO;

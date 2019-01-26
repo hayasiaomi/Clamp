@@ -1,5 +1,6 @@
-namespace ClampMVC.Routing.Trie
+namespace Clamp.Linker.Routing.Trie
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -12,6 +13,13 @@ namespace ClampMVC.Routing.Trie
         /// </summary>
         /// <param name="cache">The route cache</param>
         void BuildTrie(IRouteCache cache);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="moduleKey"></param>
+        /// <param name="routeDefinitions"></param>
+        void BuildTrie(Type moduleKey, List<Tuple<int, RouteDescription>> routeDefinitions);
 
         /// <summary>
         /// Get all matches for the given method and path

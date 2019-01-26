@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Diagnostics.Controllers
+﻿namespace Clamp.Linker.Diagnostics.Controllers
 {
     using System;
     using System.Collections;
@@ -6,8 +6,8 @@
     using System.Dynamic;
     using System.Linq;
     using System.Reflection;
-    using ClampMVC.Bootstrapper;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.Bootstrapper;
+    using Clamp.Linker.ViewEngines;
 
     public class InfoController : DiagnosticController
     {

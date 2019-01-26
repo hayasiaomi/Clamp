@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace ClampMVC.Responses
+namespace Clamp.Linker.Responses
 {
     using System;
     using System.IO;
     using System.Linq;
 
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// A response representing a file.

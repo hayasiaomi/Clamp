@@ -1,14 +1,14 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System.Collections.Generic;
     using System.ComponentModel;
     using Clamp.OSGI.Data.Annotation;
     using Clamp.OSGI.Data.Description;
-    using ClampMVC.ModelBinding;
-    using ClampMVC.Responses.Negotiation;
-    using ClampMVC.Routing;
-    using ClampMVC.Validation;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.ModelBinding;
+    using Clamp.Linker.Responses.Negotiation;
+    using Clamp.Linker.Routing;
+    using Clamp.Linker.Validation;
+    using Clamp.Linker.ViewEngines;
 
     /// <summary>
     /// Nancy module base interface

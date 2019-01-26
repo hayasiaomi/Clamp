@@ -1,4 +1,4 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Threading;
@@ -9,7 +9,7 @@ namespace ClampMVC
     /// <summary>
     /// Defines the functionality of an engine that can handle Nancy <see cref="Request"/>s.
     /// </summary>
-    public interface IClampWebEngine : IDisposable
+    public interface ILinkerEngine : IDisposable
     {
         /// <summary>
         /// Factory for creating an <see cref="IPipelines"/> instance for a incoming request.

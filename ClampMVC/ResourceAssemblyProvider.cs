@@ -1,10 +1,10 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Default set of assemblies that should be scanned for items (views, text, content etc)

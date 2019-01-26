@@ -1,18 +1,18 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using ClampMVC.Diagnostics;
+    using Clamp.Linker.Diagnostics;
     using Bootstrapper;
-    using ClampMVC.TinyIoc;
+    using Clamp.Linker.TinyIoc;
 
     /// <summary>
     /// TinyIoC bootstrapper - registers default route resolver and registers itself as
     /// INancyModuleCatalog for resolving modules but behaviour can be overridden if required.
     /// </summary>
-    public class DefaultClampWebBootstrapper : ClampWebBootstrapperWithRequestContainerBase<TinyIoCContainer>
+    public class DefaultLinkerBootstrapper : RequestLinkerBootstrapperBase<TinyIoCContainer>
     {
         /// <summary>
         /// Default assemblies that are ignored for autoregister
@@ -61,9 +61,9 @@ namespace ClampMVC
         /// Resolve INancyEngine
         /// </summary>
         /// <returns>INancyEngine implementation</returns>
-        protected override sealed IClampWebEngine GetEngineInternal()
+        protected override sealed ILinkerEngine GetEngineInternal()
         {
-            return this.ApplicationContainer.Resolve<IClampWebEngine>();
+            return this.ApplicationContainer.Resolve<ILinkerEngine>();
         }
 
         /// <summary>
@@ -105,9 +105,6 @@ namespace ClampMVC
                         break;
                     case Lifetime.PerRequest:
                         throw new InvalidOperationException("Unable to directly register a per request lifetime.");
-#pragma warning disable CS0162 // 检测到无法访问的代码
-                        break;
-#pragma warning restore CS0162 // 检测到无法访问的代码
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -134,9 +131,6 @@ namespace ClampMVC
                         break;
                     case Lifetime.PerRequest:
                         throw new InvalidOperationException("Unable to directly register a per request lifetime.");
-#pragma warning disable CS0162 // 检测到无法访问的代码
-                        break;
-#pragma warning restore CS0162 // 检测到无法访问的代码
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

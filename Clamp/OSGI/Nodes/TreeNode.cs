@@ -33,7 +33,7 @@ namespace Clamp.OSGI.Nodes
                 childrenLoaded = true;
         }
 
-        public ClampBundle BundleEngine
+        public ClampBundle InternalClampBundle
         {
             get { return clampBundle; }
         }
@@ -309,7 +309,7 @@ namespace Clamp.OSGI.Nodes
                 {
                     if (nt.ObjectTypeName.Length > 0 && (nodeName.Length == 0 || nodeName == nt.Id))
                     {
-                        RuntimeBundle addin = clampBundle.GetBundle(extensionPoint.RootBundle);
+                        RuntimeBundle addin = clampBundle.GetRuntimeBundle(extensionPoint.RootBundle);
                         Type ot = addin.GetType(nt.ObjectTypeName);
                         if (ot != null)
                         {
@@ -361,7 +361,7 @@ namespace Clamp.OSGI.Nodes
             if (extensionPoint != null)
             {
                 string aid = Bundle.GetIdName(extensionPoint.ParentBundleDescription.BundleId);
-                RuntimeBundle ad = clampBundle.GetBundle(aid);
+                RuntimeBundle ad = clampBundle.GetRuntimeBundle(aid);
                 if (ad != null)
                     extensionPoint = ad.Bundle.Description.ExtensionPoints[GetPath()];
             }

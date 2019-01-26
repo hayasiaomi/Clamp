@@ -1,4 +1,4 @@
-namespace ClampMVC.Routing.Trie
+namespace Clamp.Linker.Routing.Trie
 {
     using System;
     using System.Collections.Generic;
@@ -38,23 +38,29 @@ namespace ClampMVC.Routing.Trie
                 var moduleKey = cacheItem.Key;
                 var routeDefinitions = cacheItem.Value;
 
-                foreach (var routeDefinition in routeDefinitions)
+                this.BuildTrie(moduleKey, routeDefinitions);
+            }
+        }
+
+        public void BuildTrie(Type moduleKey, List<Tuple<int, RouteDescription>> routeDefinitions)
+        {
+            foreach (var routeDefinition in routeDefinitions)
+            {
+                var routeIndex = routeDefinition.Item1;
+                var routeDescription = routeDefinition.Item2;
+
+                TrieNode trieNode;
+
+                if (!this.routeTries.TryGetValue(routeDescription.Method, out trieNode))
                 {
-                    var routeIndex = routeDefinition.Item1;
-                    var routeDescription = routeDefinition.Item2;
+                    trieNode = this.nodeFactory.GetNodeForSegment(null, null);
 
-                    TrieNode trieNode;
-                    if (!this.routeTries.TryGetValue(routeDescription.Method, out trieNode))
-                    {
-                        trieNode = this.nodeFactory.GetNodeForSegment(null, null);
-
-                        this.routeTries.Add(routeDefinition.Item2.Method, trieNode);
-                    }
-
-                    var segments = routeDefinition.Item2.Segments.ToArray();
-
-                    trieNode.Add(segments, moduleKey, routeIndex, routeDescription);
+                    this.routeTries.Add(routeDefinition.Item2.Method, trieNode);
                 }
+
+                var segments = routeDefinition.Item2.Segments.ToArray();
+
+                trieNode.Add(segments, moduleKey, routeIndex, routeDescription);
             }
         }
 

@@ -60,7 +60,7 @@ namespace Clamp.OSGI.Nodes
 
                 if (elem.NodeName == "Condition")
                 {
-                    Condition cond = new Condition(BundleEngine, elem, parentCondition);
+                    Condition cond = new Condition(InternalClampBundle, elem, parentCondition);
                     LoadExtensionElement(tnode, addin, elem.ChildNodes, module, ref curPos, cond, false, addedNodes);
                     continue;
                 }
@@ -160,7 +160,7 @@ namespace Clamp.OSGI.Nodes
 
             if (elem.NodeName == "Condition")
             {
-                return new Condition(BundleEngine, elem, parentCondition);
+                return new Condition(InternalClampBundle, elem, parentCondition);
             }
 
             clampBundle.ReportError("Invalid complex condition element '" + elem.NodeName + "'.", null, null, false);
@@ -202,7 +202,7 @@ namespace Clamp.OSGI.Nodes
         #region private mehtod
         bool InitializeNodeType(ExtensionNodeType ntype)
         {
-            RuntimeBundle p = clampBundle.GetBundle(ntype.BundleId);
+            RuntimeBundle p = clampBundle.GetRuntimeBundle(ntype.BundleId);
 
             if (p == null)
             {
@@ -211,7 +211,7 @@ namespace Clamp.OSGI.Nodes
                     if (!clampBundle.LoadBundle(ntype.BundleId, false))
                         return false;
 
-                    p = clampBundle.GetBundle(ntype.BundleId);
+                    p = clampBundle.GetRuntimeBundle(ntype.BundleId);
 
                     if (p == null)
                     {

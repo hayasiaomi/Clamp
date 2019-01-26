@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     using System;
     using System.Collections.Generic;
@@ -131,6 +131,11 @@
                 .TrimEnd(new[] { '/' });
 
             return location;
+        }
+
+        public ViewLocationResult GetLocatedViewLocation(string viewName, IEnumerable<string> extensions, ViewLocationContext viewLocationContext)
+        {
+            throw new NotImplementedException();
         }
     }
 }

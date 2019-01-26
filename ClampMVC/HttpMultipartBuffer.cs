@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Linq;

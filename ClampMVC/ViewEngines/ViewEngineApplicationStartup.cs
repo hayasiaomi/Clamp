@@ -1,7 +1,7 @@
-namespace ClampMVC.ViewEngines
+namespace Clamp.Linker.ViewEngines
 {
     using System.Collections.Generic;
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Calls the initialize method on all <see cref="IViewEngine"/> implementations, at application startup.

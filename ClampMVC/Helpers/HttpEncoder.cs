@@ -36,7 +36,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace ClampMVC.Helpers
+namespace Clamp.Linker.Helpers
 {
 #if NET_4_0
 	public

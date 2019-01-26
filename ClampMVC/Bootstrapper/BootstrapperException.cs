@@ -1,10 +1,10 @@
-﻿namespace ClampMVC.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Exception that is raised from inside the <see cref="ClampWebBootstrapperBase{T}"/> type or one of
+    /// Exception that is raised from inside the <see cref="LinkerBootstrapperBase{T}"/> type or one of
     /// the inheriting types.
     /// </summary>
     public class BootstrapperException : Exception

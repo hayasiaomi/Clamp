@@ -1,23 +1,22 @@
-﻿namespace ClampMVC.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Diagnostics;
-    using ClampMVC.Cryptography;
-    using ClampMVC.ModelBinding;
-    using ClampMVC.Conventions;
-    using ClampMVC.ViewEngines;
-    using ClampMVC.Validation;
+    using Clamp.Linker.Cryptography;
+    using Clamp.Linker.ModelBinding;
+    using Clamp.Linker.Conventions;
+    using Clamp.Linker.ViewEngines;
+    using Clamp.Linker.Validation;
 
     /// <summary>
     /// Nancy bootstrapper base class
     /// </summary>
     /// <typeparam name="TContainer">IoC container type</typeparam>
     [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1623:PropertySummaryDocumentationMustMatchAccessors", Justification = "Abstract base class - properties are described differently for overriding.")]
-    public abstract class ClampWebBootstrapperBase<TContainer> : IClampWebBootstrapper, IControllerCatalog, IDisposable
-        where TContainer : class
+    public abstract class LinkerBootstrapperBase<TContainer> : ILinkerBootstrapper, IControllerCatalog, IDisposable where TContainer : class
     {
         /// <summary>
         /// Stores whether the bootstrapper has been initialised
@@ -64,9 +63,9 @@
         protected Type[] RequestStartupTaskTypeCache { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClampWebBootstrapperBase{TContainer}"/> class.
+        /// Initializes a new instance of the <see cref="LinkerBootstrapperBase{TContainer}"/> class.
         /// </summary>
-        protected ClampWebBootstrapperBase()
+        protected LinkerBootstrapperBase()
         {
             this.ApplicationPipelines = new Pipelines();
             this.conventions = new WebworkConventions();
@@ -245,7 +244,9 @@
 
             // TODO - should this be after initialiseinternal?
             this.ConfigureConventions(this.Conventions);
+
             var conventionValidationResult = this.Conventions.Validate();
+
             if (!conventionValidationResult.Item1)
             {
                 throw new InvalidOperationException(string.Format("Conventions are invalid:\n\n{0}", conventionValidationResult.Item2));
@@ -318,7 +319,7 @@
         /// Gets the configured INancyEngine
         /// </summary>
         /// <returns>Configured INancyEngine</returns>
-        public IClampWebEngine GetEngine()
+        public ILinkerEngine GetEngine()
         {
             if (!this.initialised)
             {
@@ -457,13 +458,14 @@
         /// <param name="webworkConventions">Convention object instance</param>
         protected virtual void ConfigureConventions(WebworkConventions webworkConventions)
         {
+
         }
 
         /// <summary>
         /// Resolve INancyEngine
         /// </summary>
         /// <returns>INancyEngine implementation</returns>
-        protected abstract IClampWebEngine GetEngineInternal();
+        protected abstract ILinkerEngine GetEngineInternal();
 
         /// <summary>
         /// Gets the application level container
@@ -554,7 +556,7 @@
                 };
         }
 
-        private IClampWebEngine SafeGetWebworkEngineInstance()
+        private ILinkerEngine SafeGetWebworkEngineInstance()
         {
             try
             {
@@ -610,8 +612,7 @@
                 throw new MultipleRootPathProvidersLocatedException(providerTypes);
             }
 
-            var providerType =
-                providerTypes.SingleOrDefault() ?? typeof(DefaultRootPathProvider);
+            var providerType = providerTypes.SingleOrDefault() ?? typeof(DefaultRootPathProvider);
 
             return Activator.CreateInstance(providerType) as IRootPathProvider;
         }

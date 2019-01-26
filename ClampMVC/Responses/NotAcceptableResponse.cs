@@ -1,4 +1,4 @@
-namespace ClampMVC.Responses
+namespace Clamp.Linker.Responses
 {
     /// <summary>
     /// Response with status code 406 (Not Acceptable).

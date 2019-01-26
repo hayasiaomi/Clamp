@@ -37,9 +37,9 @@ namespace Clamp.OSGI
             get { return fireEvents; }
         }
 
-        internal ClampBundle BundleEngine
+        internal ClampBundle InternalClampBundle
         {
-            get { return tree.BundleEngine; }
+            get { return tree.InternalClampBundle; }
         }
 
         internal TreeClampBundle(TreeClampBundle parent)
@@ -127,6 +127,7 @@ namespace Clamp.OSGI
         public ExtensionNode GetExtensionNode(string path)
         {
             TreeNode node = GetNode(path);
+
             if (node == null)
                 return null;
 
@@ -220,7 +221,7 @@ namespace Clamp.OSGI
         /// </remarks>
         public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
         {
-            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return new ExtensionNodeList(null);
             return GetExtensionNodes(path, expectedNodeType);
@@ -242,7 +243,7 @@ namespace Clamp.OSGI
         /// </remarks>
         public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
         {
-            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return new ExtensionNodeList<T>(null);
             return new ExtensionNodeList<T>(GetExtensionNodes(path, typeof(T)).list);
@@ -281,7 +282,7 @@ namespace Clamp.OSGI
                     if (!expectedNodeType.IsInstanceOfType(cnode))
                     {
                         foundError = true;
-                        BundleEngine.ReportError("Error while getting nodes for path '" + path + "'. Expected subclass of node type '" + expectedNodeType + "'. Found '" + cnode.GetType(), null, null, false);
+                        InternalClampBundle.ReportError("Error while getting nodes for path '" + path + "'. Expected subclass of node type '" + expectedNodeType + "'. Found '" + cnode.GetType(), null, null, false);
                     }
                 }
                 if (foundError)
@@ -313,6 +314,12 @@ namespace Clamp.OSGI
             return GetExtensionObjects(instanceType, true);
         }
 
+        public object[] GetExtensionObjectsByBundleId(string bid, Type instanceType)
+        {
+            return GetExtensionObjects(bid, instanceType, true);
+        }
+
+
         /// <summary>
         /// Gets extension objects registered for a type extension point.
         /// </summary>
@@ -326,6 +333,11 @@ namespace Clamp.OSGI
         public T[] GetExtensionObjects<T>()
         {
             return GetExtensionObjects<T>(true);
+        }
+
+        public T[] GetExtensionObjectsByBundleId<T>(string bid)
+        {
+            return GetExtensionObjectsByBundleId<T>(bid, true);
         }
 
         /// <summary>
@@ -342,10 +354,22 @@ namespace Clamp.OSGI
         /// </returns>
         public object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance)
         {
-            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+
             if (path == null)
                 return (object[])Array.CreateInstance(instanceType, 0);
-            return GetExtensionObjects(path, instanceType, reuseCachedInstance);
+
+            return GetExtensionObjects(path, null, instanceType, reuseCachedInstance);
+        }
+
+        public object[] GetExtensionObjects(string bid, Type instanceType, bool reuseCachedInstance)
+        {
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+
+            if (path == null)
+                return (object[])Array.CreateInstance(instanceType, 0);
+
+            return GetExtensionObjects(path, bid, instanceType, reuseCachedInstance);
         }
 
         /// <summary>
@@ -363,10 +387,18 @@ namespace Clamp.OSGI
         /// </remarks>
         public T[] GetExtensionObjects<T>(bool reuseCachedInstance)
         {
-            string path = BundleEngine.GetAutoTypeExtensionPoint(typeof(T));
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(typeof(T));
             if (path == null)
                 return new T[0];
             return GetExtensionObjects<T>(path, reuseCachedInstance);
+        }
+
+        public T[] GetExtensionObjectsByBundleId<T>(string bid, bool reuseCachedInstance)
+        {
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(typeof(T));
+            if (path == null)
+                return new T[0];
+            return GetExtensionObjects<T>(path, bid, reuseCachedInstance);
         }
 
         /// <summary>
@@ -386,7 +418,12 @@ namespace Clamp.OSGI
         /// </remarks>
         public object[] GetExtensionObjects(string path)
         {
-            return GetExtensionObjects(path, typeof(object), true);
+            return GetExtensionObjects(path, null, typeof(object), true);
+        }
+
+        public object[] GetExtensionObjects(string path, string bid)
+        {
+            return GetExtensionObjects(path, bid, typeof(object), true);
         }
 
         /// <summary>
@@ -410,7 +447,12 @@ namespace Clamp.OSGI
         /// </remarks>
         public object[] GetExtensionObjects(string path, bool reuseCachedInstance)
         {
-            return GetExtensionObjects(path, typeof(object), reuseCachedInstance);
+            return GetExtensionObjects(path, null, typeof(object), reuseCachedInstance);
+        }
+
+        public object[] GetExtensionObjects(string path, string bid, bool reuseCachedInstance)
+        {
+            return GetExtensionObjects(path, bid, typeof(object), reuseCachedInstance);
         }
 
         /// <summary>
@@ -436,7 +478,12 @@ namespace Clamp.OSGI
         /// </remarks>
         public object[] GetExtensionObjects(string path, Type arrayElementType)
         {
-            return GetExtensionObjects(path, arrayElementType, true);
+            return GetExtensionObjects(path, null, arrayElementType, true);
+        }
+
+        public object[] GetExtensionObjects(string path, string bid, Type arrayElementType)
+        {
+            return GetExtensionObjects(path, bid, arrayElementType, true);
         }
 
         /// <summary>
@@ -460,6 +507,11 @@ namespace Clamp.OSGI
         public T[] GetExtensionObjects<T>(string path)
         {
             return GetExtensionObjects<T>(path, true);
+        }
+
+        public T[] GetExtensionObjects<T>(string path, string bid)
+        {
+            return GetExtensionObjects<T>(path, bid, true);
         }
 
         /// <summary>
@@ -492,6 +544,15 @@ namespace Clamp.OSGI
             return node.GetChildObjects<T>(reuseCachedInstance);
         }
 
+        public T[] GetExtensionObjects<T>(string path, string bid, bool reuseCachedInstance)
+        {
+            ExtensionNode node = GetExtensionNode(path);
+            if (node == null)
+                throw new InvalidOperationException("Extension node not found in path: " + path);
+            return node.GetChildObjects<T>(bid, reuseCachedInstance);
+        }
+
+
         /// <summary>
         /// Gets extension objects registered in a path.
         /// </summary>
@@ -517,11 +578,13 @@ namespace Clamp.OSGI
         /// An InvalidOperationException exception is thrown if one of the found
         /// objects is not a subclass of the provided type.
         /// </remarks>
-        public object[] GetExtensionObjects(string path, Type arrayElementType, bool reuseCachedInstance)
+        public object[] GetExtensionObjects(string path, string bid, Type arrayElementType, bool reuseCachedInstance)
         {
             ExtensionNode node = GetExtensionNode(path);
+
             if (node == null)
-                throw new InvalidOperationException("Extension node not found in path: " + path);
+                throw new InvalidOperationException("没有找到扩展节点的路径： " + path);
+
             return node.GetChildObjects(arrayElementType, reuseCachedInstance);
         }
 
@@ -589,7 +652,7 @@ namespace Clamp.OSGI
         /// </remarks>
         public void AddExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
-            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 throw new InvalidOperationException("Type '" + instanceType + "' not bound to an extension point.");
             AddExtensionNodeHandler(path, handler);
@@ -606,7 +669,7 @@ namespace Clamp.OSGI
         /// </param>
         public void RemoveExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
-            string path = BundleEngine.GetAutoTypeExtensionPoint(instanceType);
+            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 throw new InvalidOperationException("Type '" + instanceType + "' not bound to an extension point.");
             RemoveExtensionNodeHandler(path, handler);
@@ -656,7 +719,7 @@ namespace Clamp.OSGI
                 else
                     CleanDisposedChildContexts();
 
-                TreeClampBundle ctx = new TreeClampBundle(this.BundleEngine, this);
+                TreeClampBundle ctx = new TreeClampBundle(this.InternalClampBundle, this);
 
                 WeakReference wref = new WeakReference(ctx);
                 childContexts.Add(wref);
@@ -834,11 +897,11 @@ namespace Clamp.OSGI
             {
                 fireEvents = true;
 
-                Bundle addin = BundleEngine.Registry.GetBundle(id);
+                Bundle addin = InternalClampBundle.Registry.GetBundle(id);
 
                 if (addin == null)
                 {
-                    BundleEngine.ReportError("Required add-in not found", id, null, false);
+                    InternalClampBundle.ReportError("Required add-in not found", id, null, false);
                     return;
                 }
 
@@ -877,7 +940,7 @@ namespace Clamp.OSGI
                                     LoadModuleExtensionNodes(ext, data.BundleId, node.ExtensionNodeSet, loadedNodes);
                             }
                             else
-                                BundleEngine.ReportError("Extension node not found or not extensible: " + ext.Path, id, null, false);
+                                InternalClampBundle.ReportError("Extension node not found or not extensible: " + ext.Path, id, null, false);
                         }
                     }
                 }
@@ -950,7 +1013,7 @@ namespace Clamp.OSGI
                 // event without first getting the list of nodes that may change).
 
                 // We get the runtime add-in because the add-in may already have been deleted from the registry
-                RuntimeBundle addin = BundleEngine.GetBundle(id);
+                RuntimeBundle addin = InternalClampBundle.GetRuntimeBundle(id);
                 if (addin != null)
                 {
                     ArrayList paths = new ArrayList();
@@ -1036,7 +1099,7 @@ namespace Clamp.OSGI
                         for (int n = 0; n < loadData.Count; n++)
                         {
                             ExtensionLoadData other = (ExtensionLoadData)loadData[n];
-                            if (BundleEngine.Registry.BundleDependsOn(other.BundleId, ed.BundleId))
+                            if (InternalClampBundle.Registry.BundleDependsOn(other.BundleId, ed.BundleId))
                             {
                                 loadData.Insert(n, ed);
                                 added = true;
@@ -1059,7 +1122,7 @@ namespace Clamp.OSGI
                         if (cnode != null && cnode.ExtensionNodeSet != null)
                             LoadModuleExtensionNodes(ext, data.BundleId, cnode.ExtensionNodeSet, loadedNodes);
                         else
-                            BundleEngine.ReportError("Extension node not found or not extensible: " + ext.Path, data.BundleId, null, false);
+                            InternalClampBundle.ReportError("Extension node not found or not extensible: " + ext.Path, data.BundleId, null, false);
                     }
                 }
                 // Call the OnBundleLoaded method on nodes, if the add-in is already loaded
@@ -1134,15 +1197,15 @@ namespace Clamp.OSGI
             Bundle pinfo = null;
 
             // Root add-ins are not returned by GetInstalledBundle.
-            RuntimeBundle addin = BundleEngine.GetBundle(id);
+            RuntimeBundle addin = InternalClampBundle.GetRuntimeBundle(id);
             if (addin != null)
                 pinfo = addin.Bundle;
             else
-                pinfo = BundleEngine.Registry.GetBundle(id);
+                pinfo = InternalClampBundle.Registry.GetBundle(id);
 
             if (pinfo == null)
             {
-                BundleEngine.ReportError("Required add-in not found", id, null, false);
+                InternalClampBundle.ReportError("Required add-in not found", id, null, false);
                 return null;
             }
             if (!pinfo.Enabled || pinfo.Version != Bundle.GetIdVersion(id))
@@ -1190,7 +1253,7 @@ namespace Clamp.OSGI
             ArrayList addedNodes = new ArrayList();
             tree.LoadExtension(addinId, extension, addedNodes);
 
-            RuntimeBundle ad = BundleEngine.GetBundle(addinId);
+            RuntimeBundle ad = InternalClampBundle.GetRuntimeBundle(addinId);
             if (ad != null)
             {
                 foreach (TreeNode nod in addedNodes)
@@ -1209,7 +1272,7 @@ namespace Clamp.OSGI
                 BundleDependency pdep = dep as BundleDependency;
                 if (pdep != null)
                 {
-                    Bundle pinfo = BundleEngine.Registry.GetBundle(Bundle.GetFullId(conf.Namespace, pdep.BundleId, pdep.Version));
+                    Bundle pinfo = InternalClampBundle.Registry.GetBundle(Bundle.GetFullId(conf.Namespace, pdep.BundleId, pdep.Version));
                     if (pinfo == null || !pinfo.Enabled)
                         return false;
                 }
@@ -1220,10 +1283,12 @@ namespace Clamp.OSGI
         private TreeNode GetNode(string path)
         {
             TreeNode node = tree.GetNode(path);
+
             if (node != null || parentContext == null)
                 return node;
 
             TreeNode supNode = parentContext.tree.GetNode(path);
+
             if (supNode == null)
                 return null;
 
@@ -1255,7 +1320,7 @@ namespace Clamp.OSGI
                 else
                 {
                     // Create if not found
-                    TreeNode newNode = new TreeNode(BundleEngine, part);
+                    TreeNode newNode = new TreeNode(InternalClampBundle, part);
                     dstNode.AddChildNode(newNode);
                     dstNode = newNode;
 
@@ -1272,7 +1337,7 @@ namespace Clamp.OSGI
             return dstNode;
         }
 
-      
+
 
 
 

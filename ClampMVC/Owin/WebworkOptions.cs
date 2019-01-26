@@ -1,20 +1,20 @@
-﻿namespace ClampMVC.Owin
+﻿namespace Clamp.Linker.Owin
 {
     using System;
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Options for hosting Nancy with OWIN.
     /// </summary>
     public class WebworkOptions
     {
-        private IClampWebBootstrapper bootstrapper;
+        private ILinkerBootstrapper bootstrapper;
         private Func<ClampWebContext, bool> performPassThrough;
 
         /// <summary>
         /// Gets or sets the bootstrapper. If none is set, NancyBootstrapperLocator.Bootstrapper is used.
         /// </summary>
-        public IClampWebBootstrapper Bootstrapper
+        public ILinkerBootstrapper Bootstrapper
         {
             get { return this.bootstrapper ?? ClampWebBootstrapperLocator.Bootstrapper; }
             set { this.bootstrapper = value; }

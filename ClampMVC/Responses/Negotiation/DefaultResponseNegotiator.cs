@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Responses.Negotiation
+﻿namespace Clamp.Linker.Responses.Negotiation
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@
     using System.Linq;
     using System.Text;
 
-    using ClampMVC.Conventions;
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Conventions;
+    using Clamp.Linker.Extensions;
 
     /// <summary>
     /// The default implementation for a response negotiator.
@@ -79,7 +79,7 @@
             // to be called in the correct way. It cannot be replaced by the as-operator.
             try
             {
-                response = (Response) routeResult;
+                response = (Response)routeResult;
                 return true;
             }
             catch
@@ -143,10 +143,7 @@
             sb.AppendFormat("[DefaultResponseNegotiator] Acceptable media ranges: {0}\n", allowableFormats);
         }
 
-        private IEnumerable<CompatibleHeader> GetCompatibleHeaders(
-            IEnumerable<Tuple<string, decimal>> coercedAcceptHeaders,
-            NegotiationContext negotiationContext,
-            ClampWebContext context)
+        private IEnumerable<CompatibleHeader> GetCompatibleHeaders(IEnumerable<Tuple<string, decimal>> coercedAcceptHeaders, NegotiationContext negotiationContext, ClampWebContext context)
         {
             var acceptHeaders = GetCompatibleHeaders(coercedAcceptHeaders, negotiationContext);
 
@@ -164,9 +161,7 @@
             }
         }
 
-        private static IEnumerable<Tuple<string, decimal>> GetCompatibleHeaders(
-            IEnumerable<Tuple<string, decimal>> coercedAcceptHeaders,
-            NegotiationContext negotiationContext)
+        private static IEnumerable<Tuple<string, decimal>> GetCompatibleHeaders(IEnumerable<Tuple<string, decimal>> coercedAcceptHeaders, NegotiationContext negotiationContext)
         {
             var permissableMediaRanges = negotiationContext.PermissableMediaRanges;
             if (permissableMediaRanges.Any(mr => mr.IsWildcard))
@@ -188,8 +183,7 @@
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <returns>IEnumerable{Tuple{IResponseProcessor, ProcessorMatch}}.</returns>
-        private IEnumerable<Tuple<IResponseProcessor, ProcessorMatch>> GetCompatibleProcessorsByHeader(
-            string acceptHeader, dynamic model, ClampWebContext context)
+        private IEnumerable<Tuple<IResponseProcessor, ProcessorMatch>> GetCompatibleProcessorsByHeader(string acceptHeader, dynamic model, ClampWebContext context)
         {
             foreach (var processor in this.processors)
             {
@@ -249,27 +243,22 @@
         /// <param name="negotiationContext">The negotiation context.</param>
         /// <param name="context">The context.</param>
         /// <returns>Response.</returns>
-        private static Response NegotiateResponse(
-            IEnumerable<CompatibleHeader> compatibleHeaders,
-            NegotiationContext negotiationContext,
-            ClampWebContext context)
+        private static Response NegotiateResponse(IEnumerable<CompatibleHeader> compatibleHeaders, NegotiationContext negotiationContext, ClampWebContext context)
         {
             foreach (var compatibleHeader in compatibleHeaders)
             {
-                var prioritizedProcessors = compatibleHeader.Processors
-                    .OrderByDescending(x => x.Item2.ModelResult)
-                    .ThenByDescending(x => x.Item2.RequestedContentTypeResult);
+                var prioritizedProcessors = compatibleHeader.Processors.OrderByDescending(x => x.Item2.ModelResult).ThenByDescending(x => x.Item2.RequestedContentTypeResult);
 
                 foreach (var prioritizedProcessor in prioritizedProcessors)
                 {
                     var processorType = prioritizedProcessor.Item1.GetType();
 
-                    context.WriteTraceLog(sb =>
-                        sb.AppendFormat("[DefaultResponseNegotiator] Invoking processor: {0}\n", processorType));
+                    context.WriteTraceLog(sb => sb.AppendFormat("[DefaultResponseNegotiator] Invoking processor: {0}\n", processorType));
 
                     var mediaRangeModel = negotiationContext.GetModelForMediaRange(compatibleHeader.MediaRange);
 
                     var response = prioritizedProcessor.Item1.Process(compatibleHeader.MediaRange, mediaRangeModel, context);
+
                     if (response != null)
                     {
                         return response;
@@ -286,10 +275,7 @@
         /// <param name="compatibleHeaders">The compatible headers.</param>
         /// <param name="response">The response.</param>
         /// <param name="requestUrl">The request URL.</param>
-        private static void AddLinkHeader(
-            IEnumerable<CompatibleHeader> compatibleHeaders,
-            Response response,
-            Url requestUrl)
+        private static void AddLinkHeader(IEnumerable<CompatibleHeader> compatibleHeaders, Response response, Url requestUrl)
         {
             var linkProcessors = GetLinkProcessors(compatibleHeaders, response.ContentType);
             if (linkProcessors.Any())
@@ -304,9 +290,7 @@
         /// <param name="compatibleHeaders">The compatible headers.</param>
         /// <param name="contentType">The content-type of the response.</param>
         /// <returns>Dictionary{System.String, MediaRange}.</returns>
-        private static IDictionary<string, MediaRange> GetLinkProcessors(
-            IEnumerable<CompatibleHeader> compatibleHeaders,
-            string contentType)
+        private static IDictionary<string, MediaRange> GetLinkProcessors(IEnumerable<CompatibleHeader> compatibleHeaders, string contentType)
         {
             var linkProcessors = new Dictionary<string, MediaRange>();
 

@@ -1,7 +1,7 @@
-﻿namespace ClampMVC.Culture
+﻿namespace Clamp.Linker.Culture
 {
     using System.Globalization;
-    using ClampMVC.Conventions;
+    using Clamp.Linker.Conventions;
     using System.Linq;
 
     /// <summary>

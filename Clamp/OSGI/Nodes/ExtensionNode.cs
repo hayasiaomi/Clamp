@@ -122,7 +122,7 @@ namespace Clamp.OSGI.Nodes
                 {
                     if (!clampBundle.IsBundleLoaded(bundleId))
                         clampBundle.LoadBundle(bundleId, true);
-                    runtimeBundle = clampBundle.GetBundle(bundleId);
+                    runtimeBundle = clampBundle.GetRuntimeBundle(bundleId);
                     if (runtimeBundle != null)
                         runtimeBundle = runtimeBundle.GetModule(module);
                 }
@@ -274,21 +274,6 @@ namespace Clamp.OSGI.Nodes
         }
 
         /// <summary>
-        /// Returns the child objects of a node (casting to the specified type)
-        /// </summary>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the
-        /// TypeExtensionNode.GetInstance() method for each node.
-        /// </remarks>
-        public T[] GetChildObjects<T>()
-        {
-            return (T[])GetChildObjectsInternal(typeof(T), true);
-        }
-        /// <summary>
         /// Returns the child objects of a node (with type check).
         /// </summary>
         /// <param name="arrayElementType">
@@ -310,7 +295,40 @@ namespace Clamp.OSGI.Nodes
         /// </remarks>
         public object[] GetChildObjects(Type arrayElementType, bool reuseCachedInstance)
         {
-            return (object[])GetChildObjectsInternal(arrayElementType, reuseCachedInstance);
+            return (object[])GetChildObjectsInternal(arrayElementType, null, reuseCachedInstance);
+        }
+
+
+        public object[] GetChildObjects(Type arrayElementType, string bid)
+        {
+            return (object[])GetChildObjectsInternal(arrayElementType, bid, false);
+        }
+
+        public object[] GetChildObjects(Type arrayElementType, string bid, bool reuseCachedInstance)
+        {
+            return (object[])GetChildObjectsInternal(arrayElementType, bid, reuseCachedInstance);
+        }
+
+
+        /// <summary>
+        /// Returns the child objects of a node (casting to the specified type)
+        /// </summary>
+        /// <returns>
+        /// An array of child objects.
+        /// </returns>
+        /// <remarks>
+        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
+        /// The returned array is composed by all objects created by calling the
+        /// TypeExtensionNode.GetInstance() method for each node.
+        /// </remarks>
+        public T[] GetChildObjects<T>()
+        {
+            return (T[])GetChildObjectsInternal(typeof(T), null, true);
+        }
+
+        public T[] GetChildObjects<T>(string bid)
+        {
+            return (T[])GetChildObjectsInternal(typeof(T), bid, true);
         }
 
         /// <summary>
@@ -329,19 +347,31 @@ namespace Clamp.OSGI.Nodes
         /// </remarks>
         public T[] GetChildObjects<T>(bool reuseCachedInstance)
         {
-            return (T[])GetChildObjectsInternal(typeof(T), reuseCachedInstance);
+            return (T[])GetChildObjectsInternal(typeof(T), null, reuseCachedInstance);
         }
 
-        Array GetChildObjectsInternal(Type arrayElementType, bool reuseCachedInstance)
+        public T[] GetChildObjects<T>(string bid, bool reuseCachedInstance)
+        {
+            return (T[])GetChildObjectsInternal(typeof(T), bid, reuseCachedInstance);
+        }
+
+        Array GetChildObjectsInternal(Type arrayElementType, string bid, bool reuseCachedInstance)
         {
             ArrayList list = new ArrayList(ChildNodes.Count);
 
             for (int n = 0; n < ChildNodes.Count; n++)
             {
                 InstanceExtensionNode node = ChildNodes[n] as InstanceExtensionNode;
+
                 if (node == null)
                 {
                     clampBundle.ReportError("Error while getting object for node in path '" + Path + "'. Extension node is not a subclass of InstanceExtensionNode.", null, null, false);
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(bid) && (node.Bundle == null || node.Bundle.Id != bid))
+                {
+                    clampBundle.ReportError($"找到对应的Path[{Path}],但是不在指定的Budnle内[{bid}]", null, null, false);
                     continue;
                 }
 
@@ -357,6 +387,7 @@ namespace Clamp.OSGI.Nodes
                     clampBundle.ReportError("Error while getting object for node in path '" + Path + "'.", node.BundleId, ex, false);
                 }
             }
+
             return list.ToArray(arrayElementType);
         }
 

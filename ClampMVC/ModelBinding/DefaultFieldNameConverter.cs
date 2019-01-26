@@ -1,4 +1,4 @@
-namespace ClampMVC.ModelBinding
+namespace Clamp.Linker.ModelBinding
 {
     /// <summary>
     /// Default field name converter

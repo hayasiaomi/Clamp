@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Conventions
+﻿namespace Clamp.Linker.Conventions
 {
     /// <summary>
     /// Nancy static file convention helper

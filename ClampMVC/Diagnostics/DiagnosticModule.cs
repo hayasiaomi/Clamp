@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Diagnostics
+﻿namespace Clamp.Linker.Diagnostics
 {
     public abstract class DiagnosticController : BaseController
     {

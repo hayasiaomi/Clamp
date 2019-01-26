@@ -1,4 +1,4 @@
-namespace ClampMVC.Responses.Negotiation
+namespace Clamp.Linker.Responses.Negotiation
 {
     using System;
 

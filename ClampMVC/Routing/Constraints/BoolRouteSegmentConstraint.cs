@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing.Constraints
+﻿namespace Clamp.Linker.Routing.Constraints
 {
     /// <summary>
     /// Constraint for <see cref="bool"/> route segments.

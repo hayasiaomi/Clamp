@@ -1,4 +1,4 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     /// <summary>
     /// A "disabled" static content provider - always returns null

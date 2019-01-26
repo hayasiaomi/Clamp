@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,7 @@
     /// </summary>
     public class DefaultViewLocator : IViewLocator
     {
-        private readonly List<ViewLocationResult> viewLocationResults;
+        private readonly List<ViewLocationResult> viewLocationResultCaches = new List<ViewLocationResult>();
 
         private readonly IViewLocationProvider viewLocationProvider;
 
@@ -27,16 +27,12 @@
             this.viewEngines = viewEngines;
 
             this.invalidCharacters = Path.GetInvalidFileNameChars().Where(c => c != '/').ToArray();
-
-            // No need to lock here, we get constructed on app startup
-            this.viewLocationResults = new List<ViewLocationResult>(this.GetInititialViewLocations());
         }
 
 
         public void Refresh()
         {
-            this.viewLocationResults.Clear();
-            this.viewLocationResults.AddRange(this.GetInititialViewLocations());
+            this.viewLocationResultCaches.Clear();
         }
 
         /// <summary>
@@ -57,31 +53,23 @@
                 return null;
             }
 
-            var viewLocation = this.viewLocationProvider.GetLocatedViewLocation(viewLocationContext.ModuleLocation);
-
-            // If we can't do runtime discovery there's no need to lock anything
-            // as we can assume our cache is immutable.
-            if (!StaticConfiguration.Caching.EnableRuntimeViewDiscovery)
-            {
-                return this.LocateCachedView(viewName, viewLocation);
-            }
-
             this.padlock.EnterUpgradeableReadLock();
+
             try
             {
-                var cachedResult = this.LocateCachedView(viewName, viewLocation);
+                var cachedResults = this.GetCachedMatchingViews(viewName, viewLocationContext);
 
-                if (cachedResult != null)
+                if (cachedResults.Count == 1)
                 {
-                    return cachedResult;
+                    return cachedResults.Single();
                 }
 
-                if (!StaticConfiguration.Caching.EnableRuntimeViewDiscovery)
+                if (cachedResults.Count > 1)
                 {
-                    return null;
+                    throw new AmbiguousViewsException(GetAmgiguousViewExceptionMessage(cachedResults.Count, cachedResults));
                 }
 
-                return this.LocateAndCacheUncachedView(viewName, viewLocation);
+                return null;
             }
             finally
             {
@@ -103,8 +91,8 @@
             try
             {
                 // Make a copy to avoid any modification issues
-                var newList = new List<ViewLocationResult>(this.viewLocationResults.Count);
-                this.viewLocationResults.ForEach(newList.Add);
+                var newList = new List<ViewLocationResult>(this.viewLocationResultCaches.Count);
+                this.viewLocationResultCaches.ForEach(newList.Add);
                 return newList;
             }
             finally
@@ -113,48 +101,6 @@
             }
         }
 
-        private ViewLocationResult LocateAndCacheUncachedView(string viewName, string viewLocation)
-        {
-            var uncachedResults = this.GetUncachedMatchingViews(viewName, viewLocation);
-            if (!uncachedResults.Any())
-            {
-                return null;
-            }
-
-            this.padlock.EnterWriteLock();
-            try
-            {
-                this.viewLocationResults.AddRange(uncachedResults);
-            }
-            finally
-            {
-                this.padlock.ExitWriteLock();
-            }
-
-            if (uncachedResults.Length > 1)
-            {
-                throw new AmbiguousViewsException(GetAmgiguousViewExceptionMessage(uncachedResults.Length, uncachedResults));
-            }
-
-            return uncachedResults.First();
-        }
-
-        private ViewLocationResult LocateCachedView(string viewName, string viewLocation)
-        {
-            var cachedResults = this.GetCachedMatchingViews(viewName, viewLocation);
-
-            if (cachedResults.Length == 1)
-            {
-                return cachedResults.Single();
-            }
-
-            if (cachedResults.Length > 1)
-            {
-                throw new AmbiguousViewsException(GetAmgiguousViewExceptionMessage(cachedResults.Length, cachedResults));
-            }
-
-            return null;
-        }
 
         private ViewLocationResult[] GetUncachedMatchingViews(string viewName, string viewLocation)
         {
@@ -168,21 +114,31 @@
             return this.viewLocationProvider.GetLocatedViews(supportedViewExtensions, location, nameWithoutExtension).ToArray();
         }
 
-        private ViewLocationResult[] GetCachedMatchingViews(string viewName, string viewLocation)
+        private List<ViewLocationResult> GetCachedMatchingViews(string viewName, ViewLocationContext viewLocationContext)
         {
-            return this.viewLocationResults.Where(x => NameMatchesView(viewName, x))
+            List<ViewLocationResult> viewLocationResults = new List<ViewLocationResult>();
+
+            string bundleName = viewLocationContext.Context.RuntimeBundle.Name;
+
+            viewLocationResults.AddRange(this.viewLocationResultCaches
+                       .Where(x => BundleNameMatchesView(bundleName, x))
+                       .Where(x => NameMatchesView(viewName, x))
                        .Where(x => ExtensionMatchesView(viewName, x))
-                       .Where(x => LocationMatchesView(viewName, x, viewLocation))
-                       .ToArray();
-        }
+                       .Where(x => LocationMatchesView(viewName, x, viewLocationContext.ModuleLocation))
+                       .ToList());
 
-        private IEnumerable<ViewLocationResult> GetInititialViewLocations()
-        {
-            var supportedViewExtensions = GetSupportedViewExtensions();
+            if (!viewLocationResults.Any())
+            {
+                ViewLocationResult viewLocationResult = this.viewLocationProvider.GetLocatedViewLocation(viewName, GetSupportedViewExtensions(), viewLocationContext);
 
-            var viewsLocatedByProviders = this.viewLocationProvider.GetLocatedViews(supportedViewExtensions);
+                if (viewLocationResult != null)
+                {
+                    this.viewLocationResultCaches.Add(viewLocationResult);
+                    viewLocationResults.Add(viewLocationResult);
+                }
+            }
 
-            return viewsLocatedByProviders.ToArray();
+            return viewLocationResults;
         }
 
         private IEnumerable<string> GetSupportedViewExtensions()
@@ -212,6 +168,11 @@
             var location = GetLocationFromViewName(viewName, viewLocation);
 
             return viewLocationResult.Location.Equals(location, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool BundleNameMatchesView(string bundleName, ViewLocationResult viewLocationResult)
+        {
+            return (!string.IsNullOrEmpty(bundleName)) && viewLocationResult.BundleName.Equals(bundleName, StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool NameMatchesView(string viewName, ViewLocationResult viewLocationResult)

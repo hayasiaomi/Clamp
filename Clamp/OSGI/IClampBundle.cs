@@ -8,27 +8,16 @@ namespace Clamp.OSGI
 {
     public interface IClampBundle : IBundle, IDisposable
     {
-        //ExtensionNode GetExtensionNode(string path);
-
-        //T GetExtensionNode<T>(string path) where T : ExtensionNode;
-
-        //ExtensionNodeList GetExtensionNodes(string path);
-
-        //ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType);
-
-        //ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode;
-
-        //ExtensionNodeList GetExtensionNodes(Type instanceType);
-
-        //ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType);
-
-        //ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode;
 
         object[] GetExtensionObjects(Type instanceType);
+
+        object[] GetExtensionObjectsByBundleId(string bid, Type instanceType);
 
         T[] GetExtensionObjects<T>();
 
         object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance);
+
+        object[] GetExtensionObjects(string bid, Type instanceType, bool reuseCachedInstance);
 
         T[] GetExtensionObjects<T>(bool reuseCachedInstance);
 
@@ -38,11 +27,17 @@ namespace Clamp.OSGI
 
         object[] GetExtensionObjects(string path, Type arrayElementType);
 
+        object[] GetExtensionObjects(string path, string bid, Type arrayElementType);
+
         T[] GetExtensionObjects<T>(string path);
 
-        object[] GetExtensionObjects(string path, Type arrayElementType, bool reuseCachedInstance);
+        T[] GetExtensionObjects<T>(string path, string bid);
+
+        object[] GetExtensionObjects(string path, string bid, Type arrayElementType, bool reuseCachedInstance);
 
         T[] GetExtensionObjects<T>(string path, bool reuseCachedInstance);
+
+        T[] GetExtensionObjects<T>(string path, string bid, bool reuseCachedInstance);
 
         void WaitForStop();
     }

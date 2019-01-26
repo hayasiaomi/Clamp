@@ -1,8 +1,8 @@
-﻿namespace ClampMVC.Responses.Negotiation
+﻿namespace Clamp.Linker.Responses.Negotiation
 {
     using System;
     using System.Collections.Generic;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.ViewEngines;
 
     /// <summary>
     /// Processes the model for view requests.
@@ -39,12 +39,9 @@
         /// <returns>A <see cref="ProcessorMatch"/> result that determines the priority of the processor.</returns>
         public ProcessorMatch CanProcess(MediaRange requestedMediaRange, dynamic model, ClampWebContext context)
         {
-            var matchingContentType =
-                requestedMediaRange.Matches("text/html");
+            var matchingContentType = requestedMediaRange.Matches("text/html");
 
-            return matchingContentType
-                ? new ProcessorMatch { ModelResult = MatchResult.DontCare, RequestedContentTypeResult = MatchResult.ExactMatch }
-                : new ProcessorMatch();
+            return matchingContentType ? new ProcessorMatch { ModelResult = MatchResult.DontCare, RequestedContentTypeResult = MatchResult.ExactMatch } : new ProcessorMatch();
         }
 
         /// <summary>
@@ -61,7 +58,7 @@
             return StaticConfiguration.DisableErrorTraces ? viewResponse : new MaterialisingResponse(viewResponse);
         }
 
-        private static ViewLocationContext GetViewLocationContext(ClampWebContext context)
+        private ViewLocationContext GetViewLocationContext(ClampWebContext context)
         {
             return new ViewLocationContext
             {

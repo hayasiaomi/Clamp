@@ -1,11 +1,11 @@
-namespace ClampMVC.Extensions
+namespace Clamp.Linker.Extensions
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
     using Routing;
 
     /// <summary>

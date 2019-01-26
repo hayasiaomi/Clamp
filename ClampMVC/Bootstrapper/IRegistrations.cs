@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
     using System.Collections.Generic;
 

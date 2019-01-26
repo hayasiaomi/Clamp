@@ -1,4 +1,4 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace ClampMVC
 
     using Cookies;
 
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// Encapsulates HTTP-response information from an Nancy operation.

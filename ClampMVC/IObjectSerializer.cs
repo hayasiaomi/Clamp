@@ -1,4 +1,4 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     /// <summary>
     /// De/Serialisation for cookie objects

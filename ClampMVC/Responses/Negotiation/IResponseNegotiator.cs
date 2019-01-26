@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Responses.Negotiation
+﻿namespace Clamp.Linker.Responses.Negotiation
 {
     /// <summary>
     /// Creates a response from a given result and context.

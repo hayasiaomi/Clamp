@@ -1,6 +1,6 @@
-﻿namespace ClampMVC.Routing.Constraints
+﻿namespace Clamp.Linker.Routing.Constraints
 {
-    using ClampMVC.Routing.Trie;
+    using Clamp.Linker.Routing.Trie;
 
     /// <summary>
     /// Defines the functionality to constrain route matching.

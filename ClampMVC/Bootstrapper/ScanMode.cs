@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
     /// <summary>
     /// Determines which set of types that the <see cref="AppDomainAssemblyTypeScanner"/> should scan in.

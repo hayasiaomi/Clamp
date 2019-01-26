@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Diagnostics
+﻿namespace Clamp.Linker.Diagnostics
 {
     using System;
     using System.Collections.Generic;
@@ -19,14 +19,14 @@
             {
                 Type providerType = provider.GetType();
 
-                return providerType != typeof(ClampMVC.Diagnostics.TestingDiagnosticProvider) &
-                       providerType != typeof(ClampMVC.Routing.DefaultRouteCacheProvider);
+                return providerType != typeof(Clamp.Linker.Diagnostics.TestingDiagnosticProvider) &
+                       providerType != typeof(Clamp.Linker.Routing.DefaultRouteCacheProvider);
             });
 
             if (customProvidersAvailable)
             {
                 // Exclude only the TestingDiagnosticProvider
-                this.providers = providers.Where(provider => provider.GetType() != typeof(ClampMVC.Diagnostics.TestingDiagnosticProvider)).ToArray();
+                this.providers = providers.Where(provider => provider.GetType() != typeof(Clamp.Linker.Diagnostics.TestingDiagnosticProvider)).ToArray();
             }
             else
             {

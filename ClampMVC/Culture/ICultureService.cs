@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Culture
+﻿namespace Clamp.Linker.Culture
 {
     using System.Globalization;
 

@@ -1,8 +1,8 @@
-﻿namespace ClampMVC.Security
+﻿namespace Clamp.Linker.Security
 {
     using System;
     using System.Collections.Generic;
-    using ClampMVC.Responses;
+    using Clamp.Linker.Responses;
 
     /// <summary>
     /// Hooks to be used in a request pipeline.

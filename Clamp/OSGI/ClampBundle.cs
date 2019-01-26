@@ -116,13 +116,16 @@ namespace Clamp.OSGI
         public bool IsBundleLoaded(string id)
         {
             CheckInitialized();
+
             ValidateBundleRoots();
+
             return loadedBundles.ContainsKey(Bundle.GetIdName(id));
         }
 
         public void InitializeDefaultLocalizer(IBundleLocalizer localizer)
         {
             CheckInitialized();
+
             lock (LocalLock)
             {
                 if (localizer != null)
@@ -140,6 +143,7 @@ namespace Clamp.OSGI
             ActivateBundles();
 
             OnAssemblyLoaded(null, null);
+
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(OnAssemblyLoaded);
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
 
@@ -229,12 +233,19 @@ namespace Clamp.OSGI
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        internal RuntimeBundle GetBundle(string id)
+        internal RuntimeBundle GetRuntimeBundle(string id)
         {
             ValidateBundleRoots();
             RuntimeBundle a;
             loadedBundles.TryGetValue(Bundle.GetIdName(id), out a);
             return a;
+        }
+
+        internal RuntimeBundle GetRuntimeBundleByName(string name)
+        {
+            ValidateBundleRoots();
+
+            return this.loadedBundles.Values.FirstOrDefault(rb => string.Equals(rb.Name, name, StringComparison.CurrentCultureIgnoreCase)); 
         }
 
         internal void RegisterAutoTypeExtensionPoint(Type type, string path)
@@ -292,9 +303,7 @@ namespace Clamp.OSGI
                     {
                         bdesc = bundle.Description;
                     }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                     catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                     {
 
                     }
@@ -356,7 +365,7 @@ namespace Clamp.OSGI
         {
             RemoveBundleExtensions(id);
 
-            RuntimeBundle addin = GetBundle(id);
+            RuntimeBundle addin = GetRuntimeBundle(id);
 
             if (addin != null)
             {
@@ -674,9 +683,7 @@ namespace Clamp.OSGI
             {
                 bundle = Registry.GetBundleForHostAssembly(asmFile);
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 Registry.Update();
 
@@ -691,9 +698,7 @@ namespace Clamp.OSGI
                 {
                     bdesc = bundle.Description;
                 }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                 catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                 {
 
                 }

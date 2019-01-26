@@ -1,10 +1,10 @@
-namespace ClampMVC.Cookies
+namespace Clamp.Linker.Cookies
 {
     using System;
     using System.Globalization;
     using System.Text;
 
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// Default cookie implementation for Nancy.

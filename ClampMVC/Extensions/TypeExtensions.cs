@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Extensions
+﻿namespace Clamp.Linker.Extensions
 {
     using System;
     using System.Collections.Generic;

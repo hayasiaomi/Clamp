@@ -1,8 +1,10 @@
-using ClampMVC.Culture;
-using ClampMVC.Diagnostics;
-using ClampMVC.Localization;
+using Clamp.Linker.Culture;
+using Clamp.Linker.Diagnostics;
+using Clamp.Linker.Localization;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
 
     /// <summary>
@@ -40,10 +42,49 @@ namespace ClampMVC
             context.Culture = this.cultureService.DetermineCurrentCulture(context);
             context.Text = new TextResourceFinder(this.textResource, context);
 
+            context.BundleName = GetUrlSegments(request.Path).FirstOrDefault();
+
             // Move this to DefaultRequestTrace.
             context.Trace.TraceLog.WriteLog(s => s.AppendLine("New Request Started"));
 
             return context;
+        }
+
+        public List<string> GetUrlSegments(string path)
+        {
+            List<string> segments = new List<string>();
+
+            var currentSegment = string.Empty;
+            var openingParenthesesCount = 0;
+
+            for (var index = 0; index < path.Length; index++)
+            {
+                var token = path[index];
+
+                if (token.Equals('('))
+                {
+                    openingParenthesesCount++;
+                }
+
+                if (token.Equals(')'))
+                {
+                    openingParenthesesCount--;
+                }
+
+                if (!token.Equals('/') || openingParenthesesCount > 0)
+                {
+                    currentSegment += token;
+                }
+
+                if ((token.Equals('/') || index == path.Length - 1) && currentSegment.Length > 0 && openingParenthesesCount == 0)
+                {
+                    segments.Add(currentSegment);
+
+                    currentSegment = string.Empty;
+                }
+            }
+
+            return segments;
         }
     }
 }

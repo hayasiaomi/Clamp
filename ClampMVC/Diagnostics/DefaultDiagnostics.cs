@@ -1,14 +1,14 @@
-﻿namespace ClampMVC.Diagnostics
+﻿namespace Clamp.Linker.Diagnostics
 {
     using System.Collections.Generic;
     using ModelBinding;
-    using ClampMVC.Bootstrapper;
-    using ClampMVC.Localization;
-    using ClampMVC.Routing;
-    using ClampMVC.Routing.Constraints;
+    using Clamp.Linker.Bootstrapper;
+    using Clamp.Linker.Localization;
+    using Clamp.Linker.Routing;
+    using Clamp.Linker.Routing.Constraints;
 
     using Responses.Negotiation;
-    using ClampMVC.Culture;
+    using Clamp.Linker.Culture;
 
     /// <summary>
     /// Wires up the diagnostics support at application startup.

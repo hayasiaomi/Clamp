@@ -1,6 +1,6 @@
-using ClampMVC.Diagnostics;
+using Clamp.Linker.Diagnostics;
 
-namespace ClampMVC.Conventions
+namespace Clamp.Linker.Conventions
 {
     using System;
     using System.Collections.Concurrent;

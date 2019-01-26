@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Clamp.OSGI.Data.Annotation;
+using System;
 
-namespace ClampMVC.Bootstrapper
+namespace Clamp.Linker.Bootstrapper
 {
-    /// <summary>
-    /// Bootstrapper for the Nancy Engine
-    /// </summary>
-    public interface IClampWebBootstrapper : IDisposable
+    public interface ILinkerBootstrapper : IDisposable
     {
         /// <summary>
         /// Initialise the bootstrapper. Must be called prior to GetEngine.
@@ -16,6 +14,6 @@ namespace ClampMVC.Bootstrapper
         /// Gets the configured INancyEngine
         /// </summary>
         /// <returns>Configured INancyEngine</returns>
-        IClampWebEngine GetEngine();
+        ILinkerEngine GetEngine();
     }
 }

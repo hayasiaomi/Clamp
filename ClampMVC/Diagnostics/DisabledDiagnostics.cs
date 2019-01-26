@@ -1,6 +1,6 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Implementation of the <see cref="IDiagnostics"/> interface that does nothing.

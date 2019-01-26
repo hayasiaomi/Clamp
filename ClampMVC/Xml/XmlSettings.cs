@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Xml
+﻿namespace Clamp.Linker.Xml
 {
     using System.Text;
 

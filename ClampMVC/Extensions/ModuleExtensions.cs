@@ -1,9 +1,9 @@
-namespace ClampMVC.Extensions
+namespace Clamp.Linker.Extensions
 {
     using System;
     using System.Diagnostics;
     using System.Text.RegularExpressions;
-    using ClampMVC.ErrorHandling;
+    using Clamp.Linker.ErrorHandling;
 
     /// <summary>
     /// Containing extensions for <see cref="IController"/> implementations.
@@ -15,8 +15,7 @@ namespace ClampMVC.Extensions
         /// </summary>
         /// <value>A <see cref="Regex"/> object.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly Regex ModuleNameExpression =
-            new Regex(@"(?<name>[\w]+)Module$", RegexOptions.Compiled);
+        private static readonly Regex ModuleNameExpression = new Regex(@"(?<name>[\w]+)Controller$", RegexOptions.Compiled);
 
         /// <summary>
         /// Extracts the friendly name of a Nancy module given its type.
@@ -27,8 +26,7 @@ namespace ClampMVC.Extensions
         public static string GetModuleName(this IController module)
         {
             var typeName = module.GetType().Name;
-            var nameMatch =
-                ModuleNameExpression.Match(typeName);
+            var nameMatch = ModuleNameExpression.Match(typeName);
 
             if (nameMatch.Success)
             {

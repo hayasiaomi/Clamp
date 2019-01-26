@@ -1,4 +1,4 @@
-namespace ClampMVC.Routing
+namespace Clamp.Linker.Routing
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@ namespace ClampMVC.Routing
     using System.Threading;
     using System.Threading.Tasks;
 
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
 
     using Responses.Negotiation;
 
@@ -151,16 +151,14 @@ namespace ClampMVC.Routing
 
         private ResolveResult Resolve(ClampWebContext context)
         {
-            var extension = context.Request.Path.IndexOfAny(Path.GetInvalidPathChars()) >= 0 ? null
-               : Path.GetExtension(context.Request.Path);
+            var extension = context.Request.Path.IndexOfAny(Path.GetInvalidPathChars()) >= 0 ? null : Path.GetExtension(context.Request.Path);
 
             var originalAcceptHeaders = context.Request.Headers.Accept;
             var originalRequestPath = context.Request.Path;
 
             if (!string.IsNullOrEmpty(extension))
             {
-                var mappedMediaRanges = this.GetMediaRangesForExtension(extension.Substring(1))
-                    .ToArray();
+                var mappedMediaRanges = this.GetMediaRangesForExtension(extension.Substring(1)).ToArray();
 
                 if (mappedMediaRanges.Any())
                 {

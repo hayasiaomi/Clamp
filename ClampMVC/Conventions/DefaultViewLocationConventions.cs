@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Conventions
+﻿namespace Clamp.Linker.Conventions
 {
     using System;
     using System.Collections.Generic;
@@ -39,105 +39,23 @@
         {
             conventions.ViewLocationConventions = new List<Func<string, object, ViewLocationContext, string>>
             {
-                (viewName, model, viewLocationContext) =>{
-                    if (string.IsNullOrEmpty(viewLocationContext.ModulePath))
-                    {
-                        return string.Empty;
-                    }
-
-                    var path = viewLocationContext.ModulePath.TrimStart(new[] { '/' });
-
-                    return string.Concat("views/", path, "/", viewLocationContext.ModuleName, "/", viewName, "-", viewLocationContext.Context.Culture);
-                },
-
-                // 0 Handles: views / *modulepath* / *modulename* / *viewname*
-                (viewName, model, viewLocationContext) =>{
-                    if (string.IsNullOrEmpty(viewLocationContext.ModulePath))
-                    {
-                        return string.Empty;
-                    }
-
-                    var path = viewLocationContext.ModulePath.TrimStart(new[] { '/' });
-
-                    return  string.Concat("views/", path, "/", viewLocationContext.ModuleName, "/", viewName);
-                },
-
-                (viewName, model, viewLocationContext) =>{
-                    if (string.IsNullOrEmpty(viewLocationContext.ModulePath))
-                    {
-                        return string.Empty;
-                    }
-
-                    var path = viewLocationContext.ModulePath.TrimStart(new[] { '/' });
-
-                    return string.Concat(path, "/", viewLocationContext.ModuleName, "/", viewName, "-", viewLocationContext.Context.Culture);
-                },
-
-                // 1 Handles: *modulepath* / *modulename* / *viewname*
-                (viewName, model, viewLocationContext) =>{
-                    if (string.IsNullOrEmpty(viewLocationContext.ModulePath))
-                    {
-                        return string.Empty;
-                    }
-
-                    var path = viewLocationContext.ModulePath.TrimStart(new[] { '/' });
-
-                    return  string.Concat(path, "/", viewLocationContext.ModuleName, "/", viewName);
-                },
-
-                (viewName, model, viewLocationContext) =>{
-                    return string.IsNullOrEmpty(viewLocationContext.ModulePath) ? string.Empty : string.Concat("views/", viewLocationContext.ModulePath.TrimStart(new[] { '/' }), "/", viewName, "-", viewLocationContext.Context.Culture);
-                },
-
-                // 2 Handles: views / *modulepath* / *viewname*
-                (viewName, model, viewLocationContext) =>{
-                    return string.IsNullOrEmpty(viewLocationContext.ModulePath) ? string.Empty : string.Concat("views/", viewLocationContext.ModulePath.TrimStart(new[] {'/'}), "/", viewName);
-                },
-
-                (viewName, model, viewLocationContext) =>{
-                    return string.IsNullOrEmpty(viewLocationContext.ModulePath) ? string.Empty : string.Concat(viewLocationContext.ModulePath.TrimStart(new[] { '/' }), "/", viewName, "-", viewLocationContext.Context.Culture);
-                },
-
-                // 3 Handles: *modulepath* / *viewname*
-                (viewName, model, viewLocationContext) =>{
-                    return string.IsNullOrEmpty(viewLocationContext.ModulePath) ? string.Empty : string.Concat(viewLocationContext.ModulePath.TrimStart(new[] { '/' }), "/", viewName);
+                // 1 Handles: views / *modulename* / *viewname*
+                (viewName, model, viewLocationContext) => {
+                    return string.Concat("pages/", viewLocationContext.ModuleName, "/", viewName);
                 },
 
                 (viewName, model, viewLocationContext) => {
-                    return string.Concat("views/", viewLocationContext.ModuleName, "/", viewName, "-", viewLocationContext.Context.Culture);
+                    return string.Concat("pages/", viewLocationContext.ModuleName, "/", viewName, "-", viewLocationContext.Context.Culture);
                 },
 
-                // 4 Handles: views / *modulename* / *viewname*
+                // 2 Handles: views / *viewname*
                 (viewName, model, viewLocationContext) => {
-                    return string.Concat("views/", viewLocationContext.ModuleName, "/", viewName);
-                },
-
-                (viewName, model, viewLocationContext) => {
-                    return string.Concat(viewLocationContext.ModuleName, "/", viewName, "-", viewLocationContext.Context.Culture);
-                },
-
-                // 5 Handles: *modulename* / *viewname*
-                (viewName, model, viewLocationContext) => {
-                    return string.Concat(viewLocationContext.ModuleName, "/", viewName);
+                    return string.Concat("pages/", viewName);
                 },
 
                 (viewName, model, viewLocationContext) => {
-                    return string.Concat("views/", viewName, "-", viewLocationContext.Context.Culture);
+                    return string.Concat("pages/", viewName, "-", viewLocationContext.Context.Culture);
                 },
-
-                // 6 Handles: views / *viewname*
-                (viewName, model, viewLocationContext) => {
-                    return string.Concat("views/", viewName);
-                },
-
-                (viewName, model, viewLocationContext) => {
-                    return string.Concat(viewName, "-", viewLocationContext.Context.Culture);
-                },
-
-                // 7 Handles: *viewname*
-                (viewName, model, viewLocationContext) => {
-                    return viewName;
-                }
             };
         }
     }

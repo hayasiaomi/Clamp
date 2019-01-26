@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
     /// <summary>
     /// Provides a hook to execute code during request startup.

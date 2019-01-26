@@ -1,4 +1,4 @@
-namespace ClampMVC.Cookies
+namespace Clamp.Linker.Cookies
 {
     using System;
 

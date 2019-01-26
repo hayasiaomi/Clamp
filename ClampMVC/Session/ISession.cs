@@ -1,4 +1,4 @@
-namespace ClampMVC.Session
+namespace Clamp.Linker.Session
 {
     using System.Collections.Generic;
 

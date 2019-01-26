@@ -1,10 +1,10 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using ClampMVC.Cookies;
-    using ClampMVC.Responses;
+    using Clamp.Linker.Cookies;
+    using Clamp.Linker.Responses;
 
     /// <summary>
     /// Containing extensions for the <see cref="Response"/> object.

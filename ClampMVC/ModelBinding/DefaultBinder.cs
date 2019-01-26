@@ -1,4 +1,4 @@
-namespace ClampMVC.ModelBinding
+namespace Clamp.Linker.ModelBinding
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace ClampMVC.ModelBinding
     using System.Reflection;
     using System.Text.RegularExpressions;
 
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
     using System.Collections;
 
     /// <summary>

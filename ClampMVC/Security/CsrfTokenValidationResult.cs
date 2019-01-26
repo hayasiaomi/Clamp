@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Security
+﻿namespace Clamp.Linker.Security
 {
     /// <summary>
     /// Result of Csrf Token validation

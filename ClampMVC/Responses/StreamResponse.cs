@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Responses
+﻿namespace Clamp.Linker.Responses
 {
     using System;
     using System.IO;

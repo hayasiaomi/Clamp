@@ -65,6 +65,11 @@ namespace Clamp.OSGI
             get { return Bundle.GetIdVersion(id); }
         }
 
+        public string Name
+        {
+            get { return this.bundle.Name; }
+        }
+
 
         /// <summary>
         /// Path to a directory where add-ins can store private configuration or status data
@@ -98,15 +103,13 @@ namespace Clamp.OSGI
             }
         }
 
-        public IBundleActivator BundleActivator
+        internal IBundleActivator BundleActivator
         {
             get
             {
                 return this.bundleActivator;
             }
         }
-
-
 
         internal Bundle Bundle
         {
@@ -442,7 +445,24 @@ namespace Clamp.OSGI
             return Path.Combine(baseDirectory, string.Join("" + Path.DirectorySeparatorChar, filePath));
         }
 
+        public List<string> GetResourceNames()
+        {
+            EnsureAssembliesLoaded();
 
+            List<string> resourceNames = new List<string>();
+
+            foreach (Assembly asm in GetAllAssemblies())
+            {
+                resourceNames.AddRange(asm.GetManifestResourceNames());
+            }
+
+            //foreach (RuntimeBundle addin in GetAllDependencies())
+            //{
+            //    resourceNames.AddRange(addin.GetResourceNames());
+            //}
+
+            return resourceNames;
+        }
 
         /// <summary>
         /// Gets the content of a resource
@@ -539,6 +559,16 @@ namespace Clamp.OSGI
             }
 
             return null;
+        }
+
+        public object[] GetExtensionObjects(Type instanceType)
+        {
+            return this.clampBundle.GetExtensionObjects(this.Id, instanceType);
+        }
+
+        public T[] GetExtensionObjects<T>()
+        {
+            return this.clampBundle.GetExtensionObjectsByBundleId<T>(this.Id);
         }
 
         #endregion
@@ -701,7 +731,7 @@ namespace Clamp.OSGI
                 BundleDependency pdep = dep as BundleDependency;
                 if (pdep != null)
                 {
-                    RuntimeBundle adn = clampBundle.GetBundle(Bundle.GetFullId(ns, pdep.BundleId, pdep.Version));
+                    RuntimeBundle adn = clampBundle.GetRuntimeBundle(Bundle.GetFullId(ns, pdep.BundleId, pdep.Version));
                     if (adn != null)
                         plugList.Add(adn);
                     else
@@ -763,7 +793,7 @@ namespace Clamp.OSGI
                 if (!clampBundle.IsBundleLoaded(pdep.FullBundleId))
                     return false;
                 if (forceLoadAssemblies)
-                    clampBundle.GetBundle(pdep.FullBundleId).EnsureAssembliesLoaded();
+                    clampBundle.GetRuntimeBundle(pdep.FullBundleId).EnsureAssembliesLoaded();
             }
             return true;
         }

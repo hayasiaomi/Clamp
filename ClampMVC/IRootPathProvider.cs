@@ -1,4 +1,4 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     /// <summary>
     /// Defines the functionality to retrieve the root folder path of the current Nancy application.

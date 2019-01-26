@@ -1,4 +1,4 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System.IO;
 

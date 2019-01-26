@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Collections.Generic;
@@ -12,24 +12,24 @@
     /// </summary>
     public static class ClampWebBootstrapperLocator
     {
-        private static IClampWebBootstrapper instance;
+        private static ILinkerBootstrapper instance;
 
         /// <summary>
         /// Gets the located bootstrapper
         /// </summary>
-        public static IClampWebBootstrapper Bootstrapper
+        public static ILinkerBootstrapper Bootstrapper
         {
             get { return instance ?? (instance = LocateBootstrapper()); }
             set { instance = value; }
         }
 
-        private static IClampWebBootstrapper LocateBootstrapper()
+        private static ILinkerBootstrapper LocateBootstrapper()
         {
             var bootstrapperType = GetBootstrapperType();
 
             try
             {
-                return Activator.CreateInstance(bootstrapperType) as IClampWebBootstrapper;
+                return Activator.CreateInstance(bootstrapperType) as ILinkerBootstrapper;
             }
             catch (Exception ex)
             {
@@ -41,12 +41,12 @@
         private static Type GetBootstrapperType()
         {
             var customBootstrappers = AppDomainAssemblyTypeScanner
-                .TypesOf<IClampWebBootstrapper>(ScanMode.ExcludeWebwork)
+                .TypesOf<ILinkerBootstrapper>(ScanMode.ExcludeWebwork)
                 .ToList();
 
             if (!customBootstrappers.Any())
             {
-                return typeof(DefaultClampWebBootstrapper);
+                return typeof(DefaultLinkerBootstrapper);
             }
 
             if (customBootstrappers.Count == 1)

@@ -1,4 +1,4 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections;
@@ -7,7 +7,7 @@ namespace ClampMVC
     using System.Globalization;
     using System.Linq;
 
-    using ClampMVC.Cookies;
+    using Clamp.Linker.Cookies;
 
     /// <summary>
     /// Provides strongly-typed access to HTTP request headers.

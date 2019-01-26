@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Validation
+﻿namespace Clamp.Linker.Validation
 {
     using System;
 

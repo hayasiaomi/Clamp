@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using ClampMVC.Diagnostics;
+    using Clamp.Linker.Diagnostics;
 
     /// <summary>
     /// It's not safe for a module to take a dependency on the cache (cyclic dependency)

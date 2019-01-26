@@ -1,4 +1,4 @@
-namespace ClampMVC.Cryptography
+namespace Clamp.Linker.Cryptography
 {
     /// <summary>
     /// Provides key byte generation

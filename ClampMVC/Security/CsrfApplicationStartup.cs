@@ -1,7 +1,7 @@
-﻿namespace ClampMVC.Security
+﻿namespace Clamp.Linker.Security
 {
-    using ClampMVC.Bootstrapper;
-    using ClampMVC.Cryptography;
+    using Clamp.Linker.Bootstrapper;
+    using Clamp.Linker.Cryptography;
 
     /// <summary>
     /// Wires up the CSRF (anti-forgery token) support at application startup.

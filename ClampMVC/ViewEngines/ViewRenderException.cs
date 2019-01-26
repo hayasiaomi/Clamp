@@ -1,4 +1,4 @@
-namespace ClampMVC.ViewEngines.Razor
+namespace Clamp.Linker.ViewEngines.Razor
 {
     using System;
 

@@ -1,11 +1,11 @@
-﻿namespace ClampMVC.Conventions
+﻿namespace Clamp.Linker.Conventions
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Threading;
-    using ClampMVC.Session;
+    using Clamp.Linker.Session;
 
     /// <summary>
     /// Built in functions for determining current culture

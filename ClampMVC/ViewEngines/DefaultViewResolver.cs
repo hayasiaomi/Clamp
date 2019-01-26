@@ -1,7 +1,7 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     using System;
-    using ClampMVC.Conventions;
+    using Clamp.Linker.Conventions;
 
     /// <summary>
     /// Default implementation on how views are resolved by Nancy.
@@ -69,6 +69,7 @@
                 if (locatedView != null)
                 {
                     viewLocationContext.Context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[DefaultViewResolver] View resolved at '", conventionBasedViewName, "'")));
+
                     return locatedView;
                 }
             }

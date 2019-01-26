@@ -1,10 +1,10 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Conventions;
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Registers the static contents hook in the application pipeline at startup.

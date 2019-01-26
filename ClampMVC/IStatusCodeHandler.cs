@@ -1,4 +1,4 @@
-namespace ClampMVC.ErrorHandling
+namespace Clamp.Linker.ErrorHandling
 {
     /// <summary>
     /// Provides informative responses for particular HTTP status codes

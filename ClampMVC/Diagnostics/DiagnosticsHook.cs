@@ -1,4 +1,4 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     using System;
     using System.Collections.Generic;
@@ -12,14 +12,14 @@ namespace ClampMVC.Diagnostics
     using Helpers;
     using ModelBinding;
 
-    using ClampMVC.Localization;
-    using ClampMVC.Routing.Constraints;
-    using ClampMVC.Routing.Trie;
+    using Clamp.Linker.Localization;
+    using Clamp.Linker.Routing.Constraints;
+    using Clamp.Linker.Routing.Trie;
 
     using Responses;
     using Responses.Negotiation;
     using Routing;
-    using ClampMVC.Culture;
+    using Clamp.Linker.Culture;
 
     public static class DiagnosticsHook
     {
@@ -57,6 +57,7 @@ namespace ClampMVC.Diagnostics
             var diagnosticsRouteResolver = new DefaultRouteResolver(
                 diagnosticsModuleCatalog,
                 new DiagnosticsModuleBuilder(rootPathProvider, modelBinderLocator),
+                new DefaultRouteSegmentExtractor(),
                 diagnosticsRouteCache,
                 new RouteResolverTrie(new TrieNodeFactory(routeSegmentConstraints)));
 
@@ -178,9 +179,7 @@ namespace ClampMVC.Diagnostics
 
             var cookie = new WebworkCookie(diagnosticsConfiguration.CookieName, String.Format("{1}{0}", encryptedSession, hmacString), true);
 
-#pragma warning disable CS0618 // “Response.AddCookie(IWebworkCookie)”已过时:“This method has been replaced with Response.WithCookie and will be removed in a subsequent release.”
             context.Response.AddCookie(cookie);
-#pragma warning restore CS0618 // “Response.AddCookie(IWebworkCookie)”已过时:“This method has been replaced with Response.WithCookie and will be removed in a subsequent release.”
         }
 
         private static DiagnosticsSession GetSession(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)

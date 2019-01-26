@@ -1,4 +1,4 @@
-namespace ClampMVC.Responses.Negotiation
+namespace Clamp.Linker.Responses.Negotiation
 {
     /// <summary>
     /// Represents whether a processor has matched / can handle a requested response

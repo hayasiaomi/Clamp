@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Responses
+﻿namespace Clamp.Linker.Responses
 {
     /// <summary>
     /// Response that indicates that the response format should be negotiated between the client and the server.

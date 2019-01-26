@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     /// <summary>
     /// Defines the functionality for retrieving a description for a specific route.

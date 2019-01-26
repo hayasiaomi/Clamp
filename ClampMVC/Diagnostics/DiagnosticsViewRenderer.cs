@@ -1,8 +1,8 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     using System.IO;
     using System.Linq;
-    using ClampMVC.Localization;
+    using Clamp.Linker.Localization;
 
     using Responses;
     using Security;
@@ -81,7 +81,7 @@ namespace ClampMVC.Diagnostics
         private static ViewLocationResult GetViewLocationResult(string name, Stream bodyStream)
         {
             return new ViewLocationResult(
-                "ShanDian/Webwork/Diagnostics/Views",
+                "Clamp.Linker/Diagnostics/Pages",
                 name,
                 "sshtml",
                 () => new StreamReader(bodyStream));

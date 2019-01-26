@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using System.Collections.Generic;
 
@@ -19,8 +19,7 @@
 
             for (var index = 0; index < path.Length; index++)
             {
-                var token =
-                    path[index];
+                var token = path[index];
 
                 if (token.Equals('('))
                 {

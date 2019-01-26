@@ -1,4 +1,4 @@
-namespace ClampMVC.ModelBinding.DefaultConverters
+namespace Clamp.Linker.ModelBinding.DefaultConverters
 {
     using System;
     using System.ComponentModel;

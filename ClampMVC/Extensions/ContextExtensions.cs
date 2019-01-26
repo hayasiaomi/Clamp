@@ -1,8 +1,8 @@
-namespace ClampMVC.Extensions
+namespace Clamp.Linker.Extensions
 {
     using System;
     using System.Text;
-    using ClampMVC.Responses;
+    using Clamp.Linker.Responses;
 
     /// <summary>
     /// Containing extensions for the <see cref="ClampWebContext"/> object

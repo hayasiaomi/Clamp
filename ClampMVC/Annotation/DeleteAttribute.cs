@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ClampMVC.Annotation
+namespace Clamp.Linker.Annotation
 {
     public class DeleteAttribute : RouteAttribute
     {

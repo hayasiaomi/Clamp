@@ -1,8 +1,8 @@
-﻿namespace ClampMVC.Routing.Constraints
+﻿namespace Clamp.Linker.Routing.Constraints
 {
     using System;
 
-    using ClampMVC.Routing.Trie;
+    using Clamp.Linker.Routing.Trie;
 
     /// <summary>
     /// Convenience class for implementing a route segment constraint.

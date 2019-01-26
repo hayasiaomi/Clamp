@@ -1,4 +1,4 @@
-namespace ClampMVC.ViewEngines
+namespace Clamp.Linker.ViewEngines
 {
     /// <summary>
     /// The context for which a view is being located.
@@ -16,6 +16,7 @@ namespace ClampMVC.ViewEngines
         /// </summary>
         /// <value>A <see cref="string"/> containing the name of the module.</value>
         public string ModuleName { get; set; }
+
 
         public string ModuleLocation { get; set; }
 

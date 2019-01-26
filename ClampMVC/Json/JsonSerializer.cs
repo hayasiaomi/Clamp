@@ -26,7 +26,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-namespace ClampMVC.Json
+namespace Clamp.Linker.Json
 {
     using System;
     using System.Collections;
@@ -37,7 +37,7 @@ namespace ClampMVC.Json
     using System.Reflection;
     using System.Text;
 
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
 	internal sealed class JsonSerializer
 	{

@@ -1,10 +1,10 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     using System;
     using System.Collections.Generic;
     using Cryptography;
-    using ClampMVC.Extensions;
-    using ClampMVC.Localization;
+    using Clamp.Linker.Extensions;
+    using Clamp.Linker.Localization;
 
     using Security;
     using Session;

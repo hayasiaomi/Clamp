@@ -1,6 +1,6 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Enables JSONP support at application startup.

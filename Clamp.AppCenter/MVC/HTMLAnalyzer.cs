@@ -5,11 +5,11 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Security.Principal;
-using ClampMVC;
-using ClampMVC.Bootstrapper;
-using ClampMVC.Helpers;
-using ClampMVC.IO;
-using ClampMVC.Extensions;
+using Clamp.Linker;
+using Clamp.Linker.Bootstrapper;
+using Clamp.Linker.Helpers;
+using Clamp.Linker.IO;
+using Clamp.Linker.Extensions;
 using Chromium;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -20,9 +20,9 @@ namespace Clamp.AppCenter
     {
         private const int ACCESS_DENIED = 5;
         private static IList<Uri> baseUriList;
-        private static IClampWebEngine clampWebEngine;
+        private static ILinkerEngine clampWebEngine;
         private static HostConfiguration hostConfiguration;
-        private static IClampWebBootstrapper clampWebBootstrapper;
+        private static ILinkerBootstrapper clampWebBootstrapper;
 
         public static void Initialize(params Uri[] baseUris)
         {
@@ -34,12 +34,13 @@ namespace Clamp.AppCenter
             Initialize(ClampWebBootstrapperLocator.Bootstrapper, configuration, baseUris);
         }
 
-        public static void Initialize(IClampWebBootstrapper bootstrapper, params Uri[] baseUris)
+        public static void Initialize(ILinkerBootstrapper bootstrapper, params Uri[] baseUris)
         {
             Initialize(bootstrapper, new HostConfiguration(), baseUris);
         }
 
-        public static void Initialize(IClampWebBootstrapper bootstrapper, HostConfiguration configuration, params Uri[] baseUris)
+       
+        public static void Initialize(ILinkerBootstrapper bootstrapper, HostConfiguration configuration, params Uri[] baseUris)
         {
             clampWebBootstrapper = bootstrapper;
             hostConfiguration = configuration ?? new HostConfiguration();
@@ -51,12 +52,12 @@ namespace Clamp.AppCenter
         }
 
 
-        public static void Initialize(Uri baseUri, IClampWebBootstrapper bootstrapper)
+        public static void Initialize(Uri baseUri, ILinkerBootstrapper bootstrapper)
         {
             Initialize(bootstrapper, new HostConfiguration(), baseUri);
         }
 
-        public static void Initialize(Uri baseUri, IClampWebBootstrapper bootstrapper, HostConfiguration configuration)
+        public static void Initialize(Uri baseUri, ILinkerBootstrapper bootstrapper, HostConfiguration configuration)
         {
             Initialize(bootstrapper, configuration, baseUri);
         }

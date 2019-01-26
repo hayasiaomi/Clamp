@@ -1,11 +1,11 @@
-﻿namespace ClampMVC.Responses
+﻿namespace Clamp.Linker.Responses
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Xml.Serialization;
     using System.Text;
-    using ClampMVC.Xml;
+    using Clamp.Linker.Xml;
 
     public class DefaultXmlSerializer : ISerializer
     {

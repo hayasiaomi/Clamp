@@ -1,4 +1,4 @@
-namespace ClampMVC.Routing.Trie.Nodes
+namespace Clamp.Linker.Routing.Trie.Nodes
 {
     /// <summary>
     /// A node for standard captures e.g. {foo}

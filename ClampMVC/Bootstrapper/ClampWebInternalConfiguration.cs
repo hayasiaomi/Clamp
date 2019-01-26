@@ -1,23 +1,23 @@
-namespace ClampMVC.Bootstrapper
+namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
-    using ClampMVC.Diagnostics;
-    using ClampMVC.ErrorHandling;
-    using ClampMVC.ModelBinding;
-    using ClampMVC.Routing;
-    using ClampMVC.Routing.Constraints;
-    using ClampMVC.Routing.Trie;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.Diagnostics;
+    using Clamp.Linker.ErrorHandling;
+    using Clamp.Linker.ModelBinding;
+    using Clamp.Linker.Routing;
+    using Clamp.Linker.Routing.Constraints;
+    using Clamp.Linker.Routing.Trie;
+    using Clamp.Linker.ViewEngines;
     using Responses;
     using Responses.Negotiation;
     using Security;
-    using ClampMVC.Validation;
-    using ClampMVC.Culture;
-    using ClampMVC.Localization;
+    using Clamp.Linker.Validation;
+    using Clamp.Linker.Culture;
+    using Clamp.Linker.Localization;
 
     /// <summary>
     /// Configuration class for Nancy's internals.
@@ -206,7 +206,7 @@ namespace ClampMVC.Bootstrapper
             return new[]
             {
                 new TypeRegistration(typeof(IRouteResolver), this.RouteResolver),
-                new TypeRegistration(typeof(IClampWebEngine), this.WebworkEngine),
+                new TypeRegistration(typeof(ILinkerEngine), this.WebworkEngine),
                 new TypeRegistration(typeof(IRouteCache), this.RouteCache),
                 new TypeRegistration(typeof(IRouteCacheProvider), this.RouteCacheProvider),
                 new TypeRegistration(typeof(IRoutePatternMatcher), this.RoutePatternMatcher),

@@ -55,7 +55,7 @@ SOFTWARE.
 */
 #endregion
 
-namespace ClampMVC.Json
+namespace Clamp.Linker.Json
 {
     using System;
     using System.Collections;
@@ -64,7 +64,7 @@ namespace ClampMVC.Json
     using System.IO;
     using System.Text;
 
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
 	internal sealed class JsonDeserializer
 	{

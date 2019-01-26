@@ -1,10 +1,10 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using ModelBinding;
-    using ClampMVC.Extensions;
-    using ClampMVC.Responses.Negotiation;
-    using ClampMVC.ViewEngines;
-    using ClampMVC.Validation;
+    using Clamp.Linker.Extensions;
+    using Clamp.Linker.Responses.Negotiation;
+    using Clamp.Linker.ViewEngines;
+    using Clamp.Linker.Validation;
 
     /// <summary>
     /// Default implementation for building a full configured <see cref="IController"/> instance.

@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines.SuperSimpleViewEngine
+﻿namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
 {
     /// <summary>
     /// Matches and modifies the content of a rendered SuperSimpleViewEngine view.

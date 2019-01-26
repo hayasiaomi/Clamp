@@ -65,7 +65,7 @@
 #endif
 
 #endregion
-namespace ClampMVC.TinyIoc
+namespace Clamp.Linker.TinyIoc
 {
     using System;
     using System.Collections.Generic;

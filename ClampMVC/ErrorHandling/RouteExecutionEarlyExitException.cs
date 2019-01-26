@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ErrorHandling
+﻿namespace Clamp.Linker.ErrorHandling
 {
     using System;
 

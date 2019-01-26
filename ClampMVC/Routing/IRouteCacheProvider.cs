@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     /// <summary>
     /// It's not safe for a module to take a dependency on the cache (cyclic dependency)

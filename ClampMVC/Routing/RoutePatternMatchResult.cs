@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     /// <summary>
     /// The default implementation of a route pattern matching result.

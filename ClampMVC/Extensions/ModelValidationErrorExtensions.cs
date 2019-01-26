@@ -1,7 +1,7 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System.Collections.Generic;
-    using ClampMVC.Validation;
+    using Clamp.Linker.Validation;
 
     /// <summary>
     /// Containing extensions for the <see cref="ModelValidationResult.Errors"/> property.

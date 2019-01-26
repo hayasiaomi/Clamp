@@ -1,15 +1,16 @@
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using ClampMVC.Diagnostics;
-    using ClampMVC.Responses.Negotiation;
-    using ClampMVC.Routing;
-    using ClampMVC.Security;
-    using ClampMVC.Validation;
+    using Clamp.Linker.Diagnostics;
+    using Clamp.Linker.Responses.Negotiation;
+    using Clamp.Linker.Routing;
+    using Clamp.Linker.Security;
+    using Clamp.Linker.Validation;
     using System.Globalization;
+    using Clamp.OSGI;
 
     /// <summary>
     /// Nancy context.
@@ -50,6 +51,11 @@ namespace ClampMVC
         public dynamic Parameters { get; set; }
 
         /// <summary>
+        /// Bundle的上下文
+        /// </summary>
+        public IBundleContext BundleContext { set; get; }
+
+        /// <summary>
         /// Gets or sets the incoming request
         /// </summary>
         public Request Request
@@ -63,6 +69,21 @@ namespace ClampMVC
             {
                 this.request = value;
                 this.Trace.RequestData = value;
+            }
+        }
+
+        /// <summary>
+        /// Bundle的名称
+        /// </summary>
+        public string BundleName { set; get; }
+
+        public RuntimeBundle RuntimeBundle
+        {
+            get
+            {
+                if (this.BundleContext != null)
+                    return this.BundleContext.GetRuntimeBundleByName(this.BundleName);
+                return null;
             }
         }
 
@@ -129,7 +150,7 @@ namespace ClampMVC
 
             if (this.request != null)
             {
-                ((IDisposable) this.request).Dispose();
+                ((IDisposable)this.request).Dispose();
             }
 
             if (this.Response != null)

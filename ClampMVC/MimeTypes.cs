@@ -31,7 +31,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
     public sealed class MimeTypes
     {

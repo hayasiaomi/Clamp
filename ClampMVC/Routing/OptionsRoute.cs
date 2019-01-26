@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// Route that is returned when the path could be matched but, the method was OPTIONS and there was no user defined handler for OPTIONS.

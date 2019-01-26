@@ -1,10 +1,10 @@
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using System;
     using System.Diagnostics;
     using System.Linq;
     using Diagnostics;
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     public static class StaticConfiguration
     {
@@ -107,7 +107,7 @@ namespace ClampMVC
         public static bool? DisableRequestStreamSwitching { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="ClampMVC.StaticConfiguration"/> allow file stream
+        /// Gets or sets a value indicating whether this <see cref="Clamp.Linker.StaticConfiguration"/> allow file stream
         /// upload async due to mono issues before v4.  Uploads of over 80mb would result in extra padded chars to the filestream corrupting the file.
         /// </summary>
         /// <value><c>true</c> if allow file stream upload async; otherwise, <c>false</c>.</value>

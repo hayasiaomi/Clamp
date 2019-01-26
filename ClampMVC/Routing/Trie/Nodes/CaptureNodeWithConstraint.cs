@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Routing.Trie.Nodes
+﻿namespace Clamp.Linker.Routing.Trie.Nodes
 {
     using System.Collections.Generic;
     using System.Linq;
 
-    using ClampMVC.Routing.Constraints;
+    using Clamp.Linker.Routing.Constraints;
 
     /// <summary>
     /// A node for constraint captures e.g. {foo:alpha}, {foo:datetime}

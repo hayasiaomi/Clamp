@@ -210,9 +210,7 @@ namespace Clamp.OSGI.Data
                     }
                 }
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
 
             }
@@ -500,9 +498,7 @@ namespace Clamp.OSGI.Data
                     }
                 }
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
             }
             finally
@@ -565,9 +561,7 @@ namespace Clamp.OSGI.Data
 
                 return ScanDescription(reflector, config, null, scanResult);
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -621,9 +615,7 @@ namespace Clamp.OSGI.Data
 
                 return ScanDescription(reflector, bdesc, asm, scanResult);
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -951,6 +943,7 @@ namespace Clamp.OSGI.Data
                 config.Description = ((AssemblyDescriptionAttribute)catt).Description;
 
             atts = reflector.GetCustomAttributes(asm, typeof(BundleDescriptionAttribute), false);
+
             foreach (BundleDescriptionAttribute at in atts)
             {
                 if (string.IsNullOrEmpty(at.Locale))
@@ -1092,11 +1085,14 @@ namespace Clamp.OSGI.Data
                 foreach (ExtensionPointAttribute ext in extPoints)
                 {
                     ExtensionPoint ep = config.AddExtensionPoint(ext.Path);
+
                     ep.Description = ext.Description;
                     ep.Name = ext.Name;
                     ep.DefaultInsertBefore = ext.DefaultInsertBefore;
                     ep.DefaultInsertAfter = ext.DefaultInsertAfter;
+
                     ExtensionNodeType nt = ep.AddExtensionNode(ext.NodeName, ext.NodeTypeName);
+
                     nt.ExtensionAttributeTypeName = ext.ExtensionAttributeTypeName;
                 }
             }

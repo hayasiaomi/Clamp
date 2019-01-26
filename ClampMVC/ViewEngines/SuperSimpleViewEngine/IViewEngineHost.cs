@@ -1,4 +1,4 @@
-namespace ClampMVC.ViewEngines.SuperSimpleViewEngine
+namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
 {
     /// <summary>
     /// Provides the view engine with utility functions for

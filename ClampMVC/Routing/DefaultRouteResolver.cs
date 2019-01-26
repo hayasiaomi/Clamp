@@ -1,10 +1,12 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using ClampMVC;
-    using ClampMVC.Helpers;
+    using Clamp.OSGI;
+    using Clamp.Linker.Annotation;
+    using Clamp.Linker;
+    using Clamp.Linker.Helpers;
     using Trie;
 
     using MatchResult = Trie.MatchResult;
@@ -18,6 +20,7 @@
         private readonly IWebworkModuleBuilder moduleBuilder;
         private readonly IRouteCache routeCache;
         private readonly IRouteResolverTrie trie;
+        private readonly IRouteSegmentExtractor routeSegmentExtractor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRouteResolver"/> class, using
@@ -28,14 +31,15 @@
         /// <param name="moduleBuilder">A <see cref="IWebworkModuleBuilder"/> instance.</param>
         /// <param name="routeCache">A <see cref="IRouteCache"/> instance.</param>
         /// <param name="trie">A <see cref="IRouteResolverTrie"/> instance.</param>
-        public DefaultRouteResolver(IControllerCatalog catalog, IWebworkModuleBuilder moduleBuilder, IRouteCache routeCache, IRouteResolverTrie trie)
+        public DefaultRouteResolver(IControllerCatalog catalog, IWebworkModuleBuilder moduleBuilder, IRouteSegmentExtractor routeSegmentExtractor, IRouteCache routeCache, IRouteResolverTrie trie)
         {
             this.catalog = catalog;
             this.moduleBuilder = moduleBuilder;
             this.routeCache = routeCache;
             this.trie = trie;
+            this.routeSegmentExtractor = routeSegmentExtractor;
 
-            this.BuildTrie();
+            //this.BuildTrie();
         }
 
         /// <summary>
@@ -47,18 +51,49 @@
         {
             var pathDecoded = HttpUtility.UrlDecode(context.Request.Path);
 
-            var results = this.trie.GetMatches(GetMethod(context), pathDecoded, context);
+            MatchResult[] results = this.trie.GetMatches(GetMethod(context), pathDecoded, context);
 
             if (!results.Any())
             {
-                var allowedMethods = this.trie.GetOptions(pathDecoded, context).ToArray();
+                string[] segments = this.routeSegmentExtractor.Extract(context.Request.Path).ToArray();
 
-                if (IsOptionsRequest(context))
+                if (segments != null && segments.Length > 0)
                 {
-                    return BuildOptionsResult(allowedMethods, context);
+                    RuntimeBundle runtimeBundle = context.BundleContext.GetRuntimeBundleByName(segments[0]);
+
+                    if (runtimeBundle != null)
+                    {
+                        IController[] controllers = runtimeBundle.GetExtensionObjects<IController>();
+
+                        if (controllers != null && controllers.Length > 0)
+                        {
+                            IController controller = controllers.FirstOrDefault(ctl => this.MatchControllerName(ctl, segments[1]));
+
+                            if (controller != null)
+                            {
+                                KeyValuePair<Type, List<Tuple<int, RouteDescription>>> moduleCache = routeCache.GetBuildModuleCache(controller);
+
+                                this.trie.BuildTrie(moduleCache.Key, moduleCache.Value);
+
+                                results = this.trie.GetMatches(GetMethod(context), pathDecoded, context);
+                            }
+                        }
+                    }
+
+
                 }
 
-                return IsMethodNotAllowed(allowedMethods) ? BuildMethodNotAllowedResult(context, allowedMethods) : GetNotFoundResult(context);
+                if (!results.Any())
+                {
+                    var allowedMethods = this.trie.GetOptions(pathDecoded, context).ToArray();
+
+                    if (IsOptionsRequest(context))
+                    {
+                        return BuildOptionsResult(allowedMethods, context);
+                    }
+
+                    return IsMethodNotAllowed(allowedMethods) ? BuildMethodNotAllowedResult(context, allowedMethods) : GetNotFoundResult(context);
+                }
             }
 
             // Sort in descending order
@@ -76,22 +111,6 @@
             return GetNotFoundResult(context);
         }
 
-        private static ResolveResult BuildMethodNotAllowedResult(ClampWebContext context, IEnumerable<string> allowedMethods)
-        {
-            var route = new MethodNotAllowedRoute(context.Request.Path, context.Request.Method, allowedMethods);
-
-            return new ResolveResult(route, new DynamicDictionary(), null, null, null);
-        }
-
-        private static bool IsMethodNotAllowed(IEnumerable<string> allowedMethods)
-        {
-            return allowedMethods.Any() && !StaticConfiguration.DisableMethodNotAllowedResponses;
-        }
-
-        private static bool IsOptionsRequest(ClampWebContext context)
-        {
-            return context.Request.Method.Equals("OPTIONS", StringComparison.Ordinal);
-        }
 
         public void BuildTrie()
         {
@@ -133,6 +152,43 @@
             return this.moduleBuilder.BuildModule(module, context);
         }
 
+        private bool MatchControllerName(IController controller, string controllerName)
+        {
+            if (controller == null)
+                return false;
+
+            Type controllerType = controller.GetType();
+
+            object[] attributes = controllerType.GetCustomAttributes(typeof(ControllerAttribute), true);
+
+            if (attributes == null || attributes.Length <= 0)
+                return false;
+
+            ControllerAttribute controllerAttribute = attributes[0] as ControllerAttribute;
+
+            if (controllerAttribute == null)
+                return false;
+
+            string ctlName = controllerAttribute.ControllerName;
+
+            if (string.IsNullOrWhiteSpace(ctlName))
+            {
+                int ctlIndex = controllerType.Name.LastIndexOf("Controller", StringComparison.CurrentCultureIgnoreCase);
+
+                if (ctlIndex > 0)
+                {
+                    ctlName = controllerType.Name.Substring(0, ctlIndex);
+                }
+                else
+                {
+                    ctlName = controllerType.Name;
+                }
+            }
+
+            return string.Equals(ctlName, controllerName, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+
         private static ResolveResult GetNotFoundResult(ClampWebContext context)
         {
             return new ResolveResult
@@ -156,5 +212,25 @@
 
             return requestedMethod;
         }
+
+
+        private static ResolveResult BuildMethodNotAllowedResult(ClampWebContext context, IEnumerable<string> allowedMethods)
+        {
+            var route = new MethodNotAllowedRoute(context.Request.Path, context.Request.Method, allowedMethods);
+
+            return new ResolveResult(route, new DynamicDictionary(), null, null, null);
+        }
+
+        private static bool IsMethodNotAllowed(IEnumerable<string> allowedMethods)
+        {
+            return allowedMethods.Any() && !StaticConfiguration.DisableMethodNotAllowedResponses;
+        }
+
+        private static bool IsOptionsRequest(ClampWebContext context)
+        {
+            return context.Request.Method.Equals("OPTIONS", StringComparison.Ordinal);
+        }
+
+
     }
 }

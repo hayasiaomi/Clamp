@@ -1,6 +1,6 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
-    using ClampMVC;
+    using Clamp.Linker;
 
     /// <summary>
     /// Interface for manually rendering views to a Response object, rather

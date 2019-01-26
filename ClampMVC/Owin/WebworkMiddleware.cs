@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Owin
+﻿namespace Clamp.Linker.Owin
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,7 @@
     using System.Threading.Tasks;
     using System.Security.Cryptography.X509Certificates;
 
-    using ClampMVC.IO;
+    using Clamp.Linker.IO;
     using Helpers;
 
     using AppFunc = System.Func<

@@ -1,8 +1,8 @@
-namespace ClampMVC.Routing.Trie
+namespace Clamp.Linker.Routing.Trie
 {
     using System;
 
-    using ClampMVC;
+    using Clamp.Linker;
 
     /// <summary>
     /// Represents a route that ends at a particular node.

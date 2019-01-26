@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using System;
     using System.Collections.Concurrent;
@@ -6,7 +6,7 @@
     using System.Globalization;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
     /// <summary>
     /// Default implementation of a route pattern matcher.
@@ -26,23 +26,15 @@
         /// <returns>An <see cref="IRoutePatternMatchResult"/> instance, containing the outcome of the match.</returns>
         public IRoutePatternMatchResult Match(string requestedPath, string routePath, IEnumerable<string> segments, ClampWebContext context)
         {
-            var routePathPattern =
-                this.matcherCache.GetOrAdd(routePath, s => BuildRegexMatcher(segments.ToList()));
+            var routePathPattern = this.matcherCache.GetOrAdd(routePath, s => BuildRegexMatcher(segments.ToList()));
 
-            requestedPath =
-                TrimTrailingSlashFromRequestedPath(requestedPath);
+            requestedPath = TrimTrailingSlashFromRequestedPath(requestedPath);
 
-            var match =
-                routePathPattern.Item1.Match(requestedPath);
+            var match = routePathPattern.Item1.Match(requestedPath);
 
-            var matches = match
-                .Groups.Cast<Group>()
-                .ToList();
+            var matches = match.Groups.Cast<Group>().ToList();
 
-            return new RoutePatternMatchResult(
-                match.Success,
-                GetParameters(routePathPattern, matches),
-                context);
+            return new RoutePatternMatchResult(match.Success, GetParameters(routePathPattern, matches), context);
         }
 
         private static string TrimTrailingSlashFromRequestedPath(string requestedPath)
@@ -57,19 +49,13 @@
 
         private static Tuple<Regex, IEnumerable<ParameterSegmentInformation>> BuildRegexMatcher(IList<string> segments)
         {
-            var parameterizedSegments =
-                GetParameterizedSegments2(segments);
+            var parameterizedSegments = GetParameterizedSegments2(segments);
 
-            var parsedSegments = (segments.Any()) ?
-                string.Join(string.Empty, parameterizedSegments.Item1) :
-                "/";
+            var parsedSegments = (segments.Any()) ? string.Join(string.Empty, parameterizedSegments.Item1) : "/";
 
-            var pattern =
-                string.Concat(@"^", parsedSegments, @"$");
+            var pattern = string.Concat(@"^", parsedSegments, @"$");
 
-            return new Tuple<Regex, IEnumerable<ParameterSegmentInformation>>(
-                new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase),
-                parameterizedSegments.Item2);
+            return new Tuple<Regex, IEnumerable<ParameterSegmentInformation>>(new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase), parameterizedSegments.Item2);
         }
 
         private static DynamicDictionary GetParameters(Tuple<Regex, IEnumerable<ParameterSegmentInformation>> result, IList<Group> matches)
@@ -78,12 +64,9 @@
 
             for (var i = 1; i <= matches.Count() - 1; i++)
             {
-                var name =
-                    result.Item1.GroupNameFromNumber(i);
+                var name = result.Item1.GroupNameFromNumber(i);
 
-                var value = (matches[i].Success) ?
-                    matches[i].Value :
-                    result.Item2.Where(x => x.Name.Equals(name) && !string.IsNullOrEmpty(x.DefaultValue)).Select(x => x.DefaultValue).SingleOrDefault();
+                var value = (matches[i].Success) ? matches[i].Value : result.Item2.Where(x => x.Name.Equals(name) && !string.IsNullOrEmpty(x.DefaultValue)).Select(x => x.DefaultValue).SingleOrDefault();
 
                 data[name] = value;
             }
@@ -91,8 +74,7 @@
             return data;
         }
 
-        private static Tuple<IEnumerable<string>, IEnumerable<ParameterSegmentInformation>> GetParameterizedSegments2(
-            IEnumerable<string> segments)
+        private static Tuple<IEnumerable<string>, IEnumerable<ParameterSegmentInformation>> GetParameterizedSegments2(IEnumerable<string> segments)
         {
             var parsedSegments = new List<string>();
             var segmentInformation = new List<ParameterSegmentInformation>();
@@ -103,8 +85,7 @@
 
                 if (current.IsParameterized() && !IsRegexSegment(current))
                 {
-                    var result =
-                        ParameterizeSegment(segment);
+                    var result = ParameterizeSegment(segment);
 
                     current = result.Item1;
                     segmentInformation.AddRange(result.Item2);
@@ -129,25 +110,20 @@
         {
             segment = segment.Replace(".", @"\.");
 
-            var details =
-                segment.GetParameterDetails().ToList();
+            var details = segment.GetParameterDetails().ToList();
 
             for (var index = 0; index < details.Count; index++)
             {
-                var information =
-                    details.Skip(index).First();
+                var information = details.Skip(index).First();
 
-                var replacement =
-                    string.Format(CultureInfo.InvariantCulture, @"(?<{0}>.+?)", information.Name);
+                var replacement = string.Format(CultureInfo.InvariantCulture, @"(?<{0}>.+?)", information.Name);
 
                 if (information.IsOptional)
                 {
                     replacement = string.Concat(replacement, "?");
                 }
 
-                segment = segment.Replace(
-                    string.Concat("{", information.FullSegmentName, "}"),
-                    replacement);
+                segment = segment.Replace(string.Concat("{", information.FullSegmentName, "}"), replacement);
             }
 
             segment = string.Concat(@"\/", segment);

@@ -1,4 +1,4 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     /// <summary>
     /// Allows setting of the serializer for session object storage

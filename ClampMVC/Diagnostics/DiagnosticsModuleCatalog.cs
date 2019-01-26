@@ -1,11 +1,11 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using ModelBinding;
-    using ClampMVC.Bootstrapper;
-    using ClampMVC.TinyIoc;
+    using Clamp.Linker.Bootstrapper;
+    using Clamp.Linker.TinyIoc;
     using Responses;
 
     internal class DiagnosticsModuleCatalog : IControllerCatalog

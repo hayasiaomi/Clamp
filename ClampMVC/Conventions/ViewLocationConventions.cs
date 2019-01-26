@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Conventions
+﻿namespace Clamp.Linker.Conventions
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.ViewEngines;
 
     /// <summary>
     /// This is a wrapper around the type

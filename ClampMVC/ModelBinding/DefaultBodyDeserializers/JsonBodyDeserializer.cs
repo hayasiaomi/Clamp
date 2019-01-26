@@ -1,4 +1,4 @@
-namespace ClampMVC.ModelBinding.DefaultBodyDeserializers
+namespace Clamp.Linker.ModelBinding.DefaultBodyDeserializers
 {
     using System.IO;
     using System.Reflection;

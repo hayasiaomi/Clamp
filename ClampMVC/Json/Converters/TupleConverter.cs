@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Json.Converters
+﻿namespace Clamp.Linker.Json.Converters
 {
     using System;
     using System.Collections.Generic;

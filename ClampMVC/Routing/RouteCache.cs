@@ -1,10 +1,10 @@
-﻿namespace ClampMVC.Routing
+﻿namespace Clamp.Linker.Routing
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using ClampMVC.Culture;
+    using Clamp.Linker.Culture;
 
     /// <summary>
     /// Caches information about all the available routes that was discovered by the bootstrapper.
@@ -36,12 +36,12 @@
             this.routeDescriptionProvider = routeDescriptionProvider;
             this.routeMetadataProviders = routeMetadataProviders;
 
-            var request = new Request("GET", "/", "http");
+            //var request = new Request("GET", "/", "http");
 
-            using (var context = contextFactory.Create(request))
-            {
-                this.BuildCache(moduleCatalog.GetAllModules(context));
-            }
+            //using (var context = contextFactory.Create(request))
+            //{
+            //    this.BuildCache(moduleCatalog.GetAllModules(context));
+            //}
         }
 
         /// <summary>
@@ -68,6 +68,25 @@
 
             this.AddRoutesToCache(routes, moduleType);
         }
+
+        public KeyValuePair<Type, List<Tuple<int, RouteDescription>>> GetBuildModuleCache(IController controller)
+        {
+            var moduleType = controller.GetType();
+
+            var routes = controller.Routes.Select(r => r.Description).ToArray();
+
+            foreach (var routeDescription in routes)
+            {
+                routeDescription.Description = this.routeDescriptionProvider.GetDescription(controller, routeDescription.Path);
+                routeDescription.Segments = this.routeSegmentExtractor.Extract(routeDescription.Path).ToArray();
+                routeDescription.Metadata = this.GetRouteMetadata(controller, routeDescription);
+            }
+
+            return new KeyValuePair<Type, List<Tuple<int, RouteDescription>>>(moduleType, routes.Select((r, i) => new Tuple<int, RouteDescription>(i, r)).ToList());
+        }
+
+
+
 
         public void BuildCache(IEnumerable<IController> modules)
         {

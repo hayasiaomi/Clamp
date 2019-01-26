@@ -22,7 +22,7 @@ namespace Clamp.OSGI
 
         public RuntimeBundle GetRuntimeBundle(string id)
         {
-            return this.clampBundle.GetBundle(id);
+            return this.clampBundle.GetRuntimeBundle(id);
         }
 
         public IBundle GetBundle(string id)
@@ -102,6 +102,11 @@ namespace Clamp.OSGI
         public Dictionary<string, string> GetConfigMaps()
         {
             return this.clampBundle.ConfigProps;
+        }
+
+        public RuntimeBundle GetRuntimeBundleByName(string name)
+        {
+            return this.clampBundle.GetRuntimeBundleByName(name);
         }
     }
 }

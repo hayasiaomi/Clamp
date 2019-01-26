@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Security
+﻿namespace Clamp.Linker.Security
 {
     using System;
     using System.Collections.Generic;
@@ -6,10 +6,10 @@
     using System.Linq;
     using System.Text;
 
-    using ClampMVC.Bootstrapper;
-    using ClampMVC.Cookies;
-    using ClampMVC.Cryptography;
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Bootstrapper;
+    using Clamp.Linker.Cookies;
+    using Clamp.Linker.Cryptography;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// Csrf protection methods

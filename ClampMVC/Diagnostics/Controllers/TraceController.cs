@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Diagnostics.Controllers
+﻿namespace Clamp.Linker.Diagnostics.Controllers
 {
     using System;
     using System.Linq;

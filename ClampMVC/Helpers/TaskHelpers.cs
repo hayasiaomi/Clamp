@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Helpers
+﻿namespace Clamp.Linker.Helpers
 {
     using System;
     using System.Threading.Tasks;

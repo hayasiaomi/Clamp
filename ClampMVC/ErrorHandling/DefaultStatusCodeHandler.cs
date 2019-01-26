@@ -1,13 +1,13 @@
-namespace ClampMVC.ErrorHandling
+namespace Clamp.Linker.ErrorHandling
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
     using IO;
-    using ClampMVC.Extensions;
-    using ClampMVC.Responses.Negotiation;
-    using ClampMVC.ViewEngines;
+    using Clamp.Linker.Extensions;
+    using Clamp.Linker.Responses.Negotiation;
+    using Clamp.Linker.ViewEngines;
 
     /// <summary>
     /// Default error handler
@@ -129,7 +129,7 @@ namespace ClampMVC.ErrorHandling
 
         private static string LoadResource(string filename)
         {
-            var resourceStream = typeof(IClampWebEngine).Assembly.GetManifestResourceStream(string.Format("Nancy.ErrorHandling.Resources.{0}", filename));
+            var resourceStream = typeof(ILinkerEngine).Assembly.GetManifestResourceStream(string.Format("Nancy.ErrorHandling.Resources.{0}", filename));
 
             if (resourceStream == null)
             {

@@ -1,9 +1,9 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using ClampMVC.Responses.Negotiation;
+    using Clamp.Linker.Responses.Negotiation;
     using Cookies;
 
     public static class NegotiatorExtensions

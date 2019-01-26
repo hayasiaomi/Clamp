@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     /// <summary>
     /// Default implementation of the <see cref="IViewRenderer"/> interface.

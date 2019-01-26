@@ -1,4 +1,4 @@
-namespace ClampMVC.Bootstrapper
+namespace Clamp.Linker.Bootstrapper
 {
     /// <summary>
     /// Represents the lifetime of a container registration

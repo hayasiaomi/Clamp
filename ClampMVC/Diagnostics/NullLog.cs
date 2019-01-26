@@ -1,4 +1,4 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     using System;
     using System.Text;

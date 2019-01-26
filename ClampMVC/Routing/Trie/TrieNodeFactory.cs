@@ -1,10 +1,10 @@
-namespace ClampMVC.Routing.Trie
+namespace Clamp.Linker.Routing.Trie
 {
     using System.Linq;
     using System.Collections.Generic;
 
-    using ClampMVC.Routing.Constraints;
-    using ClampMVC.Routing.Trie.Nodes;
+    using Clamp.Linker.Routing.Constraints;
+    using Clamp.Linker.Routing.Trie.Nodes;
 
     /// <summary>
     /// Factory for creating the correct type of TrieNode

@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.IO
+﻿namespace Clamp.Linker.IO
 {
     using System;
     using System.IO;
     using System.Threading.Tasks;
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
     /// <summary>
     /// A <see cref="Stream"/> decorator that can handle moving the stream out from memory and on to disk when the contents reaches a certain length.

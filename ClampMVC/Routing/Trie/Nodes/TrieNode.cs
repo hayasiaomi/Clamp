@@ -1,4 +1,4 @@
-namespace ClampMVC.Routing.Trie.Nodes
+namespace Clamp.Linker.Routing.Trie.Nodes
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     /// <summary>
     /// Defines the functionality for resolving the requested view.

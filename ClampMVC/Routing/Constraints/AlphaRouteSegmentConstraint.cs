@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Routing.Constraints
+﻿namespace Clamp.Linker.Routing.Constraints
 {
     using System.Linq;
 

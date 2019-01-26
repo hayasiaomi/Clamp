@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     using System;
     using System.IO;
@@ -55,6 +55,8 @@
         /// </summary>
         /// <value>A <see cref="string"/> containing the name of the view.</value>
         public string Name { get; protected set; }
+
+        public string BundleName { set; get; }
 
         /// <summary>
         /// Gets a value indicating whether the current item is stale

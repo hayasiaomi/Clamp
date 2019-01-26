@@ -1,11 +1,11 @@
-﻿namespace ClampMVC.Responses.Negotiation
+﻿namespace Clamp.Linker.Responses.Negotiation
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Cookies;
 
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
     /// <summary>
     /// Context for content negotiation.

@@ -1,11 +1,11 @@
-namespace ClampMVC.ModelBinding
+namespace Clamp.Linker.ModelBinding
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
 
-    using ClampMVC.Validation;
+    using Clamp.Linker.Validation;
 
     public static class ModuleExtensions
     {

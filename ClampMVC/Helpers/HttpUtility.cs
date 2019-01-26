@@ -36,7 +36,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 
-namespace ClampMVC.Helpers
+namespace Clamp.Linker.Helpers
 {
     public sealed class HttpUtility
     {

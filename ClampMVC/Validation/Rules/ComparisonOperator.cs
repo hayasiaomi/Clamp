@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Validation.Rules
+﻿namespace Clamp.Linker.Validation.Rules
 {
     /// <summary>
     /// Specifies the validation comparison operators used by the <see cref="ComparisonValidationRule"/> type.

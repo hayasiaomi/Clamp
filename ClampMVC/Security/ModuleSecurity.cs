@@ -1,11 +1,11 @@
-namespace ClampMVC.Security
+namespace Clamp.Linker.Security
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using ClampMVC.Extensions;
-    using ClampMVC.Responses;
+    using Clamp.Linker.Extensions;
+    using Clamp.Linker.Responses;
 
     /// <summary>
     /// Some simple helpers give some nice authentication syntax in the modules.

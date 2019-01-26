@@ -1,8 +1,8 @@
-namespace ClampMVC.ViewEngines
+namespace Clamp.Linker.ViewEngines
 {
     using System.Collections.Generic;
 
-    using ClampMVC.Localization;
+    using Clamp.Linker.Localization;
 
     /// <summary>
     /// Defines the functionality of the context that is passed into a view engine when the view is requested to be rendered.

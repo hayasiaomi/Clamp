@@ -1,10 +1,10 @@
-﻿namespace ClampMVC.Routing.Trie.Nodes
+﻿namespace Clamp.Linker.Routing.Trie.Nodes
 {
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Linq;
 
-    using ClampMVC.Routing.Constraints;
+    using Clamp.Linker.Routing.Constraints;
 
     /// <summary>
     /// A node multiple standard captures combined with a literal e.g. {id}.png.{thing}.{otherthing}

@@ -1,4 +1,4 @@
-namespace ClampMVC.Bootstrapper
+namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Collections.Generic;
@@ -12,10 +12,9 @@ namespace ClampMVC.Bootstrapper
     /// container will be disposed at the end of the request.
     /// </summary>
     /// <typeparam name="TContainer">IoC container type</typeparam>
-    public abstract class ClampWebBootstrapperWithRequestContainerBase<TContainer> : ClampWebBootstrapperBase<TContainer>
-        where TContainer : class
+    public abstract class RequestLinkerBootstrapperBase<TContainer> : LinkerBootstrapperBase<TContainer> where TContainer : class
     {
-        protected ClampWebBootstrapperWithRequestContainerBase()
+        protected RequestLinkerBootstrapperBase()
         {
             this.RequestScopedTypes = new TypeRegistration[0];
             this.RequestScopedCollectionTypes = new CollectionTypeRegistration[0];
@@ -87,7 +86,7 @@ namespace ClampMVC.Bootstrapper
         {
             var requestContainer = this.GetConfiguredRequestContainer(context);
 
-            var requestPipelines =  new Pipelines(this.ApplicationPipelines);
+            var requestPipelines = new Pipelines(this.ApplicationPipelines);
 
             if (this.RequestStartupTaskTypeCache.Any())
             {

@@ -1,8 +1,8 @@
-namespace ClampMVC.Bootstrapper
+namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Linq;
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
     /// <summary>
     /// Base class for container registrations

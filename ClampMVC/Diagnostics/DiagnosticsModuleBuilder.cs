@@ -1,9 +1,9 @@
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     using System.Collections.Generic;
     using ModelBinding;
-    using ClampMVC.Responses;
-    using ClampMVC.Routing;
+    using Clamp.Linker.Responses;
+    using Clamp.Linker.Routing;
 
     internal class DiagnosticsModuleBuilder : IWebworkModuleBuilder
     {

@@ -1,6 +1,6 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
-    using ClampMVC.Localization;
+    using Clamp.Linker.Localization;
 
     /// <summary>
     /// Default render context factory implementation.

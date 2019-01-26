@@ -1,10 +1,10 @@
-﻿namespace ClampMVC.Responses
+﻿namespace Clamp.Linker.Responses
 {
     using System;
     using System.IO;
     using System.Threading.Tasks;
 
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// Takes an existing response and materialises the body.

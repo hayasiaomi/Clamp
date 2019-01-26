@@ -1,4 +1,4 @@
-namespace ClampMVC.Bootstrapper
+namespace Clamp.Linker.Bootstrapper
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace ClampMVC.Bootstrapper
     using System.Linq;
     using System.Reflection;
 
-    using ClampMVC.Extensions;
+    using Clamp.Linker.Extensions;
 
     /// <summary>
     /// Scans the app domain for assemblies and types

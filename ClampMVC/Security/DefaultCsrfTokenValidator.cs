@@ -1,9 +1,9 @@
-namespace ClampMVC.Security
+namespace Clamp.Linker.Security
 {
     using System;
     using System.Linq;
 
-    using ClampMVC.Cryptography;
+    using Clamp.Linker.Cryptography;
 
     /// <summary>
     /// The default implementation of the <see cref="ICsrfTokenValidator"/> interface.

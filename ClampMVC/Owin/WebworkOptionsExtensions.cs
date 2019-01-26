@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Owin
+﻿namespace Clamp.Linker.Owin
 {
     using System.Linq;
 

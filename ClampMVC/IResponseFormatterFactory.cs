@@ -1,4 +1,4 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     /// <summary>
     /// Defines the functionality of a <see cref="IResponseFormatter"/> factory.

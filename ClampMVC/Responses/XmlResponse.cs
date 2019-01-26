@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Responses
+﻿namespace Clamp.Linker.Responses
 {
     using System;
     using System.IO;
 
-    using ClampMVC.Xml;
+    using Clamp.Linker.Xml;
 
     public class XmlResponse<TModel> : Response
     {

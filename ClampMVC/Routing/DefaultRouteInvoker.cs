@@ -1,13 +1,13 @@
-namespace ClampMVC.Routing
+namespace Clamp.Linker.Routing
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using ClampMVC.ErrorHandling;
-    using ClampMVC.Extensions;
-    using ClampMVC.Helpers;
-    using ClampMVC.Responses.Negotiation;
+    using Clamp.Linker.ErrorHandling;
+    using Clamp.Linker.Extensions;
+    using Clamp.Linker.Helpers;
+    using Clamp.Linker.Responses.Negotiation;
 
     /// <summary>
     /// Default route invoker implementation.
@@ -43,10 +43,10 @@ namespace ClampMVC.Routing
                 completedTask =>
                 {
                     var returnResult = completedTask.Result;
+
                     if (!(returnResult is ValueType) && returnResult == null)
                     {
-                        context.WriteTraceLog(
-                            sb => sb.AppendLine("[DefaultRouteInvoker] Invocation of route returned null"));
+                        context.WriteTraceLog(sb => sb.AppendLine("[DefaultRouteInvoker] Invocation of route returned null"));
 
                         returnResult = new Response();
                     }

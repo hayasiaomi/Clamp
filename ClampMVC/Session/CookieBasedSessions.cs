@@ -1,4 +1,4 @@
-namespace ClampMVC.Session
+namespace Clamp.Linker.Session
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@ namespace ClampMVC.Session
     using System.Text;
     using Bootstrapper;
     using Cryptography;
-    using ClampMVC.Cookies;
-    using ClampMVC.Helpers;
+    using Clamp.Linker.Cookies;
+    using Clamp.Linker.Helpers;
 
     /// <summary>
     /// Cookie based session storage

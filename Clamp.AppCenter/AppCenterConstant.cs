@@ -17,5 +17,8 @@ namespace Clamp.AppCenter
         public const string CFX_RESOURCE_HANDLER_MUI = "cfx.resource.hander.mui";
         public const string CFX_RESOURCE_HANDLER_EMBEDDED = "cfx.resource.hander.embedded";
 
+
+        public const string CLAMP_MVC_PAGES_MODE = "clamp.mvc.pages.mode";
+
     }
 }

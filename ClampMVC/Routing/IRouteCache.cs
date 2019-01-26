@@ -1,4 +1,4 @@
-namespace ClampMVC.Routing
+namespace Clamp.Linker.Routing
 {
     using System;
     using System.Collections.Generic;
@@ -15,6 +15,10 @@ namespace ClampMVC.Routing
         bool IsEmpty();
 
         void BuildModuleCache(IController controller);
+
+
+        KeyValuePair<Type, List<Tuple<int, RouteDescription>>> GetBuildModuleCache(IController controller);
+
 
         void BuildCache(IEnumerable<IController> controllers);
     }

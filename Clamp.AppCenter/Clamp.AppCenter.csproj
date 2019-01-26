@@ -308,37 +308,6 @@
     <Compile Include="ChromiumWebBrowser\RenderProcess\RenderProcessHandler.cs" />
     <Compile Include="ChromiumWebBrowser\WebResource.cs" />
     <Compile Include="AppCenterConstant.cs" />
-    <Compile Include="Medium\ConcurrentLimitedCollection.cs" />
-    <Compile Include="Medium\DefaultMedium.cs" />
-    <Compile Include="Medium\DefaultRequestTrace.cs" />
-    <Compile Include="Medium\DefaultRequestTraceFactory.cs" />
-    <Compile Include="Medium\DefaultRequestTracing.cs" />
-    <Compile Include="Medium\DefaultTraceLog.cs" />
-    <Compile Include="Medium\DescriptionAttribute.cs" />
-    <Compile Include="Medium\DiagnosticModule.cs" />
-    <Compile Include="Medium\DiagnosticsConfiguration.cs" />
-    <Compile Include="Medium\DiagnosticsHook.cs" />
-    <Compile Include="Medium\DiagnosticsModuleBuilder.cs" />
-    <Compile Include="Medium\DiagnosticsModuleCatalog.cs" />
-    <Compile Include="Medium\DiagnosticsSession.cs" />
-    <Compile Include="Medium\DiagnosticsViewRenderer.cs" />
-    <Compile Include="Medium\DisabledDiagnostics.cs" />
-    <Compile Include="Medium\IDiagnostics.cs" />
-    <Compile Include="Medium\IDiagnosticsProvider.cs" />
-    <Compile Include="Medium\IInteractiveDiagnostics.cs" />
-    <Compile Include="Medium\InteractiveDiagnostic.cs" />
-    <Compile Include="Medium\InteractiveDiagnosticMethod.cs" />
-    <Compile Include="Medium\InteractiveDiagnostics.cs" />
-    <Compile Include="Medium\IRequestTrace.cs" />
-    <Compile Include="Medium\IRequestTraceFactory.cs" />
-    <Compile Include="Medium\IRequestTracing.cs" />
-    <Compile Include="Medium\ITraceLog.cs" />
-    <Compile Include="Medium\NullLog.cs" />
-    <Compile Include="Medium\RequestData.cs" />
-    <Compile Include="Medium\RequestTraceSession.cs" />
-    <Compile Include="Medium\ResponseData.cs" />
-    <Compile Include="Medium\TemplateAttribute.cs" />
-    <Compile Include="Medium\TestingDiagnosticProvider.cs" />
     <Compile Include="Handlers\ClampHandlerContext.cs" />
     <Compile Include="Handlers\DefaultClampHandler.cs" />
     <Compile Include="Handlers\IClampHandler.cs" />
@@ -399,7 +368,7 @@
     <Compile Include="Inputs\WindowsInputMessageDispatcher.cs" />
     <Compile Include="MimeHelper.cs" />
     <Compile Include="MVC\AutomaticUrlReservationCreationFailureException.cs" />
-    <Compile Include="MVC\AppCenterBootstrapper.cs" />
+    <Compile Include="MVC\ClampLinkerBootstrapper.cs" />
     <Compile Include="MVC\FileSystemRootPathProvider.cs" />
     <Compile Include="MVC\HostConfiguration.cs" />
     <Compile Include="MVC\IgnoredHeaders.cs" />
@@ -556,9 +525,9 @@
     <Content Include="Cef\wow_helper.exe" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClampMVC\ClampMVC.csproj">
+    <ProjectReference Include="..\ClampMVC\Clamp.Linker.csproj">
       <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
-      <Name>ClampMVC</Name>
+      <Name>Clamp.Linker</Name>
     </ProjectReference>
     <ProjectReference Include="..\Clamp\Clamp.csproj">
       <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>

@@ -1,6 +1,6 @@
-namespace ClampMVC.Routing.Trie
+namespace Clamp.Linker.Routing.Trie
 {
-    using ClampMVC.Routing.Trie.Nodes;
+    using Clamp.Linker.Routing.Trie.Nodes;
 
     /// <summary>
     /// Factory for creating trie nodes from route definition segments

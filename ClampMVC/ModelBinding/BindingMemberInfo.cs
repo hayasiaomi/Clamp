@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ModelBinding
+﻿namespace Clamp.Linker.ModelBinding
 {
     using System;
     using System.Collections.Generic;

@@ -8,7 +8,13 @@ namespace Clamp.OSGI
 {
     public interface IBundleContext
     {
+        RuntimeBundle RuntimeBundle { get; }
+
+        Bundle Bundle { get; }
+
         RuntimeBundle GetRuntimeBundle(string id);
+
+        RuntimeBundle GetRuntimeBundleByName(string name);
 
         Dictionary<string, string> GetConfigMaps();
 
@@ -27,6 +33,7 @@ namespace Clamp.OSGI
         object[] GetExtensionObjects(string path, Type arrayElementType);
 
         T[] GetExtensionObjects<T>(string path);
+
         object[] GetExtensionObjects(string path, Type arrayElementType, bool reuseCachedInstance);
 
         T[] GetExtensionObjects<T>(string path, bool reuseCachedInstance);

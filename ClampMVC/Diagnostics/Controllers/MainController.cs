@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Diagnostics.Controllers
+﻿namespace Clamp.Linker.Diagnostics.Controllers
 {
     public class MainController : DiagnosticController
     {

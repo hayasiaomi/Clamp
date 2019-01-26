@@ -1,6 +1,6 @@
-using ClampMVC.Bootstrapper;
+using Clamp.Linker.Bootstrapper;
 
-namespace ClampMVC.Diagnostics
+namespace Clamp.Linker.Diagnostics
 {
     public interface IDiagnostics
     {

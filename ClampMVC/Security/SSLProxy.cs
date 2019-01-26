@@ -1,9 +1,9 @@
-﻿namespace ClampMVC.Security
+﻿namespace Clamp.Linker.Security
 {
     using System;
     using System.Linq;
 
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Bootstrapper;
 
     /// <summary>
     /// Allows a BeforeRequest hook to change Url to HTTPS if X-Forwarded-Proto header present

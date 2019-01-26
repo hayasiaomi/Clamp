@@ -7,8 +7,8 @@
     <ProjectGuid>{55EA65FF-E185-457C-9EFF-CA95590898DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Clamp.Webwork</RootNamespace>
-    <AssemblyName>Clamp.Webwork</AssemblyName>
+    <RootNamespace>Clamp.Linker</RootNamespace>
+    <AssemblyName>Clamp.Linker</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AfterPipeline.cs" />
+    <Compile Include="Annotation\ControllerAttribute.cs" />
     <Compile Include="Annotation\DeleteAttribute.cs" />
     <Compile Include="Annotation\GetAttribute.cs" />
     <Compile Include="Annotation\HeadAttribute.cs" />
@@ -68,14 +69,15 @@
     <Compile Include="Bootstrapper\Lifetime.cs" />
     <Compile Include="Bootstrapper\ModuleRegistrationType.cs" />
     <Compile Include="Bootstrapper\MultipleRootPathProvidersLocatedException.cs" />
-    <Compile Include="Bootstrapper\ClampWebBootstrapperBase.cs" />
+    <Compile Include="Bootstrapper\BootstrapperBase.cs" />
     <Compile Include="Bootstrapper\ClampWebBootstrapperLocator.cs" />
-    <Compile Include="Bootstrapper\ClampWebBootstrapperWithRequestContainerBase.cs" />
+    <Compile Include="Bootstrapper\RequestContainerBase.cs" />
     <Compile Include="Bootstrapper\ClampWebInternalConfiguration.cs" />
     <Compile Include="Bootstrapper\Pipelines.cs" />
     <Compile Include="Bootstrapper\Registrations.cs" />
     <Compile Include="Bootstrapper\ScanMode.cs" />
     <Compile Include="Bootstrapper\TypeRegistration.cs" />
+    <Compile Include="ClampMvcActivator.cs" />
     <Compile Include="Conventions\AcceptHeaderCoercionConventions.cs" />
     <Compile Include="Conventions\BuiltInAcceptHeaderCoercions.cs" />
     <Compile Include="Conventions\BuiltInCultureConventions.cs" />
@@ -108,7 +110,7 @@
     <Compile Include="Cryptography\RijndaelEncryptionProvider.cs" />
     <Compile Include="Culture\DefaultCultureService.cs" />
     <Compile Include="Culture\ICultureService.cs" />
-    <Compile Include="DefaultClampWebBootstrapper.cs" />
+    <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="DefaultClampWebContextFactory.cs" />
     <Compile Include="DefaultObjectSerializer.cs" />
     <Compile Include="DefaultResponseFormatter.cs" />
@@ -421,6 +423,7 @@
     <Compile Include="ViewEngines\IViewRenderer.cs" />
     <Compile Include="ViewEngines\IViewResolver.cs" />
     <Compile Include="ViewEngines\ResourceViewLocationProvider.cs" />
+    <Compile Include="ViewEngines\ResourceViewLocationResult.cs" />
     <Compile Include="ViewEngines\SuperSimpleViewEngine\ISuperSimpleViewEngineMatcher.cs" />
     <Compile Include="ViewEngines\SuperSimpleViewEngine\IViewEngineHost.cs" />
     <Compile Include="ViewEngines\SuperSimpleViewEngine\WebworkViewEngineHost.cs" />

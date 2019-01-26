@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace ClampMVC
+namespace Clamp.Linker
 {
     using Bootstrapper;
     using Cookies;
@@ -18,7 +18,7 @@ namespace ClampMVC
     /// <summary>
     /// Default engine for handling Nancy <see cref="Request"/>s.
     /// </summary>
-    public class ClampWebEngine : IClampWebEngine
+    public class ClampWebEngine : ILinkerEngine
     {
         public const string ERROR_KEY = "ERROR_TRACE";
         public const string ERROR_EXCEPTION = "ERROR_EXCEPTION";

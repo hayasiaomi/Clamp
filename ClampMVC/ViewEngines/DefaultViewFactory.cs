@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.ViewEngines
+﻿namespace Clamp.Linker.ViewEngines
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using ClampMVC.Conventions;
+    using Clamp.Linker.Conventions;
 
 
     /// <summary>
@@ -69,7 +69,6 @@
 
             viewLocationContext.Context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[DefaultViewFactory] Rendering view with name ", actualViewName)));
 
-
             return this.GetRenderedView(actualViewName, model, viewLocationContext);
         }
 
@@ -87,12 +86,7 @@
 
             viewLocationContext.Context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[DefaultViewFactory] Rendering view with view engine ", resolvedViewEngine.GetType().FullName)));
 
-            return SafeInvokeViewEngine(
-                resolvedViewEngine,
-                viewLocationResult,
-                GetSafeModel(model),
-                this.renderContextFactory.GetRenderContext(viewLocationContext)
-            );
+            return SafeInvokeViewEngine(resolvedViewEngine, viewLocationResult, GetSafeModel(model), this.renderContextFactory.GetRenderContext(viewLocationContext));
         }
 
         private string[] GetInspectedLocations(string viewName, dynamic model, ViewLocationContext viewLocationContext)
@@ -103,8 +97,7 @@
             {
                 try
                 {
-                    var location =
-                        convention.Invoke(viewName, model, viewLocationContext);
+                    var location = convention.Invoke(viewName, model, viewLocationContext);
 
                     if (!string.IsNullOrWhiteSpace(location))
                     {

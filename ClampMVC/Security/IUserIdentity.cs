@@ -1,4 +1,4 @@
-﻿namespace ClampMVC.Security
+﻿namespace Clamp.Linker.Security
 {
     using System.Collections.Generic;
 

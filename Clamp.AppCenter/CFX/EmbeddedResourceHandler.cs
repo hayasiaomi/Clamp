@@ -1,6 +1,6 @@
 ﻿using Chromium;
 using Chromium.WebBrowser;
-using ClampMVC;
+using Clamp.Linker;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -74,11 +74,6 @@ namespace Clamp.AppCenter.CFX
                 e.Response.MimeType = webResource.mimeType;
                 e.Response.Status = 200;
                 e.Response.StatusText = "OK";
-
-                if (!browser.webResources.ContainsKey(requestUrl))
-                {
-                    browser.SetWebResource(requestUrl, webResource);
-                }
             }
         }
 

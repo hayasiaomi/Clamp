@@ -1,11 +1,11 @@
-﻿namespace ClampMVC
+﻿namespace Clamp.Linker
 {
     using System;
     using System.IO;
     using System.Linq;
 
-    using ClampMVC.Json;
-    using ClampMVC.Bootstrapper;
+    using Clamp.Linker.Json;
+    using Clamp.Linker.Bootstrapper;
 
     public static class Jsonp
     {
