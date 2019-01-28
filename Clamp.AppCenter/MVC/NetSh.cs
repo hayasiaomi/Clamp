@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
  
     public static class NetSh

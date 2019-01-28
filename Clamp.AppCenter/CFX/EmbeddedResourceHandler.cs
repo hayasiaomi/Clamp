@@ -1,5 +1,6 @@
 ﻿using Chromium;
 using Chromium.WebBrowser;
+using Clamp.AppCenter.MVC;
 using Clamp.Linker;
 using System;
 using System.Collections.Generic;

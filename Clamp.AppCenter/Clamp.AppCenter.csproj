@@ -367,7 +367,6 @@
     <Compile Include="Inputs\WindowsInputDeviceStateAdaptor.cs" />
     <Compile Include="Inputs\WindowsInputMessageDispatcher.cs" />
     <Compile Include="MimeHelper.cs" />
-    <Compile Include="MVC\AutomaticUrlReservationCreationFailureException.cs" />
     <Compile Include="MVC\ClampLinkerBootstrapper.cs" />
     <Compile Include="MVC\FileSystemRootPathProvider.cs" />
     <Compile Include="MVC\HostConfiguration.cs" />

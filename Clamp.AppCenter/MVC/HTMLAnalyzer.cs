@@ -14,7 +14,7 @@ using Chromium;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
     public class HTMLAnalyzer
     {

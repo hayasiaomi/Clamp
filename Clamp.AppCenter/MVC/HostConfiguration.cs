@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
     /// <summary>
     /// Host configuration for the self host

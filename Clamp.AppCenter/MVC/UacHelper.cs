@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
 
 

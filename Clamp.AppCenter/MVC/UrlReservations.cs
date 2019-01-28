@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Security.Principal;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
-
     public class UrlReservations
     {
         private const string EveryoneAccountName = "Everyone";

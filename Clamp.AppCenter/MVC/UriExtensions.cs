@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
 
     public static class UriExtensions

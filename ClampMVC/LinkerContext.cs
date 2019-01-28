@@ -13,7 +13,7 @@ namespace Clamp.Linker
     using Clamp.OSGI;
 
     /// <summary>
-    /// Nancy context.
+    /// 连接器上下文
     /// </summary>
     public sealed class LinkerContext : IDisposable
     {
@@ -21,11 +21,6 @@ namespace Clamp.Linker
 
         private ModelValidationResult modelValidationResult;
 
-        private RuntimeBundle runtimeBundle;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LinkerContext"/> class.
-        /// </summary>
         public LinkerContext()
         {
             this.Items = new Dictionary<string, object>();
@@ -33,7 +28,6 @@ namespace Clamp.Linker
             this.ViewBag = new DynamicDictionary();
             this.NegotiationContext = new NegotiationContext();
 
-            // TODO - potentially additional logic to lock to ip etc?
             this.ControlPanelEnabled = true;
         }
 
@@ -53,7 +47,7 @@ namespace Clamp.Linker
         public dynamic Parameters { get; set; }
 
         /// <summary>
-        /// Gets or sets the incoming request
+        /// 当前请求
         /// </summary>
         public Request Request
         {
@@ -70,10 +64,13 @@ namespace Clamp.Linker
         }
 
         /// <summary>
-        /// Bundle的名称
+        /// 当前请求的Bundle名称
         /// </summary>
         public string BundleName { set; get; }
 
+        /// <summary>
+        /// 当前请求所在的Bundle
+        /// </summary>
         public RuntimeBundle RuntimeBundle { set; get; }
 
         /// <summary>

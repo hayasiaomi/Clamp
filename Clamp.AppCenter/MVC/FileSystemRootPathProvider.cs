@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace Clamp.AppCenter
+namespace Clamp.AppCenter.MVC
 {
 
 
