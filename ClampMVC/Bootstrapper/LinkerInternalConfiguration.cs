@@ -37,7 +37,7 @@ namespace Clamp.Linker.Bootstrapper
                 {
                     RouteResolver = typeof(DefaultRouteResolver),
                     RoutePatternMatcher = typeof(DefaultRoutePatternMatcher),
-                    ContextFactory = typeof(DefaultClampWebContextFactory),
+                    ContextFactory = typeof(DefaultLinkerContextFactory),
                     WebworkEngine = typeof(LinkerEngine),
                     RouteCache = typeof(RouteCache),
                     RouteCacheProvider = typeof(DefaultRouteCacheProvider),
@@ -212,7 +212,7 @@ namespace Clamp.Linker.Bootstrapper
                 new TypeRegistration(typeof(IRoutePatternMatcher), this.RoutePatternMatcher),
                 new TypeRegistration(typeof(IViewLocator), this.ViewLocator),
                 new TypeRegistration(typeof(IViewFactory), this.ViewFactory),
-                new TypeRegistration(typeof(IClampWebContextFactory), this.ContextFactory),
+                new TypeRegistration(typeof(ILinkerContextFactory), this.ContextFactory),
                 new TypeRegistration(typeof(IWebworkModuleBuilder), this.WebworkModuleBuilder),
                 new TypeRegistration(typeof(IResponseFormatterFactory), this.ResponseFormatterFactory),
                 new TypeRegistration(typeof(IModelBinderLocator), this.ModelBinderLocator),

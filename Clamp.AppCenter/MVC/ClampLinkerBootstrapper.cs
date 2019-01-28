@@ -13,24 +13,14 @@ namespace Clamp.AppCenter.MVC
 {
     public class ClampLinkerBootstrapper : DefaultLinkerBootstrapper
     {
-        private IBundleContext bundleContex;
+        public IBundleContext BundleContext { private set; get; }
 
         public ClampLinkerBootstrapper(IBundleContext bundleContex)
         {
-            this.bundleContex = bundleContex;
+            this.BundleContext = bundleContex;
             this.InternalConfiguration.ViewLocationProvider = typeof(ResourceViewLocationProvider);
 
             StaticConfiguration.Caching.EnableRuntimeViewDiscovery = true;
         }
-
-        protected override void ConfigureRequestContainer(TinyIoCContainer container, LinkerContext context)
-        {
-            context.BundleContext = this.bundleContex;
-
-
-            base.ConfigureRequestContainer(container, context);
-        }
-
-
     }
 }

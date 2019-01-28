@@ -7,6 +7,7 @@ namespace Clamp.Linker.Conventions
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Clamp.OSGI;
     using Helpers;
     using Responses;
 
@@ -39,8 +40,7 @@ namespace Clamp.Linker.Conventions
 
             return (ctx, root) =>
             {
-                var path =
-                    HttpUtility.UrlDecode(ctx.Request.Path);
+                var path = HttpUtility.UrlDecode(ctx.Request.Path);
 
                 var fileName = GetSafeFileName(path);
 
@@ -49,27 +49,87 @@ namespace Clamp.Linker.Conventions
                     return null;
                 }
 
-                var pathWithoutFilename =
-                    GetPathWithoutFilename(fileName, path);
+                var pathWithoutFilename = GetPathWithoutFilename(fileName, path);
 
                 if (!pathWithoutFilename.StartsWith(requestedPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    (ctx.Trace.TraceLog ?? new NullLog()).WriteLog(x => x.AppendLine(string.Concat("[StaticContentConventionBuilder] The requested resource '", path, "' does not match convention mapped to '", requestedPath, "'" )));
+                    (ctx.Trace.TraceLog ?? new NullLog()).WriteLog(x => x.AppendLine(string.Concat("[StaticContentConventionBuilder] The requested resource '", path, "' does not match convention mapped to '", requestedPath, "'")));
+
                     return null;
                 }
 
-                contentPath =
-                    GetContentPath(requestedPath, contentPath);
+                contentPath = GetContentPath(requestedPath, contentPath);
 
                 if (contentPath.Equals("/"))
                 {
                     throw new ArgumentException("This is not the security vulnerability you are looking for. Mapping static content to the root of your application is not a good idea.");
                 }
 
-                var responseFactory =
-                    ResponseFactoryCache.GetOrAdd(new ResponseFactoryCacheKey(path, root), BuildContentDelegate(ctx, root, requestedPath, contentPath, allowedExtensions));
+                var responseFactory = ResponseFactoryCache.GetOrAdd(new ResponseFactoryCacheKey(path, root), BuildContentDelegate(ctx, root, requestedPath, contentPath, allowedExtensions));
 
                 return responseFactory.Invoke(ctx);
+            };
+        }
+
+
+        /// <summary>
+        /// Adds a directory-based convention for static convention.
+        /// </summary>
+        /// <param name="requestedPath">The path that should be matched with the request.</param>
+        /// <param name="contentPath">The path to where the content is stored in your application, relative to the root. If this is <see langword="null" /> then it will be the same as <paramref name="requestedPath"/>.</param>
+        /// <param name="allowedExtensions">A list of extensions that is valid for the conventions. If not supplied, all extensions are valid.</param>
+        /// <returns>A <see cref="GenericFileResponse"/> instance for the requested static contents if it was found, otherwise <see langword="null"/>.</returns>
+        public static Func<LinkerContext, string, Response> AddResources(params string[] allowedExtensions)
+        {
+            return (ctx, root) =>
+            {
+                var path = HttpUtility.UrlDecode(ctx.Request.Path);
+
+                var fileName = GetSafeFileName(path);
+
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    return null;
+                }
+
+                var pathWithoutFilename = GetPathWithoutFilename(fileName, path);
+
+                var responseFactory = ResponseFactoryCache.GetOrAdd(new ResponseFactoryCacheKey(path, root), BuildResourcesDelegate(ctx, path, pathWithoutFilename, fileName, allowedExtensions));
+
+                return responseFactory.Invoke(ctx);
+            };
+        }
+
+        private static Func<ResponseFactoryCacheKey, Func<LinkerContext, Response>> BuildResourcesDelegate(LinkerContext context, string requestPath, string path, string fileName, string[] allowedExtensions)
+        {
+            return pathAndRootPair =>
+            {
+                var extension = Path.GetExtension(pathAndRootPair.Path);
+
+                if (string.IsNullOrEmpty(extension))
+                {
+                    return ctx => null;
+                }
+
+                extension = extension.Substring(1);
+
+                if (allowedExtensions.Length != 0 && !allowedExtensions.Any(e => string.Equals(e.TrimStart(new[] { '.' }), extension, StringComparison.OrdinalIgnoreCase)))
+                {
+                    context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[StaticContentConventionBuilder] The requested extension '", extension, "' does not match any of the valid extensions for the convention '", string.Join(",", allowedExtensions), "'")));
+
+                    return ctx => null;
+                }
+
+                string transformedRequestPath = GetEncodedPath(path);
+
+                string resourcePath = transformedRequestPath.Replace(Path.DirectorySeparatorChar, '.').TrimStart('.').Substring(context.BundleName.Length);
+
+                string resourceName = context.RuntimeBundle.GetResourceNames().FirstOrDefault(rn => rn.EndsWith($"{resourcePath}.{fileName}", StringComparison.CurrentCultureIgnoreCase));
+
+                if (string.IsNullOrWhiteSpace(resourceName))
+                    return ctx => null;
+
+                return ctx => new BundleFileResponse(ctx.RuntimeBundle, resourceName, fileName);
             };
         }
 
@@ -83,8 +143,7 @@ namespace Clamp.Linker.Conventions
             return (ctx, root) =>
             {
 
-                var path =
-                    ctx.Request.Path;
+                var path = ctx.Request.Path;
 
                 if (!path.Equals(requestedFile, StringComparison.OrdinalIgnoreCase))
                 {
@@ -92,8 +151,7 @@ namespace Clamp.Linker.Conventions
                     return null;
                 }
 
-                var responseFactory =
-                    ResponseFactoryCache.GetOrAdd(new ResponseFactoryCacheKey(path, root), BuildContentDelegate(ctx, root, requestedFile, contentFile, new string[] { }));
+                var responseFactory = ResponseFactoryCache.GetOrAdd(new ResponseFactoryCacheKey(path, root), BuildContentDelegate(ctx, root, requestedFile, contentFile, new string[] { }));
 
                 return responseFactory.Invoke(ctx);
             };
@@ -114,8 +172,7 @@ namespace Clamp.Linker.Conventions
 
         private static string GetContentPath(string requestedPath, string contentPath)
         {
-            contentPath =
-                contentPath ?? requestedPath;
+            contentPath = contentPath ?? requestedPath;
 
             if (!contentPath.StartsWith("/"))
             {
@@ -131,31 +188,26 @@ namespace Clamp.Linker.Conventions
             {
                 context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[StaticContentConventionBuilder] Attempting to resolve static content '", pathAndRootPair, "'")));
 
-                var extension =
-                    Path.GetExtension(pathAndRootPair.Path);
+                var extension = Path.GetExtension(pathAndRootPair.Path);
 
                 if (!string.IsNullOrEmpty(extension))
                 {
                     extension = extension.Substring(1);
                 }
 
-                if (allowedExtensions.Length != 0 && !allowedExtensions.Any(e => string.Equals(e.TrimStart(new [] {'.'}), extension, StringComparison.OrdinalIgnoreCase)))
+                if (allowedExtensions.Length != 0 && !allowedExtensions.Any(e => string.Equals(e.TrimStart(new[] { '.' }), extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[StaticContentConventionBuilder] The requested extension '", extension, "' does not match any of the valid extensions for the convention '", string.Join(",", allowedExtensions), "'")));
                     return ctx => null;
                 }
 
-                var transformedRequestPath =
-                    GetSafeRequestPath(pathAndRootPair.Path, requestedPath, contentPath);
+                var transformedRequestPath = GetSafeRequestPath(pathAndRootPair.Path, requestedPath, contentPath);
 
-                transformedRequestPath =
-                    GetEncodedPath(transformedRequestPath);
+                transformedRequestPath = GetEncodedPath(transformedRequestPath);
 
-                var fileName =
-                    Path.GetFullPath(Path.Combine(applicationRootPath, transformedRequestPath));
+                var fileName = Path.GetFullPath(Path.Combine(applicationRootPath, transformedRequestPath));
 
-                var contentRootPath =
-                    Path.GetFullPath(Path.Combine(applicationRootPath, GetEncodedPath(contentPath)));
+                var contentRootPath = Path.GetFullPath(Path.Combine(applicationRootPath, GetEncodedPath(contentPath)));
 
                 if (!IsWithinContentFolder(contentRootPath, fileName))
                 {
@@ -170,6 +222,7 @@ namespace Clamp.Linker.Conventions
                 }
 
                 context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[StaticContentConventionBuilder] Returning file '", fileName, "'")));
+
                 return ctx => new GenericFileResponse(fileName, ctx);
             };
         }
@@ -181,26 +234,21 @@ namespace Clamp.Linker.Conventions
 
         private static string GetPathWithoutFilename(string fileName, string path)
         {
-            var pathWithoutFileName =
-                path.Replace(fileName, string.Empty);
+            var pathWithoutFileName = path.Replace(fileName, string.Empty);
 
-            return (pathWithoutFileName.Equals("/")) ?
-                pathWithoutFileName :
-                pathWithoutFileName.TrimEnd(new[] {'/'});
+            return (pathWithoutFileName.Equals("/")) ? pathWithoutFileName : pathWithoutFileName.TrimEnd(new[] { '/' });
         }
 
         private static string GetSafeRequestPath(string requestPath, string requestedPath, string contentPath)
         {
-            var actualContentPath =
-                (contentPath.Equals("/") ? string.Empty : contentPath);
+            var actualContentPath = (contentPath.Equals("/") ? string.Empty : contentPath);
 
             if (requestedPath.Equals("/"))
             {
                 return string.Concat(actualContentPath, requestPath);
             }
 
-            var expression =
-                new Regex(Regex.Escape(requestedPath), RegexOptions.IgnoreCase);
+            var expression = new Regex(Regex.Escape(requestedPath), RegexOptions.IgnoreCase);
 
             return expression.Replace(requestPath, actualContentPath, 1);
         }

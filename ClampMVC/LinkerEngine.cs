@@ -24,7 +24,7 @@ namespace Clamp.Linker
         public const string ERROR_EXCEPTION = "ERROR_EXCEPTION";
 
         private readonly IRequestDispatcher dispatcher;
-        private readonly IClampWebContextFactory contextFactory;
+        private readonly ILinkerContextFactory contextFactory;
         private readonly IRequestTracing requestTracing;
         private readonly IEnumerable<IStatusCodeHandler> statusCodeHandlers;
         private readonly IStaticContentProvider staticContentProvider;
@@ -41,7 +41,7 @@ namespace Clamp.Linker
         /// <param name="staticContentProvider">The provider to use for serving static content</param>
         /// <param name="negotiator">The response negotiator.</param>
         public LinkerEngine(IRequestDispatcher dispatcher,
-            IClampWebContextFactory contextFactory,
+            ILinkerContextFactory contextFactory,
             IEnumerable<IStatusCodeHandler> statusCodeHandlers,
             IRequestTracing requestTracing,
             IStaticContentProvider staticContentProvider,
@@ -94,7 +94,7 @@ namespace Clamp.Linker
 
         public Task<LinkerContext> HandleRequest(Request request, Func<LinkerContext, LinkerContext> preRequest, CancellationToken cancellationToken)
         {
-	        var cts = CancellationTokenSource.CreateLinkedTokenSource(this.engineDisposedCts.Token, cancellationToken);
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(this.engineDisposedCts.Token, cancellationToken);
             cts.Token.ThrowIfCancellationRequested();
 
             var tcs = new TaskCompletionSource<LinkerContext>();
@@ -112,6 +112,7 @@ namespace Clamp.Linker
             }
 
             var staticContentResponse = this.staticContentProvider.GetContent(context);
+
             if (staticContentResponse != null)
             {
                 context.Response = staticContentResponse;
@@ -126,27 +127,27 @@ namespace Clamp.Linker
             lifeCycleTask.WhenCompleted(
                 completeTask =>
                 {
-	                try
-	                {
-		                this.CheckStatusCodeHandler(completeTask.Result);
+                    try
+                    {
+                        this.CheckStatusCodeHandler(completeTask.Result);
 
-		                this.SaveTraceInformation(completeTask.Result);
-	                }
-	                catch (Exception ex)
-	                {
-		                tcs.SetException(ex);
-		                return;
-	                }
-	                finally
-	                {
-		                cts.Dispose();
-	                }
+                        this.SaveTraceInformation(completeTask.Result);
+                    }
+                    catch (Exception ex)
+                    {
+                        tcs.SetException(ex);
+                        return;
+                    }
+                    finally
+                    {
+                        cts.Dispose();
+                    }
 
                     tcs.SetResult(completeTask.Result);
                 },
                 errorTask =>
                 {
-		            tcs.SetException(errorTask.Exception);
+                    tcs.SetException(errorTask.Exception);
                 },
                 true);
 

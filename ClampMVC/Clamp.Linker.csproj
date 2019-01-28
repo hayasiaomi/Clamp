@@ -77,6 +77,7 @@
     <Compile Include="Bootstrapper\Registrations.cs" />
     <Compile Include="Bootstrapper\ScanMode.cs" />
     <Compile Include="Bootstrapper\TypeRegistration.cs" />
+    <Compile Include="Conventions\DefaultStaticResourcesConventions.cs" />
     <Compile Include="LinkerActivator.cs" />
     <Compile Include="Conventions\AcceptHeaderCoercionConventions.cs" />
     <Compile Include="Conventions\BuiltInAcceptHeaderCoercions.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="Conventions\DefaultStaticContentsConventions.cs" />
     <Compile Include="Conventions\DefaultViewLocationConventions.cs" />
     <Compile Include="Conventions\IConvention.cs" />
-    <Compile Include="Conventions\WebworkConventions.cs" />
+    <Compile Include="Conventions\LinkerConventions.cs" />
     <Compile Include="Conventions\StaticContentConventionBuilder.cs" />
     <Compile Include="Conventions\StaticContentHelper.cs" />
     <Compile Include="Conventions\StaticContentsConventions.cs" />
@@ -111,7 +112,7 @@
     <Compile Include="Culture\DefaultCultureService.cs" />
     <Compile Include="Culture\ICultureService.cs" />
     <Compile Include="DefaultBootstrapper.cs" />
-    <Compile Include="DefaultClampWebContextFactory.cs" />
+    <Compile Include="DefaultLinkerContextFactory.cs" />
     <Compile Include="DefaultObjectSerializer.cs" />
     <Compile Include="DefaultResponseFormatter.cs" />
     <Compile Include="DefaultResponseFormatterFactory.cs" />
@@ -185,8 +186,8 @@
     <Compile Include="HttpMultipartSubStream.cs" />
     <Compile Include="HttpStatusCode.cs" />
     <Compile Include="IHideObjectMembers.cs" />
-    <Compile Include="IClampWebContextFactory.cs" />
-    <Compile Include="IClampWebEngine.cs" />
+    <Compile Include="ILinkerContextFactory.cs" />
+    <Compile Include="ILinkerEngine.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="IControllerCatalog.cs" />
     <Compile Include="IObjectSerializer.cs" />
@@ -263,6 +264,7 @@
     <Compile Include="ResourceAssemblyProvider.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="ResponseExtensions.cs" />
+    <Compile Include="Responses\BundleFileResponse.cs" />
     <Compile Include="Responses\DefaultJsonSerializer.cs" />
     <Compile Include="Responses\DefaultXmlSerializer.cs" />
     <Compile Include="Responses\EmbeddedFileResponse.cs" />

@@ -38,7 +38,7 @@
         /// <summary>
         /// Default Nancy conventions
         /// </summary>
-        private readonly WebworkConventions conventions;
+        private readonly LinkerConventions conventions;
 
         /// <summary>
         /// Internal configuration
@@ -68,7 +68,7 @@
         protected LinkerBootstrapperBase()
         {
             this.ApplicationPipelines = new Pipelines();
-            this.conventions = new WebworkConventions();
+            this.conventions = new LinkerConventions();
         }
 
         /// <summary>
@@ -90,7 +90,7 @@
         /// <summary>
         /// Nancy conventions
         /// </summary>
-        protected virtual WebworkConventions Conventions
+        protected virtual LinkerConventions Conventions
         {
             get
             {
@@ -456,7 +456,7 @@
         /// Overrides/configures Nancy's conventions
         /// </summary>
         /// <param name="webworkConventions">Convention object instance</param>
-        protected virtual void ConfigureConventions(WebworkConventions webworkConventions)
+        protected virtual void ConfigureConventions(LinkerConventions webworkConventions)
         {
 
         }

@@ -3,7 +3,7 @@ namespace Clamp.Linker
     /// <summary>
     /// Creates NancyContext instances
     /// </summary>
-    public interface IClampWebContextFactory
+    public interface ILinkerContextFactory
     {
         /// <summary>
         /// Create a new NancyContext

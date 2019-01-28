@@ -5,13 +5,13 @@
     /// </summary>
     public class StaticFileContent
     {
-        private readonly WebworkConventions conventions;
+        private readonly LinkerConventions conventions;
 
         /// <summary>
         /// Creates a new instance of StaticFileContent
         /// </summary>
         /// <param name="conventions">NancyConventions, to which static files get added</param>
-        public StaticFileContent(WebworkConventions conventions)
+        public StaticFileContent(LinkerConventions conventions)
         {
             this.conventions = conventions;
         }

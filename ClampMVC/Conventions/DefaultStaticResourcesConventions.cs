@@ -1,12 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 namespace Clamp.Linker.Conventions
 {
-    using System;
-    using System.Collections.Generic;
-
-    /// <summary>
-    /// Defines the default static contents conventions.
-    /// </summary>
-    public class DefaultStaticContentsConventions : IConvention
+    public class DefaultStaticResourcesConventions : IConvention
     {
         /// <summary>
         /// Initialise any conventions this class "owns".
@@ -16,7 +15,7 @@ namespace Clamp.Linker.Conventions
         {
             conventions.StaticContentsConventions = new List<Func<LinkerContext, string, Response>>
             {
-                StaticContentConventionBuilder.AddResources("js","css","less","scss","map","ttf","eot","svg","woff","otf")
+                StaticContentConventionBuilder.AddDirectory("Content")
             };
         }
 
@@ -34,5 +33,7 @@ namespace Clamp.Linker.Conventions
 
             return (conventions.StaticContentsConventions.Count > 0) ? Tuple.Create(true, string.Empty) : Tuple.Create(false, "The static contents conventions cannot be empty.");
         }
+
+
     }
 }

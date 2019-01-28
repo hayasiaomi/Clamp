@@ -4,4 +4,4 @@ using Clamp.OSGI.Data.Annotation;
 [assembly: Bundle("Clamp.Linker", "1.0.0.0")]
 [assembly: BundleAuthor("aomi")]
 [assembly: BundleDescription("CEF连接器")]
-[assembly: BundleActivator("Clamp.Linker.ClampMvcActivator")]
+[assembly: BundleActivator("Clamp.Linker.LinkerActivator")]

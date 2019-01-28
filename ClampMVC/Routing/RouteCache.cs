@@ -19,14 +19,14 @@
         /// Initializes a new instance of the <see cref="RouteCache"/> class.
         /// </summary>
         /// <param name="moduleCatalog">The <see cref="IControllerCatalog"/> that should be used by the cache.</param>
-        /// <param name="contextFactory">The <see cref="IClampWebContextFactory"/> that should be used to create a context instance.</param>
+        /// <param name="contextFactory">The <see cref="ILinkerContextFactory"/> that should be used to create a context instance.</param>
         /// <param name="routeSegmentExtractor"> </param>
         /// <param name="cultureService"></param>
         /// <param name="routeMetadataProviders"></param>
         /// <param name="routeDescriptionProvider"></param>
         public RouteCache(
             IControllerCatalog moduleCatalog,
-            IClampWebContextFactory contextFactory,
+            ILinkerContextFactory contextFactory,
             IRouteSegmentExtractor routeSegmentExtractor,
             IRouteDescriptionProvider routeDescriptionProvider,
             ICultureService cultureService,

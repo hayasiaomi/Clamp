@@ -722,7 +722,7 @@ namespace Clamp.Linker.Helpers
                 return;
 
             var decoded = HtmlDecode(query);
-            var segments = decoded.Split(new[] {'&'}, StringSplitOptions.None);
+            var segments = decoded.Split(new[] { '&' }, StringSplitOptions.None);
 
             foreach (var segment in segments)
             {
@@ -750,6 +750,43 @@ namespace Clamp.Linker.Helpers
             return new KeyValuePair<string, string>(key, value);
         }
 
+
+        public static List<string> GetUrlSegments(string path)
+        {
+            List<string> segments = new List<string>();
+
+            var currentSegment = string.Empty;
+            var openingParenthesesCount = 0;
+
+            for (var index = 0; index < path.Length; index++)
+            {
+                var token = path[index];
+
+                if (token.Equals('('))
+                {
+                    openingParenthesesCount++;
+                }
+
+                if (token.Equals(')'))
+                {
+                    openingParenthesesCount--;
+                }
+
+                if (!token.Equals('/') || openingParenthesesCount > 0)
+                {
+                    currentSegment += token;
+                }
+
+                if ((token.Equals('/') || index == path.Length - 1) && currentSegment.Length > 0 && openingParenthesesCount == 0)
+                {
+                    segments.Add(currentSegment);
+
+                    currentSegment = string.Empty;
+                }
+            }
+
+            return segments;
+        }
         #endregion // Methods
     }
 }

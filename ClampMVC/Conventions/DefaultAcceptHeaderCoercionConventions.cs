@@ -8,12 +8,12 @@
     /// </summary>
     public class DefaultAcceptHeaderCoercionConventions : IConvention
     {
-        public void Initialise(WebworkConventions conventions)
+        public void Initialise(LinkerConventions conventions)
         {
             this.ConfigureDefaultConventions(conventions);
         }
 
-        public Tuple<bool, string> Validate(WebworkConventions conventions)
+        public Tuple<bool, string> Validate(LinkerConventions conventions)
         {
             if (conventions.AcceptHeaderCoercionConventions == null)
             {
@@ -23,7 +23,7 @@
             return Tuple.Create(true, string.Empty);
         }
 
-        private void ConfigureDefaultConventions(WebworkConventions conventions)
+        private void ConfigureDefaultConventions(LinkerConventions conventions)
         {
             conventions.AcceptHeaderCoercionConventions = new List<Func<IEnumerable<Tuple<string, decimal>>, LinkerContext, IEnumerable<Tuple<string, decimal>>>>(2)
                                                               {

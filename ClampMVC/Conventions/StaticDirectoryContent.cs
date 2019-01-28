@@ -5,13 +5,13 @@
     /// </summary>
     public class StaticDirectoryContent
     {
-        private readonly WebworkConventions conventions;
+        private readonly LinkerConventions conventions;
 
         /// <summary>
         /// Creates a new instance of StaticDirectoryContent
         /// </summary>
         /// <param name="conventions">NancyConventions, to which static directories get added</param>
-        public StaticDirectoryContent(WebworkConventions conventions)
+        public StaticDirectoryContent(LinkerConventions conventions)
         {
             this.conventions = conventions;
         }

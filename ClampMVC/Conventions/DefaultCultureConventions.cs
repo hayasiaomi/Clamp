@@ -10,7 +10,7 @@
         /// Initialise culture conventions
         /// </summary>
         /// <param name="conventions"></param>
-        public void Initialise(WebworkConventions conventions)
+        public void Initialise(LinkerConventions conventions)
         {
             ConfigureDefaultConventions(conventions);
         }
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="conventions"></param>
         /// <returns></returns>
-        public Tuple<bool, string> Validate(WebworkConventions conventions)
+        public Tuple<bool, string> Validate(LinkerConventions conventions)
         {
             if (conventions.CultureConventions == null)
             {
@@ -36,7 +36,7 @@
         /// Setup default conventions
         /// </summary>
         /// <param name="conventions"></param>
-        private static void ConfigureDefaultConventions(WebworkConventions conventions)
+        private static void ConfigureDefaultConventions(LinkerConventions conventions)
         {
             conventions.CultureConventions = new List<Func<LinkerContext, CultureInfo>>
             {

@@ -11,13 +11,13 @@ namespace Clamp.Linker.Conventions
         /// Initialise any conventions this class "owns"
         /// </summary>
         /// <param name="conventions">Convention object instance</param>
-        void Initialise(WebworkConventions conventions);
+        void Initialise(LinkerConventions conventions);
 
         /// <summary>
         /// Asserts that the conventions that this class "owns" are valid
         /// </summary>
         /// <param name="conventions">Conventions object instance</param>
         /// <returns>Tuple containing true/false for valid/invalid, and any error messages</returns>
-        Tuple<bool, string> Validate(WebworkConventions conventions);
+        Tuple<bool, string> Validate(LinkerConventions conventions);
     }
 }

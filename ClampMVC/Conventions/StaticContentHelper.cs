@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="conventions">The conventions to add to.</param>
         /// <param name="staticConventions">The callback method allows you to describe the static content</param>
-        public static void MapStaticContent(this WebworkConventions conventions, Action<StaticFileContent, StaticDirectoryContent> staticConventions)
+        public static void MapStaticContent(this LinkerConventions conventions, Action<StaticFileContent, StaticDirectoryContent> staticConventions)
         {
             staticConventions(new StaticFileContent(conventions), new StaticDirectoryContent(conventions));
         }

@@ -21,6 +21,8 @@ namespace Clamp.Linker
 
         private ModelValidationResult modelValidationResult;
 
+        private RuntimeBundle runtimeBundle;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LinkerContext"/> class.
         /// </summary>
@@ -51,11 +53,6 @@ namespace Clamp.Linker
         public dynamic Parameters { get; set; }
 
         /// <summary>
-        /// Bundle的上下文
-        /// </summary>
-        public IBundleContext BundleContext { set; get; }
-
-        /// <summary>
         /// Gets or sets the incoming request
         /// </summary>
         public Request Request
@@ -77,15 +74,7 @@ namespace Clamp.Linker
         /// </summary>
         public string BundleName { set; get; }
 
-        public RuntimeBundle RuntimeBundle
-        {
-            get
-            {
-                if (this.BundleContext != null)
-                    return this.BundleContext.GetRuntimeBundleByName(this.BundleName);
-                return null;
-            }
-        }
+        public RuntimeBundle RuntimeBundle { set; get; }
 
         /// <summary>
         /// Gets or sets the outgoing response

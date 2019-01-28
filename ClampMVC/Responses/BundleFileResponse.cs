@@ -1,5 +1,6 @@
 ﻿namespace Clamp.Linker.Responses
 {
+    using Clamp.OSGI;
     using System;
     using System.IO;
     using System.Linq;
@@ -8,21 +9,21 @@
     using System.Text;
     using System.Text.RegularExpressions;
 
-    public class EmbeddedFileResponse : Response
+    public class BundleFileResponse : Response
     {
         private static readonly byte[] ErrorText;
 
-        static EmbeddedFileResponse()
+        static BundleFileResponse()
         {
             ErrorText = Encoding.UTF8.GetBytes("NOT FOUND");
         }
 
-        public EmbeddedFileResponse(Assembly assembly, string resourcePath, string name)
+        public BundleFileResponse(RuntimeBundle runtimeBundle, string resourceName,string name)
         {
             this.ContentType = MimeTypes.GetMimeType(name);
             this.StatusCode = HttpStatusCode.OK;
 
-            var content =  GetResourceContent(assembly, resourcePath, name);
+            Stream content = runtimeBundle.GetResource(resourceName);
 
             if (content != null)
             {
@@ -43,24 +44,7 @@
                 }
             };
         }
-
-        private Stream GetResourceContent(Assembly assembly, string resourcePath, string name)
-        {
-            var resourceName = assembly
-                .GetManifestResourceNames()
-                .FirstOrDefault(x => GetFileNameFromResourceName(resourcePath, x).Equals(name, StringComparison.OrdinalIgnoreCase));
-
-            if (resourceName == null)
-                return null;
-
-            return assembly.GetManifestResourceStream(resourceName);
-        }
-
-        private static string GetFileNameFromResourceName(string resourcePath, string resourceName)
-        {
-            return Regex.Replace(resourceName, resourcePath, string.Empty, RegexOptions.IgnoreCase).Substring(1);
-        }
-
+     
         private static string GenerateETag(Stream stream)
         {
             using (var sha1 = new SHA1CryptoServiceProvider())

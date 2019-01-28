@@ -7,10 +7,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>YEUX</title>
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/admin/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="/admin/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="/admin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         .float-vertical-align {
             border: 0px;
@@ -21,66 +21,6 @@
             transform: translateY(-50%);
         }
     </style>
-
-</head>
-<body>
-    <div id="wrapper">
-        <nav class="navbar navbar-default" style="-webkit-app-region: drag;">
-            <div class="navbar-header">
-                <span class="navbar-brand" href="#" style="cursor:default;">YEUX-善点工具</span>
-            </div>
-            <div class="float-vertical-align" style="cursor:default;-webkit-app-region: no-drag;">
-                <form role="form">
-                    <fieldset>
-                        <a href="#" onclick="return shutdown()"><i class="glyphicon glyphicon-remove"></i></a>
-                    </fieldset>
-                </form>
-            </div>
-        </nav>
-
-        <div class="container" style="-webkit-app-region: no-drag;">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="login-panel panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">善点登录</h3>
-                        </div>
-                        <div class="panel-body">
-                            <form role="form">
-                                <fieldset>
-                                    <div class="form-group">
-                                        <input id="txt-username" class="form-control" onfocus="clearErrors()" placeholder="请输入用户名" name="username" type="text" autofocus>
-                                    </div>
-                                    <div class="form-group">
-                                        <input id="txt-password" class="form-control" onfocus="clearErrors()" placeholder="请输入密码" name="password" type="password" value="">
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input id="chb-remember" name="remember" type="checkbox" value="1">记住密码
-                                        </label>
-                                    </div>
-                                    <!-- Change this to a button or input when using this as a form -->
-                                    <a href="#" onclick="return login()" class="btn btn-lg btn-success btn-block">登录</a>
-                                </fieldset>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div id="lbl-errors" class="alert alert-danger" role="alert" style="display:none"></div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="vendor/metisMenu/metisMenu.min.js"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="dist/js/sb-admin-2.js"></script>
-
     <script type="text/javascript">
 
         function clearErrors() {
@@ -142,5 +82,65 @@
         }
 
     </script>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default" style="-webkit-app-region: drag;">
+            <div class="navbar-header">
+                <span class="navbar-brand" href="#" style="cursor:default;">YEUX-善点工具</span>
+            </div>
+            <div class="float-vertical-align" style="cursor:default;-webkit-app-region: no-drag;">
+                <form role="form">
+                    <fieldset>
+                        <a href="#" onclick="return shutdown()"><i class="glyphicon glyphicon-remove"></i></a>
+                    </fieldset>
+                </form>
+            </div>
+        </nav>
+
+        <div class="container" style="-webkit-app-region: no-drag;">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">善点登录</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form role="form">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <input id="txt-username" class="form-control" onfocus="clearErrors()" placeholder="请输入用户名" name="username" type="text" autofocus>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="txt-password" class="form-control" onfocus="clearErrors()" placeholder="请输入密码" name="password" type="password" value="">
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="chb-remember" name="remember" type="checkbox" value="1">记住密码
+                                        </label>
+                                    </div>
+                                    <!-- Change this to a button or input when using this as a form -->
+                                    <a href="#" onclick="return login()" class="btn btn-lg btn-success btn-block">登录</a>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="lbl-errors" class="alert alert-danger" role="alert" style="display:none"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery -->
+    <script src="/admin/vendor/jquery/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/admin/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/admin/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="/admin/dist/js/sb-admin-2.js"></script>
+
+    
 </body>
 </html>

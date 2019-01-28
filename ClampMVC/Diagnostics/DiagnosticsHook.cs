@@ -48,7 +48,7 @@ namespace Clamp.Linker.Diagnostics
 
             var diagnosticsRouteCache = new RouteCache(
                 diagnosticsModuleCatalog,
-                new DefaultClampWebContextFactory(cultureService, requestTraceFactory, textResource),
+                new DefaultLinkerContextFactory(cultureService, requestTraceFactory, textResource),
                 new DefaultRouteSegmentExtractor(),
                 new DefaultRouteDescriptionProvider(),
                 cultureService,

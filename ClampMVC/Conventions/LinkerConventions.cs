@@ -12,7 +12,7 @@
     /// <summary>
     /// Nancy configurable conventions
     /// </summary>
-    public class WebworkConventions
+    public class LinkerConventions
     {
         /// <summary>
         /// Discovered conventions
@@ -20,9 +20,9 @@
         private IEnumerable<IConvention> conventions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebworkConventions"/> class.
+        /// Initializes a new instance of the <see cref="LinkerConventions"/> class.
         /// </summary>
-        public WebworkConventions()
+        public LinkerConventions()
         {
             this.BuildDefaultConventions();
         }
@@ -77,7 +77,7 @@
             {
                 new InstanceRegistration(typeof(ViewLocationConventions), new ViewLocationConventions(this.ViewLocationConventions)),
                 new InstanceRegistration(typeof(StaticContentsConventions), new StaticContentsConventions(this.StaticContentsConventions)),
-                new InstanceRegistration(typeof(AcceptHeaderCoercionConventions), new AcceptHeaderCoercionConventions(this.AcceptHeaderCoercionConventions)), 
+                new InstanceRegistration(typeof(AcceptHeaderCoercionConventions), new AcceptHeaderCoercionConventions(this.AcceptHeaderCoercionConventions)),
                 new InstanceRegistration(typeof(CultureConventions), new CultureConventions(this.CultureConventions))
             };
         }
@@ -88,11 +88,9 @@
         /// </summary>
         private void BuildDefaultConventions()
         {
-            var defaultConventions =
-                AppDomainAssemblyTypeScanner.TypesOf<IConvention>(ScanMode.OnlyWebwork);
+            var defaultConventions = AppDomainAssemblyTypeScanner.TypesOf<IConvention>(ScanMode.OnlyWebwork);
 
-            this.conventions = defaultConventions
-                .Union(AppDomainAssemblyTypeScanner.TypesOf<IConvention>(ScanMode.ExcludeWebwork))
+            this.conventions = defaultConventions.Union(AppDomainAssemblyTypeScanner.TypesOf<IConvention>(ScanMode.ExcludeWebwork))
                 .Select(t => (IConvention)Activator.CreateInstance(t));
 
             foreach (var convention in this.conventions)

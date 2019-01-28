@@ -13,7 +13,7 @@
         /// Initialise any conventions this class "owns".
         /// </summary>
         /// <param name="conventions">Convention object instance.</param>
-        public void Initialise(WebworkConventions conventions)
+        public void Initialise(LinkerConventions conventions)
         {
             ConfigureViewLocationConventions(conventions);
         }
@@ -23,7 +23,7 @@
         /// </summary>
         /// <param name="conventions">Conventions object instance.</param>
         /// <returns>Tuple containing true/false for valid/invalid, and any error messages.</returns>
-        public Tuple<bool, string> Validate(WebworkConventions conventions)
+        public Tuple<bool, string> Validate(LinkerConventions conventions)
         {
             if (conventions.ViewLocationConventions == null)
             {
@@ -35,7 +35,7 @@
                 Tuple.Create(false, "The view conventions cannot be empty.");
         }
 
-        private static void ConfigureViewLocationConventions(WebworkConventions conventions)
+        private static void ConfigureViewLocationConventions(LinkerConventions conventions)
         {
             conventions.ViewLocationConventions = new List<Func<string, object, ViewLocationContext, string>>
             {

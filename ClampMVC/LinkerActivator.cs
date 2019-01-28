@@ -13,7 +13,6 @@ namespace Clamp.Linker
         public void Start(IBundleContext context)
         {
             BundleContext = context;
-
         }
 
         public void Stop(IBundleContext context)

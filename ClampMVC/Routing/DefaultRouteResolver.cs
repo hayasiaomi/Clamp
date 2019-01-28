@@ -59,11 +59,9 @@
 
                 if (segments != null && segments.Length > 0)
                 {
-                    RuntimeBundle runtimeBundle = context.BundleContext.GetRuntimeBundleByName(segments[0]);
-
-                    if (runtimeBundle != null)
+                    if (context.RuntimeBundle != null)
                     {
-                        IController[] controllers = runtimeBundle.GetExtensionObjects<IController>();
+                        IController[] controllers = context.RuntimeBundle.GetExtensionObjects<IController>();
 
                         if (controllers != null && controllers.Length > 0)
                         {
@@ -78,6 +76,7 @@
                                 results = this.trie.GetMatches(GetMethod(context), pathDecoded, context);
                             }
                         }
+
                     }
 
 

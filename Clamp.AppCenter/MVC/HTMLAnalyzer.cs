@@ -354,7 +354,7 @@ namespace Clamp.AppCenter
                 Query = requestUrl.Query,
             };
 
-            return clampWebEngine.HandleRequest(new Request(cfxRequest.Method, url, RequestStream.FromStream(body, body.Length, false), headers, "::1", null, "HTTP/1.1"));
+            return clampWebEngine.HandleRequest(new Request(cfxRequest.Method, url, RequestStream.FromStream(body, body.Length, false),  headers, "::1", null, "HTTP/1.1"));
         }
     }
 }
