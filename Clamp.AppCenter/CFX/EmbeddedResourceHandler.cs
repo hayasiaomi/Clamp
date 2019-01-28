@@ -41,7 +41,7 @@ namespace Clamp.AppCenter.CFX
             CfxRequest request = e.Request;
             CfxCallback callback = e.Callback;
 
-            using (ClampWebContext context = HTMLAnalyzer.Analyze(request))
+            using (LinkerContext context = HTMLAnalyzer.Analyze(request))
             {
                 if (context.Response != null)
                 {

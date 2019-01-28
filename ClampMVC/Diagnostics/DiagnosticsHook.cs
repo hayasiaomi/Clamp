@@ -64,7 +64,7 @@ namespace Clamp.Linker.Diagnostics
             var serializer = new DefaultObjectSerializer();
 
             pipelines.BeforeRequest.AddItemToStartOfPipeline(
-                new PipelineItem<Func<ClampWebContext, Response>>(
+                new PipelineItem<Func<LinkerContext, Response>>(
                     PipelineKey,
                     ctx =>
                     {
@@ -108,21 +108,21 @@ namespace Clamp.Linker.Diagnostics
             pipelines.BeforeRequest.RemoveByName(PipelineKey);
         }
 
-        private static Response GetDiagnosticsHelpView(ClampWebContext ctx)
+        private static Response GetDiagnosticsHelpView(LinkerContext ctx)
         {
             return (StaticConfiguration.IsRunningDebug)
                        ? new DiagnosticsViewRenderer(ctx)["help"]
                        : HttpStatusCode.NotFound;
         }
 
-        private static Response GetDiagnosticsLoginView(ClampWebContext ctx)
+        private static Response GetDiagnosticsLoginView(LinkerContext ctx)
         {
             var renderer = new DiagnosticsViewRenderer(ctx);
 
             return renderer["login"];
         }
 
-        private static Response ExecuteDiagnostics(ClampWebContext ctx, IRouteResolver routeResolver, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static Response ExecuteDiagnostics(LinkerContext ctx, IRouteResolver routeResolver, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             var session = GetSession(ctx, diagnosticsConfiguration, serializer);
 
@@ -163,7 +163,7 @@ namespace Clamp.Linker.Diagnostics
             return ctx.Response;
         }
 
-        private static void AddUpdateSessionCookie(DiagnosticsSession session, ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static void AddUpdateSessionCookie(DiagnosticsSession session, LinkerContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             if (context.Response == null)
             {
@@ -182,7 +182,7 @@ namespace Clamp.Linker.Diagnostics
             context.Response.AddCookie(cookie);
         }
 
-        private static DiagnosticsSession GetSession(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static DiagnosticsSession GetSession(LinkerContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             if (context.Request == null)
             {
@@ -231,7 +231,7 @@ namespace Clamp.Linker.Diagnostics
             return (newHash.Length == session.Hash.Length && newHash.SequenceEqual(session.Hash));
         }
 
-        private static DiagnosticsSession ProcessLogin(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
+        private static DiagnosticsSession ProcessLogin(LinkerContext context, DiagnosticsConfiguration diagnosticsConfiguration, DefaultObjectSerializer serializer)
         {
             string password = context.Request.Form.Password;
 
@@ -252,14 +252,14 @@ namespace Clamp.Linker.Diagnostics
             return session;
         }
 
-        private static bool IsLoginRequest(ClampWebContext context, DiagnosticsConfiguration diagnosticsConfiguration)
+        private static bool IsLoginRequest(LinkerContext context, DiagnosticsConfiguration diagnosticsConfiguration)
         {
             return context.Request.Method == "POST" &&
                 context.Request.Url.BasePath.TrimEnd(new[] { '/' }).EndsWith(diagnosticsConfiguration.Path) &&
                 context.Request.Url.Path == "/";
         }
 
-        private static void ExecuteRoutePreReq(ClampWebContext context, CancellationToken cancellationToken, BeforePipeline resolveResultPreReq)
+        private static void ExecuteRoutePreReq(LinkerContext context, CancellationToken cancellationToken, BeforePipeline resolveResultPreReq)
         {
             if (resolveResultPreReq == null)
             {
@@ -274,7 +274,7 @@ namespace Clamp.Linker.Diagnostics
             }
         }
 
-        private static void RewriteDiagnosticsUrl(DiagnosticsConfiguration diagnosticsConfiguration, ClampWebContext ctx)
+        private static void RewriteDiagnosticsUrl(DiagnosticsConfiguration diagnosticsConfiguration, LinkerContext ctx)
         {
             ctx.Request.Url.BasePath =
                 string.Concat(ctx.Request.Url.BasePath, diagnosticsConfiguration.Path);

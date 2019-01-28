@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Clamp.Linker
 {
-    public class ClampMvcActivator : IBundleActivator
+    public class LinkerActivator : IBundleActivator
     {
         internal static IBundleContext BundleContext;
 

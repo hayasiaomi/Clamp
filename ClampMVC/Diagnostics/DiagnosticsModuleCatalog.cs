@@ -22,7 +22,7 @@ namespace Clamp.Linker.Diagnostics
         /// </summary>
         /// <param name="context">The current context</param>
         /// <returns>An <see cref="IEnumerable{T}"/> instance containing <see cref="IController"/> instances.</returns>
-        public IEnumerable<IController> GetAllModules(ClampWebContext context)
+        public IEnumerable<IController> GetAllModules(LinkerContext context)
         {
             return this.container.ResolveAll<IController>(false);
         }
@@ -33,7 +33,7 @@ namespace Clamp.Linker.Diagnostics
         /// <param name="moduleType">Module type</param>
         /// <param name="context">The current context</param>
         /// <returns>The <see cref="IController"/> instance</returns>
-        public IController GetModule(Type moduleType, ClampWebContext context)
+        public IController GetModule(Type moduleType, LinkerContext context)
         {
             return this.container.Resolve<IController>(moduleType.FullName);
         }

@@ -6,15 +6,15 @@ namespace Clamp.Linker
     using System.Threading;
     using Clamp.Linker.Helpers;
 
-    public static class ClampLinkerEngineExtensions
+    public static class LinkerEngineExtensions
     {
         /// <summary>
         /// Handles an incoming <see cref="Request"/>.
         /// </summary>
         /// <param name="nancyEngine">The <see cref="ILinkerEngine"/> instance.</param>
         /// <param name="request">An <see cref="Request"/> instance, containing the information about the current request.</param>
-        /// <returns>A <see cref="ClampWebContext"/> instance containing the request/response context.</returns>
-        public static ClampWebContext HandleRequest(this ILinkerEngine nancyEngine, Request request)
+        /// <returns>A <see cref="LinkerContext"/> instance containing the request/response context.</returns>
+        public static LinkerContext HandleRequest(this ILinkerEngine nancyEngine, Request request)
         {
             return HandleRequest(nancyEngine, request, context => context);
         }
@@ -25,8 +25,8 @@ namespace Clamp.Linker
         /// <param name="nancyEngine">The <see cref="ILinkerEngine"/> instance.</param>
         /// <param name="request">An <see cref="Request"/> instance, containing the information about the current request.</param>
         /// <param name="preRequest">Delegate to call before the request is processed</param>
-        /// <returns>A <see cref="ClampWebContext"/> instance containing the request/response context.</returns>
-        public static ClampWebContext HandleRequest(this ILinkerEngine nancyEngine, Request request, Func<ClampWebContext, ClampWebContext> preRequest)
+        /// <returns>A <see cref="LinkerContext"/> instance containing the request/response context.</returns>
+        public static LinkerContext HandleRequest(this ILinkerEngine nancyEngine, Request request, Func<LinkerContext, LinkerContext> preRequest)
         {
             var task = nancyEngine.HandleRequest(request, preRequest, CancellationToken.None);
 
@@ -54,8 +54,8 @@ namespace Clamp.Linker
         public static void HandleRequest(
             this ILinkerEngine webworkEngine,
             Request request,
-            Func<ClampWebContext, ClampWebContext> preRequest,
-            Action<ClampWebContext> onComplete,
+            Func<LinkerContext, LinkerContext> preRequest,
+            Action<LinkerContext> onComplete,
             Action<Exception> onError,
             CancellationToken cancellationToken)
         {
@@ -79,7 +79,7 @@ namespace Clamp.Linker
         public static void HandleRequest(
             this ILinkerEngine webworkEngine,
             Request request,
-            Action<ClampWebContext> onComplete,
+            Action<LinkerContext> onComplete,
             Action<Exception> onError)
         {
             HandleRequest(webworkEngine, request, null, onComplete, onError, CancellationToken.None);

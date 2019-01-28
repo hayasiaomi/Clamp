@@ -55,7 +55,7 @@ namespace Clamp.Linker.Extensions
         /// <param name="module">Current module</param>
         /// <param name="beforeDelegate">Delegate to add or execute</param>
         /// <param name="earlyExitReason">Optional reason for the early exit (if necessary)</param>
-        public static void AddBeforeHookOrExecute(this IController module, Func<ClampWebContext, Response> beforeDelegate, string earlyExitReason = null)
+        public static void AddBeforeHookOrExecute(this IController module, Func<LinkerContext, Response> beforeDelegate, string earlyExitReason = null)
         {
             if (module.RouteExecuting())
             {

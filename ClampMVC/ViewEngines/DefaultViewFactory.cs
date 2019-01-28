@@ -130,7 +130,7 @@
             return expandoObject;
         }
 
-        private IViewEngine GetViewEngine(ViewLocationResult viewLocationResult, ClampWebContext context)
+        private IViewEngine GetViewEngine(ViewLocationResult viewLocationResult, LinkerContext context)
         {
             if (viewLocationResult == null)
             {
@@ -147,7 +147,7 @@
             return matchingViewEngines.FirstOrDefault();
         }
 
-        private static string GetViewNameFromModel(dynamic model, ClampWebContext context)
+        private static string GetViewNameFromModel(dynamic model, LinkerContext context)
         {
             context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[DefaultViewFactory] Extracting view name from model of type ", model.GetType().FullName)));
 

@@ -71,7 +71,7 @@ namespace Clamp.Linker.Routing.Trie
         /// <param name="path">Requested path</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>An array of <see cref="MatchResult"/> elements</returns>
-        public MatchResult[] GetMatches(string method, string path, ClampWebContext context)
+        public MatchResult[] GetMatches(string method, string path, LinkerContext context)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -93,7 +93,7 @@ namespace Clamp.Linker.Routing.Trie
         /// <param name="path">Requested path</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of strings, each representing an allowed method</returns>
-        public IEnumerable<string> GetOptions(string path, ClampWebContext context)
+        public IEnumerable<string> GetOptions(string path, LinkerContext context)
         {
             foreach (var method in this.routeTries.Keys)
             {

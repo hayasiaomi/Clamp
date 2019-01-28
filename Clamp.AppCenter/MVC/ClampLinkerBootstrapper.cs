@@ -23,7 +23,7 @@ namespace Clamp.AppCenter.MVC
             StaticConfiguration.Caching.EnableRuntimeViewDiscovery = true;
         }
 
-        protected override void ConfigureRequestContainer(TinyIoCContainer container, ClampWebContext context)
+        protected override void ConfigureRequestContainer(TinyIoCContainer container, LinkerContext context)
         {
             context.BundleContext = this.bundleContex;
 

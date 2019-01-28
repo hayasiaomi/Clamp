@@ -47,7 +47,7 @@
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>A <see cref="ResolveResult"/> containing the resolved route information.</returns>
-        public ResolveResult Resolve(ClampWebContext context)
+        public ResolveResult Resolve(LinkerContext context)
         {
             var pathDecoded = HttpUtility.UrlDecode(context.Request.Path);
 
@@ -117,7 +117,7 @@
             this.trie.BuildTrie(this.routeCache);
         }
 
-        private static ResolveResult BuildOptionsResult(IEnumerable<string> allowedMethods, ClampWebContext context)
+        private static ResolveResult BuildOptionsResult(IEnumerable<string> allowedMethods, LinkerContext context)
         {
             var path = context.Request.Path;
 
@@ -126,7 +126,7 @@
             return new ResolveResult(optionsResult, new DynamicDictionary(), null, null, null);
         }
 
-        private ResolveResult BuildResult(ClampWebContext context, MatchResult result)
+        private ResolveResult BuildResult(LinkerContext context, MatchResult result)
         {
             var associatedModule = this.GetModuleFromMatchResult(context, result);
 
@@ -145,7 +145,7 @@
             };
         }
 
-        private IController GetModuleFromMatchResult(ClampWebContext context, MatchResult result)
+        private IController GetModuleFromMatchResult(LinkerContext context, MatchResult result)
         {
             var module = this.catalog.GetModule(result.ModuleType, context);
 
@@ -189,7 +189,7 @@
         }
 
 
-        private static ResolveResult GetNotFoundResult(ClampWebContext context)
+        private static ResolveResult GetNotFoundResult(LinkerContext context)
         {
             return new ResolveResult
             {
@@ -201,7 +201,7 @@
             };
         }
 
-        private static string GetMethod(ClampWebContext context)
+        private static string GetMethod(LinkerContext context)
         {
             var requestedMethod = context.Request.Method;
 
@@ -214,7 +214,7 @@
         }
 
 
-        private static ResolveResult BuildMethodNotAllowedResult(ClampWebContext context, IEnumerable<string> allowedMethods)
+        private static ResolveResult BuildMethodNotAllowedResult(LinkerContext context, IEnumerable<string> allowedMethods)
         {
             var route = new MethodNotAllowedRoute(context.Request.Path, context.Request.Method, allowedMethods);
 
@@ -226,7 +226,7 @@
             return allowedMethods.Any() && !StaticConfiguration.DisableMethodNotAllowedResponses;
         }
 
-        private static bool IsOptionsRequest(ClampWebContext context)
+        private static bool IsOptionsRequest(LinkerContext context)
         {
             return context.Request.Method.Equals("OPTIONS", StringComparison.Ordinal);
         }

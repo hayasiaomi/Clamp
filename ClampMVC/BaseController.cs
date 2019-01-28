@@ -243,9 +243,9 @@ namespace Clamp.Linker
         /// <summary>
         /// Gets or sets the current Nancy context
         /// </summary>
-        /// <value>A <see cref="ClampWebContext" /> instance.</value>
+        /// <value>A <see cref="LinkerContext" /> instance.</value>
         /// <remarks>This is automatically set by Nancy at runtime.</remarks>
-        public ClampWebContext Context { get; set; }
+        public LinkerContext Context { get; set; }
 
         /// <summary>
         /// An extension point for adding support for formatting response contents.
@@ -307,7 +307,7 @@ namespace Clamp.Linker
             /// Defines a Nancy route for the specified <paramref name="path"/> and <paramref name="condition"/>.
             /// </summary>
             /// <value>A delegate that is used to invoke the route.</value>
-            public Func<dynamic, dynamic> this[string path, Func<ClampWebContext, bool> condition]
+            public Func<dynamic, dynamic> this[string path, Func<LinkerContext, bool> condition]
             {
                 set { this.AddRoute(string.Empty, path, condition, value); }
             }
@@ -323,7 +323,7 @@ namespace Clamp.Linker
             /// <summary>
             /// Defines an async route for the specified <paramref name="path"/> and <paramref name="condition"/>.
             /// </summary>
-            public Func<dynamic, CancellationToken, Task<dynamic>> this[string path, Func<ClampWebContext, bool> condition, bool runAsync]
+            public Func<dynamic, CancellationToken, Task<dynamic>> this[string path, Func<LinkerContext, bool> condition, bool runAsync]
             {
                 set { this.AddRoute(string.Empty, path, condition, value); }
             }
@@ -341,7 +341,7 @@ namespace Clamp.Linker
             /// Defines a Nancy route for the specified <paramref name="path"/>, <paramref name="condition"/> and <paramref name="name"/>
             /// </summary>
             /// <value>A delegate that is used to invoke the route.</value>
-            public Func<dynamic, dynamic> this[string name, string path, Func<ClampWebContext, bool> condition]
+            public Func<dynamic, dynamic> this[string name, string path, Func<LinkerContext, bool> condition]
             {
                 set { this.AddRoute(name, path, condition, value); }
             }
@@ -357,19 +357,19 @@ namespace Clamp.Linker
             /// <summary>
             /// Defines an async route for the specified <paramref name="path"/>, <paramref name="condition"/> and <paramref name="name"/>
             /// </summary>
-            public Func<dynamic, CancellationToken, Task<dynamic>> this[string name, string path, Func<ClampWebContext, bool> condition, bool runAsync]
+            public Func<dynamic, CancellationToken, Task<dynamic>> this[string name, string path, Func<LinkerContext, bool> condition, bool runAsync]
             {
                 set { this.AddRoute(name, path, condition, value); }
             }
 
-            protected void AddRoute(string name, string path, Func<ClampWebContext, bool> condition, Func<dynamic, dynamic> value)
+            protected void AddRoute(string name, string path, Func<LinkerContext, bool> condition, Func<dynamic, dynamic> value)
             {
                 var fullPath = GetFullPath(path);
 
                 this.parentModule.routes.Add(Route.FromSync(name, this.method, fullPath, condition, value));
             }
 
-            protected void AddRoute(string name, string path, Func<ClampWebContext, bool> condition, Func<dynamic, CancellationToken, Task<dynamic>> value)
+            protected void AddRoute(string name, string path, Func<LinkerContext, bool> condition, Func<dynamic, CancellationToken, Task<dynamic>> value)
             {
                 var fullPath = GetFullPath(path);
 

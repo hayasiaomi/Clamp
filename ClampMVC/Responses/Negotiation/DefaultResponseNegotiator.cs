@@ -34,7 +34,7 @@
         /// <param name="routeResult">The route result.</param>
         /// <param name="context">The context.</param>
         /// <returns>A <see cref="Response" />.</returns>
-        public Response NegotiateResponse(dynamic routeResult, ClampWebContext context)
+        public Response NegotiateResponse(dynamic routeResult, LinkerContext context)
         {
             Response response;
             if (TryCastResultToResponse(routeResult, out response))
@@ -95,7 +95,7 @@
         /// <param name="routeResult">The route result.</param>
         /// <param name="context">The context.</param>
         /// <returns>A <see cref="NegotiationContext"/>.</returns>
-        private static NegotiationContext GetNegotiationContext(object routeResult, ClampWebContext context)
+        private static NegotiationContext GetNegotiationContext(object routeResult, LinkerContext context)
         {
             var negotiator = routeResult as Negotiator;
 
@@ -115,13 +115,13 @@
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>IEnumerable{Tuple{System.String, System.Decimal}}.</returns>
-        private IEnumerable<Tuple<string, decimal>> GetCoercedAcceptHeaders(ClampWebContext context)
+        private IEnumerable<Tuple<string, decimal>> GetCoercedAcceptHeaders(LinkerContext context)
         {
             return this.coercionConventions.Aggregate(context.Request.Headers.Accept, (current, coercion) => coercion.Invoke(current, context));
         }
 
         private static void GetAccepHeaderTraceLog(
-            ClampWebContext context,
+            LinkerContext context,
             NegotiationContext negotiationContext,
             Tuple<string, decimal>[] coercedAcceptHeaders,
             StringBuilder sb)
@@ -143,7 +143,7 @@
             sb.AppendFormat("[DefaultResponseNegotiator] Acceptable media ranges: {0}\n", allowableFormats);
         }
 
-        private IEnumerable<CompatibleHeader> GetCompatibleHeaders(IEnumerable<Tuple<string, decimal>> coercedAcceptHeaders, NegotiationContext negotiationContext, ClampWebContext context)
+        private IEnumerable<CompatibleHeader> GetCompatibleHeaders(IEnumerable<Tuple<string, decimal>> coercedAcceptHeaders, NegotiationContext negotiationContext, LinkerContext context)
         {
             var acceptHeaders = GetCompatibleHeaders(coercedAcceptHeaders, negotiationContext);
 
@@ -183,7 +183,7 @@
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <returns>IEnumerable{Tuple{IResponseProcessor, ProcessorMatch}}.</returns>
-        private IEnumerable<Tuple<IResponseProcessor, ProcessorMatch>> GetCompatibleProcessorsByHeader(string acceptHeader, dynamic model, ClampWebContext context)
+        private IEnumerable<Tuple<IResponseProcessor, ProcessorMatch>> GetCompatibleProcessorsByHeader(string acceptHeader, dynamic model, LinkerContext context)
         {
             foreach (var processor in this.processors)
             {
@@ -206,7 +206,7 @@
         private static Response CreateResponse(
             IList<CompatibleHeader> compatibleHeaders,
             NegotiationContext negotiationContext,
-            ClampWebContext context)
+            LinkerContext context)
         {
             var response = NegotiateResponse(compatibleHeaders, negotiationContext, context);
 
@@ -243,7 +243,7 @@
         /// <param name="negotiationContext">The negotiation context.</param>
         /// <param name="context">The context.</param>
         /// <returns>Response.</returns>
-        private static Response NegotiateResponse(IEnumerable<CompatibleHeader> compatibleHeaders, NegotiationContext negotiationContext, ClampWebContext context)
+        private static Response NegotiateResponse(IEnumerable<CompatibleHeader> compatibleHeaders, NegotiationContext negotiationContext, LinkerContext context)
         {
             foreach (var compatibleHeader in compatibleHeaders)
             {

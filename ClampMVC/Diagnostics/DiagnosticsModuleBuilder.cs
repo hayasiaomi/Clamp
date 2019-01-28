@@ -25,7 +25,7 @@ namespace Clamp.Linker.Diagnostics
         /// <param name="module">The <see cref="IController"/> that should be configured.</param>
         /// <param name="context">The current request context.</param>
         /// <returns>A fully configured <see cref="IController"/> instance.</returns>
-        public IController BuildModule(IController module, ClampWebContext context)
+        public IController BuildModule(IController module, LinkerContext context)
         {
             // Currently we don't connect view location, binders etc.
             module.Context = context;

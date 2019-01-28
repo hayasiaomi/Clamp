@@ -15,16 +15,16 @@ namespace Clamp.Linker
     /// <summary>
     /// Nancy context.
     /// </summary>
-    public sealed class ClampWebContext : IDisposable
+    public sealed class LinkerContext : IDisposable
     {
         private Request request;
 
         private ModelValidationResult modelValidationResult;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClampWebContext"/> class.
+        /// Initializes a new instance of the <see cref="LinkerContext"/> class.
         /// </summary>
-        public ClampWebContext()
+        public LinkerContext()
         {
             this.Items = new Dictionary<string, object>();
             this.Trace = new DefaultRequestTrace();

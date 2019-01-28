@@ -108,7 +108,7 @@ namespace Clamp.Linker.Routing.Trie.Nodes
         /// <param name="segments">Requested route segments</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of <see cref="MatchResult"/> objects</returns>
-        public virtual IEnumerable<MatchResult> GetMatches(string[] segments, ClampWebContext context)
+        public virtual IEnumerable<MatchResult> GetMatches(string[] segments, LinkerContext context)
         {
             return this.GetMatches(segments, 0, new Dictionary<string, object>(this.AdditionalParameters), context);
         }
@@ -121,7 +121,7 @@ namespace Clamp.Linker.Routing.Trie.Nodes
         /// <param name="capturedParameters">Currently captured parameters</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of <see cref="MatchResult"/> objects</returns>
-        public virtual IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, ClampWebContext context)
+        public virtual IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, LinkerContext context)
         {
             var segmentMatch = this.Match(segments[currentIndex]);
             if (segmentMatch == SegmentMatch.NoMatch)
@@ -239,7 +239,7 @@ namespace Clamp.Linker.Routing.Trie.Nodes
         /// <param name="localCaptures">Parameters captured by the local matching</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>Collection of <see cref="MatchResult"/> objects</returns>
-        protected IEnumerable<MatchResult> GetMatchingChildren(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, IDictionary<string, object> localCaptures, ClampWebContext context)
+        protected IEnumerable<MatchResult> GetMatchingChildren(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, IDictionary<string, object> localCaptures, LinkerContext context)
         {
             var parameters = capturedParameters;
             if (localCaptures.Any() || this.AdditionalParameters.Any())

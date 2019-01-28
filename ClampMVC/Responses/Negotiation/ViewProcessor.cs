@@ -37,7 +37,7 @@
         /// <param name="model">The model for the given media range.</param>
         /// <param name="context">The nancy context.</param>
         /// <returns>A <see cref="ProcessorMatch"/> result that determines the priority of the processor.</returns>
-        public ProcessorMatch CanProcess(MediaRange requestedMediaRange, dynamic model, ClampWebContext context)
+        public ProcessorMatch CanProcess(MediaRange requestedMediaRange, dynamic model, LinkerContext context)
         {
             var matchingContentType = requestedMediaRange.Matches("text/html");
 
@@ -51,14 +51,14 @@
         /// <param name="model">The model for the given media range.</param>
         /// <param name="context">The nancy context.</param>
         /// <returns>A <see cref="Response"/> instance.</returns>
-        public Response Process(MediaRange requestedMediaRange, dynamic model, ClampWebContext context)
+        public Response Process(MediaRange requestedMediaRange, dynamic model, LinkerContext context)
         {
             var viewResponse = this.viewFactory.RenderView(context.NegotiationContext.ViewName, model, GetViewLocationContext(context));
 
             return StaticConfiguration.DisableErrorTraces ? viewResponse : new MaterialisingResponse(viewResponse);
         }
 
-        private ViewLocationContext GetViewLocationContext(ClampWebContext context)
+        private ViewLocationContext GetViewLocationContext(LinkerContext context)
         {
             return new ViewLocationContext
             {
