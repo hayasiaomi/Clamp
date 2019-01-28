@@ -12,8 +12,8 @@ namespace Clamp.Linker.ViewEngines
         /// <summary>
         /// Gets the context of the current request.
         /// </summary>
-        /// <value>A <see cref="ClampWebContext"/> instance.</value>
-        ClampWebContext Context { get; }
+        /// <value>A <see cref="LinkerContext"/> instance.</value>
+        LinkerContext Context { get; }
 
         /// <summary>
         /// Gets the view cache that is used by Nancy.

@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class BeforePipeline : AsyncNamedPipelineBase<Func<ClampWebContext, CancellationToken, Task<Response>>, Func<ClampWebContext, Response>>
+    public class BeforePipeline : AsyncNamedPipelineBase<Func<LinkerContext, CancellationToken, Task<Response>>, Func<LinkerContext, Response>>
     {
         public BeforePipeline()
         {
@@ -16,25 +16,25 @@
         {
         }
 
-        public static implicit operator Func<ClampWebContext, CancellationToken, Task<Response>>(BeforePipeline pipeline)
+        public static implicit operator Func<LinkerContext, CancellationToken, Task<Response>>(BeforePipeline pipeline)
         {
             return pipeline.Invoke;
         }
 
-        public static implicit operator BeforePipeline(Func<ClampWebContext, CancellationToken, Task<Response>> func)
+        public static implicit operator BeforePipeline(Func<LinkerContext, CancellationToken, Task<Response>> func)
         {
             var pipeline = new BeforePipeline();
             pipeline.AddItemToEndOfPipeline(func);
             return pipeline;
         }
 
-        public static BeforePipeline operator +(BeforePipeline pipeline, Func<ClampWebContext, CancellationToken, Task<Response>> func)
+        public static BeforePipeline operator +(BeforePipeline pipeline, Func<LinkerContext, CancellationToken, Task<Response>> func)
         {
             pipeline.AddItemToEndOfPipeline(func);
             return pipeline;
         }
 
-        public static BeforePipeline operator +(BeforePipeline pipeline, Func<ClampWebContext, Response> action)
+        public static BeforePipeline operator +(BeforePipeline pipeline, Func<LinkerContext, Response> action)
         {
             pipeline.AddItemToEndOfPipeline(action);
             return pipeline;
@@ -50,7 +50,7 @@
             return pipelineToAddTo;
         }
 
-        public Task<Response> Invoke(ClampWebContext context, CancellationToken cancellationToken)
+        public Task<Response> Invoke(LinkerContext context, CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<Response>();
 
@@ -68,7 +68,7 @@
             return tcs.Task;
         }
 
-        private static void ExecuteTasksWithSingleResultInternal(ClampWebContext context, CancellationToken cancellationToken, IEnumerator<Func<ClampWebContext, CancellationToken, Task<Response>>> enumerator, TaskCompletionSource<Response> tcs)
+        private static void ExecuteTasksWithSingleResultInternal(LinkerContext context, CancellationToken cancellationToken, IEnumerator<Func<LinkerContext, CancellationToken, Task<Response>>> enumerator, TaskCompletionSource<Response> tcs)
         {
             // Endless loop to try and optimise the "main" use case of
             // our tasks just being delegates wrapped in a task.
@@ -114,7 +114,7 @@
             }
         }
 
-        private static Action<Task<Response>> ExecuteTasksWithSingleResultContinuation(ClampWebContext context, CancellationToken cancellationToken, IEnumerator<Func<ClampWebContext, CancellationToken, Task<Response>>> enumerator, TaskCompletionSource<Response> tcs)
+        private static Action<Task<Response>> ExecuteTasksWithSingleResultContinuation(LinkerContext context, CancellationToken cancellationToken, IEnumerator<Func<LinkerContext, CancellationToken, Task<Response>>> enumerator, TaskCompletionSource<Response> tcs)
         {
             return t =>
             {
@@ -164,10 +164,10 @@
         /// </summary>
         /// <param name="pipelineItem">Sync pipeline item instance</param>
         /// <returns>Async pipeline item instance</returns>
-        protected override PipelineItem<Func<ClampWebContext, CancellationToken, Task<Response>>> Wrap(PipelineItem<Func<ClampWebContext, Response>> pipelineItem)
+        protected override PipelineItem<Func<LinkerContext, CancellationToken, Task<Response>>> Wrap(PipelineItem<Func<LinkerContext, Response>> pipelineItem)
         {
             var syncDelegate = pipelineItem.Delegate;
-            Func<ClampWebContext, CancellationToken, Task<Response>> asyncDelegate = (ctx, ct) =>
+            Func<LinkerContext, CancellationToken, Task<Response>> asyncDelegate = (ctx, ct) =>
             {
                 var tcs = new TaskCompletionSource<Response>();
                 try
@@ -181,7 +181,7 @@
                 }
                 return tcs.Task;
             };
-            return new PipelineItem<Func<ClampWebContext, CancellationToken, Task<Response>>>(pipelineItem.Name, asyncDelegate);
+            return new PipelineItem<Func<LinkerContext, CancellationToken, Task<Response>>>(pipelineItem.Name, asyncDelegate);
         }
     }
 }

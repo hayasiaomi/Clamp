@@ -10,8 +10,8 @@
         /// </summary>
         /// <param name="isMatch">A <see cref="bool"/> value indicating if the result was a match or not.</param>
         /// <param name="parameters">A <see cref="DynamicDictionary"/> instance containing the parameters and values that was captured in the match.</param>
-        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
-        public RoutePatternMatchResult(bool isMatch, DynamicDictionary parameters, ClampWebContext context)
+        /// <param name="context">The <see cref="LinkerContext"/> instance of the current request.</param>
+        public RoutePatternMatchResult(bool isMatch, DynamicDictionary parameters, LinkerContext context)
         {
             this.IsMatch = isMatch;
             this.Parameters = parameters;
@@ -19,10 +19,10 @@
         }
 
         /// <summary>
-        /// Gets the <see cref="ClampWebContext"/> that was active when the result was produced.
+        /// Gets the <see cref="LinkerContext"/> that was active when the result was produced.
         /// </summary>
-        /// <value>A <see cref="ClampWebContext"/> instance.</value>
-        public ClampWebContext Context { get; private set; }
+        /// <value>A <see cref="LinkerContext"/> instance.</value>
+        public LinkerContext Context { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether or not a match was made.

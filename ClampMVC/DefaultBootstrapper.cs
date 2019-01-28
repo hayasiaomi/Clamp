@@ -168,7 +168,7 @@ namespace Clamp.Linker
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>Request container instance</returns>
-        protected override TinyIoCContainer CreateRequestContainer(ClampWebContext context)
+        protected override TinyIoCContainer CreateRequestContainer(LinkerContext context)
         {
             return this.ApplicationContainer.GetChildContainer();
         }
@@ -241,7 +241,7 @@ namespace Clamp.Linker
         /// <param name="container">Container instance</param>
         private static void AutoRegister(TinyIoCContainer container, IEnumerable<Func<Assembly, bool>> ignoredAssemblies)
         {
-            var assembly = typeof(ClampWebEngine).Assembly;
+            var assembly = typeof(LinkerEngine).Assembly;
 
             container.AutoRegister(AppDomain.CurrentDomain.GetAssemblies().Where(a => !ignoredAssemblies.Any(ia => ia(a))), DuplicateImplementationActions.RegisterMultiple, t => t.Assembly != assembly);
         }

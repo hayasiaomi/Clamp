@@ -22,7 +22,7 @@ namespace Clamp.Linker.Conventions
         /// <param name="currentAcceptHeaders">Current headers</param>
         /// <param name="context">Context</param>
         /// <returns>Modified headers or original if no modification required</returns>
-        public static IEnumerable<Tuple<string, decimal>> CoerceBlankAcceptHeader(IEnumerable<Tuple<string, decimal>> currentAcceptHeaders, ClampWebContext context)
+        public static IEnumerable<Tuple<string, decimal>> CoerceBlankAcceptHeader(IEnumerable<Tuple<string, decimal>> currentAcceptHeaders, LinkerContext context)
         {
             var current = currentAcceptHeaders as Tuple<string, decimal>[] ?? currentAcceptHeaders.ToArray();
 
@@ -36,7 +36,7 @@ namespace Clamp.Linker.Conventions
         /// <param name="currentAcceptHeaders">Current headers</param>
         /// <param name="context">Context</param>
         /// <returns>Modified headers or original if no modification required</returns>
-        public static IEnumerable<Tuple<string, decimal>> CoerceStupidBrowsers(IEnumerable<Tuple<string, decimal>> currentAcceptHeaders, ClampWebContext context)
+        public static IEnumerable<Tuple<string, decimal>> CoerceStupidBrowsers(IEnumerable<Tuple<string, decimal>> currentAcceptHeaders, LinkerContext context)
         {
             var current = currentAcceptHeaders as Tuple<string, decimal>[] ?? currentAcceptHeaders.ToArray();
 
@@ -50,7 +50,7 @@ namespace Clamp.Linker.Conventions
         /// <param name="currentAcceptHeaders">Current headers</param>
         /// <param name="context">Context</param>
         /// <returns>Modified headers or original if no modification required</returns>
-        public static IEnumerable<Tuple<string, decimal>> BoostHtml(IEnumerable<Tuple<string, decimal>> currentAcceptHeaders, ClampWebContext context)
+        public static IEnumerable<Tuple<string, decimal>> BoostHtml(IEnumerable<Tuple<string, decimal>> currentAcceptHeaders, LinkerContext context)
         {
             var current = currentAcceptHeaders as Tuple<string, decimal>[] ?? currentAcceptHeaders.ToArray();
 
@@ -72,7 +72,7 @@ namespace Clamp.Linker.Conventions
             return current.OrderByDescending(x => x.Item2).ToArray();
         }
 
-        private static bool IsStupidBrowser(Tuple<string, decimal>[] current, ClampWebContext context)
+        private static bool IsStupidBrowser(Tuple<string, decimal>[] current, LinkerContext context)
         {
             // If there's one or less accept headers then we can't be a stupid
             // browser so just bail out early

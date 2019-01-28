@@ -13,7 +13,7 @@ namespace Clamp.Linker.Responses.Negotiation
         /// with the provided <paramref name="context"/>.
         /// </summary>
         /// <param name="context">The context that should be negotiated.</param>
-        public Negotiator(ClampWebContext context)
+        public Negotiator(LinkerContext context)
         {
             if (context == null)
             {

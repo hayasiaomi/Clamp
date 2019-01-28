@@ -11,7 +11,7 @@
 
     public class InfoController : DiagnosticController
     {
-        public InfoController(IRootPathProvider rootPathProvider, ClampWebInternalConfiguration configuration)
+        public InfoController(IRootPathProvider rootPathProvider, LinkerInternalConfiguration configuration)
             : base("/info")
         {
             Get["/"] = _ =>
@@ -30,7 +30,7 @@
                 data.Webwork.RootPath = rootPathProvider.GetRootPath();
                 data.Webwork.Hosting = GetHosting();
                 data.Webwork.BootstrapperContainer = GetBootstrapperContainer();
-                data.Webwork.LocatedBootstrapper = ClampWebBootstrapperLocator.Bootstrapper.GetType().ToString();
+                data.Webwork.LocatedBootstrapper = LinkerBootstrapperLocator.Bootstrapper.GetType().ToString();
                 data.Webwork.LoadedViewEngines = GetViewEngines();
 
                 data.Configuration = new Dictionary<string, object>();

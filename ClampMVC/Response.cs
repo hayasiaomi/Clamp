@@ -84,7 +84,7 @@ namespace Clamp.Linker
         /// </summary>
         /// <param name="context">Nancy context</param>
         /// <returns>Task for completion/erroring</returns>
-        public virtual Task PreExecute(ClampWebContext context)
+        public virtual Task PreExecute(LinkerContext context)
         {
             return TaskHelpers.GetCompletedTask();
         }

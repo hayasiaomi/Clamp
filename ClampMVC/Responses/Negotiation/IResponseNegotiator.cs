@@ -11,6 +11,6 @@
         /// <param name="routeResult">The route result.</param>
         /// <param name="context">The context.</param>
         /// <returns>A <see cref="Response"/>.</returns>
-        Response NegotiateResponse(dynamic routeResult, ClampWebContext context);
+        Response NegotiateResponse(dynamic routeResult, LinkerContext context);
     }
 }

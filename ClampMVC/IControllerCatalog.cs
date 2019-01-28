@@ -13,7 +13,7 @@ namespace Clamp.Linker
         /// </summary>
         /// <param name="context">The current context</param>
         /// <returns>An <see cref="IEnumerable{T}"/> instance containing <see cref="IController"/> instances.</returns>
-        IEnumerable<IController> GetAllModules(ClampWebContext context);
+        IEnumerable<IController> GetAllModules(LinkerContext context);
 
         /// <summary>
         /// Retrieves a specific <see cref="IController"/> implementation - should be per-request lifetime
@@ -21,6 +21,6 @@ namespace Clamp.Linker
         /// <param name="moduleType">Module type</param>
         /// <param name="context">The current context</param>
         /// <returns>The <see cref="IController"/> instance</returns>
-        IController GetModule(Type moduleType, ClampWebContext context);
+        IController GetModule(Type moduleType, LinkerContext context);
     }
 }

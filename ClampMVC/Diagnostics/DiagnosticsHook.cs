@@ -35,7 +35,7 @@ namespace Clamp.Linker.Diagnostics
             IEnumerable<IDiagnosticsProvider> providers,
             IRootPathProvider rootPathProvider,
             IRequestTracing requestTracing,
-            ClampWebInternalConfiguration configuration,
+            LinkerInternalConfiguration configuration,
             IModelBinderLocator modelBinderLocator,
             IEnumerable<IResponseProcessor> responseProcessors,
             IEnumerable<IRouteSegmentConstraint> routeSegmentConstraints,

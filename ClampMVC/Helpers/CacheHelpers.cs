@@ -16,7 +16,7 @@
         /// <param name="lastModified">Current resource last modified, or null</param>
         /// <param name="context">Current nancy context</param>
         /// <returns>True if not modified should be sent, false otherwise</returns>
-        public static bool ReturnNotModified(string etag, DateTime? lastModified, ClampWebContext context)
+        public static bool ReturnNotModified(string etag, DateTime? lastModified, LinkerContext context)
         {
             if (context == null || context.Request == null)
             {

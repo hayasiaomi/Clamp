@@ -30,12 +30,12 @@ namespace Clamp.Linker
         }
 
         /// <summary>
-        /// Create a new <see cref="ClampWebContext"/> instance.
+        /// Create a new <see cref="LinkerContext"/> instance.
         /// </summary>
-        /// <returns>A <see cref="ClampWebContext"/> instance.</returns>
-        public ClampWebContext Create(Request request)
+        /// <returns>A <see cref="LinkerContext"/> instance.</returns>
+        public LinkerContext Create(Request request)
         {
-            var context = new ClampWebContext();
+            var context = new LinkerContext();
 
             context.Trace = this.requestTraceFactory.Create(request);
             context.Request = request;

@@ -16,6 +16,6 @@
         /// <param name="blackList">Blacklisted property names</param>
         /// <param name="instance">Existing instance of the object</param>
         /// <returns>Bound model</returns>
-        object Bind(ClampWebContext context, Type modelType, object instance, BindingConfig configuration, params string[] blackList);
+        object Bind(LinkerContext context, Type modelType, object instance, BindingConfig configuration, params string[] blackList);
     }
 }

@@ -14,7 +14,7 @@ namespace Clamp.Linker.Conventions
         /// <param name="conventions">Convention object instance.</param>
         public void Initialise(WebworkConventions conventions)
         {
-            conventions.StaticContentsConventions = new List<Func<ClampWebContext, string, Response>>
+            conventions.StaticContentsConventions = new List<Func<LinkerContext, string, Response>>
             {
                 StaticContentConventionBuilder.AddDirectory("Content")
             };

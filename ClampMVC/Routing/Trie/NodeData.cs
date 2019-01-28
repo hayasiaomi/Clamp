@@ -39,6 +39,6 @@ namespace Clamp.Linker.Routing.Trie
         /// <summary>
         /// Gets or sets the route condition delegate
         /// </summary>
-        public Func<ClampWebContext, bool> Condition { get; set; }
+        public Func<LinkerContext, bool> Condition { get; set; }
     }
 }

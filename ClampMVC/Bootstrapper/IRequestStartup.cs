@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="pipelines">Application pipelines</param>
         /// <param name="context">The current context</param>
-        void Initialize(IPipelines pipelines, ClampWebContext context);
+        void Initialize(IPipelines pipelines, LinkerContext context);
     }
 }

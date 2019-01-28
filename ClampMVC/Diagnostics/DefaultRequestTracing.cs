@@ -14,11 +14,11 @@ namespace Clamp.Linker.Diagnostics
         private readonly ConcurrentLimitedCollection<RequestTraceSession> sessions = new ConcurrentLimitedCollection<RequestTraceSession>(MaxSize);
 
         /// <summary>
-        /// Adds the <see cref="IRequestTrace"/>, of the provided, <see cref="ClampWebContext"/> to the trace log.
+        /// Adds the <see cref="IRequestTrace"/>, of the provided, <see cref="LinkerContext"/> to the trace log.
         /// </summary>
         /// <param name="sessionId">The identifier of the trace.</param>
-        /// <param name="context">A <see cref="ClampWebContext"/> instance.</param>
-        public void AddRequestDiagnosticToSession(Guid sessionId, ClampWebContext context)
+        /// <param name="context">A <see cref="LinkerContext"/> instance.</param>
+        public void AddRequestDiagnosticToSession(Guid sessionId, LinkerContext context)
         {
             var session = this.sessions.FirstOrDefault(s => s.Id == sessionId);
 

@@ -15,7 +15,7 @@
         /// </summary>
         /// <returns>Hook that returns an Unauthorized response if not authenticated in,
         /// null otherwise</returns>
-        public static Func<ClampWebContext, Response> RequiresAuthentication()
+        public static Func<LinkerContext, Response> RequiresAuthentication()
         {
             return UnauthorizedIfNot(ctx => ctx.CurrentUser.IsAuthenticated());
         }
@@ -27,7 +27,7 @@
         /// <param name="claims">Claims the authenticated user needs to have</param>
         /// <returns>Hook that returns an Unauthorized response if the user is not
         /// authenticated or does not have the required claims, null otherwise</returns>
-        public static Func<ClampWebContext, Response> RequiresClaims(IEnumerable<string> claims)
+        public static Func<LinkerContext, Response> RequiresClaims(IEnumerable<string> claims)
         {
             return ForbiddenIfNot(ctx => ctx.CurrentUser.HasClaims(claims));
         }
@@ -41,7 +41,7 @@
         /// <returns>Hook that returns an Unauthorized response if the user is not
         /// authenticated or does not have at least one of the required claims, null
         /// otherwise</returns>
-        public static Func<ClampWebContext, Response> RequiresAnyClaim(IEnumerable<string> claims)
+        public static Func<LinkerContext, Response> RequiresAnyClaim(IEnumerable<string> claims)
         {
             return ForbiddenIfNot(ctx => ctx.CurrentUser.HasAnyClaim(claims));
         }
@@ -56,7 +56,7 @@
         /// <returns>Hook that returns an Unauthorized response if the user is not
         /// authenticated or does not pass the supplied validation function, null
         /// otherwise</returns>
-        public static Func<ClampWebContext, Response> RequiresValidatedClaims(Func<IEnumerable<string>, bool> isValid)
+        public static Func<LinkerContext, Response> RequiresValidatedClaims(Func<IEnumerable<string>, bool> isValid)
         {
             return ForbiddenIfNot(ctx => ctx.CurrentUser.HasValidClaims(isValid));
         }
@@ -67,7 +67,7 @@
         /// </summary>
         /// <param name="test">Test that must return true for the request to continue</param>
         /// <returns>Hook that returns an Unauthorized response if the test fails, null otherwise</returns>
-        private static Func<ClampWebContext, Response> UnauthorizedIfNot(Func<ClampWebContext, bool> test)
+        private static Func<LinkerContext, Response> UnauthorizedIfNot(Func<LinkerContext, bool> test)
         {
             return HttpStatusCodeIfNot(HttpStatusCode.Unauthorized, test);
         }
@@ -78,7 +78,7 @@
         /// </summary>
         /// <param name="test">Test that must return true for the request to continue</param>
         /// <returns>Hook that returns an Forbidden response if the test fails, null otherwise</returns>
-        private static Func<ClampWebContext, Response> ForbiddenIfNot(Func<ClampWebContext, bool> test)
+        private static Func<LinkerContext, Response> ForbiddenIfNot(Func<LinkerContext, bool> test)
         {
             return HttpStatusCodeIfNot(HttpStatusCode.Forbidden, test);
         }
@@ -90,7 +90,7 @@
         /// <param name="statusCode">HttpStatusCode to use for the response</param>
         /// <param name="test">Test that must return true for the request to continue</param>
         /// <returns>Hook that returns a response with a specific HttpStatusCode if the test fails, null otherwise</returns>
-        private static Func<ClampWebContext, Response> HttpStatusCodeIfNot(HttpStatusCode statusCode, Func<ClampWebContext, bool> test)
+        private static Func<LinkerContext, Response> HttpStatusCodeIfNot(HttpStatusCode statusCode, Func<LinkerContext, bool> test)
         {
             return (ctx) =>
             {
@@ -112,7 +112,7 @@
         /// <returns>Hook that returns a RedirectResponse with the Url scheme set to HTTPS,
         /// or a Response with a Forbidden HTTP status code if <c>redirect</c> is false or the method is not GET,
         /// null otherwise</returns>
-        public static Func<ClampWebContext, Response> RequiresHttps(bool redirect)
+        public static Func<LinkerContext, Response> RequiresHttps(bool redirect)
         {
             return RequiresHttps(redirect, null);
         }
@@ -126,7 +126,7 @@
         /// <returns>Hook that returns a <see cref="RedirectResponse"/> with the Url scheme set to HTTPS,
         /// or a <see cref="Response"/> with a <see cref="HttpStatusCode.Forbidden"/> status code if <c>redirect</c> is false or the method is not GET,
         /// null otherwise</returns>
-        public static Func<ClampWebContext, Response> RequiresHttps(bool redirect, int? httpsPort)
+        public static Func<LinkerContext, Response> RequiresHttps(bool redirect, int? httpsPort)
         {
             return (ctx) =>
             {

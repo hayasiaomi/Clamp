@@ -55,7 +55,7 @@ namespace Clamp.Linker.Bootstrapper
         /// </summary>
         /// <param name="context">The current context</param>
         /// <returns>An <see cref="IEnumerable{T}"/> instance containing <see cref="IController"/> instances.</returns>
-        public override sealed IEnumerable<IController> GetAllModules(ClampWebContext context)
+        public override sealed IEnumerable<IController> GetAllModules(LinkerContext context)
         {
             var requestContainer = this.GetConfiguredRequestContainer(context);
 
@@ -70,7 +70,7 @@ namespace Clamp.Linker.Bootstrapper
         /// <param name="moduleType">Module type</param>
         /// <param name="context">The current context</param>
         /// <returns>The <see cref="IController"/> instance</returns>
-        public override sealed IController GetModule(Type moduleType, ClampWebContext context)
+        public override sealed IController GetModule(Type moduleType, LinkerContext context)
         {
             var requestContainer = this.GetConfiguredRequestContainer(context);
 
@@ -80,9 +80,9 @@ namespace Clamp.Linker.Bootstrapper
         /// <summary>
         /// Creates and initializes the request pipelines.
         /// </summary>
-        /// <param name="context">The <see cref="ClampWebContext"/> used by the request.</param>
+        /// <param name="context">The <see cref="LinkerContext"/> used by the request.</param>
         /// <returns>An <see cref="IPipelines"/> instance.</returns>
-        protected override sealed IPipelines InitializeRequestPipelines(ClampWebContext context)
+        protected override sealed IPipelines InitializeRequestPipelines(LinkerContext context)
         {
             var requestContainer = this.GetConfiguredRequestContainer(context);
 
@@ -143,7 +143,7 @@ namespace Clamp.Linker.Bootstrapper
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>Request container instance</returns>
-        protected TContainer GetConfiguredRequestContainer(ClampWebContext context)
+        protected TContainer GetConfiguredRequestContainer(LinkerContext context)
         {
             object contextObject;
             context.Items.TryGetValue(this.ContextKey, out contextObject);
@@ -169,7 +169,7 @@ namespace Clamp.Linker.Bootstrapper
         /// </summary>
         /// <param name="container">Request container instance</param>
         /// <param name="context"></param>
-        protected virtual void ConfigureRequestContainer(TContainer container, ClampWebContext context)
+        protected virtual void ConfigureRequestContainer(TContainer container, LinkerContext context)
         {
         }
 
@@ -188,7 +188,7 @@ namespace Clamp.Linker.Bootstrapper
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>Request container instance</returns>
-        protected abstract TContainer CreateRequestContainer(ClampWebContext context);
+        protected abstract TContainer CreateRequestContainer(LinkerContext context);
 
         /// <summary>
         /// Register the given module types into the request container

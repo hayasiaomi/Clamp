@@ -43,7 +43,7 @@
         /// <summary>
         /// Internal configuration
         /// </summary>
-        private ClampWebInternalConfiguration internalConfiguration;
+        private LinkerInternalConfiguration internalConfiguration;
 
         /// <summary>
         /// Application pipelines.
@@ -79,11 +79,11 @@
         /// <summary>
         /// Nancy internal configuration
         /// </summary>
-        protected virtual ClampWebInternalConfiguration InternalConfiguration
+        protected virtual LinkerInternalConfiguration InternalConfiguration
         {
             get
             {
-                return this.internalConfiguration ?? (this.internalConfiguration = ClampWebInternalConfiguration.Default);
+                return this.internalConfiguration ?? (this.internalConfiguration = LinkerInternalConfiguration.Default);
             }
         }
 
@@ -305,7 +305,7 @@
         /// </summary>
         /// <param name="context">The current context</param>
         /// <returns>An <see cref="IEnumerable{T}"/> instance containing <see cref="IController"/> instances.</returns>
-        public abstract IEnumerable<IController> GetAllModules(ClampWebContext context);
+        public abstract IEnumerable<IController> GetAllModules(LinkerContext context);
 
         /// <summary>
         /// Retrieves a specific <see cref="IController"/> implementation - should be per-request lifetime
@@ -313,7 +313,7 @@
         /// <param name="moduleType">Module type</param>
         /// <param name="context">The current context</param>
         /// <returns>The <see cref="IController"/> instance</returns>
-        public abstract IController GetModule(Type moduleType, ClampWebContext context);
+        public abstract IController GetModule(Type moduleType, LinkerContext context);
 
         /// <summary>
         /// Gets the configured INancyEngine
@@ -391,9 +391,9 @@
         /// <summary>
         /// Creates and initializes the request pipelines.
         /// </summary>
-        /// <param name="context">The <see cref="ClampWebContext"/> used by the request.</param>
+        /// <param name="context">The <see cref="LinkerContext"/> used by the request.</param>
         /// <returns>An <see cref="IPipelines"/> instance.</returns>
-        protected virtual IPipelines InitializeRequestPipelines(ClampWebContext context)
+        protected virtual IPipelines InitializeRequestPipelines(LinkerContext context)
         {
             var requestPipelines =
                 new Pipelines(this.ApplicationPipelines);
@@ -440,7 +440,7 @@
         /// <param name="container">Container</param>
         /// <param name="pipelines">Current pipelines</param>
         /// <param name="context">Current context</param>
-        protected virtual void RequestStartup(TContainer container, IPipelines pipelines, ClampWebContext context)
+        protected virtual void RequestStartup(TContainer container, IPipelines pipelines, LinkerContext context)
         {
         }
 
@@ -531,7 +531,7 @@
         {
             return new[] {
                 new InstanceRegistration(typeof(CryptographyConfiguration), this.CryptographyConfiguration),
-                new InstanceRegistration(typeof(ClampWebInternalConfiguration), this.InternalConfiguration),
+                new InstanceRegistration(typeof(LinkerInternalConfiguration), this.InternalConfiguration),
                 new InstanceRegistration(typeof(DiagnosticsConfiguration), this.DiagnosticsConfiguration),
                 new InstanceRegistration(typeof(IRootPathProvider), this.RootPathProvider),
             };

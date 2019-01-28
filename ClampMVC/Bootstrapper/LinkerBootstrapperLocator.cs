@@ -10,7 +10,7 @@
     /// Will search the app domain for a non-abstract one, and if it can't find one
     /// it will use the default nancy one that uses TinyIoC.
     /// </summary>
-    public static class ClampWebBootstrapperLocator
+    public static class LinkerBootstrapperLocator
     {
         private static ILinkerBootstrapper instance;
 

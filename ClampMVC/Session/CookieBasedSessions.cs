@@ -210,7 +210,7 @@ namespace Clamp.Linker.Session
         /// </summary>
         /// <param name="context">Nancy context</param>
         /// <param name="sessionStore">Session store</param>
-        private static void SaveSession(ClampWebContext context, CookieBasedSessions sessionStore)
+        private static void SaveSession(LinkerContext context, CookieBasedSessions sessionStore)
         {
             sessionStore.Save(context.Request.Session, context.Response);
         }
@@ -221,7 +221,7 @@ namespace Clamp.Linker.Session
         /// <param name="context">Nancy context</param>
         /// <param name="sessionStore">Session store</param>
         /// <returns>Always returns null</returns>
-        private static Response LoadSession(ClampWebContext context, CookieBasedSessions sessionStore)
+        private static Response LoadSession(LinkerContext context, CookieBasedSessions sessionStore)
         {
             if (context.Request == null)
             {

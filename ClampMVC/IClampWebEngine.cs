@@ -15,7 +15,7 @@ namespace Clamp.Linker
         /// Factory for creating an <see cref="IPipelines"/> instance for a incoming request.
         /// </summary>
         /// <value>An <see cref="IPipelines"/> instance.</value>
-        Func<ClampWebContext, IPipelines> RequestPipelinesFactory { get; set; }
+        Func<LinkerContext, IPipelines> RequestPipelinesFactory { get; set; }
 
         /// <summary>
         /// Handles an incoming <see cref="Request"/> async.
@@ -24,6 +24,6 @@ namespace Clamp.Linker
         /// <param name="preRequest">Delegate to call before the request is processed</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        Task<ClampWebContext> HandleRequest(Request request, Func<ClampWebContext, ClampWebContext> preRequest, CancellationToken cancellationToken);
+        Task<LinkerContext> HandleRequest(Request request, Func<LinkerContext, LinkerContext> preRequest, CancellationToken cancellationToken);
     }
 }

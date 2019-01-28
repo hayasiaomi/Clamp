@@ -46,9 +46,9 @@ namespace Clamp.Linker.ErrorHandling
         /// Whether the status code is handled
         /// </summary>
         /// <param name="statusCode">Status code</param>
-        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
+        /// <param name="context">The <see cref="LinkerContext"/> instance of the current request.</param>
         /// <returns>True if handled, false otherwise</returns>
-        public bool HandlesStatusCode(HttpStatusCode statusCode, ClampWebContext context)
+        public bool HandlesStatusCode(HttpStatusCode statusCode, LinkerContext context)
         {
             return this.supportedStatusCodes.Any(s => s == statusCode);
         }
@@ -57,9 +57,9 @@ namespace Clamp.Linker.ErrorHandling
         /// Handle the error code
         /// </summary>
         /// <param name="statusCode">Status code</param>
-        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
+        /// <param name="context">The <see cref="LinkerContext"/> instance of the current request.</param>
         /// <returns>Nancy Response</returns>
-        public void Handle(HttpStatusCode statusCode, ClampWebContext context)
+        public void Handle(HttpStatusCode statusCode, LinkerContext context)
         {
             if (context.Response != null && context.Response.Contents != null && !ReferenceEquals(context.Response.Contents, Response.NoBody))
             {
@@ -103,7 +103,7 @@ namespace Clamp.Linker.ErrorHandling
             this.ModifyResponse(statusCode, context, result);
         }
 
-        private void ModifyResponse(HttpStatusCode statusCode, ClampWebContext context, DefaultStatusCodeHandlerResult result)
+        private void ModifyResponse(HttpStatusCode statusCode, LinkerContext context, DefaultStatusCodeHandlerResult result)
         {
             if (context.Response == null)
             {

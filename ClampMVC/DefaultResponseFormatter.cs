@@ -10,14 +10,14 @@
     {
         private readonly IRootPathProvider rootPathProvider;
         private readonly IEnumerable<ISerializer> serializers;
-        private readonly ClampWebContext context;
+        private readonly LinkerContext context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultResponseFormatter"/> class.
         /// </summary>
         /// <param name="rootPathProvider">The <see cref="IRootPathProvider"/> that should be used by the instance.</param>
-        /// <param name="context">The <see cref="ClampWebContext"/> that should be used by the instance.</param>
-        public DefaultResponseFormatter(IRootPathProvider rootPathProvider, ClampWebContext context, IEnumerable<ISerializer> serializers)
+        /// <param name="context">The <see cref="LinkerContext"/> that should be used by the instance.</param>
+        public DefaultResponseFormatter(IRootPathProvider rootPathProvider, LinkerContext context, IEnumerable<ISerializer> serializers)
         {
             this.serializers = serializers.ToArray();
             this.rootPathProvider = rootPathProvider;
@@ -38,8 +38,8 @@
         /// <summary>
         /// Gets the context for which the response is being formatted.
         /// </summary>
-        /// <value>A <see cref="ClampWebContext"/> instance.</value>
-        public ClampWebContext Context
+        /// <value>A <see cref="LinkerContext"/> instance.</value>
+        public LinkerContext Context
         {
             get { return this.context; }
         }

@@ -6,10 +6,10 @@
     public interface IRoutePatternMatchResult
     {
         /// <summary>
-        /// Gets the <see cref="ClampWebContext"/> that was active when the result was produced.
+        /// Gets the <see cref="LinkerContext"/> that was active when the result was produced.
         /// </summary>
-        /// <value>A <see cref="ClampWebContext"/> instance.</value>
-        ClampWebContext Context { get; }
+        /// <value>A <see cref="LinkerContext"/> instance.</value>
+        LinkerContext Context { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not a match was made.

@@ -9,14 +9,14 @@
     public class TextResourceFinder : DynamicObject
     {
         private readonly ITextResource textResource;
-        private readonly ClampWebContext context;
+        private readonly LinkerContext context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextResourceFinder"/> class.
         /// </summary>
         /// <param name="textResource">The <see cref="ITextResource"/> that should be used by the TextResourceFinder</param>
-        /// <param name="context">The <see cref="ClampWebContext"/> that should be used by the TextResourceFinder</param>
-        public TextResourceFinder(ITextResource textResource, ClampWebContext context)
+        /// <param name="context">The <see cref="LinkerContext"/> that should be used by the TextResourceFinder</param>
+        public TextResourceFinder(ITextResource textResource, LinkerContext context)
         {
             this.textResource = textResource;
             this.context = context;
@@ -60,10 +60,10 @@
         public class DynamicMemberChainer : DynamicObject
         {
             private string memberName;
-            private readonly ClampWebContext context;
+            private readonly LinkerContext context;
             private readonly ITextResource textResource;
 
-            public DynamicMemberChainer(string memberName, ClampWebContext context, ITextResource resource)
+            public DynamicMemberChainer(string memberName, LinkerContext context, ITextResource resource)
             {
                 this.memberName = memberName;
                 this.context = context;

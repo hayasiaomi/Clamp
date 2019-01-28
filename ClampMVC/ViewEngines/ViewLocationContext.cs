@@ -23,6 +23,6 @@ namespace Clamp.Linker.ViewEngines
         /// <summary>
         /// The request/response context
         /// </summary>
-        public ClampWebContext Context { get; set; }
+        public LinkerContext Context { get; set; }
     }
 }

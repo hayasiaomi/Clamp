@@ -21,7 +21,7 @@ namespace Clamp.Linker.Bootstrapper
         /// <summary>
         /// Nancy core assembly
         /// </summary>
-        private static Assembly mWebworkAssembly = typeof(ClampWebEngine).Assembly;
+        private static Assembly mWebworkAssembly = typeof(LinkerEngine).Assembly;
 
         /// <summary>
         /// App domain type cache

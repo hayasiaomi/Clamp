@@ -38,7 +38,7 @@
         /// <param name="capturedParameters">Currently captured parameters</param>
         /// <param name="context">Current Nancy context</param>
         /// <returns>A collection of <see cref="MatchResult"/> objects</returns>
-        public override IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, ClampWebContext context)
+        public override IEnumerable<MatchResult> GetMatches(string[] segments, int currentIndex, IDictionary<string, object> capturedParameters, LinkerContext context)
         {
             var fullGreedy = this.GetFullGreedy(segments, currentIndex, capturedParameters);
             if (!this.Children.Any())

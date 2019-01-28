@@ -15,12 +15,12 @@ namespace Clamp.Linker.Conventions
     /// </summary>
     public class StaticContentConventionBuilder
     {
-        private static readonly ConcurrentDictionary<ResponseFactoryCacheKey, Func<ClampWebContext, Response>> ResponseFactoryCache;
+        private static readonly ConcurrentDictionary<ResponseFactoryCacheKey, Func<LinkerContext, Response>> ResponseFactoryCache;
         private static readonly Regex PathReplaceRegex = new Regex(@"[/\\]", RegexOptions.Compiled);
 
         static StaticContentConventionBuilder()
         {
-            ResponseFactoryCache = new ConcurrentDictionary<ResponseFactoryCacheKey, Func<ClampWebContext, Response>>();
+            ResponseFactoryCache = new ConcurrentDictionary<ResponseFactoryCacheKey, Func<LinkerContext, Response>>();
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Clamp.Linker.Conventions
         /// <param name="contentPath">The path to where the content is stored in your application, relative to the root. If this is <see langword="null" /> then it will be the same as <paramref name="requestedPath"/>.</param>
         /// <param name="allowedExtensions">A list of extensions that is valid for the conventions. If not supplied, all extensions are valid.</param>
         /// <returns>A <see cref="GenericFileResponse"/> instance for the requested static contents if it was found, otherwise <see langword="null"/>.</returns>
-        public static Func<ClampWebContext, string, Response> AddDirectory(string requestedPath, string contentPath = null, params string[] allowedExtensions)
+        public static Func<LinkerContext, string, Response> AddDirectory(string requestedPath, string contentPath = null, params string[] allowedExtensions)
         {
             if (!requestedPath.StartsWith("/"))
             {
@@ -78,7 +78,7 @@ namespace Clamp.Linker.Conventions
         /// </summary>
         /// <param name="requestedFile">The file that should be matched with the request.</param>
         /// <param name="contentFile">The file that should be served when the requested path is matched.</param>
-        public static Func<ClampWebContext, string, Response> AddFile(string requestedFile, string contentFile)
+        public static Func<LinkerContext, string, Response> AddFile(string requestedFile, string contentFile)
         {
             return (ctx, root) =>
             {
@@ -125,7 +125,7 @@ namespace Clamp.Linker.Conventions
             return contentPath;
         }
 
-        private static Func<ResponseFactoryCacheKey, Func<ClampWebContext, Response>> BuildContentDelegate(ClampWebContext context, string applicationRootPath, string requestedPath, string contentPath, string[] allowedExtensions)
+        private static Func<ResponseFactoryCacheKey, Func<LinkerContext, Response>> BuildContentDelegate(LinkerContext context, string applicationRootPath, string requestedPath, string contentPath, string[] allowedExtensions)
         {
             return pathAndRootPair =>
             {

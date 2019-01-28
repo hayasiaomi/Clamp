@@ -15,6 +15,6 @@
         /// <param name="viewName">View name</param>
         /// <param name="model">Model object (or null)</param>
         /// <returns>Response object containing the rendered view (if found)</returns>
-        Response RenderView(ClampWebContext context, string viewName, object model = null);
+        Response RenderView(LinkerContext context, string viewName, object model = null);
     }
 }

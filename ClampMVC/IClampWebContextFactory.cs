@@ -9,6 +9,6 @@ namespace Clamp.Linker
         /// Create a new NancyContext
         /// </summary>
         /// <returns>NancyContext instance</returns>
-        ClampWebContext Create(Request request);
+        LinkerContext Create(Request request);
     }
 }

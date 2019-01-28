@@ -26,12 +26,12 @@ namespace Clamp.AppCenter
 
         public static void Initialize(params Uri[] baseUris)
         {
-            Initialize(ClampWebBootstrapperLocator.Bootstrapper, new HostConfiguration(), baseUris);
+            Initialize(LinkerBootstrapperLocator.Bootstrapper, new HostConfiguration(), baseUris);
         }
 
         public static void Initialize(HostConfiguration configuration, params Uri[] baseUris)
         {
-            Initialize(ClampWebBootstrapperLocator.Bootstrapper, configuration, baseUris);
+            Initialize(LinkerBootstrapperLocator.Bootstrapper, configuration, baseUris);
         }
 
         public static void Initialize(ILinkerBootstrapper bootstrapper, params Uri[] baseUris)
@@ -325,7 +325,7 @@ namespace Clamp.AppCenter
             return Stream.Null;
         }
 
-        public static ClampWebContext Analyze(CfxRequest cfxRequest)
+        public static LinkerContext Analyze(CfxRequest cfxRequest)
         {
             Uri requestUrl = new Uri(cfxRequest.Url);
 

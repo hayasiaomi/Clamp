@@ -65,7 +65,7 @@ namespace Clamp.Linker.ModelBinding
         /// <param name="configuration">The <see cref="BindingConfig"/> that should be applied during binding.</param>
         /// <param name="blackList">Blacklisted binding property names</param>
         /// <returns>Bound model</returns>
-        public object Bind(ClampWebContext context, Type modelType, object instance, BindingConfig configuration, params string[] blackList)
+        public object Bind(LinkerContext context, Type modelType, object instance, BindingConfig configuration, params string[] blackList)
         {
             Type genericType = null;
             if (modelType.IsArray() || modelType.IsCollection() || modelType.IsEnumerable())
@@ -206,7 +206,7 @@ namespace Clamp.Linker.ModelBinding
         /// </summary>
         /// <param name="context">Current Context </param>
         /// <returns>An int containing the number of elements</returns>
-        private int GetBindingListInstanceCount(ClampWebContext context)
+        private int GetBindingListInstanceCount(LinkerContext context)
         {
             var dictionary = context.Request.Form as IDictionary<string, object>;
 
@@ -332,7 +332,7 @@ namespace Clamp.Linker.ModelBinding
                 : existingValue == null;
         }
 
-        private BindingContext CreateBindingContext(ClampWebContext context, Type modelType, object instance, BindingConfig configuration, IEnumerable<string> blackList, Type genericType)
+        private BindingContext CreateBindingContext(LinkerContext context, Type modelType, object instance, BindingConfig configuration, IEnumerable<string> blackList, Type genericType)
         {
             return new BindingContext
             {
@@ -347,7 +347,7 @@ namespace Clamp.Linker.ModelBinding
             };
         }
 
-        private IDictionary<string, string> GetDataFields(ClampWebContext context)
+        private IDictionary<string, string> GetDataFields(LinkerContext context)
         {
             var dictionaries = new IDictionary<string, string>[]
                 {
@@ -493,7 +493,7 @@ namespace Clamp.Linker.ModelBinding
                 : null;
         }
 
-        private static string GetRequestContentType(ClampWebContext context)
+        private static string GetRequestContentType(LinkerContext context)
         {
             if (context == null || context.Request == null)
             {

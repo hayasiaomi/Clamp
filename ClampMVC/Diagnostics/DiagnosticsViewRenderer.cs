@@ -14,7 +14,7 @@ namespace Clamp.Linker.Diagnostics
     /// </summary>
     public class DiagnosticsViewRenderer
     {
-        private readonly ClampWebContext context;
+        private readonly LinkerContext context;
         private static readonly IViewResolver ViewResolver = new DiagnosticsViewResolver();
 
         private static readonly IViewEngine Engine = new SuperSimpleViewEngineWrapper(Enumerable.Empty<ISuperSimpleViewEngineMatcher>());
@@ -22,8 +22,8 @@ namespace Clamp.Linker.Diagnostics
         /// <summary>
         /// Creates a new instance of the <see cref="DiagnosticsViewRenderer"/> class.
         /// </summary>
-        /// <param name="context">A <see cref="ClampWebContext"/> instance.</param>
-        public DiagnosticsViewRenderer(ClampWebContext context)
+        /// <param name="context">A <see cref="LinkerContext"/> instance.</param>
+        public DiagnosticsViewRenderer(LinkerContext context)
         {
             this.context = context;
         }
@@ -49,7 +49,7 @@ namespace Clamp.Linker.Diagnostics
             get { return RenderView(name, model, this.context); }
         }
 
-        private static Response RenderView(string name, dynamic model, ClampWebContext context)
+        private static Response RenderView(string name, dynamic model, LinkerContext context)
         {
             var fullName = string.Concat(name, ".sshtml");
 
@@ -108,7 +108,7 @@ namespace Clamp.Linker.Diagnostics
 
         internal class DummyTextResource : ITextResource
         {
-            public string this[string key, ClampWebContext context]
+            public string this[string key, LinkerContext context]
             {
                 get
                 {

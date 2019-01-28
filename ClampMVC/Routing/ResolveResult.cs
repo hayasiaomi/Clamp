@@ -30,13 +30,13 @@
         /// <summary>
         /// Gets or sets the on error module pipeline
         /// </summary>
-        public Func<ClampWebContext, Exception, dynamic> OnError { get; set; }
+        public Func<LinkerContext, Exception, dynamic> OnError { get; set; }
 
         public ResolveResult()
         {
         }
 
-        public ResolveResult(Route route, DynamicDictionary parameters, BeforePipeline before, AfterPipeline after, Func<ClampWebContext, Exception, dynamic> onError)
+        public ResolveResult(Route route, DynamicDictionary parameters, BeforePipeline before, AfterPipeline after, Func<LinkerContext, Exception, dynamic> onError)
         {
             this.Route = route;
             this.Parameters = parameters;

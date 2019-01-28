@@ -41,7 +41,7 @@ namespace Clamp.Linker
         /// <param name="pipelines">The pipelines to hook into</param>
         public static void Enable(IPipelines pipelines)
         {
-            var item = new PipelineItem<Func<ClampWebContext, Response>>("Static content", ctx =>
+            var item = new PipelineItem<Func<LinkerContext, Response>>("Static content", ctx =>
             {
                 return conventions
                     .Select(convention => convention.Invoke(ctx, rootPathProvider.GetRootPath()))

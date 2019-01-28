@@ -18,7 +18,7 @@ namespace Clamp.Linker
     /// <summary>
     /// Default engine for handling Nancy <see cref="Request"/>s.
     /// </summary>
-    public class ClampWebEngine : ILinkerEngine
+    public class LinkerEngine : ILinkerEngine
     {
         public const string ERROR_KEY = "ERROR_TRACE";
         public const string ERROR_EXCEPTION = "ERROR_EXCEPTION";
@@ -32,7 +32,7 @@ namespace Clamp.Linker
         private readonly CancellationTokenSource engineDisposedCts;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClampWebEngine"/> class.
+        /// Initializes a new instance of the <see cref="LinkerEngine"/> class.
         /// </summary>
         /// <param name="dispatcher">An <see cref="IRouteResolver"/> instance that will be used to resolve a route, from the modules, that matches the incoming <see cref="Request"/>.</param>
         /// <param name="contextFactory">A factory for creating contexts</param>
@@ -40,7 +40,7 @@ namespace Clamp.Linker
         /// <param name="requestTracing">The request tracing instance.</param>
         /// <param name="staticContentProvider">The provider to use for serving static content</param>
         /// <param name="negotiator">The response negotiator.</param>
-        public ClampWebEngine(IRequestDispatcher dispatcher,
+        public LinkerEngine(IRequestDispatcher dispatcher,
             IClampWebContextFactory contextFactory,
             IEnumerable<IStatusCodeHandler> statusCodeHandlers,
             IRequestTracing requestTracing,
@@ -90,14 +90,14 @@ namespace Clamp.Linker
         /// Factory for creating an <see cref="IPipelines"/> instance for a incoming request.
         /// </summary>
         /// <value>An <see cref="IPipelines"/> instance.</value>
-        public Func<ClampWebContext, IPipelines> RequestPipelinesFactory { get; set; }
+        public Func<LinkerContext, IPipelines> RequestPipelinesFactory { get; set; }
 
-        public Task<ClampWebContext> HandleRequest(Request request, Func<ClampWebContext, ClampWebContext> preRequest, CancellationToken cancellationToken)
+        public Task<LinkerContext> HandleRequest(Request request, Func<LinkerContext, LinkerContext> preRequest, CancellationToken cancellationToken)
         {
 	        var cts = CancellationTokenSource.CreateLinkedTokenSource(this.engineDisposedCts.Token, cancellationToken);
             cts.Token.ThrowIfCancellationRequested();
 
-            var tcs = new TaskCompletionSource<ClampWebContext>();
+            var tcs = new TaskCompletionSource<LinkerContext>();
 
             if (request == null)
             {
@@ -161,7 +161,7 @@ namespace Clamp.Linker
             this.engineDisposedCts.Cancel();
         }
 
-        private void SaveTraceInformation(ClampWebContext ctx)
+        private void SaveTraceInformation(LinkerContext ctx)
         {
             if (!this.EnableTracing(ctx))
             {
@@ -183,13 +183,13 @@ namespace Clamp.Linker
             this.UpdateTraceCookie(ctx, sessionGuid);
         }
 
-        private bool EnableTracing(ClampWebContext ctx)
+        private bool EnableTracing(LinkerContext ctx)
         {
             return StaticConfiguration.EnableRequestTracing &&
                    !ctx.Items.ContainsKey(DiagnosticsHook.ItemsKey);
         }
 
-        private Guid GetDiagnosticsSessionGuid(ClampWebContext ctx)
+        private Guid GetDiagnosticsSessionGuid(LinkerContext ctx)
         {
             string sessionId;
             if (!ctx.Request.Cookies.TryGetValue("__NCTRACE", out sessionId))
@@ -211,7 +211,7 @@ namespace Clamp.Linker
             return sessionGuid;
         }
 
-        private void UpdateTraceCookie(ClampWebContext ctx, Guid sessionGuid)
+        private void UpdateTraceCookie(LinkerContext ctx, Guid sessionGuid)
         {
             var cookie = new WebworkCookie("__NCTRACE", sessionGuid.ToString(), true)
             {
@@ -221,7 +221,7 @@ namespace Clamp.Linker
             ctx.Response = ctx.Response.WithCookie(cookie);
         }
 
-        private void CheckStatusCodeHandler(ClampWebContext context)
+        private void CheckStatusCodeHandler(LinkerContext context)
         {
             if (context.Response == null)
             {
@@ -247,9 +247,9 @@ namespace Clamp.Linker
             handler.Handle(context.Response.StatusCode, context);
         }
 
-        private Task<ClampWebContext> InvokeRequestLifeCycle(ClampWebContext context, CancellationToken cancellationToken, IPipelines pipelines)
+        private Task<LinkerContext> InvokeRequestLifeCycle(LinkerContext context, CancellationToken cancellationToken, IPipelines pipelines)
         {
-            var tcs = new TaskCompletionSource<ClampWebContext>();
+            var tcs = new TaskCompletionSource<LinkerContext>();
 
             var preHookTask = InvokePreRequestHook(context, cancellationToken, pipelines.BeforeRequest);
 
@@ -273,7 +273,7 @@ namespace Clamp.Linker
             return tcs.Task;
         }
 
-        private Action<Task> PreExecute(ClampWebContext context, IPipelines pipelines, TaskCompletionSource<ClampWebContext> tcs)
+        private Action<Task> PreExecute(LinkerContext context, IPipelines pipelines, TaskCompletionSource<LinkerContext> tcs)
         {
             return postHookTask =>
             {
@@ -285,7 +285,7 @@ namespace Clamp.Linker
             };
         }
 
-        private Action<Task> HandleFaultedTask(ClampWebContext context, IPipelines pipelines, TaskCompletionSource<ClampWebContext> tcs)
+        private Action<Task> HandleFaultedTask(LinkerContext context, IPipelines pipelines, TaskCompletionSource<LinkerContext> tcs)
         {
             return t =>
                 {
@@ -304,7 +304,7 @@ namespace Clamp.Linker
                 };
         }
 
-        private static Task<Response> InvokePreRequestHook(ClampWebContext context, CancellationToken cancellationToken, BeforePipeline pipeline)
+        private static Task<Response> InvokePreRequestHook(LinkerContext context, CancellationToken cancellationToken, BeforePipeline pipeline)
         {
             if (pipeline == null)
             {
@@ -314,12 +314,12 @@ namespace Clamp.Linker
             return pipeline.Invoke(context, cancellationToken);
         }
 
-        private Task InvokePostRequestHook(ClampWebContext context, CancellationToken cancellationToken, AfterPipeline pipeline)
+        private Task InvokePostRequestHook(LinkerContext context, CancellationToken cancellationToken, AfterPipeline pipeline)
         {
             return pipeline == null ? TaskHelpers.GetCompletedTask() : pipeline.Invoke(context, cancellationToken);
         }
 
-        private void InvokeOnErrorHook(ClampWebContext context, ErrorPipeline pipeline, Exception ex)
+        private void InvokeOnErrorHook(LinkerContext context, ErrorPipeline pipeline, Exception ex)
         {
             try
             {

@@ -6,7 +6,7 @@ namespace Clamp.Linker
     using System.Threading;
     using Clamp.Linker.Helpers;
 
-    public static class WebClampEngineExtensions
+    public static class ClampLinkerEngineExtensions
     {
         /// <summary>
         /// Handles an incoming <see cref="Request"/>.

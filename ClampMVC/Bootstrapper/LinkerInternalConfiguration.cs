@@ -24,21 +24,21 @@ namespace Clamp.Linker.Bootstrapper
     /// Contains implementation types/configuration for Nancy that usually
     /// do not require overriding in "general use".
     /// </summary>
-    public sealed class ClampWebInternalConfiguration
+    public sealed class LinkerInternalConfiguration
     {
         /// <summary>
         /// Gets the Nancy default configuration
         /// </summary>
-        public static ClampWebInternalConfiguration Default
+        public static LinkerInternalConfiguration Default
         {
             get
             {
-                return new ClampWebInternalConfiguration
+                return new LinkerInternalConfiguration
                 {
                     RouteResolver = typeof(DefaultRouteResolver),
                     RoutePatternMatcher = typeof(DefaultRoutePatternMatcher),
                     ContextFactory = typeof(DefaultClampWebContextFactory),
-                    WebworkEngine = typeof(ClampWebEngine),
+                    WebworkEngine = typeof(LinkerEngine),
                     RouteCache = typeof(RouteCache),
                     RouteCacheProvider = typeof(DefaultRouteCacheProvider),
                     ViewLocator = typeof(DefaultViewLocator),
@@ -188,7 +188,7 @@ namespace Clamp.Linker.Bootstrapper
         /// </summary>
         /// <param name="configurationBuilder">Configuration builder for overriding the default configuration properties.</param>
         /// <returns>Nancy configuration instance</returns>
-        public static ClampWebInternalConfiguration WithOverrides(Action<ClampWebInternalConfiguration> configurationBuilder)
+        public static LinkerInternalConfiguration WithOverrides(Action<LinkerInternalConfiguration> configurationBuilder)
         {
             var configuration = Default;
 

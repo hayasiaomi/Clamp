@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo if found in Form otherwise null</returns>
-        public static CultureInfo FormCulture(ClampWebContext context)
+        public static CultureInfo FormCulture(LinkerContext context)
         {
             if (context.Request.Form["CurrentCulture"] != null)
             {
@@ -52,7 +52,7 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo if found in Path otherwise null</returns>
-        public static CultureInfo PathCulture(ClampWebContext context)
+        public static CultureInfo PathCulture(LinkerContext context)
         {
             var segments =
                 context.Request.Url.Path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -76,7 +76,7 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo if found in Headers otherwise null</returns>
-        public static CultureInfo HeaderCulture(ClampWebContext context)
+        public static CultureInfo HeaderCulture(LinkerContext context)
         {
             if (context.Request.Headers.AcceptLanguage.Any())
             {
@@ -98,7 +98,7 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo if found in Session otherwise null</returns>
-        public static CultureInfo SessionCulture(ClampWebContext context)
+        public static CultureInfo SessionCulture(LinkerContext context)
         {
             var sessionType = context.Request.Session as NullSessionProvider;
             if (sessionType == null && context.Request.Session["CurrentCulture"] != null)
@@ -114,7 +114,7 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo if found in Cookies otherwise null</returns>
-        public static CultureInfo CookieCulture(ClampWebContext context)
+        public static CultureInfo CookieCulture(LinkerContext context)
         {
             string cookieCulture = null;
 
@@ -136,7 +136,7 @@
         /// </summary>
         /// <param name="context">NancyContext</param>
         /// <returns>CultureInfo from CurrentThread</returns>
-        public static CultureInfo ThreadCulture(ClampWebContext context)
+        public static CultureInfo ThreadCulture(LinkerContext context)
         {
             return Thread.CurrentThread.CurrentCulture;
         }

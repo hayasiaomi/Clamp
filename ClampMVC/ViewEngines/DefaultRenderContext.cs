@@ -42,8 +42,8 @@
         /// <summary>
         /// Gets the context of the current request.
         /// </summary>
-        /// <value>A <see cref="ClampWebContext"/> instance.</value>
-        public ClampWebContext Context
+        /// <value>A <see cref="LinkerContext"/> instance.</value>
+        public LinkerContext Context
         {
             get { return this.viewLocationContext.Context; }
         }

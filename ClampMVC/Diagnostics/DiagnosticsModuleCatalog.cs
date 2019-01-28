@@ -12,7 +12,7 @@ namespace Clamp.Linker.Diagnostics
     {
         private readonly TinyIoCContainer container;
 
-        public DiagnosticsModuleCatalog(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, ClampWebInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
+        public DiagnosticsModuleCatalog(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, LinkerInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
         {
             this.container = ConfigureContainer(providers, rootPathProvider, requestTracing, configuration, diagnosticsConfiguration);
         }
@@ -38,14 +38,14 @@ namespace Clamp.Linker.Diagnostics
             return this.container.Resolve<IController>(moduleType.FullName);
         }
 
-        private static TinyIoCContainer ConfigureContainer(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, ClampWebInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
+        private static TinyIoCContainer ConfigureContainer(IEnumerable<IDiagnosticsProvider> providers, IRootPathProvider rootPathProvider, IRequestTracing requestTracing, LinkerInternalConfiguration configuration, DiagnosticsConfiguration diagnosticsConfiguration)
         {
             var diagContainer = new TinyIoCContainer();
 
             diagContainer.Register<IInteractiveDiagnostics, InteractiveDiagnostics>();
             diagContainer.Register<IRequestTracing>(requestTracing);
             diagContainer.Register<IRootPathProvider>(rootPathProvider);
-            diagContainer.Register<ClampWebInternalConfiguration>(configuration);
+            diagContainer.Register<LinkerInternalConfiguration>(configuration);
             diagContainer.Register<IModelBinderLocator, DefaultModelBinderLocator>();
             diagContainer.Register<IBinder, DefaultBinder>();
             diagContainer.Register<IFieldNameConverter, DefaultFieldNameConverter>();

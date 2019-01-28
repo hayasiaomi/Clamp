@@ -14,10 +14,6 @@ namespace Clamp.Linker
         {
             BundleContext = context;
 
-            string cfxResHandeEmbedded = context.GetConfigMaps()["clamp.mvc.pages.mode"];
-
-            string url = cfxResHandeEmbedded.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase) || cfxResHandeEmbedded.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase)
-                ? cfxResHandeEmbedded : $"http://{cfxResHandeEmbedded}";
         }
 
         public void Stop(IBundleContext context)

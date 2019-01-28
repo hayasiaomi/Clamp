@@ -9,15 +9,15 @@ namespace Clamp.Linker.ErrorHandling
         /// Check if the error handler can handle errors of the provided status code.
         /// </summary>
         /// <param name="statusCode">Status code</param>
-        /// <param name="context">The <see cref="ClampWebContext"/> instance of the current request.</param>
+        /// <param name="context">The <see cref="LinkerContext"/> instance of the current request.</param>
         /// <returns>True if handled, false otherwise</returns>
-        bool HandlesStatusCode(HttpStatusCode statusCode, ClampWebContext context);
+        bool HandlesStatusCode(HttpStatusCode statusCode, LinkerContext context);
 
         /// <summary>
         /// Handle the error code
         /// </summary>
         /// <param name="statusCode">Status code</param>
         /// <param name="context">Current context</param>
-        void Handle(HttpStatusCode statusCode, ClampWebContext context);
+        void Handle(HttpStatusCode statusCode, LinkerContext context);
     }
 }

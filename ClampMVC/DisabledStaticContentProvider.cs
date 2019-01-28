@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="context">Current context</param>
         /// <returns>Response if serving content, null otherwise</returns>
-        public Response GetContent(ClampWebContext context)
+        public Response GetContent(LinkerContext context)
         {
             return null;
         }

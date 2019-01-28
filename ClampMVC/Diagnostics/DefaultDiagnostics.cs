@@ -19,7 +19,7 @@
         private readonly IEnumerable<IDiagnosticsProvider> diagnosticProviders;
         private readonly IRootPathProvider rootPathProvider;
         private readonly IRequestTracing requestTracing;
-        private readonly ClampWebInternalConfiguration configuration;
+        private readonly LinkerInternalConfiguration configuration;
         private readonly IModelBinderLocator modelBinderLocator;
         private readonly IEnumerable<IResponseProcessor> responseProcessors;
         private readonly IEnumerable<IRouteSegmentConstraint> routeSegmentConstraints;
@@ -48,7 +48,7 @@
             IEnumerable<IDiagnosticsProvider> diagnosticProviders,
             IRootPathProvider rootPathProvider,
             IRequestTracing requestTracing,
-            ClampWebInternalConfiguration configuration,
+            LinkerInternalConfiguration configuration,
             IModelBinderLocator modelBinderLocator,
             IEnumerable<IResponseProcessor> responseProcessors,
             IEnumerable<IRouteSegmentConstraint> routeSegmentConstraints,
