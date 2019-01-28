@@ -63,8 +63,8 @@
     <Compile Include="Properties\BundleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClampMVC\Clamp.Linker.csproj">
-      <Project>{55EA65FF-E185-457C-9EFF-CA95590898DB}</Project>
+    <ProjectReference Include="..\Clamp.Linker\Clamp.Linker.csproj">
+      <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
       <Name>Clamp.Linker</Name>
     </ProjectReference>
     <ProjectReference Include="..\Clamp\Clamp.csproj">

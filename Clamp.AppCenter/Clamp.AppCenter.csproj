@@ -524,7 +524,7 @@
     <Content Include="Cef\wow_helper.exe" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClampMVC\Clamp.Linker.csproj">
+    <ProjectReference Include="..\Clamp.Linker\Clamp.Linker.csproj">
       <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
       <Name>Clamp.Linker</Name>
     </ProjectReference>
