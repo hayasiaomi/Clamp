@@ -61,7 +61,7 @@
     <Compile Include="Bootstrapper\ContainerRegistration.cs" />
     <Compile Include="Bootstrapper\IApplicationRegistrations.cs" />
     <Compile Include="Bootstrapper\IApplicationStartup.cs" />
-    <Compile Include="Bootstrapper\IClampWebBootstrapper.cs" />
+    <Compile Include="Bootstrapper\ILinkerBootstrapper.cs" />
     <Compile Include="Bootstrapper\InstanceRegistration.cs" />
     <Compile Include="Bootstrapper\IPipelines.cs" />
     <Compile Include="Bootstrapper\IRegistrations.cs" />
