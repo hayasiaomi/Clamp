@@ -245,7 +245,7 @@ namespace Clamp.OSGI
         {
             ValidateBundleRoots();
 
-            return this.loadedBundles.Values.FirstOrDefault(rb => string.Equals(rb.Name, name, StringComparison.CurrentCultureIgnoreCase)); 
+            return this.loadedBundles.Values.FirstOrDefault(rb => string.Equals(rb.Name, name, StringComparison.CurrentCultureIgnoreCase));
         }
 
         internal void RegisterAutoTypeExtensionPoint(Type type, string path)
@@ -291,9 +291,9 @@ namespace Clamp.OSGI
 
             List<Bundle> pendingActivateBundles = Registry.GetPendingActivateBundles();
 
-            List<Bundle> sortedPendingActivateBundles = pendingActivateBundles.OrderByDescending(b => b.StartLevel).ToList();
+            //List<Bundle> sortedPendingActivateBundles = pendingActivateBundles.OrderByDescending(b => b.StartLevel).ToList();
 
-            foreach (Bundle bundle in sortedPendingActivateBundles)
+            foreach (Bundle bundle in pendingActivateBundles)
             {
                 if (bundle != null && !IsBundleLoaded(bundle.Id))
                 {
@@ -321,6 +321,15 @@ namespace Clamp.OSGI
                     }
 
                     LoadBundle(bundle.Id, false);
+                }
+            }
+
+            //启动激活类
+            foreach (RuntimeBundle runtimeBundle in this.loadedBundles.Values)
+            {
+                if (runtimeBundle.BundleActivator != null)
+                {
+                    runtimeBundle.BundleActivator.Start(new BundleContext(runtimeBundle, this));
                 }
             }
         }
@@ -396,7 +405,12 @@ namespace Clamp.OSGI
         {
             ActivateBundleExtensions(id);
         }
-
+        /// <summary>
+        /// 加载Bundle
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="throwExceptions"></param>
+        /// <returns></returns>
         internal bool LoadBundle(string id, bool throwExceptions)
         {
             try
@@ -416,6 +430,7 @@ namespace Clamp.OSGI
                     }
 
                     List<Bundle> bundles = new List<Bundle>();
+
                     Stack depCheck = new Stack();
 
                     ResolveLoadDependencies(bundles, depCheck, id, false);
@@ -513,10 +528,6 @@ namespace Clamp.OSGI
 
                 this.loadedBundles = loadedBundlesCopy;
 
-                if (p.BundleActivator != null)
-                {
-                    p.BundleActivator.Start(new BundleContext(p, this));
-                }
 
                 if (!BundleDatabase.RunningSetupProcess)
                 {

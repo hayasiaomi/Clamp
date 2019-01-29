@@ -18,7 +18,7 @@ namespace Clamp.Linker.Conventions
         {
             conventions.StaticContentsConventions = new List<Func<LinkerContext, string, Response>>
             {
-               StaticContentConventionBuilder.AddResources("js","css","less","scss","map","ttf","eot","svg","woff","otf")
+               StaticContentConventionBuilder.AddResources("js","css","less","scss","map","ttf","eot","svg","woff","woff2","otf")
             };
         }
 

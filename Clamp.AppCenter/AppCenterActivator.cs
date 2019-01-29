@@ -21,7 +21,12 @@ namespace Clamp.AppCenter
             string url = cfxResHandeEmbedded.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase) || cfxResHandeEmbedded.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase)
                 ? cfxResHandeEmbedded : $"http://{cfxResHandeEmbedded}";
 
-            HTMLAnalyzer.Initialize(new ClampLinkerBootstrapper(context), new Uri(url), new Uri($"http://{ context.GetConfigMaps()[AppCenterConstant.CFX_RESOURCE_HANDLER_MUI]}"));
+            ILinkerBootstrapper linkerBootstrapper = context.GetExtensionObjects<ILinkerBootstrapper>(true).FirstOrDefault();
+
+            if (linkerBootstrapper != null)
+            {
+                HTMLAnalyzer.Initialize(linkerBootstrapper, new Uri(url));
+            }
         }
 
         public void Stop(IBundleContext context)

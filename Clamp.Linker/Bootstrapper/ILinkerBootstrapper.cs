@@ -1,8 +1,9 @@
-﻿using Clamp.OSGI.Data.Annotation;
-using System;
-
-namespace Clamp.Linker.Bootstrapper
+﻿namespace Clamp.Linker.Bootstrapper
 {
+    using Clamp.OSGI.Data.Annotation;
+    using System;
+
+    [TypeExtensionPoint]
     public interface ILinkerBootstrapper : IDisposable
     {
         /// <summary>

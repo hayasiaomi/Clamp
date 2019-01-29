@@ -86,6 +86,7 @@ namespace Clamp.OSGI.Data
             using (Stream s = OpenRead(file))
             {
                 BinaryXmlReader reader = new BinaryXmlReader(s, typeMap);
+
                 return reader.ReadValue("data");
             }
         }

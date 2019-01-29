@@ -16,6 +16,11 @@ namespace Clamp.MUI.Pages.Controllers
             {
                 return View["login"];
             };
+
+            Get["/Index"] = _ =>
+            {
+                return View["index"];
+            };
         }
     }
 }

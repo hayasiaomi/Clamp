@@ -11,13 +11,11 @@ using Clamp.Linker.ViewEngines;
 
 namespace Clamp.AppCenter.MVC
 {
+    [Extension]
     public class ClampLinkerBootstrapper : DefaultLinkerBootstrapper
     {
-        public IBundleContext BundleContext { private set; get; }
-
-        public ClampLinkerBootstrapper(IBundleContext bundleContex)
+        public ClampLinkerBootstrapper()
         {
-            this.BundleContext = bundleContex;
             this.InternalConfiguration.ViewLocationProvider = typeof(ResourceViewLocationProvider);
 
             StaticConfiguration.Caching.EnableRuntimeViewDiscovery = true;

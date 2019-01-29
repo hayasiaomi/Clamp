@@ -122,7 +122,7 @@ namespace Clamp.Linker.Conventions
 
                 string transformedRequestPath = GetEncodedPath(path);
 
-                string resourcePath = transformedRequestPath.Replace(Path.DirectorySeparatorChar, '.').TrimStart('.').Substring(context.BundleName.Length);
+                string resourcePath = transformedRequestPath.Replace(Path.DirectorySeparatorChar, '.').TrimStart('.').Replace('-', '_').Substring(context.BundleName.Length);
 
                 string resourceName = context.RuntimeBundle.GetResourceNames().FirstOrDefault(rn => rn.EndsWith($"{resourcePath}.{fileName}", StringComparison.CurrentCultureIgnoreCase));
 
