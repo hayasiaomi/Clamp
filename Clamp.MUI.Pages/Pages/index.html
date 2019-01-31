@@ -188,32 +188,33 @@
                     <div class="sidebar-nav navbar-collapse">
                         <ul class="nav" id="side-menu">
                             {{#if Model.MenuLinks}}
-                                {{#each Model.MenuLinks}}
-                                    {{ #if SubMenuLinks }}
+                            {{#each Model.MenuLinks}}
+                            {{#if SubMenuLinks }}
+                            <li>
+                                <a href="#">
+                                    <i class="{{ IconName }}"></i>{{ Name }} <span class="fa arrow"></span>
+                                </a>
+
+                                <ul class="nav nav-second-level">
+
+                                    {{#each SubMenuLinks}}
+
                                     <li>
-                                        <a href="#">
-                                            <i class="{{ IconName }}"></i>{{ Name}}
-                                            <span class="fa arrow"></span>
-                                        </a>
-
-                                        <ul class="nav nav-second-level">
-
-                                            {{#each SubMenuLinks}}
-
-                                            <li>
-                                                <a href="/{{ BundleName}}/{{ Path}}">{{ Name}}</a>
-                                            </li>
-
-                                            {{/each}}
-                                        </ul>
-
+                                        <a href="/{{ BundleName }}/{{ Path }}">{{ Name }}</a>
                                     </li>
-                                    {{else}}
-                                    <li>
-                                        <a href="/{{ BundleName }}/{{ Path }}"><i class="{{ IconName }}"></i>{{ Name }} </a>
-                                    </li>
-                                    {{/if}}
-                                {{/each}}
+
+                                    {{/each}}
+                                </ul>
+
+                            </li>
+                            {{else}}
+                            <li>
+                                <a href="#" onclick="displayContent('\/{{ BundleName }}\/{{ Path }}')">
+                                    <i class="{{ IconName }}"></i>{{ Name }}
+                                </a>
+                            </li>
+                            {{/if}}
+                            {{/each}}
                             {{/if}}
                         </ul>
                     </div>
@@ -241,6 +242,26 @@
     <script src="/admin/dist/js/sb-admin-2.js"></script>
 
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            var firstMenu = $("#side-menu,ul:first-child");
+
+            if (firstMenu != null) {
+
+                var anchor;
+
+                if (firstMenu.children().length == 1) {
+                    anchor = firstMenu.find("a");
+                }
+                else {
+                    anchor = firstMenu.find("ul,li,a")
+                }
+
+                if (anchor != null)
+                    anchor.click();
+            }
+        });
+
         function shutdown() {
 
             $.get("http://res.clamp.mui/exit");
@@ -253,6 +274,10 @@
             $.get("http://res.clamp.mui/logout");
 
             return false;
+        }
+
+        function displayContent(url) {
+            $("#iframe-wrapper").attr('src', url)
         }
 
     </script>
