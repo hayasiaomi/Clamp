@@ -24,6 +24,8 @@ namespace Clamp.OSGI
 
         object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance);
 
+        T[] GetExtensionObjects<T>();
+
         T[] GetExtensionObjects<T>(bool reuseCachedInstance);
 
         object[] GetExtensionObjects(string path);

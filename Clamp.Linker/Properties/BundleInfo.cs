@@ -5,4 +5,5 @@ using Clamp.OSGI.Data.Annotation;
 [assembly: BundleAuthor("aomi")]
 [assembly: BundleName("linker")]
 [assembly: BundleDescription("CEF连接器")]
+[assembly: ImportBundleAssembly("DotLiquid.dll")]
 [assembly: BundleActivator("Clamp.Linker.LinkerActivator")]

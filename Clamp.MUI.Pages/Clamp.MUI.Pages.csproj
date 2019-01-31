@@ -59,13 +59,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="MUIPagesActivator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\BundleInfo.cs" />
+    <Compile Include="ViewModel\IndexVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clamp.Linker\Clamp.Linker.csproj">
       <Project>{55ea65ff-e185-457c-9eff-ca95590898db}</Project>
       <Name>Clamp.Linker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
+      <Project>{d9426667-170c-4cf3-9d13-5c266cb99421}</Project>
+      <Name>Clamp.MUI.Framework</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Clamp\Clamp.csproj">
       <Project>{17A2236D-1A63-4FF2-8046-EDFD80F3C9AB}</Project>
@@ -80,7 +87,6 @@
     <EmbeddedResource Include="dist\css\sb-admin-2.min.css" />
     <EmbeddedResource Include="dist\js\sb-admin-2.js" />
     <EmbeddedResource Include="dist\js\sb-admin-2.min.js" />
-    <EmbeddedResource Include="Pages\gulpfile.js" />
     <EmbeddedResource Include="js\sb-admin-2.js" />
     <EmbeddedResource Include="vendor\bootstrap-social\bootstrap-social.css" />
     <EmbeddedResource Include="vendor\bootstrap\css\bootstrap.css" />
@@ -223,46 +229,10 @@
     <EmbeddedResource Include="vendor\font-awesome\scss\_variables.scss" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Pages\blank.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\buttons.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\flot.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\forms.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\grid.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\icons.html" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Pages\index.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Pages\login.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\morris.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\notifications.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\panels-wells.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\tables.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\typography.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Pages\index2.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="vendor\jquery\jquery-2.2.3.js" />

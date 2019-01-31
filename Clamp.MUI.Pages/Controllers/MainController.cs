@@ -1,9 +1,11 @@
-﻿using Clamp.Linker;
+﻿using Clamp.MUI.Framework;
+using Clamp.Linker;
 using Clamp.Linker.Annotation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Clamp.MUI.Pages.ViewModel;
 
 namespace Clamp.MUI.Pages.Controllers
 {
@@ -17,9 +19,18 @@ namespace Clamp.MUI.Pages.Controllers
                 return View["login"];
             };
 
-            Get["/Index"] = _ =>
+            Get["/index"] = _ =>
             {
-                return View["index"];
+                IndexVM indexVM = new IndexVM();
+
+                IMenuLink[] menuLinks = MUIPagesActivator.BundleContext.GetExtensionObjects<IMenuLink>();
+
+                if (menuLinks != null && menuLinks.Length > 0)
+                {
+                    indexVM.MenuLinks.AddRange(menuLinks);
+                }
+
+                return View["index", indexVM];
             };
         }
     }

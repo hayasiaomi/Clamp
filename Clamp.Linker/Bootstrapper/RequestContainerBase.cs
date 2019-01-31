@@ -146,7 +146,9 @@ namespace Clamp.Linker.Bootstrapper
         protected TContainer GetConfiguredRequestContainer(LinkerContext context)
         {
             object contextObject;
+
             context.Items.TryGetValue(this.ContextKey, out contextObject);
+
             var requestContainer = contextObject as TContainer;
 
             if (requestContainer == null)

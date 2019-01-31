@@ -2,17 +2,17 @@ namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
 {
     using System;
 
-    public class WebworkViewEngineHost : IViewEngineHost
+    public class LinkerViewEngineHost : IViewEngineHost
     {
         private IRenderContext renderContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebworkViewEngineHost"/> class.
+        /// Initializes a new instance of the <see cref="LinkerViewEngineHost"/> class.
         /// </summary>
         /// <param name="renderContext">
         /// The render context.
         /// </param>
-        public WebworkViewEngineHost(IRenderContext renderContext)
+        public LinkerViewEngineHost(IRenderContext renderContext)
         {
             this.renderContext = renderContext;
             this.Context = this.renderContext.Context;

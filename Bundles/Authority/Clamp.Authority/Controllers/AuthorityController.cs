@@ -12,7 +12,7 @@ namespace Clamp.Authority.Controllers
     {
         public AuthorityController()
         {
-            Get["/"] = _ =>
+            Get["/index"] = _ =>
             {
                 return View["Authority"];
             };

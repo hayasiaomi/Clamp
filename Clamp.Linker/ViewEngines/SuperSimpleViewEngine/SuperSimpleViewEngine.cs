@@ -95,8 +95,7 @@ namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
         /// <summary>
         /// Initializes a new instance of the <see cref="SuperSimpleViewEngine"/> class.
         /// </summary>
-        public SuperSimpleViewEngine()
-            : this(Enumerable.Empty<ISuperSimpleViewEngineMatcher>())
+        public SuperSimpleViewEngine() : this(Enumerable.Empty<ISuperSimpleViewEngineMatcher>())
         {
         }
 
@@ -132,8 +131,7 @@ namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
         /// <returns>A string containing the expanded template.</returns>
         public string Render(string template, dynamic model, IViewEngineHost host)
         {
-            var output =
-                this.processors.Aggregate(template, (current, processor) => processor(current, model ?? new object(), host));
+            var output = this.processors.Aggregate(template, (current, processor) => processor(current, model ?? new object(), host));
 
             return this.matchers.Aggregate(output, (current, extension) => extension.Invoke(current, model, host));
         }
@@ -598,7 +596,7 @@ namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
                 });
 
             result = AttributeValuePathExpansionRegEx.Replace(
-                result, 
+                result,
                 m =>
                 {
                     var attribute = m.Groups["Attribute"];
@@ -606,7 +604,7 @@ namespace Clamp.Linker.ViewEngines.SuperSimpleViewEngine
                     var path = m.Groups["Path"].Value;
 
                     var expandedPath = host.ExpandPath(path);
-                
+
                     return string.Format("{0}={1}{2}{1}", attribute, quote, expandedPath);
                 });
 

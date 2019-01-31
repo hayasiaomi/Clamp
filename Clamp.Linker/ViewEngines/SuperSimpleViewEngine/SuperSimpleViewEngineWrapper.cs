@@ -12,7 +12,7 @@
         /// <summary>
         /// Extensions that the view engine supports
         /// </summary>
-        private readonly string[] extensions = new[] { "sshtml", "html", "htm" };
+        private readonly string[] extensions = new[] { "sshtml" };
 
         /// <summary>
         /// The engine itself
@@ -65,7 +65,7 @@
                         return reader.ReadToEnd();
                 });
 
-                writer.Write(this.viewEngine.Render(templateContents, model, new WebworkViewEngineHost(renderContext)));
+                writer.Write(this.viewEngine.Render(templateContents, model, new LinkerViewEngineHost(renderContext)));
                 writer.Flush();
             });
         }
