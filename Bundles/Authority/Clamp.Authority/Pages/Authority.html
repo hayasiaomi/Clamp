@@ -1,16 +1,105 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>YEUX</title>
+    <title>用户授权</title>
+    <link href="/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/admin/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="/admin/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/admin/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+    <link href="/admin/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="/admin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        body {
+            margin-left: 0px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        #wrapper {
+            overflow: hidden;
+        }
+
+        #page-wrapper {
+            background-color: white;
+        }
+    </style>
+
 </head>
+
 <body>
-    <div>
-        <a href="wwww.baidu.com">baidu</a>
+    <div style="padding:10px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                用户授权
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
     </div>
+
+    <!-- /#page-wrapper -->
+    <!-- /#wrapper -->
+    <script src="/admin/vendor/jquery/jquery.min.js"></script>
+    <script src="/admin/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/admin/vendor/metisMenu/metisMenu.min.js"></script>
+    <script src="/admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="/admin/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="/admin/vendor/datatables-responsive/dataTables.responsive.js"></script>
+    <script src="/admin/dist/js/sb-admin-2.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#dataTables-example').DataTable({
+                responsive: true
+            });
+        });
+    </script>
+
 </body>
+
 </html>
