@@ -58,6 +58,7 @@
     <ProjectReference Include="..\..\..\Clamp.MUI.Framework\Clamp.MUI.Framework.csproj">
       <Project>{d9426667-170c-4cf3-9d13-5c266cb99421}</Project>
       <Name>Clamp.MUI.Framework</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Clamp\Clamp.csproj">
       <Project>{17a2236d-1a63-4ff2-8046-edfd80f3c9ab}</Project>

@@ -3,6 +3,7 @@ using Clamp.OSGI.Data.Description;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -404,8 +405,7 @@ namespace Clamp.OSGI.Data
                         bdesc.HasUserId = false;
                     }
 
-                    // Check errors in the description
-                    List<string> errors = new List<string>();
+                    StringCollection errors = bdesc.Verify(fs);
 
                     if (database.IsGlobalRegistry && bdesc.BundleId.IndexOf('.') == -1)
                     {
@@ -415,6 +415,8 @@ namespace Clamp.OSGI.Data
                     if (errors.Count > 0)
                     {
                         scanSuccessful = false;
+
+                        throw new Exception("解析出错");
                     }
 
                     //确保所有的扩展信息所于的Bundle是正确的
@@ -1001,7 +1003,7 @@ namespace Clamp.OSGI.Data
                 ExtensionNodeDescription node = new ExtensionNodeDescription();
 
                 node.SetAttribute("type", activ.TypeName);
-               
+
                 config.Activator = node;
             }
 

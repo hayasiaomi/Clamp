@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>YEUX-善点工具</title>
+    <link href="/admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/admin/css/sb-admin.css" rel="stylesheet">
+    <script type="text/javascript">
+
+        function clearErrors() {
+            $("#lbl-errors").text("");
+            $("#lbl-errors").hide();
+        }
+
+        function login() {
+
+            clearErrors();
+
+            var name = $("#txt-username").val();
+            var pwd = $("#txt-password").val();
+
+            if (isNullOrEmpty(name)) {
+                displayErrors("用户名不能为空！");
+                return false;
+            }
+
+            if (isNullOrEmpty(pwd)) {
+                displayErrors("密码不能为空！");
+                return false;
+            }
+
+            $.post("http://res.clamp.mui/login",
+                {
+                    username: name,
+                    password: pwd,
+                    remember: $("#chb-remember").is(':checked')
+                },
+                function (data, status) {
+                    if (!isNullOrEmpty(data)) {
+                        displayErrors(data);
+                    }
+                });
+            return false;
+        }
+
+        function shutdown() {
+
+            $.get("http://res.clamp.mui/exit");
+
+            return false;
+        }
+
+        function isNullOrEmpty(str) {
+
+            if (str == null || str == "")
+                return true;
+
+            var regu = "^[ ]+$";
+            var re = new RegExp(regu);
+            return re.test(str);
+        }
+
+        function displayErrors(error) {
+            $("#lbl-errors").text(error);
+            $("#lbl-errors").show();
+        }
+
+    </script>
+</head>
+<body>
+    <div class="card-header" style="-webkit-app-region: drag;">YEUX-善点工具</div>
+    <div class="card-body" style="-webkit-app-region: no-drag;">
+        <form>
+            <div class="form-group">
+                <div class="form-label-group">
+                    <input id="txt-username" class="form-control" onfocus="clearErrors()" placeholder="请输入用户名" name="username" type="text" autofocus>
+                    <label for="txt-username">请输入用户名</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-label-group">
+                    <input id="txt-password" class="form-control" onfocus="clearErrors()" placeholder="请输入密码" name="password" type="password" value="">
+                    <label for="txt-password">请输入密码</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input id="chb-remember" name="remember" type="checkbox" value="1">
+                        记住密码
+                    </label>
+                </div>
+            </div>
+            <a href="#" class="btn btn-primary btn-block" onclick="return login()">登录</a>
+        </form>
+        <div class="text-center" style="margin-top:10px;">
+            <div id="lbl-errors" class="alert alert-danger" role="alert" style="display:none"></div>
+        </div>
+    </div>
+    <script src="/admin/vendor/jquery/jquery.js"></script>
+    <script src="/admin/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="/admin/vendor/jquery-easing/jquery.easing.js"></script>
+</body>
+</html>

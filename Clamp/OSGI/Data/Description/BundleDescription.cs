@@ -1201,13 +1201,13 @@ namespace Clamp.OSGI.Data.Description
             if (IsBundle)
             {
                 if (OptionalModules.Count > 0)
-                    errors.Add("Root add-in hosts can't have optional modules.");
+                    errors.Add("Bundle是不可以有选择模块的");
             }
 
             if (BundleId.Length == 0 || Version.Length == 0)
             {
                 if (ExtensionPoints.Count > 0)
-                    errors.Add("Add-ins which define new extension points must have an Id and Version.");
+                    errors.Add("Bundle必须有一个ID和版本号");
             }
 
             MainModule.Verify("", errors);
@@ -1236,7 +1236,7 @@ namespace Clamp.OSGI.Data.Description
                 {
                     string asmFile = Path.Combine(bp, file);
                     if (!fs.FileExists(asmFile))
-                        errors.Add("The file '" + asmFile + "' referenced in the manifest could not be found.");
+                        errors.Add($"Bundle[{this.BundleId}]引用的文件（" + asmFile + "）找不到");
                 }
             }
 

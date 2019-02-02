@@ -8,9 +8,9 @@
         defaultEnabled="true"
         >
   <Dependencies>
-    <Bundle id="Clamp.AppCenter" verion="1.0.0.0" />
-    <Bundle id="Clamp.MUI.Pages" verion="1.0.0.0" />
-    <Bundle id="Clamp.MUI.WF" verion="1.0.0.0" />
-    <Bundle id="Clamp.Authority" verion="1.0.0.0" />
+    <Bundle id="Clamp.AppCenter" version="1.0.0.0" />
+    <Bundle id="Clamp.MUI.AdminUI" version="1.0.0.0" />
+    <Bundle id="Clamp.MUI.WF" version="1.0.0.0" />
+    <Bundle id="Clamp.Authority" version="1.0.0.0" />
   </Dependencies>
 </Bundle>

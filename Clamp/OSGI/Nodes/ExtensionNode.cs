@@ -127,7 +127,7 @@ namespace Clamp.OSGI.Nodes
                         runtimeBundle = runtimeBundle.GetModule(module);
                 }
                 if (runtimeBundle == null)
-                    throw new InvalidOperationException("Add-in '" + bundleId + "' could not be loaded.");
+                    throw new InvalidOperationException($"$Bundle [{bundleId}] could not be loaded.");
                 return runtimeBundle;
             }
         }
