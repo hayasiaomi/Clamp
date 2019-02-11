@@ -20,9 +20,9 @@ namespace Clamp.OSGI.Injection.Factories
 
         public override Type CreatesType { get { return this.registerType; } }
 
-        public override object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
+        public override object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            var factory = _factory.Target as Func<ObjectContainer, NamedParameterOverloads, object>;
+            var factory = _factory.Target as Func<ClampObjectContainer, NamedParameterOverloads, object>;
 
             if (factory == null)
                 throw new WeakReferenceException(this.registerType);
@@ -37,7 +37,7 @@ namespace Clamp.OSGI.Injection.Factories
             }
         }
 
-        public WeakDelegateFactory(Type registerType, Func<ObjectContainer, NamedParameterOverloads, object> factory)
+        public WeakDelegateFactory(Type registerType, Func<ClampObjectContainer, NamedParameterOverloads, object> factory)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory");
@@ -51,7 +51,7 @@ namespace Clamp.OSGI.Injection.Factories
         {
             get
             {
-                var factory = _factory.Target as Func<ObjectContainer, NamedParameterOverloads, object>;
+                var factory = _factory.Target as Func<ClampObjectContainer, NamedParameterOverloads, object>;
 
                 if (factory == null)
                     throw new WeakReferenceException(this.registerType);

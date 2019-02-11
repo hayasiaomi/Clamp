@@ -7,6 +7,6 @@ namespace Clamp.OSGI
 {
     public sealed class ClampConstants
     {
-        public const string CLAMP_CONFIG_FILE = "clamp.conf";
+        public const string CLAMP_CONFIG_FILE = "clamp.cfg";
     }
 }

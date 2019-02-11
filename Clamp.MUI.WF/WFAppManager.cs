@@ -2,6 +2,7 @@
 using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
 using Clamp.AppCenter.CFX;
+using Clamp.OSGI.Collections;
 using Clamp.OSGI.Data.Annotation;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,27 @@ namespace Clamp.MUI.WF
     [Extension]
     public class WFAppManager : AppManager
     {
+        private static WFAppManager appManager;
+
+        public static WFAppManager Current
+        {
+            get
+            {
+                return appManager;
+            }
+        }
+
         public Thread CurrentThread { set; get; }
+
+
+        public Dictionary<string, string> ConfigYEUXMaps { private set; get; }
 
         public override void Initialize()
         {
             base.Initialize();
+
+            if (appManager == null)
+                appManager = this;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -41,11 +58,13 @@ namespace Clamp.MUI.WF
 
             if (CFXLauncher.InitializeChromium(assemblyDir, BeforeChromiumInitialize))
             {
-                Dictionary<string, string> configMap = this.GetClampConfiguration();
+                this.ConfigYEUXMaps = this.GetYEUXConfiguration();
 
-                if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED))
+                Dictionary<string, string> configAppCenterMaps = WFActivator.BundleContext.Resolve<Dictionary<string, string>>(AppCenterConstant.CFG_APPCENTER);
+
+                if (configAppCenterMaps.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED))
                 {
-                    string domainValues = configMap[AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED];
+                    string domainValues = configAppCenterMaps[AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED];
 
                     if (!string.IsNullOrWhiteSpace(domainValues))
                     {
@@ -61,13 +80,13 @@ namespace Clamp.MUI.WF
                     }
                 }
 
-                if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_LOCAL))
-                    CFXLauncher.RegisterLocalScheme("http", configMap[AppCenterConstant.CFX_RESOURCE_HANDLER_LOCAL]);
+                if (configAppCenterMaps.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_LOCAL))
+                    CFXLauncher.RegisterLocalScheme("http", configAppCenterMaps[AppCenterConstant.CFX_RESOURCE_HANDLER_LOCAL]);
                 else
                     CFXLauncher.RegisterLocalScheme("http", "res.clamp.local");
 
-                if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_MUI))
-                    CFXLauncher.RegisterClampScheme("http", configMap[AppCenterConstant.CFX_RESOURCE_HANDLER_MUI]);
+                if (configAppCenterMaps.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_MUI))
+                    CFXLauncher.RegisterClampScheme("http", configAppCenterMaps[AppCenterConstant.CFX_RESOURCE_HANDLER_MUI]);
                 else
                     CFXLauncher.RegisterClampScheme("http", "res.clamp.mui");
 
@@ -96,6 +115,29 @@ namespace Clamp.MUI.WF
         {
             e.Settings.LogSeverity = global::Chromium.CfxLogSeverity.Default;
             e.Settings.SingleProcess = false;
+        }
+
+
+        private Dictionary<string, string> GetYEUXConfiguration()
+        {
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+
+            string clampConfFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "YEUX.cfg");
+
+            if (File.Exists(clampConfFile))
+            {
+                ExtendedProperties extendedProperties = new ExtendedProperties(clampConfFile);
+
+                if (extendedProperties.Count > 0)
+                {
+                    foreach (string keyName in extendedProperties.Keys)
+                    {
+                        keyValuePairs.Add(keyName, extendedProperties.GetString(keyName));
+                    }
+                }
+            }
+
+            return keyValuePairs;
         }
     }
 }

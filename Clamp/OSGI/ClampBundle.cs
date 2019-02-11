@@ -19,7 +19,7 @@ namespace Clamp.OSGI
     /// <summary>
     /// 框架的Bundle
     /// </summary>
-    public class ClampBundle : TreeClampBundle
+    internal class ClampBundle : TreeClampBundle
     {
         private object LocalLock = new object();
         private Hashtable autoExtensionTypes = new Hashtable();
@@ -27,6 +27,7 @@ namespace Clamp.OSGI
         private Dictionary<Assembly, RuntimeBundle> loadedAssemblies = new Dictionary<Assembly, RuntimeBundle>();
         private Dictionary<string, ExtensionNodeSet> nodeSets = new Dictionary<string, ExtensionNodeSet>();
         private List<Assembly> pendingAssemblyBundlesChecks = new List<Assembly>();
+        private ClampObjectContainer clampObjectContainer = new ClampObjectContainer();
         private BundleRegistry registry;
         private bool initialized;
         private string startupDirectory;
@@ -109,6 +110,7 @@ namespace Clamp.OSGI
                 if (this.registry.CreateHostBundlesFile(asmFile) || this.registry.UnknownDomain)
                     this.registry.Update();
 
+
                 initialized = true;
             }
         }
@@ -135,11 +137,115 @@ namespace Clamp.OSGI
             }
         }
 
+
+        #region 注册功能
+
+
+        /// <summary>
+        /// Creates/replaces a container class registration with a specific, strong referenced, instance.
+        /// </summary>
+        /// <param name="registerType">Type to register</param>
+        /// <param name="instance">Instance of RegisterType to register</param>
+        /// <returns>RegisterOptions for fluent API</returns>
+        public RegisterOptions Register(Type registerType, object instance)
+        {
+            return this.clampObjectContainer.Register(registerType, instance);
+        }
+
+        /// <summary>
+        /// Creates/replaces a named container class registration with a specific, strong referenced, instance.
+        /// </summary>
+        /// <param name="registerType">Type to register</param>
+        /// <param name="instance">Instance of RegisterType to register</param>
+        /// <param name="name">Name of registration</param>
+        /// <returns>RegisterOptions for fluent API</returns>
+        public RegisterOptions Register(Type registerType, object instance, string name)
+        {
+            return this.clampObjectContainer.Register(registerType, instance, name);
+        }
+
+        /// <summary>
+        /// Creates/replaces a container class registration with a specific, strong referenced, instance.
+        /// </summary>
+        /// <param name="registerType">Type to register</param>
+        /// <param name="registerImplementation">Type of instance to register that implements RegisterType</param>
+        /// <param name="instance">Instance of RegisterImplementation to register</param>
+        /// <returns>RegisterOptions for fluent API</returns>
+        public RegisterOptions Register(Type registerType, Type registerImplementation, object instance)
+        {
+            return this.clampObjectContainer.Register(registerType, registerImplementation, instance);
+        }
+
+        /// <summary>
+        /// Creates/replaces a named container class registration with a specific, strong referenced, instance.
+        /// </summary>
+        /// <param name="registerType">Type to register</param>
+        /// <param name="registerImplementation">Type of instance to register that implements RegisterType</param>
+        /// <param name="instance">Instance of RegisterImplementation to register</param>
+        /// <param name="name">Name of registration</param>
+        /// <returns>RegisterOptions for fluent API</returns>
+        public RegisterOptions Register(Type registerType, Type registerImplementation, object instance, string name)
+        {
+            return this.clampObjectContainer.Register(registerType, registerImplementation, instance, name);
+        }
+
+        public object Resolve(Type resolveType)
+        {
+            return this.clampObjectContainer.Resolve(resolveType);
+        }
+
+        /// <summary>
+        /// Attempts to resolve a type using specified options.
+        /// </summary>
+        /// <param name="resolveType">Type to resolve</param>
+        /// <param name="options">Resolution options</param>
+        /// <returns>Instance of type</returns>
+        /// <exception cref="ResolutionException">Unable to resolve the type.</exception>
+        public object Resolve(Type resolveType, ResolveOptions options)
+        {
+            return this.clampObjectContainer.Resolve(resolveType, options);
+        }
+
+        /// <summary>
+        /// Attempts to resolve a type using default options and the supplied name.
+        ///
+        /// Parameters are used in conjunction with normal container resolution to find the most suitable constructor (if one exists).
+        /// All user supplied parameters must exist in at least one resolvable constructor of RegisterType or resolution will fail.
+        /// </summary>
+        /// <param name="resolveType">Type to resolve</param>
+        /// <param name="name">Name of registration</param>
+        /// <returns>Instance of type</returns>
+        /// <exception cref="ResolutionException">Unable to resolve the type.</exception>
+        public object Resolve(Type resolveType, string name)
+        {
+            return this.clampObjectContainer.Resolve(resolveType, name);
+        }
+
+        public ResolveType Resolve<ResolveType>() where ResolveType : class
+        {
+            return (ResolveType)Resolve(typeof(ResolveType));
+        }
+
+        public ResolveType Resolve<ResolveType>(ResolveOptions options)  where ResolveType : class
+        {
+            return (ResolveType)Resolve(typeof(ResolveType), options);
+        }
+
+        public ResolveType Resolve<ResolveType>(string name) where ResolveType : class
+        {
+            return (ResolveType)Resolve(typeof(ResolveType), name);
+        }
+
+
+        #endregion
+
         #endregion
 
         #region 重写 Bundle 的方法
         public override void Start()
         {
+
+
             ActivateBundles();
 
             OnAssemblyLoaded(null, null);
@@ -286,12 +392,7 @@ namespace Clamp.OSGI
             lock (pendingAssemblyBundlesChecks)
                 pendingAssemblyBundlesChecks.Clear();
 
-            //foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-            //    CheckBundleAssembly(asm);
-
             List<Bundle> pendingActivateBundles = Registry.GetPendingActivateBundles();
-
-            //List<Bundle> sortedPendingActivateBundles = pendingActivateBundles.OrderByDescending(b => b.StartLevel).ToList();
 
             foreach (Bundle bundle in pendingActivateBundles)
             {

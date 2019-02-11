@@ -37,9 +37,9 @@ namespace Clamp.MUI.WF
         {
             this.Load -= FrmMain_Load;
 
-            if (AppManager.Current.ClampConfs.ContainsKey(AppCenterConstant.CFX_INIT_URL))
+            if (WFAppManager.Current.ConfigYEUXMaps.ContainsKey(AppCenterConstant.CFX_INIT_URL))
             {
-                this.LoadUrl(AppManager.Current.ClampConfs[AppCenterConstant.CFX_INIT_URL]);
+                this.LoadUrl(WFAppManager.Current.ConfigYEUXMaps[AppCenterConstant.CFX_INIT_URL]);
             }
             else
             {

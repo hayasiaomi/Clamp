@@ -44,7 +44,7 @@ namespace Clamp.MUI.WPF
                 //WindowSplash windowSplash = new WindowSplash();
                 //WindowAuthority windowAuthority = new WindowAuthority();
 
-                Dictionary<string, string> configMap = this.GetClampConfiguration();
+                Dictionary<string, string> configMap = this.GetYEUXConfiguration();
 
                 if (configMap.ContainsKey(AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED))
                 {

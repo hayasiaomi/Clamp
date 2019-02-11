@@ -20,7 +20,7 @@ namespace Clamp.OSGI.Injection.Factories
             if (registerImplementation.IsAbstract() || registerImplementation.IsInterface())
                 throw new RegistrationTypeException(registerImplementation, "SingletonFactory");
 
-            if (!ObjectContainer.IsValidAssignment(registerType, registerImplementation))
+            if (!ClampObjectContainer.IsValidAssignment(registerType, registerImplementation))
                 throw new RegistrationTypeException(registerImplementation, "SingletonFactory");
 
             this.registerType = registerType;
@@ -32,7 +32,7 @@ namespace Clamp.OSGI.Injection.Factories
             get { return this.registerImplementation; }
         }
 
-        public override object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
+        public override object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
         {
             if (parameters.Count != 0)
                 throw new ArgumentException("Cannot specify parameters for singleton types");
@@ -65,7 +65,7 @@ namespace Clamp.OSGI.Injection.Factories
             }
         }
 
-        public override ObjectFactoryBase GetFactoryForChildContainer(Type type, ObjectContainer parent, ObjectContainer child)
+        public override ObjectFactoryBase GetFactoryForChildContainer(Type type, ClampObjectContainer parent, ClampObjectContainer child)
         {
             // We make sure that the singleton is constructed before the child container takes the factory.
             // Otherwise the results would vary depending on whether or not the parent container had resolved

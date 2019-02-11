@@ -21,7 +21,7 @@ namespace Clamp.OSGI.Injection.Factories
             if (lifetimeProvider == null)
                 throw new ArgumentNullException("lifetimeProvider", "lifetimeProvider is null.");
 
-            if (!ObjectContainer.IsValidAssignment(registerType, registerImplementation))
+            if (!ClampObjectContainer.IsValidAssignment(registerType, registerImplementation))
                 throw new RegistrationTypeException(registerImplementation, "SingletonFactory");
        
             if (registerImplementation.IsAbstract() || registerImplementation.IsInterface())
@@ -37,7 +37,7 @@ namespace Clamp.OSGI.Injection.Factories
             get { return this.registerImplementation; }
         }
 
-        public override object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
+        public override object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
         {
             object current;
 
@@ -78,7 +78,7 @@ namespace Clamp.OSGI.Injection.Factories
             return new CustomObjectLifetimeFactory(this.registerType, this.registerImplementation, lifetimeProvider, errorString);
         }
 
-        public override ObjectFactoryBase GetFactoryForChildContainer(Type type, ObjectContainer parent, ObjectContainer child)
+        public override ObjectFactoryBase GetFactoryForChildContainer(Type type, ClampObjectContainer parent, ClampObjectContainer child)
         {
             // We make sure that the singleton is constructed before the child container takes the factory.
             // Otherwise the results would vary depending on whether or not the parent container had resolved

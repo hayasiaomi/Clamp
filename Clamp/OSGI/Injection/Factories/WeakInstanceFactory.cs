@@ -19,7 +19,7 @@ namespace Clamp.OSGI.Injection.Factories
 
         public WeakInstanceFactory(Type registerType, Type registerImplementation, object instance)
         {
-            if (!ObjectContainer.IsValidAssignment(registerType, registerImplementation))
+            if (!ClampObjectContainer.IsValidAssignment(registerType, registerImplementation))
                 throw new RegistrationTypeException(registerImplementation, "WeakInstanceFactory");
 
             this.registerType = registerType;
@@ -32,7 +32,7 @@ namespace Clamp.OSGI.Injection.Factories
             get { return this.registerImplementation; }
         }
 
-        public override object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
+        public override object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
         {
             var instance = _instance.Target;
 

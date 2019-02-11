@@ -1,4 +1,5 @@
-﻿using Clamp.OSGI.Nodes;
+﻿using Clamp.OSGI.Injection;
+using Clamp.OSGI.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Clamp.OSGI
             return this.clampBundle.GetExtensionObjects(instanceType);
         }
 
-
+        #region 扩展功能
         public T[] GetExtensionObjects<T>()
         {
             this.clampBundle.CheckInitialized();
@@ -99,14 +100,70 @@ namespace Clamp.OSGI
             return this.clampBundle.GetExtensionObjects<T>(path, reuseCachedInstance);
         }
 
-        public Dictionary<string, string> GetConfigMaps()
-        {
-            return this.clampBundle.ConfigProps;
-        }
-
         public RuntimeBundle GetRuntimeBundleByName(string name)
         {
             return this.clampBundle.GetRuntimeBundleByName(name);
         }
+        #endregion
+
+        #region 注册功能
+
+
+        public RegisterOptions Register(Type registerType, object instance)
+        {
+            return this.clampBundle.Register(registerType, instance);
+        }
+
+        public RegisterOptions Register(Type registerType, object instance, string name)
+        {
+            return this.clampBundle.Register(registerType, instance, name);
+        }
+
+
+        public RegisterOptions Register(Type registerType, Type registerImplementation, object instance)
+        {
+            return this.clampBundle.Register(registerType, registerImplementation, instance);
+        }
+
+
+        public RegisterOptions Register(Type registerType, Type registerImplementation, object instance, string name)
+        {
+            return this.clampBundle.Register(registerType, registerImplementation, instance, name);
+        }
+
+        public object Resolve(Type resolveType)
+        {
+            return this.clampBundle.Resolve(resolveType);
+        }
+
+   
+        public object Resolve(Type resolveType, ResolveOptions options)
+        {
+            return this.clampBundle.Resolve(resolveType,options);
+        }
+
+      
+        public object Resolve(Type resolveType, string name)
+        {
+            return this.clampBundle.Resolve(resolveType, name);
+        }
+
+        public ResolveType Resolve<ResolveType>() where ResolveType : class
+        {
+            return this.clampBundle.Resolve<ResolveType>();
+        }
+
+        public ResolveType Resolve<ResolveType>(ResolveOptions options) where ResolveType : class
+        {
+            return this.clampBundle.Resolve<ResolveType>(options);
+        }
+
+        public ResolveType Resolve<ResolveType>(string name) where ResolveType : class
+        {
+            return this.clampBundle.Resolve<ResolveType>(name);
+        }
+
+        #endregion
+
     }
 }

@@ -8,30 +8,30 @@ using System.Text;
 
 namespace Clamp.OSGI.Injection
 {
-    internal class ObjectContainer : IDisposable
+    internal class ClampObjectContainer : IDisposable
     {
         private readonly object _AutoRegisterLock = new object();
         private readonly SafeDictionary<TypeRegistration, ObjectFactoryBase> _RegisteredTypes;
         private delegate object ObjectConstructor(params object[] parameters);
         private static readonly SafeDictionary<ConstructorInfo, ObjectConstructor> _ObjectConstructorCache = new SafeDictionary<ConstructorInfo, ObjectConstructor>();
-        private ObjectContainer _Parent;
+        private ClampObjectContainer _Parent;
         private bool disposed = false;
 
-        public ObjectContainer()
+        public ClampObjectContainer()
         {
             _RegisteredTypes = new SafeDictionary<TypeRegistration, ObjectFactoryBase>();
 
             RegisterDefaultTypes();
         }
 
-        private ObjectContainer(ObjectContainer parent) : this()
+        private ClampObjectContainer(ClampObjectContainer parent) : this()
         {
             _Parent = parent;
         }
 
-        public ObjectContainer GetChildContainer()
+        public ClampObjectContainer GetChildContainer()
         {
-            return new ObjectContainer(this);
+            return new ClampObjectContainer(this);
         }
 
         #region Registration
@@ -224,7 +224,7 @@ namespace Clamp.OSGI.Injection
         /// <param name="registerType">Type to register</param>
         /// <param name="factory">Factory/lambda that returns an instance of RegisterType</param>
         /// <returns>RegisterOptions for fluent API</returns>
-        public RegisterOptions Register(Type registerType, Func<ObjectContainer, NamedParameterOverloads, object> factory)
+        public RegisterOptions Register(Type registerType, Func<ClampObjectContainer, NamedParameterOverloads, object> factory)
         {
             return RegisterInternal(registerType, string.Empty, new DelegateFactory(registerType, factory));
         }
@@ -236,7 +236,7 @@ namespace Clamp.OSGI.Injection
         /// <param name="factory">Factory/lambda that returns an instance of RegisterType</param>
         /// <param name="name">Name of registration</param>
         /// <returns>RegisterOptions for fluent API</returns>
-        public RegisterOptions Register(Type registerType, Func<ObjectContainer, NamedParameterOverloads, object> factory, string name)
+        public RegisterOptions Register(Type registerType, Func<ClampObjectContainer, NamedParameterOverloads, object> factory, string name)
         {
             return RegisterInternal(registerType, name, new DelegateFactory(registerType, factory));
         }
@@ -351,7 +351,7 @@ namespace Clamp.OSGI.Injection
         /// <typeparam name="RegisterType">Type to register</typeparam>
         /// <param name="factory">Factory/lambda that returns an instance of RegisterType</param>
         /// <returns>RegisterOptions for fluent API</returns>
-        public RegisterOptions Register<RegisterType>(Func<ObjectContainer, NamedParameterOverloads, RegisterType> factory)
+        public RegisterOptions Register<RegisterType>(Func<ClampObjectContainer, NamedParameterOverloads, RegisterType> factory)
             where RegisterType : class
         {
             if (factory == null)
@@ -369,7 +369,7 @@ namespace Clamp.OSGI.Injection
         /// <param name="factory">Factory/lambda that returns an instance of RegisterType</param>
         /// <param name="name">Name of registration</param>
         /// <returns>RegisterOptions for fluent API</returns>
-        public RegisterOptions Register<RegisterType>(Func<ObjectContainer, NamedParameterOverloads, RegisterType> factory, string name)
+        public RegisterOptions Register<RegisterType>(Func<ClampObjectContainer, NamedParameterOverloads, RegisterType> factory, string name)
             where RegisterType : class
         {
             if (factory == null)
@@ -1396,16 +1396,16 @@ namespace Clamp.OSGI.Injection
         #endregion
 
         #region Singleton Container
-        private static readonly ObjectContainer _Current = new ObjectContainer();
+        private static readonly ClampObjectContainer _Current = new ClampObjectContainer();
 
-        static ObjectContainer()
+        static ClampObjectContainer()
         {
         }
 
         /// <summary>
         /// Lazy created Singleton instance of the container for simple scenarios
         /// </summary>
-        public static ObjectContainer Current
+        public static ClampObjectContainer Current
         {
             get
             {
@@ -1526,7 +1526,7 @@ namespace Clamp.OSGI.Injection
 
         private void RegisterDefaultTypes()
         {
-            Register<ObjectContainer>(this);
+            Register<ClampObjectContainer>(this);
         }
         private RegisterOptions RegisterInternal(Type registerType, string name, ObjectFactoryBase factory)
         {
@@ -1817,7 +1817,7 @@ namespace Clamp.OSGI.Injection
                 //#if NETFX_CORE
                 //				MethodInfo resolveMethod = typeof(TinyIoCContainer).GetTypeInfo().GetDeclaredMethods("Resolve").First(mi => !mi.GetParameters().Any());
                 //#else
-                MethodInfo resolveMethod = typeof(ObjectContainer).GetMethod("Resolve", new Type[] { });
+                MethodInfo resolveMethod = typeof(ClampObjectContainer).GetMethod("Resolve", new Type[] { });
                 //#endif
                 resolveMethod = resolveMethod.MakeGenericMethod(returnType);
 
@@ -1836,7 +1836,7 @@ namespace Clamp.OSGI.Injection
                 //#if NETFX_CORE
                 //				MethodInfo resolveMethod = typeof(TinyIoCContainer).GetTypeInfo().GetDeclaredMethods("Resolve").First(mi => mi.GetParameters().Length == 1 && mi.GetParameters()[0].GetType() == typeof(String));
                 //#else
-                MethodInfo resolveMethod = typeof(ObjectContainer).GetMethod("Resolve", new Type[] { typeof(String) });
+                MethodInfo resolveMethod = typeof(ClampObjectContainer).GetMethod("Resolve", new Type[] { typeof(String) });
                 //#endif
                 resolveMethod = resolveMethod.MakeGenericMethod(returnType);
 
@@ -1863,7 +1863,7 @@ namespace Clamp.OSGI.Injection
                 //#if NETFX_CORE
                 //				MethodInfo resolveMethod = typeof(TinyIoCContainer).GetTypeInfo().GetDeclaredMethods("Resolve").First(mi => mi.GetParameters().Length == 2 && mi.GetParameters()[0].GetType() == typeof(String) && mi.GetParameters()[1].GetType() == typeof(NamedParameterOverloads));
                 //#else
-                MethodInfo resolveMethod = typeof(ObjectContainer).GetMethod("Resolve", new Type[] { typeof(String), typeof(NamedParameterOverloads) });
+                MethodInfo resolveMethod = typeof(ClampObjectContainer).GetMethod("Resolve", new Type[] { typeof(String), typeof(NamedParameterOverloads) });
                 //#endif
                 resolveMethod = resolveMethod.MakeGenericMethod(returnType);
 

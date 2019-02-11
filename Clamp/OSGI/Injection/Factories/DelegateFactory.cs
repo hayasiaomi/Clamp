@@ -13,13 +13,13 @@ namespace Clamp.OSGI.Injection.Factories
     {
         private readonly Type registerType;
 
-        private Func<ObjectContainer, NamedParameterOverloads, object> _factory;
+        private Func<ClampObjectContainer, NamedParameterOverloads, object> _factory;
 
         public override bool AssumeConstruction { get { return true; } }
 
         public override Type CreatesType { get { return this.registerType; } }
 
-        public override object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
+        public override object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Clamp.OSGI.Injection.Factories
             }
         }
 
-        public DelegateFactory(Type registerType, Func<ObjectContainer, NamedParameterOverloads, object> factory)
+        public DelegateFactory(Type registerType, Func<ClampObjectContainer, NamedParameterOverloads, object> factory)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory");

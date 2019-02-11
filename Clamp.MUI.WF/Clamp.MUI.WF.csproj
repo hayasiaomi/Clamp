@@ -127,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
+    <Content Include="YEUX.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

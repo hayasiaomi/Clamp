@@ -34,7 +34,7 @@ namespace Clamp.OSGI.Injection.Factories
         /// <param name="parameters">Any user parameters passed</param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public abstract object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options);
+        public abstract object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options);
 
         public virtual ObjectFactoryBase SingletonVariant
         {
@@ -78,7 +78,7 @@ namespace Clamp.OSGI.Injection.Factories
             Constructor = constructor;
         }
 
-        public virtual ObjectFactoryBase GetFactoryForChildContainer(Type type, ObjectContainer parent, ObjectContainer child)
+        public virtual ObjectFactoryBase GetFactoryForChildContainer(Type type, ClampObjectContainer parent, ClampObjectContainer child)
         {
             return this;
         }

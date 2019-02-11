@@ -7,12 +7,12 @@ using System.Text;
 
 namespace Clamp.OSGI.Injection
 {
-    internal sealed class RegisterOptions
+    public sealed class RegisterOptions
     {
-        private ObjectContainer _Container;
+        private ClampObjectContainer _Container;
         private TypeRegistration _Registration;
 
-        public RegisterOptions(ObjectContainer container, TypeRegistration registration)
+        internal RegisterOptions(ClampObjectContainer container, TypeRegistration registration)
         {
             _Container = container;
             _Registration = registration;
@@ -80,7 +80,7 @@ namespace Clamp.OSGI.Injection
 
         public RegisterOptions UsingConstructor<RegisterType>(Expression<Func<RegisterType>> constructor)
         {
-            if (!ObjectContainer.IsValidAssignment(_Registration.Type, typeof(RegisterType)))
+            if (!ClampObjectContainer.IsValidAssignment(_Registration.Type, typeof(RegisterType)))
                 throw new ConstructorResolutionException(typeof(RegisterType));
 
             var lambda = constructor as LambdaExpression;

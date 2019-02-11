@@ -10,6 +10,7 @@ namespace Clamp.AppCenter
         public const string CFX_INIT_URL = "cfx.init.url";
         public const string CFX_LOGIN_URL = "cfx.login.url";
 
+
         public const string CFX_PAGE_LOCALTION = "cfx.page.location";
 
 
@@ -19,6 +20,9 @@ namespace Clamp.AppCenter
 
 
         public const string CLAMP_MVC_PAGES_MODE = "clamp.mvc.pages.mode";
+
+
+        public const string CFG_APPCENTER = "cfg.appcenter";
 
     }
 }

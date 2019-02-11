@@ -19,14 +19,14 @@ namespace Clamp.OSGI.Injection.Factories
             if (registerImplementation.IsAbstract() || registerImplementation.IsInterface())
                 throw new RegistrationTypeException(registerImplementation, "MultiInstanceFactory");
 
-            if (!ObjectContainer.IsValidAssignment(registerType, registerImplementation))
+            if (!ClampObjectContainer.IsValidAssignment(registerType, registerImplementation))
                 throw new RegistrationTypeException(registerImplementation, "MultiInstanceFactory");
 
             this.registerType = registerType;
             this.registerImplementation = registerImplementation;
         }
 
-        public override object GetObject(Type requestedType, ObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
+        public override object GetObject(Type requestedType, ClampObjectContainer container, NamedParameterOverloads parameters, ResolveOptions options)
         {
             try
             {

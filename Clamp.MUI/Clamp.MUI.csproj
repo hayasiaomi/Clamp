@@ -78,7 +78,7 @@
     <Resource Include="clamp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Clamp.conf">
+    <Content Include="Clamp.cfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

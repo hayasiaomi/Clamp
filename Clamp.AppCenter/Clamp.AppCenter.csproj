@@ -507,6 +507,9 @@
     <None Include="Cef\locales\zh-TW.pak" />
     <None Include="Cef\natives_blob.bin" />
     <None Include="Cef\snapshot_blob.bin" />
+    <Content Include="AppCenter.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Cef64\d3dcompiler_43.dll" />

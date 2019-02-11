@@ -1,4 +1,5 @@
 ﻿using Clamp.OSG.Initial;
+using Clamp.OSGI.Collections;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,19 +39,19 @@ namespace Clamp.OSGI
 
             if (fileInfo.Exists)
             {
-                InitialFile initialProperties = InitialFile.LoadFromFile(fileInfo.FullName);
+                ExtendedProperties extendedProperties = new ExtendedProperties(fileInfo.FullName);
 
-                if (initialProperties != null && initialProperties.SectionCount > 0)
+                if (extendedProperties.Count > 0)
                 {
-                    foreach (InitialProperty initialProperty in initialProperties)
+                    foreach (string keyName in extendedProperties.Keys)
                     {
-                        if (configProps.ContainsKey(initialProperty.Name))
+                        if (extendedProperties.ContainsKey(keyName))
                         {
-                            configProps[initialProperty.Name] = initialProperty.StringValueTrimmed;
+                            configProps[keyName] = extendedProperties.GetString(keyName);
                         }
                         else
                         {
-                            configProps.Add(initialProperty.Name, initialProperty.StringValueTrimmed);
+                            configProps.Add(keyName, extendedProperties.GetString(keyName));
                         }
                     }
                 }
