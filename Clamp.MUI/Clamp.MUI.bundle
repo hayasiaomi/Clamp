@@ -12,5 +12,6 @@
     <Bundle id="Clamp.MUI.AdminUI" version="1.0.0.0" />
     <Bundle id="Clamp.MUI.WF" version="1.0.0.0" />
     <Bundle id="Clamp.Authority" version="1.0.0.0" />
+    <Bundle id="Clamp.ShanDian" version="1.0.0.0" />
   </Dependencies>
 </Bundle>

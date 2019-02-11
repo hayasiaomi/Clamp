@@ -33,6 +33,10 @@ namespace Clamp.MUI
 
                     appManager.Run();
                 }
+
+                //clampBundle.Stop();
+
+                //clampBundle.WaitForStop();
             }
         }
     }
