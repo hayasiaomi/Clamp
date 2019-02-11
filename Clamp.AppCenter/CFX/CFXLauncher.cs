@@ -214,7 +214,7 @@ namespace Clamp.AppCenter.CFX
                 [libcfxExpName] = File.Exists(Path.Combine(localRuntimeDir, libcfxExpName)),
                 ["en-US.pak"] = File.Exists(Path.Combine(ClampLocalesDir, "en-US.pak")),
                 ["cef.pak"] = File.Exists(Path.Combine(ClampLibCefDirPath, "cef.pak")),
-                ["cef_sandbox.lib"] = File.Exists(Path.Combine(ClampLibCefDirPath, "cef_sandbox.lib")),
+                //["cef_sandbox.lib"] = File.Exists(Path.Combine(ClampLibCefDirPath, "cef_sandbox.lib")),
                 ["cef_100_percent.pak"] = File.Exists(Path.Combine(ClampLibCefDirPath, "cef_100_percent.pak")),
                 ["cef_200_percent.pak"] = File.Exists(Path.Combine(ClampLibCefDirPath, "cef_200_percent.pak")),
                 ["cef_extensions.pak"] = File.Exists(Path.Combine(ClampLibCefDirPath, "cef_extensions.pak")),
