@@ -79,7 +79,7 @@
     <Compile Include="ClampBundle.cs" />
     <Compile Include="ClampBundleFactory.cs" />
     <Compile Include="ClampConstants.cs" />
-    <Compile Include="Cfg\CollectionsUtil.cs" />
+    <Compile Include="Cfg\CfgUtil.cs" />
     <Compile Include="Cfg\ExtendedProperties.cs" />
     <Compile Include="Cfg\IOrderedDictionary.cs" />
     <Compile Include="Cfg\KeyedListEnumerator.cs" />

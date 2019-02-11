@@ -104,17 +104,6 @@ namespace Clamp.Cfg
 			get { return maxSize; }
 		}
 
-		//	public object this[int idx] {
-		//	    get { return ((DictionaryEntry) objectList[idx]).Value; }
-		//	    set {
-		//		if (idx < 0 || idx >= Count)
-		//		    throw new ArgumentOutOfRangeException ("index");
-		//
-		//		object key = ((DictionaryEntry) objectList[idx]).Key;
-		//		objectList[idx] = new DictionaryEntry (key, value);
-		//		objectTable[key] = value;
-		//	    }
-		//	}
 
 		public virtual object this[object key]
 		{
@@ -229,31 +218,6 @@ namespace Clamp.Cfg
 				_table = table;
 			}
 
-//	    internal SyncLRUMap(SerializationInfo info, StreamingContext context) : base (info, context) {
-//		_table = (LRUMap)info.GetValue("ParentTable", typeof(LRUMap));
-//		if (_table==null) {
-//		    throw new SerializationException(Environment.GetResourceString("Serialization_InsufficientState"));
-//		}
-//	    }
-
-
-			/*================================GetObjectData=================================
-	     **Action: Return a serialization info containing a reference to _table.  We need
-	     **        to implement this because our parent HT does and we don't want to actually
-	     **        serialize all of it's values (just a reference to the table, which will then
-	     **        be serialized separately.)
-	     **Returns: void
-	     **Arguments: info -- the SerializationInfo into which to store the data.
-	     **           context -- the StreamingContext for the current serialization (ignored)
-	     **Exceptions: ArgumentNullException if info is null.
-	     ==============================================================================*/
-//	    public override void GetObjectData(SerializationInfo info, StreamingContext context) {
-//		if (info==null) {
-//		    throw new ArgumentNullException("info");
-//		}
-//		info.AddValue("ParentTable", _table, typeof(Hashtable));
-//	    }
-
 			public override int Count
 			{
 				get { return _table.Count; }
@@ -318,13 +282,6 @@ namespace Clamp.Cfg
 				return _table.Contains(key);
 			}
 
-//	    public override bool ContainsKey(Object key) {
-//		return _table.ContainsKey(key);
-//	    }
-
-//	    public override bool ContainsValue(Object key) {
-//		return _table.ContainsValue(key);
-//	    }
 
 			public override void CopyTo(Array array, int arrayIndex)
 			{
@@ -338,13 +295,6 @@ namespace Clamp.Cfg
 				return ((IDictionary) _table).GetEnumerator();
 			}
 
-//	    protected override int GetHash(Object key) {
-//		return _table.GetHash(key);
-//	    }
-
-//	    protected override bool KeyEquals(Object item, Object key) {
-//		return _table.KeyEquals(item, key);
-//	    }
 
 			public override ICollection Keys
 			{
@@ -376,17 +326,6 @@ namespace Clamp.Cfg
 				}
 			}
 
-			/*==============================OnDeserialization===============================
-	     **Action: Does nothing.  We have to implement this because our parent HT implements it,
-	     **        but it doesn't do anything meaningful.  The real work will be done when we
-	     **        call OnDeserialization on our parent table.
-	     **Returns: void
-	     **Arguments: None
-	     **Exceptions: None
-	     ==============================================================================*/
-//	    public override void OnDeserialization(Object sender) {
-//		return;
-//	    }
 		}
 	}
 }

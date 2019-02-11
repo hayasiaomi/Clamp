@@ -13,13 +13,13 @@ namespace Clamp.Cfg
 		/// <summary>
 		/// The property delimiter used while parsing (a comma).
 		/// </summary>
-		internal const String DELIMITER = ",";
+		internal const string DELIMITER = ",";
 
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="str">A String</param>
-		public PropertiesTokenizer(String str) : base(str, DELIMITER)
+		public PropertiesTokenizer(string str) : base(str, DELIMITER)
 		{
 		}
 
@@ -28,13 +28,14 @@ namespace Clamp.Cfg
 		/// Get next token.
 		/// </summary>
 		/// <returns>A String</returns>
-		public override String NextToken()
+		public override string NextToken()
 		{
 			StringBuilder buffer = new StringBuilder();
 
 			while(HasMoreTokens())
 			{
-				String token = base.NextToken();
+                string token = base.NextToken();
+
 				if (token.EndsWith(@"\"))
 				{
 					buffer.Append(token.Substring(0, (token.Length - 1) - (0)));

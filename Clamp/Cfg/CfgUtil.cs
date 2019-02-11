@@ -7,9 +7,9 @@ namespace Clamp.Cfg
 	/// <summary>
 	/// Static utility methods for collections
 	/// </summary>
-	public class CollectionsUtil
+	public class CfgUtil
 	{
-		public static Object PutElement(IDictionary hashTable, Object key, Object newValue)
+		public static Object PutElement(IDictionary hashTable, object key, object newValue)
 		{
 			Object element = hashTable[key];
 			hashTable[key] = newValue;
