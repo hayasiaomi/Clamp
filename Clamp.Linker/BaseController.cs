@@ -12,7 +12,7 @@ namespace Clamp.Linker
     using Clamp.Linker.Session;
     using Clamp.Linker.Validation;
     using Clamp.Linker.ViewEngines;
-    using Clamp.OSGI.Data.Annotation;
+    using Clamp.Data.Annotation;
 
     /// <summary>
     /// Basic class containing the functionality for defining routes and actions in Nancy.

@@ -7,7 +7,7 @@ namespace Clamp.Linker.Conventions
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Clamp.OSGI;
+    using Clamp;
     using Helpers;
     using Responses;
 

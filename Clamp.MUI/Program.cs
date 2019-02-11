@@ -2,7 +2,7 @@
 using Chromium.WebBrowser;
 using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
-using Clamp.OSGI;
+using Clamp;
 using System;
 using System.Collections.Generic;
 using System.IO;

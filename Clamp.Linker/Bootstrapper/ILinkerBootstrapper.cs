@@ -1,6 +1,6 @@
 ﻿namespace Clamp.Linker.Bootstrapper
 {
-    using Clamp.OSGI.Data.Annotation;
+    using Clamp.Data.Annotation;
     using System;
 
     [TypeExtensionPoint]

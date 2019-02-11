@@ -2,8 +2,8 @@ namespace Clamp.Linker
 {
     using System.Collections.Generic;
     using System.ComponentModel;
-    using Clamp.OSGI.Data.Annotation;
-    using Clamp.OSGI.Data.Description;
+    using Clamp.Data.Annotation;
+    using Clamp.Data.Description;
     using Clamp.Linker.ModelBinding;
     using Clamp.Linker.Responses.Negotiation;
     using Clamp.Linker.Routing;

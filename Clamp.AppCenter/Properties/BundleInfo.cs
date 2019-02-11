@@ -1,4 +1,4 @@
-﻿using Clamp.OSGI.Data.Annotation;
+﻿using Clamp.Data.Annotation;
 
 [assembly: Bundle("Clamp.AppCenter", "1.0.0.0")]
 [assembly: BundleDescription("用应中心")]

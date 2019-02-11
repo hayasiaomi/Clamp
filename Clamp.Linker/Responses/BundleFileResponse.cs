@@ -1,6 +1,6 @@
 ﻿namespace Clamp.Linker.Responses
 {
-    using Clamp.OSGI;
+    using Clamp;
     using System;
     using System.IO;
     using System.Linq;

@@ -1,6 +1,6 @@
 ﻿namespace Clamp.Linker.ViewEngines
 {
-    using Clamp.OSGI;
+    using Clamp;
     using System;
     using System.Collections.Generic;
     using System.IO;

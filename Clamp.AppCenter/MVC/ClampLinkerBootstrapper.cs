@@ -1,5 +1,5 @@
-﻿using Clamp.OSGI;
-using Clamp.OSGI.Data.Annotation;
+﻿using Clamp;
+using Clamp.Data.Annotation;
 using Clamp.Linker;
 using Clamp.Linker.TinyIoc;
 using System;

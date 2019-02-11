@@ -1,12 +1,12 @@
 ﻿using Clamp.AppCenter.MVC;
-using Clamp.OSGI;
+using Clamp;
 using Clamp.Linker.Bootstrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Clamp.OSGI.Collections;
+using Clamp.Cfg;
 
 namespace Clamp.AppCenter
 {

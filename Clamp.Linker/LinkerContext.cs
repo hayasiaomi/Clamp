@@ -10,7 +10,7 @@ namespace Clamp.Linker
     using Clamp.Linker.Security;
     using Clamp.Linker.Validation;
     using System.Globalization;
-    using Clamp.OSGI;
+    using Clamp;
 
     /// <summary>
     /// 连接器上下文

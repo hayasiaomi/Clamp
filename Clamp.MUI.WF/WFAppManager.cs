@@ -2,8 +2,8 @@
 using Chromium.WebBrowser.Event;
 using Clamp.AppCenter;
 using Clamp.AppCenter.CFX;
-using Clamp.OSGI.Collections;
-using Clamp.OSGI.Data.Annotation;
+using Clamp.Cfg;
+using Clamp.Data.Annotation;
 using System;
 using System.Collections.Generic;
 using System.IO;

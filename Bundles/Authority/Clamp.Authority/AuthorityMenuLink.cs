@@ -1,5 +1,5 @@
 ﻿using Clamp.MUI.Framework;
-using Clamp.OSGI.Data.Annotation;
+using Clamp.Data.Annotation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

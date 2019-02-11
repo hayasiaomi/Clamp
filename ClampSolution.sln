@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bundles", "Bundles", "{8EC987BD-844B-469E-8A1E-B0260A60F2DA}"
+	ProjectSection(SolutionItems) = preProject
+		Clamp\OSGI\TreeClampBundle.cs = Clamp\OSGI\TreeClampBundle.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cores", "Cores", "{D8CA1526-30A9-4D10-896D-16F840023D1D}"
 EndProject

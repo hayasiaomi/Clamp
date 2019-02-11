@@ -1,5 +1,5 @@
 ﻿using System;
-using Clamp.OSGI.Data.Annotation;
+using Clamp.Data.Annotation;
 
 [assembly: Bundle("Clamp.Linker", "1.0.0.0")]
 [assembly: BundleAuthor("aomi")]

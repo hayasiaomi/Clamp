@@ -1,4 +1,4 @@
-﻿using Clamp.OSGI.Data.Annotation;
+﻿using Clamp.Data.Annotation;
 
 [assembly: Bundle("Clamp.ShanDian", "1.0.0.0")]
 [assembly: BundleDescription("安全授权")]

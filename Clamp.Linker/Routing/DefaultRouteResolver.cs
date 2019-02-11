@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Clamp.OSGI;
+    using Clamp;
     using Clamp.Linker.Annotation;
     using Clamp.Linker;
     using Clamp.Linker.Helpers;
