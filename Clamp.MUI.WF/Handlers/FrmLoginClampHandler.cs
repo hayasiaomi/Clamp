@@ -1,4 +1,5 @@
 ﻿using Clamp.AppCenter.Handlers;
+using Clamp.MUI.Framework.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,16 @@ namespace Clamp.MUI.WF.Handlers
 
         public object Login(string username, string password, bool remember)
         {
-            if ("00000" != username || "1234" != password)
+            IAuthority authority = WFActivator.BundleContext.GetExtensionObjects<IAuthority>().FirstOrDefault();
+
+            if (authority == null)
+            {
+                return "找不到授权模块";
+            }
+
+            AuthorityInfo authorityInfo = authority.GetAuthorityInfo();
+
+            if (authorityInfo == null || authorityInfo.Username != username || authorityInfo.Password != password)
             {
                 return "用户或密码不正确！";
             }
@@ -37,7 +47,7 @@ namespace Clamp.MUI.WF.Handlers
 
             mainThread.SetApartmentState(ApartmentState.STA);
             mainThread.Start();
-         
+
             return null;
         }
         public void Exit()
