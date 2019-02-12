@@ -78,11 +78,6 @@
     <Resource Include="clamp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Clamp.cfg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Clamp.MUI.bundle">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
