@@ -617,18 +617,16 @@ namespace Clamp
         {
             try
             {
-                RuntimeBundle p = new RuntimeBundle(this);
+                RuntimeBundle runtimeBundle = new RuntimeBundle(this);
 
-                // Read the config file and load the add-in assemblies
-                BundleDescription description = p.Load(bundle);
+                BundleDescription description = runtimeBundle.Load(bundle);
 
-                // Register the add-in
+                //增加已经加载的Bundle
                 var loadedBundlesCopy = new Dictionary<string, RuntimeBundle>(this.loadedBundles);
 
-                loadedBundlesCopy[Bundle.GetIdName(p.Id)] = p;
+                loadedBundlesCopy[Bundle.GetIdName(runtimeBundle.Id)] = runtimeBundle;
 
                 this.loadedBundles = loadedBundlesCopy;
-
 
                 if (!BundleDatabase.RunningSetupProcess)
                 {
@@ -638,17 +636,18 @@ namespace Clamp
 
                     foreach (ConditionTypeDescription cond in description.ConditionTypes)
                     {
-                        Type ctype = p.GetType(cond.TypeName, true);
+                        Type ctype = runtimeBundle.GetType(cond.TypeName, true);
+
                         RegisterCondition(cond.Id, ctype);
                     }
                 }
 
                 foreach (ExtensionPoint ep in description.ExtensionPoints)
-                    InsertExtensionPoint(p, ep);
+                    InsertExtensionPoint(runtimeBundle, ep);
 
                 // Fire loaded event
-                NotifyBundleLoaded(p);
-                ReportBundleLoad(p.Id);
+                NotifyBundleLoaded(runtimeBundle);
+                ReportBundleLoad(runtimeBundle.Id);
 
                 return true;
             }
@@ -660,16 +659,18 @@ namespace Clamp
         }
 
 
-        private void RegisterNodeSets(string addinId, ExtensionNodeSetCollection nsets)
+        private void RegisterNodeSets(string bundleId, ExtensionNodeSetCollection nsets)
         {
             lock (this.LocalLock)
             {
                 var nodeSetsCopy = new Dictionary<string, ExtensionNodeSet>(nodeSets);
+
                 foreach (ExtensionNodeSet nset in nsets)
                 {
-                    nset.SourceBundleId = addinId;
+                    nset.SourceBundleId = bundleId;
                     nodeSetsCopy[nset.Id] = nset;
                 }
+
                 nodeSets = nodeSetsCopy;
             }
         }

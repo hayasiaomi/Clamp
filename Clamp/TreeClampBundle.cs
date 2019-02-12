@@ -881,6 +881,7 @@ namespace Clamp
         internal void CreateExtensionPoint(ExtensionPoint ep)
         {
             TreeNode node = tree.GetNode(ep.Path, true);
+
             if (node.ExtensionPoint == null)
             {
                 node.ExtensionPoint = ep;
