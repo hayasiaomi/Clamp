@@ -21,7 +21,7 @@ namespace Clamp
 
             ClampBundle clampBundle = new ClampBundle(configProps);
 
-            clampBundle.Initialize(asm, "bundles", null);
+            clampBundle.Initialize(asm, configProps[ClampConstants.CLAMP_BUNDLES_DIR], null);
 
             return clampBundle;
         }
@@ -61,12 +61,41 @@ namespace Clamp
             return configProps;
         }
 
+        /// <summary>
+        /// 加载默认的配置信息
+        /// </summary>
+        /// <returns></returns>
         private static Dictionary<string, string> LoadDefaultConfigProperties()
         {
-            return new Dictionary<string, string>()
-            {
+            Dictionary<string, string> defaultConfigProps = new Dictionary<string, string>();
 
-            };
+            Assembly asm = typeof(ClampBundleFactory).Assembly;
+
+            string resourceName = asm.GetManifestResourceNames().FirstOrDefault(res => res.EndsWith(ClampConstants.CLAMP_CONFIG_FILE, StringComparison.CurrentCultureIgnoreCase));
+
+            if (!string.IsNullOrWhiteSpace(resourceName))
+            {
+                ExtendedProperties extendedProperties = new ExtendedProperties();
+
+                extendedProperties.Load(asm.GetManifestResourceStream(resourceName));
+
+                if (extendedProperties.Count > 0)
+                {
+                    foreach (string keyName in extendedProperties.Keys)
+                    {
+                        if (extendedProperties.ContainsKey(keyName))
+                        {
+                            defaultConfigProps[keyName] = extendedProperties.GetString(keyName);
+                        }
+                        else
+                        {
+                            defaultConfigProps.Add(keyName, extendedProperties.GetString(keyName));
+                        }
+                    }
+                }
+            }
+
+            return defaultConfigProps;
         }
     }
 }
