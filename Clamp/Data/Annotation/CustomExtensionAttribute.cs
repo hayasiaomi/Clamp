@@ -73,7 +73,7 @@ namespace Clamp.Data.Annotation
         /// </remarks>
         public RuntimeBundle Bundle
         {
-            get { return ExtensionNode?.Bundle; }
+            get { return ExtensionNode?.RuntimeBundle; }
         }
     }
 }

@@ -188,7 +188,7 @@
     <Compile Include="Nodes\ExtensionNodeList.cs" />
     <Compile Include="Nodes\ExtensionTreeNode.cs" />
     <Compile Include="Nodes\InstanceExtensionNode.cs" />
-    <Compile Include="Nodes\TreeNodeCollection.cs" />
+    <Compile Include="Nodes\ExtensionTreeNodeCollection.cs" />
     <Compile Include="Nodes\TypeExtensionNode.cs" />
     <Compile Include="RuntimeBundle.cs" />
     <Compile Include="ServiceEvent.cs" />

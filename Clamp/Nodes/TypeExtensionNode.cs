@@ -57,7 +57,7 @@ namespace Clamp.Nodes
                 {
                     if (typeName.Length == 0)
                         throw new InvalidOperationException("Type name not specified.");
-                    type = Bundle.GetType(typeName, true);
+                    type = RuntimeBundle.GetType(typeName, true);
                 }
                 return type;
             }

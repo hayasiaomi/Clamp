@@ -17,7 +17,7 @@ namespace Clamp.Nodes
         internal const string AutoIdPrefix = "__nid_";
 
         private ArrayList childrenList;
-        private TreeNodeCollection children;
+        private ExtensionTreeNodeCollection children;
         private ExtensionNode extensionNode;
         private bool childrenLoaded;
         private string id;
@@ -114,7 +114,7 @@ namespace Clamp.Nodes
             get { return childrenList == null ? 0 : childrenList.Count; }
         }
 
-        public TreeNodeCollection Children
+        public ExtensionTreeNodeCollection Children
         {
             get
             {
@@ -127,10 +127,10 @@ namespace Clamp.Nodes
                 }
 
                 if (childrenList == null)
-                    return TreeNodeCollection.Empty;
+                    return ExtensionTreeNodeCollection.Empty;
 
                 if (children == null)
-                    children = new TreeNodeCollection(childrenList);
+                    children = new ExtensionTreeNodeCollection(childrenList);
 
                 return children;
             }

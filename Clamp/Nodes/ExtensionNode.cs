@@ -9,7 +9,7 @@ using System.Text;
 namespace Clamp.Nodes
 {
     /// <summary>
-    /// 扩展节点
+    /// 扩展树的扩展信息节点
     /// </summary>
     public class ExtensionNode
     {
@@ -22,35 +22,24 @@ namespace Clamp.Nodes
         private ModuleDescription module;
         private ClampBundle clampBundle;
         private event ExtensionNodeEventHandler extensionNodeChanged;
-
         /// <summary>
-        /// Identifier of the node.
+        /// 树的ID
         /// </summary>
-        /// <remarks>
-        /// It is not mandatory to specify an 'id' for a node. When none is provided,
-        /// the add-in manager will automatically generate an unique id for the node.
-        /// The ExtensionNode.HasId property can be used to know if the 'id' has been
-        /// specified by the developer or not.
-        /// </remarks>
         public string Id
         {
             get { return treeNode != null ? treeNode.Id : string.Empty; }
         }
 
         /// <summary>
-        /// Location of this node in the extension tree.
+        /// 树的路径
         /// </summary>
-        /// <remarks>
-        /// The node path is composed by the path of the extension point where it is defined,
-        /// the identifiers of its parent nodes, and its own identifier.
-        /// </remarks>
         public string Path
         {
             get { return treeNode != null ? treeNode.GetPath() : string.Empty; }
         }
 
         /// <summary>
-        /// Parent node of this node.
+        /// 父节点
         /// </summary>
         public ExtensionNode Parent
         {
@@ -65,14 +54,8 @@ namespace Clamp.Nodes
 
 
         /// <summary>
-        /// Specifies whether the extension node has as an Id or not.
+        /// 是否有ID
         /// </summary>
-        /// <remarks>
-        /// It is not mandatory to specify an 'id' for a node. When none is provided,
-        /// the add-in manager will automatically generate an unique id for the node.
-        /// This property will return true if an 'id' was provided for the node, and
-        /// false if the id was assigned by the add-in manager.
-        /// </remarks>
         public bool HasId
         {
             get { return !Id.StartsWith(ExtensionTreeNode.AutoIdPrefix); }
@@ -83,6 +66,13 @@ namespace Clamp.Nodes
             treeNode = node;
         }
 
+        /// <summary>
+        /// 设置扩展节点的信息
+        /// </summary>
+        /// <param name="clampBundle"></param>
+        /// <param name="plugid"></param>
+        /// <param name="nodeType"></param>
+        /// <param name="module"></param>
         internal void SetData(ClampBundle clampBundle, string plugid, ExtensionNodeType nodeType, ModuleDescription module)
         {
             this.clampBundle = clampBundle;
@@ -91,6 +81,9 @@ namespace Clamp.Nodes
             this.module = module;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal string BundleId
         {
             get { return bundleId; }
@@ -102,12 +95,9 @@ namespace Clamp.Nodes
         }
 
         /// <summary>
-        /// The add-in that registered this extension node.
+        /// 当前的执行的Bundle
         /// </summary>
-        /// <remarks>
-        /// This property provides access to the resources and types of the add-in that created this extension node.
-        /// </remarks>
-        public RuntimeBundle Bundle
+        public RuntimeBundle RuntimeBundle
         {
             get
             {
@@ -148,7 +138,7 @@ namespace Clamp.Nodes
                     }
                     catch (Exception ex)
                     {
-                        clampBundle.ReportError(null, node.Bundle != null ? node.Bundle.Id : null, ex, false);
+                        clampBundle.ReportError(null, node.RuntimeBundle != null ? node.RuntimeBundle.Id : null, ex, false);
                     }
                 }
             }
@@ -159,7 +149,7 @@ namespace Clamp.Nodes
         }
 
         /// <summary>
-        /// Child nodes of this extension node.
+        /// 子扩展信息节点集合
         /// </summary>
         public ExtensionNodeList ChildNodes
         {
@@ -213,17 +203,10 @@ namespace Clamp.Nodes
             }
         }
 
-        /// <summary>
-        /// Returns the child objects of a node.
-        /// </summary>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the
-        /// TypeExtensionNode.GetInstance() method for each node.
-        /// </remarks>
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <returns></returns>
         public object[] GetChildObjects()
         {
             return GetChildObjects(typeof(object), true);
@@ -366,7 +349,7 @@ namespace Clamp.Nodes
                     continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(bid) && (node.Bundle == null || node.Bundle.Id != bid))
+                if (!string.IsNullOrWhiteSpace(bid) && (node.RuntimeBundle == null || node.RuntimeBundle.Id != bid))
                 {
                     clampBundle.ReportError($"找到对应的Path[{Path}],但是不在指定的Budnle内[{bid}]", null, null, false);
                     continue;
@@ -388,17 +371,10 @@ namespace Clamp.Nodes
             return list.ToArray(arrayElementType);
         }
 
-        /// <summary>
-        /// Reads the extension node data
-        /// </summary>
-        /// <param name='elem'>
-        /// The element containing the extension data
-        /// </param>
-        /// <remarks>
-        /// This method can be overridden to provide a custom method for reading extension node data from an element.
-        /// The default implementation reads the attributes if the element and assigns the values to the fields
-        /// and properties of the extension node that have the corresponding [NodeAttribute] decoration.
-        /// </remarks>
+       /// <summary>
+       /// 读取节点
+       /// </summary>
+       /// <param name="elem"></param>
         internal protected virtual void Read(NodeElement elem)
         {
             if (nodeType == null)
@@ -439,7 +415,7 @@ namespace Clamp.Nodes
                 if (memberType == typeof(string))
                 {
                     if (f.Localizable)
-                        val = Bundle.Localizer.GetString(at.value);
+                        val = RuntimeBundle.Localizer.GetString(at.value);
                     else
                         val = at.value;
                 }

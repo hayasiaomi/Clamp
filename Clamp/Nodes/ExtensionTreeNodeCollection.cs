@@ -6,13 +6,16 @@ using System.Text;
 
 namespace Clamp.Nodes
 {
-    class TreeNodeCollection : IEnumerable
+    /// <summary>
+    /// 树节点集合
+    /// </summary>
+    class ExtensionTreeNodeCollection : IEnumerable
     {
         ArrayList list;
 
-        internal static TreeNodeCollection Empty = new TreeNodeCollection(null);
+        internal static ExtensionTreeNodeCollection Empty = new ExtensionTreeNodeCollection(null);
 
-        public TreeNodeCollection(ArrayList list)
+        public ExtensionTreeNodeCollection(ArrayList list)
         {
             this.list = list;
         }
@@ -51,10 +54,10 @@ namespace Clamp.Nodes
             get { return list != null ? list.Count : 0; }
         }
 
-        public TreeNodeCollection Clone()
+        public ExtensionTreeNodeCollection Clone()
         {
             if (list != null)
-                return new TreeNodeCollection((ArrayList)list.Clone());
+                return new ExtensionTreeNodeCollection((ArrayList)list.Clone());
             else
                 return Empty;
         }

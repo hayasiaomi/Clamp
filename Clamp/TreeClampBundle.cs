@@ -1240,6 +1240,13 @@ namespace Clamp
             return data;
         }
 
+        /// <summary>
+        /// 获得Bunlde的扩展信息
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="budnleId"></param>
+        /// <param name="ep"></param>
+        /// <param name="data"></param>
         private void GetBundleExtensions(ModuleDescription module, string budnleId, ExtensionPoint ep, ref ExtensionLoadData data)
         {
             string basePath = ep.Path + "/";
