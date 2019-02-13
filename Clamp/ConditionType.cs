@@ -55,7 +55,7 @@ namespace Clamp
             this.parent = parent;
         }
 
-        public virtual bool Evaluate(TreeClampBundle ctx)
+        public virtual bool Evaluate(ClampBundle ctx)
         {
             return parent == null || parent.Evaluate(ctx);
         }
@@ -71,7 +71,7 @@ namespace Clamp
         {
         }
 
-        public override bool Evaluate(TreeClampBundle ctx)
+        public override bool Evaluate(ClampBundle ctx)
         {
             return false;
         }
@@ -86,7 +86,7 @@ namespace Clamp
             this.conditions = conditions;
         }
 
-        public override bool Evaluate(TreeClampBundle ctx)
+        public override bool Evaluate(ClampBundle ctx)
         {
             if (!base.Evaluate(ctx))
                 return false;
@@ -112,7 +112,7 @@ namespace Clamp
             this.conditions = conditions;
         }
 
-        public override bool Evaluate(TreeClampBundle ctx)
+        public override bool Evaluate(ClampBundle ctx)
         {
             if (!base.Evaluate(ctx))
                 return false;
@@ -138,7 +138,7 @@ namespace Clamp
             this.baseCond = baseCond;
         }
 
-        public override bool Evaluate(TreeClampBundle ctx)
+        public override bool Evaluate(ClampBundle ctx)
         {
             return !base.Evaluate(ctx);
         }
@@ -167,7 +167,7 @@ namespace Clamp
             node = element;
         }
 
-        public override bool Evaluate(TreeClampBundle ctx)
+        public override bool Evaluate(ClampBundle ctx)
         {
             if (!base.Evaluate(ctx))
                 return false;

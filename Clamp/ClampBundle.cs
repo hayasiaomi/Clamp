@@ -19,7 +19,7 @@ namespace Clamp
     /// <summary>
     /// 框架的Bundle
     /// </summary>
-    internal class ClampBundle : TreeClampBundle
+    internal partial class ClampBundle
     {
         private object LocalLock = new object();
         private Hashtable autoExtensionTypes = new Hashtable();
@@ -81,9 +81,11 @@ namespace Clamp
             }
         }
 
-        internal ClampBundle(Dictionary<string, string> configProps) : base(null)
+        internal ClampBundle(Dictionary<string, string> configProps)
         {
             this.configProps = configProps;
+            this.fireEvents = false;
+            this.tree = new ExtensionTreeNode(this, "");
         }
 
         #region public method
@@ -115,6 +117,11 @@ namespace Clamp
             }
         }
 
+        /// <summary>
+        /// 是否加载了Bundle
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool IsBundleLoaded(string id)
         {
             CheckInitialized();
@@ -274,7 +281,7 @@ namespace Clamp
             }
         }
 
-        public override void WaitForStop()
+        public void WaitForStop()
         {
 
         }
@@ -342,8 +349,11 @@ namespace Clamp
         internal RuntimeBundle GetRuntimeBundle(string id)
         {
             ValidateBundleRoots();
+
             RuntimeBundle a;
+
             loadedBundles.TryGetValue(Bundle.GetIdName(id), out a);
+
             return a;
         }
 

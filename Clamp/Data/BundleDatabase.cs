@@ -443,6 +443,7 @@ namespace Clamp.Data
                         }
                     }
                 }
+
                 //开起一个检测试的进程
                 RunScannerProcess();
 
@@ -1400,6 +1401,7 @@ namespace Clamp.Data
             foreach (Dependency dep in addin1.BundleInfo.Dependencies)
             {
                 BundleDependency adep = dep as BundleDependency;
+
                 if (adep == null)
                     continue;
 

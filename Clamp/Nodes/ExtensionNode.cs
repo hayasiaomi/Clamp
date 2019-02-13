@@ -14,7 +14,7 @@ namespace Clamp.Nodes
     public class ExtensionNode
     {
         private bool childrenLoaded;
-        private TreeNode treeNode;
+        private ExtensionTreeNode treeNode;
         private ExtensionNodeList childNodes;
         private RuntimeBundle runtimeBundle;
         private string bundleId;
@@ -63,13 +63,6 @@ namespace Clamp.Nodes
             }
         }
 
-        /// <summary>
-        /// Extension context to which this node belongs
-        /// </summary>
-        public TreeClampBundle ExtensionContext
-        {
-            get { return treeNode.Context; }
-        }
 
         /// <summary>
         /// Specifies whether the extension node has as an Id or not.
@@ -82,17 +75,17 @@ namespace Clamp.Nodes
         /// </remarks>
         public bool HasId
         {
-            get { return !Id.StartsWith(ExtensionTree.AutoIdPrefix); }
+            get { return !Id.StartsWith(ExtensionTreeNode.AutoIdPrefix); }
         }
 
-        internal void SetTreeNode(TreeNode node)
+        internal void SetTreeNode(ExtensionTreeNode node)
         {
             treeNode = node;
         }
 
-        internal void SetData(ClampBundle addinEngine, string plugid, ExtensionNodeType nodeType, ModuleDescription module)
+        internal void SetData(ClampBundle clampBundle, string plugid, ExtensionNodeType nodeType, ModuleDescription module)
         {
-            this.clampBundle = addinEngine;
+            this.clampBundle = clampBundle;
             this.bundleId = plugid;
             this.nodeType = nodeType;
             this.module = module;
@@ -103,7 +96,7 @@ namespace Clamp.Nodes
             get { return bundleId; }
         }
 
-        internal TreeNode TreeNode
+        internal ExtensionTreeNode TreeNode
         {
             get { return treeNode; }
         }
@@ -195,7 +188,7 @@ namespace Clamp.Nodes
                 }
 
                 List<ExtensionNode> list = new List<ExtensionNode>();
-                foreach (TreeNode cn in treeNode.Children)
+                foreach (ExtensionTreeNode cn in treeNode.Children)
                 {
 
                     // For each node check if it is visible for the current context.

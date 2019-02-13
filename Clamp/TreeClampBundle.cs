@@ -8,13 +8,12 @@ using Clamp.Nodes;
 
 namespace Clamp
 {
-    public class TreeClampBundle : Bundle, IClampBundle
+    internal partial class ClampBundle : Bundle, IClampBundle
     {
         private Hashtable conditionTypes = new Hashtable();
         private Hashtable conditionsToNodes = new Hashtable();
         private List<WeakReference> childContexts;
-        private TreeClampBundle parentContext;
-        private ExtensionTree tree;
+        private ExtensionTreeNode tree;
         private bool fireEvents = false;
 
         private ArrayList runTimeEnabledBundles;
@@ -37,18 +36,6 @@ namespace Clamp
             get { return fireEvents; }
         }
 
-        internal ClampBundle InternalClampBundle
-        {
-            get { return tree.InternalClampBundle; }
-        }
-
-        internal TreeClampBundle(TreeClampBundle parent)
-        {
-            this.fireEvents = false;
-            this.tree = new ExtensionTree(this as ClampBundle, this);
-            this.parentContext = parent;
-        }
-
         //internal TreeClampBundle(ClampBundle clampBundle, TreeClampBundle parent)
         //{
         //    this.fireEvents = false;
@@ -56,13 +43,6 @@ namespace Clamp
         //    this.parentContext = parent;
         //}
 
-        #region 实现 IClampBundle的方法
-        public virtual void WaitForStop()
-        {
-
-        }
-
-        #endregion
 
         #region public mehtod
 
@@ -126,7 +106,7 @@ namespace Clamp
         /// </returns>
         public ExtensionNode GetExtensionNode(string path)
         {
-            TreeNode node = GetNode(path);
+            ExtensionTreeNode node = GetNode(path);
 
             if (node == null)
                 return null;
@@ -221,7 +201,7 @@ namespace Clamp
         /// </remarks>
         public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+            string path = this.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return new ExtensionNodeList(null);
             return GetExtensionNodes(path, expectedNodeType);
@@ -243,7 +223,7 @@ namespace Clamp
         /// </remarks>
         public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+            string path = this.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 return new ExtensionNodeList<T>(null);
             return new ExtensionNodeList<T>(GetExtensionNodes(path, typeof(T)).list);
@@ -268,7 +248,7 @@ namespace Clamp
         /// </remarks>
         public ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType)
         {
-            TreeNode node = GetNode(path);
+            ExtensionTreeNode node = GetNode(path);
             if (node == null || node.ExtensionNode == null)
                 return ExtensionNodeList.Empty;
 
@@ -282,7 +262,7 @@ namespace Clamp
                     if (!expectedNodeType.IsInstanceOfType(cnode))
                     {
                         foundError = true;
-                        InternalClampBundle.ReportError("Error while getting nodes for path '" + path + "'. Expected subclass of node type '" + expectedNodeType + "'. Found '" + cnode.GetType(), null, null, false);
+                        this.ReportError("Error while getting nodes for path '" + path + "'. Expected subclass of node type '" + expectedNodeType + "'. Found '" + cnode.GetType(), null, null, false);
                     }
                 }
                 if (foundError)
@@ -354,7 +334,7 @@ namespace Clamp
         /// </returns>
         public object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+            string path = this.GetAutoTypeExtensionPoint(instanceType);
 
             if (path == null)
                 return (object[])Array.CreateInstance(instanceType, 0);
@@ -364,7 +344,7 @@ namespace Clamp
 
         public object[] GetExtensionObjects(string bid, Type instanceType, bool reuseCachedInstance)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+            string path = this.GetAutoTypeExtensionPoint(instanceType);
 
             if (path == null)
                 return (object[])Array.CreateInstance(instanceType, 0);
@@ -387,7 +367,7 @@ namespace Clamp
         /// </remarks>
         public T[] GetExtensionObjects<T>(bool reuseCachedInstance)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(typeof(T));
+            string path = this.GetAutoTypeExtensionPoint(typeof(T));
             if (path == null)
                 return new T[0];
             return GetExtensionObjects<T>(path, reuseCachedInstance);
@@ -395,7 +375,7 @@ namespace Clamp
 
         public T[] GetExtensionObjectsByBundleId<T>(string bid, bool reuseCachedInstance)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(typeof(T));
+            string path = this.GetAutoTypeExtensionPoint(typeof(T));
             if (path == null)
                 return new T[0];
             return GetExtensionObjects<T>(path, bid, reuseCachedInstance);
@@ -652,7 +632,7 @@ namespace Clamp
         /// </remarks>
         public void AddExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+            string path = this.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 throw new InvalidOperationException("Type '" + instanceType + "' not bound to an extension point.");
             AddExtensionNodeHandler(path, handler);
@@ -669,7 +649,7 @@ namespace Clamp
         /// </param>
         public void RemoveExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
-            string path = InternalClampBundle.GetAutoTypeExtensionPoint(instanceType);
+            string path = this.GetAutoTypeExtensionPoint(instanceType);
             if (path == null)
                 throw new InvalidOperationException("Type '" + instanceType + "' not bound to an extension point.");
             RemoveExtensionNodeHandler(path, handler);
@@ -689,7 +669,6 @@ namespace Clamp
             conditionTypes.Clear();
             conditionsToNodes.Clear();
             childContexts = null;
-            parentContext = null;
             tree = null;
             runTimeEnabledBundles = null;
             runTimeDisabledBundles = null;
@@ -703,7 +682,7 @@ namespace Clamp
             {
                 foreach (WeakReference wref in childContexts)
                 {
-                    TreeClampBundle ctx = wref.Target as TreeClampBundle;
+                    ClampBundle ctx = wref.Target as ClampBundle;
                     if (ctx != null)
                         ctx.ResetCachedData();
                 }
@@ -749,13 +728,15 @@ namespace Clamp
                     return ct;
             }
 
-            if (parentContext != null)
-                return parentContext.GetCondition(id);
-            else
-                return null;
+            //if (parentContext != null)
+            //    return parentContext.GetCondition(id);
+            //else
+            //    return null;
+
+            return this.GetCondition(id);
         }
 
-        internal void RegisterNodeCondition(TreeNode node, BaseCondition cond)
+        internal void RegisterNodeCondition(ExtensionTreeNode node, BaseCondition cond)
         {
             ArrayList list = (ArrayList)conditionsToNodes[cond];
             if (list == null)
@@ -781,7 +762,7 @@ namespace Clamp
             list.Add(node);
         }
 
-        internal void UnregisterNodeCondition(TreeNode node, BaseCondition cond)
+        internal void UnregisterNodeCondition(ExtensionTreeNode node, BaseCondition cond)
         {
             ArrayList list = (ArrayList)conditionsToNodes[cond];
             if (list == null)
@@ -817,11 +798,11 @@ namespace Clamp
                         ArrayList nodeList = (ArrayList)conditionsToNodes[c];
                         if (nodeList != null)
                         {
-                            foreach (TreeNode node in nodeList)
+                            foreach (ExtensionTreeNode node in nodeList)
                                 parentsToNotify[node.Parent] = null;
                         }
                     }
-                    foreach (TreeNode node in parentsToNotify.Keys)
+                    foreach (ExtensionTreeNode node in parentsToNotify.Keys)
                     {
                         if (node.NotifyChildrenChanged())
                             NotifyExtensionsChanged(new ExtensionEventArgs(node.GetPath()));
@@ -841,7 +822,7 @@ namespace Clamp
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        TreeClampBundle ctx = wref.Target as TreeClampBundle;
+                        ClampBundle ctx = wref.Target as ClampBundle;
                         if (ctx != null)
                             ctx.NotifyConditionChanged(cond);
                     }
@@ -870,7 +851,7 @@ namespace Clamp
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        TreeClampBundle ctx = wref.Target as TreeClampBundle;
+                        ClampBundle ctx = wref.Target as ClampBundle;
                         if (ctx != null)
                             ctx.NotifyBundleLoaded(ad);
                     }
@@ -880,7 +861,7 @@ namespace Clamp
 
         internal void CreateExtensionPoint(ExtensionPoint ep)
         {
-            TreeNode node = tree.GetNode(ep.Path, true);
+            ExtensionTreeNode node = tree.GetNode(ep.Path, true);
 
             if (node.ExtensionPoint == null)
             {
@@ -898,11 +879,11 @@ namespace Clamp
             {
                 fireEvents = true;
 
-                Bundle addin = InternalClampBundle.Registry.GetBundle(id);
+                Bundle bundle = this.Registry.GetBundle(id);
 
-                if (addin == null)
+                if (bundle == null)
                 {
-                    InternalClampBundle.ReportError("Required add-in not found", id, null, false);
+                    this.ReportError("Required add-in not found", id, null, false);
                     return;
                 }
 
@@ -913,13 +894,16 @@ namespace Clamp
                 // Look for loaded extension points
                 Hashtable eps = new Hashtable();
                 ArrayList newExtensions = new ArrayList();
-                foreach (ModuleDescription mod in addin.Description.AllModules)
+
+                foreach (ModuleDescription mod in bundle.Description.AllModules)
                 {
                     foreach (Extension ext in mod.Extensions)
                     {
                         if (!newExtensions.Contains(ext.Path))
                             newExtensions.Add(ext.Path);
+
                         ExtensionPoint ep = tree.FindLoadedExtensionPoint(ext.Path);
+
                         if (ep != null && !eps.Contains(ep))
                             eps.Add(ep, ep);
                     }
@@ -927,6 +911,7 @@ namespace Clamp
 
                 // Add the new nodes
                 ArrayList loadedNodes = new ArrayList();
+
                 foreach (ExtensionPoint ep in eps.Keys)
                 {
                     ExtensionLoadData data = GetBundleExtensions(id, ep);
@@ -934,20 +919,21 @@ namespace Clamp
                     {
                         foreach (Extension ext in data.Extensions)
                         {
-                            TreeNode node = GetNode(ext.Path);
+                            ExtensionTreeNode node = GetNode(ext.Path);
+
                             if (node != null && node.ExtensionNodeSet != null)
                             {
                                 if (node.ChildrenLoaded)
                                     LoadModuleExtensionNodes(ext, data.BundleId, node.ExtensionNodeSet, loadedNodes);
                             }
                             else
-                                InternalClampBundle.ReportError("Extension node not found or not extensible: " + ext.Path, id, null, false);
+                                this.ReportError("Extension node not found or not extensible: " + ext.Path, id, null, false);
                         }
                     }
                 }
 
                 // Call the OnBundleLoaded method on nodes, if the add-in is already loaded
-                foreach (TreeNode nod in loadedNodes)
+                foreach (ExtensionTreeNode nod in loadedNodes)
                     nod.ExtensionNode.OnBundleLoaded();
 
                 // Global extension change event. Other events are fired by LoadModuleExtensionNodes.
@@ -970,7 +956,7 @@ namespace Clamp
                     CleanDisposedChildContexts();
                     foreach (WeakReference wref in childContexts)
                     {
-                        TreeClampBundle ctx = wref.Target as TreeClampBundle;
+                        ClampBundle ctx = wref.Target as ClampBundle;
                         if (ctx != null)
                             ctx.ActivateBundleExtensions(id);
                     }
@@ -994,7 +980,7 @@ namespace Clamp
                 tree.FindBundleNodes(id, list);
 
                 // Remove each node and notify the change
-                foreach (TreeNode node in list)
+                foreach (ExtensionTreeNode node in list)
                 {
                     if (node.ExtensionNode == null)
                     {
@@ -1014,7 +1000,8 @@ namespace Clamp
                 // event without first getting the list of nodes that may change).
 
                 // We get the runtime add-in because the add-in may already have been deleted from the registry
-                RuntimeBundle addin = InternalClampBundle.GetRuntimeBundle(id);
+                RuntimeBundle addin = this.GetRuntimeBundle(id);
+
                 if (addin != null)
                 {
                     ArrayList paths = new ArrayList();
@@ -1038,18 +1025,22 @@ namespace Clamp
             }
         }
 
+        /// <summary>
+        /// 获得指定路径扩展下的Bundle,过滤不可用的Bundle
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
         internal ICollection GetBundlesForPath(string path, List<string> col)
         {
             ArrayList newlist = null;
 
-            // Always consider add-ins which have been enabled at runtime since
-            // they may contain extension for this path.
-            // Ignore addins disabled at run-time.
-
             if (runTimeEnabledBundles != null && runTimeEnabledBundles.Count > 0)
             {
                 newlist = new ArrayList();
+
                 newlist.AddRange(col);
+
                 foreach (string s in runTimeEnabledBundles)
                     if (!newlist.Contains(s))
                         newlist.Add(s);
@@ -1062,6 +1053,7 @@ namespace Clamp
                     newlist = new ArrayList();
                     newlist.AddRange(col);
                 }
+
                 foreach (string s in runTimeDisabledBundles)
                     newlist.Remove(s);
             }
@@ -1069,13 +1061,14 @@ namespace Clamp
             return newlist != null ? (ICollection)newlist : (ICollection)col;
         }
 
-        // Load the extension nodes at the specified path. If the path
-        // contains extension nodes implemented in an add-in which is
-        // not loaded, the add-in will be automatically loaded
-
+        /// <summary>
+        /// 通过扩展路径加载扩展
+        /// </summary>
+        /// <param name="requestedExtensionPath"></param>
         internal void LoadExtensions(string requestedExtensionPath)
         {
-            TreeNode node = GetNode(requestedExtensionPath);
+            ExtensionTreeNode node = GetNode(requestedExtensionPath);
+
             if (node == null)
                 throw new InvalidOperationException("Extension point not defined: " + requestedExtensionPath);
 
@@ -1084,29 +1077,34 @@ namespace Clamp
             if (ep != null)
             {
 
-                // Collect extensions to be loaded from add-ins. Before loading the extensions,
-                // they must be sorted, that's why loading is split in two steps (collecting + loading).
+               //先收集相关的扩展信息
 
                 ArrayList loadData = new ArrayList();
 
-                foreach (string addin in GetBundlesForPath(ep.Path, ep.Bundles))
+                foreach (string bundleId in GetBundlesForPath(ep.Path, ep.Bundles))
                 {
-                    ExtensionLoadData ed = GetBundleExtensions(addin, ep);
+                    ExtensionLoadData ed = GetBundleExtensions(bundleId, ep);
+
                     if (ed != null)
                     {
                         // Insert the addin data taking into account dependencies.
                         // An add-in must be processed after all its dependencies.
                         bool added = false;
+
                         for (int n = 0; n < loadData.Count; n++)
                         {
                             ExtensionLoadData other = (ExtensionLoadData)loadData[n];
-                            if (InternalClampBundle.Registry.BundleDependsOn(other.BundleId, ed.BundleId))
+
+                            if (this.Registry.BundleDependsOn(other.BundleId, ed.BundleId))
                             {
                                 loadData.Insert(n, ed);
+
                                 added = true;
+
                                 break;
                             }
                         }
+
                         if (!added)
                             loadData.Add(ed);
                     }
@@ -1115,19 +1113,22 @@ namespace Clamp
                 // Now load the extensions
 
                 ArrayList loadedNodes = new ArrayList();
+
                 foreach (ExtensionLoadData data in loadData)
                 {
                     foreach (Extension ext in data.Extensions)
                     {
-                        TreeNode cnode = GetNode(ext.Path);
+                        ExtensionTreeNode cnode = GetNode(ext.Path);
+
                         if (cnode != null && cnode.ExtensionNodeSet != null)
                             LoadModuleExtensionNodes(ext, data.BundleId, cnode.ExtensionNodeSet, loadedNodes);
                         else
-                            InternalClampBundle.ReportError("Extension node not found or not extensible: " + ext.Path, data.BundleId, null, false);
+                            this.ReportError("Extension node not found or not extensible: " + ext.Path, data.BundleId, null, false);
                     }
                 }
+
                 // Call the OnBundleLoaded method on nodes, if the add-in is already loaded
-                foreach (TreeNode nod in loadedNodes)
+                foreach (ExtensionTreeNode nod in loadedNodes)
                     nod.ExtensionNode.OnBundleLoaded();
 
                 NotifyExtensionsChanged(new ExtensionEventArgs(requestedExtensionPath));
@@ -1182,40 +1183,49 @@ namespace Clamp
                 runTimeEnabledBundles.Remove(bundleId);
         }
 
-        private void RegisterRuntimeEnabledBundle(string addinId)
+        private void RegisterRuntimeEnabledBundle(string bundleId)
         {
             if (runTimeEnabledBundles == null)
                 runTimeEnabledBundles = new ArrayList();
-            if (!runTimeEnabledBundles.Contains(addinId))
-                runTimeEnabledBundles.Add(addinId);
+            if (!runTimeEnabledBundles.Contains(bundleId))
+                runTimeEnabledBundles.Add(bundleId);
 
             if (runTimeDisabledBundles != null)
-                runTimeDisabledBundles.Remove(addinId);
+                runTimeDisabledBundles.Remove(bundleId);
         }
 
+        /// <summary>
+        /// 获得当前指定Bundle扩展信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="ep"></param>
+        /// <returns></returns>
         private ExtensionLoadData GetBundleExtensions(string id, ExtensionPoint ep)
         {
-            Bundle pinfo = null;
+            Bundle bundle = null;
 
             // Root add-ins are not returned by GetInstalledBundle.
-            RuntimeBundle addin = InternalClampBundle.GetRuntimeBundle(id);
-            if (addin != null)
-                pinfo = addin.Bundle;
-            else
-                pinfo = InternalClampBundle.Registry.GetBundle(id);
+            RuntimeBundle runtimeBundle = this.GetRuntimeBundle(id);
 
-            if (pinfo == null)
+            if (runtimeBundle != null)
+                bundle = runtimeBundle.Bundle;
+            else
+                bundle = this.Registry.GetBundle(id);
+
+            if (bundle == null)
             {
-                InternalClampBundle.ReportError("Required add-in not found", id, null, false);
+                this.ReportError($"找不到相关的Bundle({id})", id, null, false);
                 return null;
             }
-            if (!pinfo.Enabled || pinfo.Version != Bundle.GetIdVersion(id))
+
+            if (!bundle.Enabled || bundle.Version != Bundle.GetIdVersion(id))
                 return null;
 
             // Loads extensions defined in each module
 
             ExtensionLoadData data = null;
-            BundleDescription conf = pinfo.Description;
+            BundleDescription conf = bundle.Description;
+
             GetBundleExtensions(conf.MainModule, id, ep, ref data);
 
             foreach (ModuleDescription module in conf.OptionalModules)
@@ -1223,13 +1233,14 @@ namespace Clamp
                 if (CheckOptionalBundleDependencies(conf, module))
                     GetBundleExtensions(module, id, ep, ref data);
             }
+
             if (data != null)
                 data.Extensions.Sort();
 
             return data;
         }
 
-        private void GetBundleExtensions(ModuleDescription module, string addinId, ExtensionPoint ep, ref ExtensionLoadData data)
+        private void GetBundleExtensions(ModuleDescription module, string budnleId, ExtensionPoint ep, ref ExtensionLoadData data)
         {
             string basePath = ep.Path + "/";
 
@@ -1240,24 +1251,27 @@ namespace Clamp
                     if (data == null)
                     {
                         data = new ExtensionLoadData();
-                        data.BundleId = addinId;
+                        data.BundleId = budnleId;
                         data.Extensions = new ArrayList();
                     }
+
                     data.Extensions.Add(extension);
                 }
             }
         }
 
-        private void LoadModuleExtensionNodes(Extension extension, string addinId, ExtensionNodeSet nset, ArrayList loadedNodes)
+        private void LoadModuleExtensionNodes(Extension extension, string bundleId, ExtensionNodeSet nset, ArrayList loadedNodes)
         {
             // Now load the extensions
             ArrayList addedNodes = new ArrayList();
-            tree.LoadExtension(addinId, extension, addedNodes);
 
-            RuntimeBundle ad = InternalClampBundle.GetRuntimeBundle(addinId);
+            tree.LoadExtension(bundleId, extension, addedNodes);
+
+            RuntimeBundle ad = this.GetRuntimeBundle(bundleId);
+
             if (ad != null)
             {
-                foreach (TreeNode nod in addedNodes)
+                foreach (ExtensionTreeNode nod in addedNodes)
                 {
                     // Don't call OnBundleLoaded here. Do it when the entire extension point has been loaded.
                     if (nod.ExtensionNode != null)
@@ -1271,9 +1285,11 @@ namespace Clamp
             foreach (Dependency dep in module.Dependencies)
             {
                 BundleDependency pdep = dep as BundleDependency;
+
                 if (pdep != null)
                 {
-                    Bundle pinfo = InternalClampBundle.Registry.GetBundle(Bundle.GetFullId(conf.Namespace, pdep.BundleId, pdep.Version));
+                    Bundle pinfo = this.Registry.GetBundle(Bundle.GetFullId(conf.Namespace, pdep.BundleId, pdep.Version));
+
                     if (pinfo == null || !pinfo.Enabled)
                         return false;
                 }
@@ -1281,14 +1297,14 @@ namespace Clamp
             return true;
         }
 
-        private TreeNode GetNode(string path)
+        private ExtensionTreeNode GetNode(string path)
         {
-            TreeNode node = tree.GetNode(path);
+            ExtensionTreeNode node = this.tree.GetNode(path);
 
-            if (node != null || parentContext == null)
+            if (node != null)
                 return node;
 
-            TreeNode supNode = parentContext.tree.GetNode(path);
+            ExtensionTreeNode supNode = this.tree.GetNode(path);
 
             if (supNode == null)
                 return null;
@@ -1297,8 +1313,8 @@ namespace Clamp
                 path = path.Substring(1);
 
             string[] parts = path.Split('/');
-            TreeNode srcNode = parentContext.tree;
-            TreeNode dstNode = tree;
+            ExtensionTreeNode srcNode = this.tree;
+            ExtensionTreeNode dstNode = tree;
 
             foreach (string part in parts)
             {
@@ -1321,7 +1337,7 @@ namespace Clamp
                 else
                 {
                     // Create if not found
-                    TreeNode newNode = new TreeNode(InternalClampBundle, part);
+                    ExtensionTreeNode newNode = new ExtensionTreeNode(this, part);
                     dstNode.AddChildNode(newNode);
                     dstNode = newNode;
 

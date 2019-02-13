@@ -25,12 +25,12 @@ namespace Clamp.Nodes
                 return Type.EmptyTypes.GetEnumerator();
         }
 
-        public TreeNode this[int n]
+        public ExtensionTreeNode this[int n]
         {
             get
             {
                 if (list != null)
-                    return (TreeNode)list[n];
+                    return (ExtensionTreeNode)list[n];
                 else
                     throw new System.IndexOutOfRangeException();
             }
