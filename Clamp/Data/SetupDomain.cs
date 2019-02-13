@@ -50,7 +50,7 @@ namespace Clamp.Data
 
         // ensure types from this assembly returned to this domain from the remote domain can
         // be resolved even if we're in the LoadFrom context
-        static System.Reflection.Assembly MonoBundlesAssemblyResolve(object sender, ResolveEventArgs args)
+        static System.Reflection.Assembly BundlesAssemblyResolve(object sender, ResolveEventArgs args)
         {
             var asm = typeof(SetupDomain).Assembly;
             return args.Name == asm.FullName ? asm : null;
@@ -66,11 +66,15 @@ namespace Clamp.Data
             {
                 if (useCount++ == 0)
                 {
-                    AppDomain.CurrentDomain.AssemblyResolve += MonoBundlesAssemblyResolve;
+                    AppDomain.CurrentDomain.AssemblyResolve += BundlesAssemblyResolve;
+
                     domain = AppDomain.CreateDomain("SetupDomain", null, AppDomain.CurrentDomain.SetupInformation);
+
                     var type = typeof(RemoteSetupDomain);
+
                     remoteSetupDomain = (RemoteSetupDomain)domain.CreateInstanceFromAndUnwrap(type.Assembly.Location, type.FullName);
                 }
+
                 return remoteSetupDomain;
             }
         }
@@ -87,7 +91,7 @@ namespace Clamp.Data
                     AppDomain.Unload(domain);
                     domain = null;
                     remoteSetupDomain = null;
-                    AppDomain.CurrentDomain.AssemblyResolve -= MonoBundlesAssemblyResolve;
+                    AppDomain.CurrentDomain.AssemblyResolve -= BundlesAssemblyResolve;
                 }
             }
         }

@@ -49,12 +49,12 @@ namespace Clamp
             this.parentContext = parent;
         }
 
-        internal TreeClampBundle(ClampBundle clampBundle, TreeClampBundle parent)
-        {
-            this.fireEvents = false;
-            this.tree = new ExtensionTree(clampBundle, this);
-            this.parentContext = parent;
-        }
+        //internal TreeClampBundle(ClampBundle clampBundle, TreeClampBundle parent)
+        //{
+        //    this.fireEvents = false;
+        //    this.tree = new ExtensionTree(clampBundle, this);
+        //    this.parentContext = parent;
+        //}
 
         #region 实现 IClampBundle的方法
         public virtual void WaitForStop()
@@ -710,22 +710,22 @@ namespace Clamp
             }
         }
 
-        internal TreeClampBundle CreateChildContext()
-        {
-            lock (conditionTypes)
-            {
-                if (childContexts == null)
-                    childContexts = new List<WeakReference>();
-                else
-                    CleanDisposedChildContexts();
+        //internal TreeClampBundle CreateChildContext()
+        //{
+        //    lock (conditionTypes)
+        //    {
+        //        if (childContexts == null)
+        //            childContexts = new List<WeakReference>();
+        //        else
+        //            CleanDisposedChildContexts();
 
-                TreeClampBundle ctx = new TreeClampBundle(this.InternalClampBundle, this);
+        //        TreeClampBundle ctx = new TreeClampBundle(this.InternalClampBundle, this);
 
-                WeakReference wref = new WeakReference(ctx);
-                childContexts.Add(wref);
-                return ctx;
-            }
-        }
+        //        WeakReference wref = new WeakReference(ctx);
+        //        childContexts.Add(wref);
+        //        return ctx;
+        //    }
+        //}
 
         internal ConditionType GetCondition(string id)
         {

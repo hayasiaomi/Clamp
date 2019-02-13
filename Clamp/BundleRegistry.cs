@@ -213,7 +213,10 @@ namespace Clamp
 
             return database.GetBundleForHostAssembly(currentDomain, filePath);
         }
-
+        /// <summary>
+        /// 获得即将来加载的Bundles
+        /// </summary>
+        /// <returns></returns>
         internal List<Bundle> GetPendingActivateBundles()
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
@@ -246,11 +249,20 @@ namespace Clamp
             database.Update(currentDomain);
         }
 
+        /// <summary>
+        /// 获得所有的Bundles
+        /// </summary>
+        /// <returns></returns>
         public Bundle[] GetBundles()
         {
             return GetModules(BundleSearchFlags.IncludeBundles);
         }
 
+        /// <summary>
+        /// 根据ID获得相关的Bundle
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Bundle GetBundle(string id)
         {
             if (currentDomain == BundleDatabase.UnknownDomain)
@@ -261,9 +273,9 @@ namespace Clamp
             return ad;
         }
 
-        public bool IsRegisteredForUninstall(string addinId)
+        public bool IsRegisteredForUninstall(string bundleId)
         {
-            return database.IsRegisteredForUninstall(currentDomain, addinId);
+            return database.IsRegisteredForUninstall(currentDomain, bundleId);
         }
 
         public Bundle[] GetModules(BundleSearchFlags flags)
@@ -285,7 +297,7 @@ namespace Clamp
 
 
 
-        #region internal static method
+        #region internal  method
 
         /// <summary>
         /// 检测指定的文件夹
@@ -296,37 +308,6 @@ namespace Clamp
         {
             database.ScanFolders(currentDomain, folderToScan, filesToIgnore);
         }
-
-        internal static string GlobalRegistryPath
-        {
-            get
-            {
-                string customDir = Environment.GetEnvironmentVariable("CLAMP_BUNDLES_GLOBAL_REGISTRY");
-                if (customDir != null && customDir.Length > 0)
-                    return Path.GetFullPath(customDir);
-
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                path = Path.Combine(path, "clamp.bundles");
-                return Path.GetFullPath(path);
-            }
-
-        }
-
-        internal static BundleRegistry GetGlobalRegistry(ClampBundle engine, string startupDirectory)
-        {
-            BundleRegistry reg = new BundleRegistry(engine, GlobalRegistryPath, null, null);
-            string baseDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
-            reg.GlobalBundleDirectories.Add(Path.Combine(baseDir, "clamp.bundles"));
-            return reg;
-        }
-
-        #endregion
-
-        #region private method
-
-
-
-
 
         #endregion
 

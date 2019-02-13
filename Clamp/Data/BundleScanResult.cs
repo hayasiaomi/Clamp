@@ -219,10 +219,12 @@ namespace Clamp.Data
                 return GetType().Assembly.Location;
 
             ArrayList list = assemblyLocations[name] as ArrayList;
+
             if (list == null)
                 return null;
 
             string lastAsm = null;
+
             foreach (string file in list.ToArray())
             {
                 try

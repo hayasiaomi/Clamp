@@ -8,7 +8,7 @@ using System.Text;
 namespace Clamp.Nodes
 {
     /// <summary>
-    /// 树
+    /// 节点树
     /// </summary>
     class TreeNode
     {
@@ -184,6 +184,7 @@ namespace Clamp.Nodes
             foreach (string part in parts)
             {
                 int i = curNode.Children.IndexOfNode(part);
+
                 if (i != -1)
                 {
                     curNode = curNode.Children[i];

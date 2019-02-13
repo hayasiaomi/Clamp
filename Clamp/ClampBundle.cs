@@ -94,7 +94,7 @@ namespace Clamp
         /// <param name="startupAsm"></param>
         /// <param name="bundlesDirectory"></param>
         /// <param name="filesToIgnore"></param>
-        public void Initialize(Assembly startupAsm, string addinsDir, string databaseDir)
+        public void Initialize(Assembly startupAsm, string bundlesDir, string databaseDir)
         {
             lock (this.LocalLock)
             {
@@ -105,7 +105,7 @@ namespace Clamp
 
                 this.startupDirectory = Path.GetDirectoryName(asmFile);
 
-                this.registry = new BundleRegistry(this, this.startupDirectory, addinsDir, databaseDir);
+                this.registry = new BundleRegistry(this, this.startupDirectory, bundlesDir, databaseDir);
 
                 if (this.registry.CreateHostBundlesFile(asmFile) || this.registry.UnknownDomain)
                     this.registry.Update();
@@ -226,7 +226,7 @@ namespace Clamp
             return (ResolveType)Resolve(typeof(ResolveType));
         }
 
-        public ResolveType Resolve<ResolveType>(ResolveOptions options)  where ResolveType : class
+        public ResolveType Resolve<ResolveType>(ResolveOptions options) where ResolveType : class
         {
             return (ResolveType)Resolve(typeof(ResolveType), options);
         }
@@ -321,14 +321,14 @@ namespace Clamp
             return null;
         }
 
-        internal void RegisterAssemblies(RuntimeBundle addin)
+        internal void RegisterAssemblies(RuntimeBundle runtimeBundle)
         {
             lock (this.LocalLock)
             {
                 var loadedAssembliesCopy = new Dictionary<Assembly, RuntimeBundle>(loadedAssemblies);
 
-                foreach (Assembly asm in addin.Assemblies)
-                    loadedAssembliesCopy[asm] = addin;
+                foreach (Assembly asm in runtimeBundle.Assemblies)
+                    loadedAssembliesCopy[asm] = runtimeBundle;
 
                 loadedAssemblies = loadedAssembliesCopy;
             }
@@ -835,6 +835,11 @@ namespace Clamp
         #endregion
 
         #region internal static
+        /// <summary>
+        /// 检测指点定的文件集合里面是否存在已经加载的文件
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
         internal static bool CheckAssembliesLoaded(HashSet<string> files)
         {
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
@@ -859,6 +864,7 @@ namespace Clamp
                     // Ignore
                 }
             }
+
             return false;
         }
 

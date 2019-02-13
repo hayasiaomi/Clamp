@@ -223,7 +223,9 @@ namespace Clamp.Data
         public static BundleScanFolderInfo Read(FileDatabase filedb, string basePath, string folderPath)
         {
             string fileName;
+
             BundleScanFolderInfo finfo = (BundleScanFolderInfo)filedb.ReadSharedObject(basePath, GetDomain(folderPath), ".data", Path.GetFullPath(folderPath), typeMap, out fileName);
+
             if (finfo != null)
                 finfo.fileName = fileName;
             return finfo;
@@ -232,10 +234,13 @@ namespace Clamp.Data
         public static string GetDomain(string path)
         {
             path = Path.GetFullPath(path);
+
             string s = path.Replace(Path.DirectorySeparatorChar, '_');
+
             s = s.Replace(Path.AltDirectorySeparatorChar, '_');
             s = s.Replace(Path.VolumeSeparatorChar, '_');
             s = s.Trim('_');
+
             return s;
         }
 

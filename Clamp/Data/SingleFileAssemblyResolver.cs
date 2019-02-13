@@ -28,7 +28,7 @@ namespace Clamp.Data
                 if (registry.BasePath != null)
                     scanner.ScanFolder(registry.BasePath, null, scanResult);
                 foreach (string dir in registry.GlobalBundleDirectories)
-                    scanner.ScanFolderRec(dir, BundleDatabase.GlobalDomain, scanResult);
+                    scanner.ScanFolderWithSubdirs(dir, BundleDatabase.GlobalDomain, scanResult);
             }
 
             string afile = scanResult.GetAssemblyLocation(args.Name);

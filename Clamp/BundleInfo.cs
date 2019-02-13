@@ -49,7 +49,7 @@ namespace Clamp
             set { id = value; }
         }
         /// <summary>
-        /// 
+        /// 命名空间
         /// </summary>
         public string Namespace
         {

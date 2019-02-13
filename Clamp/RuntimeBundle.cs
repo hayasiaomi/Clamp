@@ -50,7 +50,7 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Identifier of the add-in.
+        /// Bundle的Id
         /// </summary>
         public string Id
         {
@@ -58,13 +58,15 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Version of the add-in.
+        /// 版本号
         /// </summary>
         public string Version
         {
             get { return Bundle.GetIdVersion(id); }
         }
-
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name
         {
             get { return this.bundle.Name; }
@@ -90,7 +92,7 @@ namespace Clamp
 
 
         /// <summary>
-        /// Localizer which can be used to localize strings defined in this add-in
+        /// 本地化
         /// </summary>
         public BundleLocalizer Localizer
         {
@@ -103,6 +105,9 @@ namespace Clamp
             }
         }
 
+        /// <summary>
+        /// 激活类
+        /// </summary>
         internal IBundleActivator BundleActivator
         {
             get
@@ -111,11 +116,17 @@ namespace Clamp
             }
         }
 
+        /// <summary>
+        /// 对应的Bundle
+        /// </summary>
         internal Bundle Bundle
         {
             get { return bundle; }
         }
 
+        /// <summary>
+        /// 是否加载过程序集
+        /// </summary>
         internal bool AssembliesLoaded
         {
             get { return assemblies != null; }
@@ -137,134 +148,74 @@ namespace Clamp
 
 
         #region public method
-        /// <summary>
-        /// Returns a string that represents the current RuntimeBundle.
-        /// </summary>
-        /// <returns>
-        /// A string that represents the current RuntimeBundle.
-        /// </returns>
+
         public override string ToString()
         {
             return bundle.ToString();
         }
 
 
-
         /// <summary>
-        /// Gets a resource string
+        /// 获得Bundle的内部资源文件的内容
         /// </summary>
-        /// <param name="name">
-        /// Name of the resource
-        /// </param>
-        /// <returns>
-        /// The value of the resource string, or null if the resource can't be found.
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public string GetResourceString(string name)
         {
             return (string)GetResourceObject(name, true, null);
         }
 
         /// <summary>
-        /// Gets a resource string
+        /// 获得Bundle的内部资源文件的内容
         /// </summary>
-        /// <param name="name">
-        /// Name of the resource
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// When set to true, an exception will be thrown if the resource is not found.
-        /// </param>
-        /// <returns>
-        /// The value of the resource string
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <returns></returns>
         public string GetResourceString(string name, bool throwIfNotFound)
         {
             return (string)GetResourceObject(name, throwIfNotFound, null);
         }
 
         /// <summary>
-        /// Gets a resource string
+        /// 获得Bundle的内部资源文件的内容
         /// </summary>
-        /// <param name="name">
-        /// Name of the resource
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// When set to true, an exception will be thrown if the resource is not found.
-        /// </param>
-        /// <param name="culture">
-        /// Culture of the resource
-        /// </param>
-        /// <returns>
-        /// The value of the resource string
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public string GetResourceString(string name, bool throwIfNotFound, CultureInfo culture)
         {
             return (string)GetResourceObject(name, throwIfNotFound, culture);
         }
 
         /// <summary>
-        /// Gets a resource object
+        /// 获得Bundle的内部资源文件的内容
         /// </summary>
-        /// <param name="name">
-        /// Name of the resource
-        /// </param>
-        /// <returns>
-        /// Value of the resource
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public object GetResourceObject(string name)
         {
             return GetResourceObject(name, true, null);
         }
 
         /// <summary>
-        /// Gets a resource object
+        /// 获得Bundle的内部资源文件的内容
         /// </summary>
-        /// <param name="name">
-        /// Name of the resource
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// When set to true, an exception will be thrown if the resource is not found.
-        /// </param>
-        /// <returns>
-        /// Value of the resource
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <returns></returns>
         public object GetResourceObject(string name, bool throwIfNotFound)
         {
             return GetResourceObject(name, throwIfNotFound, null);
         }
 
         /// <summary>
-        /// Gets a resource object
+        /// 获得Bundle的内部资源文件的内容
         /// </summary>
-        /// <param name="name">
-        /// Name of the resource
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// When set to true, an exception will be thrown if the resource is not found.
-        /// </param>
-        /// <param name="culture">
-        /// Culture of the resource
-        /// </param>
-        /// <returns>
-        /// Value of the resource
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object GetResourceObject(string name, bool throwIfNotFound, CultureInfo culture)
         {
             // Look in resources of this add-in
@@ -290,44 +241,21 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets a type defined in the add-in
+        /// 获得Bundle的类型
         /// </summary>
-        /// <param name="typeName">
-        /// Full name of the type
-        /// </param>
-        /// <returns>
-        /// A type.
-        /// </returns>
-        /// <remarks>
-        /// The type will be looked up in the assemblies that implement the add-in,
-        /// and recursively in all add-ins on which it depends.
-        /// 
-        /// This method throws an InvalidOperationException if the type can't be found.
-        /// </remarks>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
         public Type GetType(string typeName)
         {
             return GetType(typeName, true);
         }
 
         /// <summary>
-        /// Gets a type defined in the add-in
+        /// 获得Bundle的类型
         /// </summary>
-        /// <param name="typeName">
-        /// Full name of the type
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// Indicates whether the method should throw an exception if the type can't be found.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Type"/>
-        /// </returns>
-        /// <remarks>
-        /// The type will be looked up in the assemblies that implement the add-in,
-        /// and recursively in all add-ins on which it depends.
-        /// 
-        /// If the type can't be found, this method throw a InvalidOperationException if
-        /// 'throwIfNotFound' is 'true', or 'null' otherwise.
-        /// </remarks>
+        /// <param name="typeName"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <returns></returns>
         public Type GetType(string typeName, bool throwIfNotFound)
         {
             EnsureAssembliesLoaded();
@@ -360,48 +288,21 @@ namespace Clamp
 
 
         /// <summary>
-        /// Creates an instance of a type defined in the add-in
+        /// 创建一个指定的类型的对象
         /// </summary>
-        /// <param name="typeName">
-        /// Name of the type.
-        /// </param>
-        /// <returns>
-        /// A new instance of the type
-        /// </returns>
-        /// <remarks>
-        /// The type will be looked up in the assemblies that implement the add-in,
-        /// and recursively in all add-ins on which it depends.
-        /// 
-        /// This method throws an InvalidOperationException if the type can't be found.
-        /// 
-        /// The specified type must have a default constructor.
-        /// </remarks>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
         public object CreateInstance(string typeName)
         {
             return CreateInstance(typeName, true);
         }
 
         /// <summary>
-        /// Creates an instance of a type defined in the add-in
+        /// 创建一个指定的类型的对象
         /// </summary>
-        /// <param name="typeName">
-        /// Name of the type.
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// Indicates whether the method should throw an exception if the type can't be found.
-        /// </param>
-        /// <returns>
-        /// A new instance of the type
-        /// </returns>
-        /// <remarks>
-        /// The type will be looked up in the assemblies that implement the add-in,
-        /// and recursively in all add-ins on which it depends.
-        /// 
-        /// If the type can't be found, this method throw a InvalidOperationException if
-        /// 'throwIfNotFound' is 'true', or 'null' otherwise.
-        /// 
-        /// The specified type must have a default constructor.
-        /// </remarks>
+        /// <param name="typeName"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <returns></returns>
         public object CreateInstance(string typeName, bool throwIfNotFound)
         {
             Type type = GetType(typeName, throwIfNotFound);
@@ -412,39 +313,29 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets the path of an add-in file
+        /// 获得文件名来获得Bundle的绝对路径
         /// </summary>
-        /// <param name="fileName">
-        /// Relative path of the file
-        /// </param>
-        /// <returns>
-        /// Full path of the file
-        /// </returns>
-        /// <remarks>
-        /// This method can be used to get the full path of a data file deployed together with the add-in.
-        /// </remarks>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public string GetFilePath(string fileName)
         {
             return Path.Combine(baseDirectory, fileName);
         }
 
         /// <summary>
-        /// Gets the path of an add-in file
+        /// 获得文件名来获得Bundle的绝对路径
         /// </summary>
-        /// <param name="filePath">
-        /// Components of the file path
-        /// </param>
-        /// <returns>
-        /// Full path of the file
-        /// </returns>
-        /// <remarks>
-        /// This method can be used to get the full path of a data file deployed together with the add-in.
-        /// </remarks>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public string GetFilePath(params string[] filePath)
         {
             return Path.Combine(baseDirectory, string.Join("" + Path.DirectorySeparatorChar, filePath));
         }
 
+        /// <summary>
+        /// 获得当前Bundle的内部所有资源文件名
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetResourceNames()
         {
             EnsureAssembliesLoaded();
@@ -456,51 +347,28 @@ namespace Clamp
                 resourceNames.AddRange(asm.GetManifestResourceNames());
             }
 
-            //foreach (RuntimeBundle addin in GetAllDependencies())
-            //{
-            //    resourceNames.AddRange(addin.GetResourceNames());
-            //}
-
             return resourceNames;
         }
 
         /// <summary>
-        /// Gets the content of a resource
+        /// 通过指定的资源文件名来获得流
         /// </summary>
-        /// <param name="resourceName">
-        /// Name of the resource
-        /// </param>
-        /// <returns>
-        /// Content of the resource, or null if not found
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="resourceName"></param>
+        /// <returns></returns>
         public Stream GetResource(string resourceName)
         {
             return GetResource(resourceName, false);
         }
 
         /// <summary>
-        /// Gets the content of a resource
+        /// 通过指定的资源文件名来获得流
         /// </summary>
-        /// <param name="resourceName">
-        /// Name of the resource
-        /// </param>
-        /// <param name="throwIfNotFound">
-        /// When set to true, an exception will be thrown if the resource is not found.
-        /// </param>
-        /// <returns>
-        /// Content of the resource.
-        /// </returns>
-        /// <remarks>
-        /// The add-in engine will look for resources in the main add-in assembly and in all included add-in assemblies.
-        /// </remarks>
+        /// <param name="resourceName"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <returns></returns>
         public Stream GetResource(string resourceName, bool throwIfNotFound)
         {
             EnsureAssembliesLoaded();
-
-            // Look in the addin assemblies
 
             foreach (Assembly asm in GetAllAssemblies())
             {
@@ -509,7 +377,6 @@ namespace Clamp
                     return res;
             }
 
-            // Look in the dependent add-ins
             foreach (RuntimeBundle addin in GetAllDependencies())
             {
                 Stream res = addin.GetResource(resourceName);
@@ -523,34 +390,23 @@ namespace Clamp
             return null;
         }
 
-        /// <summary>
-        /// Returns information about how the given resource has been persisted
-        /// </summary>
-        /// <param name="resourceName">
-        /// Name of the resource
-        /// </param>
-        /// <returns>
-        /// Resource information, or null if the resource doesn't exist
-        /// </returns>
+
         public ManifestResourceInfo GetResourceInfo(string resourceName)
         {
             EnsureAssembliesLoaded();
 
-            // Look in the addin assemblies
-
             foreach (Assembly asm in GetAllAssemblies())
             {
                 var res = asm.GetManifestResourceInfo(resourceName);
+
                 if (res != null)
                 {
-                    // Mono doesn't set the referenced assembly
                     if (res.ReferencedAssembly == null)
                         return new ManifestResourceInfo(asm, res.FileName, res.ResourceLocation);
                     return res;
                 }
             }
 
-            // Look in the dependent add-ins
             foreach (RuntimeBundle addin in GetAllDependencies())
             {
                 var res = addin.GetResourceInfo(resourceName);
@@ -561,11 +417,21 @@ namespace Clamp
             return null;
         }
 
+        /// <summary>
+        /// 获得当前Bundle的扩展对象
+        /// </summary>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(Type instanceType)
         {
             return this.clampBundle.GetExtensionObjects(this.Id, instanceType);
         }
 
+        /// <summary>
+        /// 获得当前Bundle的扩展对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>()
         {
             return this.clampBundle.GetExtensionObjectsByBundleId<T>(this.Id);
@@ -574,6 +440,12 @@ namespace Clamp
         #endregion
 
         #region internal Method
+
+        /// <summary>
+        /// 通过模块详细来获得执行Bundle
+        /// </summary>
+        /// <param name="module"></param>
+        /// <returns></returns>
         internal RuntimeBundle GetModule(ModuleDescription module)
         {
             // If requesting the root module, return this
@@ -583,8 +455,7 @@ namespace Clamp
             if (module.RuntimeBundle != null)
                 return module.RuntimeBundle;
 
-            RuntimeBundle addin = new RuntimeBundle(clampBundle, this, module);
-            return addin;
+            return new RuntimeBundle(clampBundle, this, module);
         }
 
         internal BundleDescription Load(Bundle bundle)
@@ -636,6 +507,9 @@ namespace Clamp
             clampBundle.UnregisterBundleNodeSets(id);
         }
 
+        /// <summary>
+        /// 确保当前Bundle需要的程序集都加载过了
+        /// </summary>
         internal void EnsureAssembliesLoaded()
         {
             if (assemblies != null)
@@ -643,11 +517,12 @@ namespace Clamp
 
             ArrayList asmList = new ArrayList();
 
-            // Load the assemblies of the module
             CheckBundleDependencies(module, true);
+
             LoadModule(module, asmList);
 
             assemblies = (Assembly[])asmList.ToArray(typeof(Assembly));
+
             clampBundle.RegisterAssemblies(this);
         }
 
@@ -738,23 +613,24 @@ namespace Clamp
                         clampBundle.ReportError("Add-in dependency not loaded: " + pdep.FullBundleId, module.ParentBundleDescription.BundleId, null, false);
                 }
             }
+
             return depBundles = (RuntimeBundle[])plugList.ToArray(typeof(RuntimeBundle));
         }
-
+        /// <summary>
+        /// 加载当前Bundle所有程序集
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="asmList"></param>
         private void LoadModule(ModuleDescription module, ArrayList asmList)
         {
-            // Load the assemblies
             foreach (string s in module.Assemblies)
             {
                 Assembly asm = null;
 
-                // don't load the assembly if it's already loaded
                 string asmPath = Path.Combine(baseDirectory, s);
+
                 foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    // Sorry, you can't load addins from
-                    // dynamic assemblies as get_Location
-                    // throws a NotSupportedException
                     if (a is System.Reflection.Emit.AssemblyBuilder || a.IsDynamic)
                     {
                         continue;
@@ -770,7 +646,7 @@ namespace Clamp
                     }
                     catch (NotSupportedException)
                     {
-                        // Some assemblies don't have a location
+                       
                     }
                 }
 
@@ -783,18 +659,28 @@ namespace Clamp
             }
         }
 
+        /// <summary>
+        /// 检测依赖的Bundle是否加载了。forceLoadAssemblies表示如果没有是否要加载
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="forceLoadAssemblies"></param>
+        /// <returns></returns>
         private bool CheckBundleDependencies(ModuleDescription module, bool forceLoadAssemblies)
         {
             foreach (Dependency dep in module.Dependencies)
             {
                 BundleDependency pdep = dep as BundleDependency;
+
                 if (pdep == null)
                     continue;
+
                 if (!clampBundle.IsBundleLoaded(pdep.FullBundleId))
                     return false;
+
                 if (forceLoadAssemblies)
                     clampBundle.GetRuntimeBundle(pdep.FullBundleId).EnsureAssembliesLoaded();
             }
+
             return true;
         }
 

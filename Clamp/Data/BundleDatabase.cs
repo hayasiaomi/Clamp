@@ -86,6 +86,9 @@ namespace Clamp.Data
             get { return Path.Combine(BundleDbDir, "activation-index"); }
         }
 
+        /// <summary>
+        /// 配置文件
+        /// </summary>
         public string ConfigFile
         {
             get { return Path.Combine(BundleDbDir, "config.xml"); }
@@ -94,13 +97,6 @@ namespace Clamp.Data
         public BundleFileSystemExtension FileSystem
         {
             get { return fs; }
-        }
-        public bool IsGlobalRegistry
-        {
-            get
-            {
-                return registry.BasePath == BundleRegistry.GlobalRegistryPath;
-            }
         }
 
         public BundleRegistry Registry
@@ -151,6 +147,7 @@ namespace Clamp.Data
         public void RegisterExtension(object extension)
         {
             extensions.Add(extension);
+
             if (extension is BundleFileSystemExtension)
                 fs = (BundleFileSystemExtension)extension;
             else
@@ -198,7 +195,9 @@ namespace Clamp.Data
                 try
                 {
                     AppDomain.CurrentDomain.AssemblyResolve += resolver;
-                    if (einfo != null) einfo.AddEventHandler(AppDomain.CurrentDomain, resolver);
+
+                    if (einfo != null)
+                        einfo.AddEventHandler(AppDomain.CurrentDomain, resolver);
 
                     BundleDescription desc = scanner.ScanSingleFile(file, sr);
 
@@ -212,7 +211,9 @@ namespace Clamp.Data
                 finally
                 {
                     AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-                    if (einfo != null) einfo.RemoveEventHandler(AppDomain.CurrentDomain, resolver);
+
+                    if (einfo != null)
+                        einfo.RemoveEventHandler(AppDomain.CurrentDomain, resolver);
                 }
             }
         }
@@ -420,7 +421,7 @@ namespace Clamp.Data
         /// <param name="domain"></param>
         public void Update(string domain)
         {
-            fatalDatabseError = false;
+            this.fatalDatabseError = false;
 
             DateTime tim = DateTime.Now;
 
@@ -428,7 +429,7 @@ namespace Clamp.Data
 
             Hashtable installed = new Hashtable();
 
-            bool changesFound = CheckFolders(domain);
+            bool changesFound = CheckHasChangedFolders(domain);
 
             if (changesFound)
             {
@@ -542,9 +543,7 @@ namespace Clamp.Data
 
                 return true;
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 description = null;
                 return false;
@@ -563,9 +562,7 @@ namespace Clamp.Data
                 fileDatabase.Delete(file);
                 return true;
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -578,9 +575,7 @@ namespace Clamp.Data
                 fileDatabase.DeleteDir(dir);
                 return true;
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return false;
             }
@@ -710,10 +705,10 @@ namespace Clamp.Data
         public Bundle GetInstalledBundle(string domain, string id, bool exactVersionMatch, bool enabledOnly)
         {
             // Try the given domain, and if not found, try the shared domain
-            Bundle ad = GetInstalledDomainBundle(domain, id, exactVersionMatch, enabledOnly, true);
+            Bundle bundle = GetInstalledDomainBundle(domain, id, exactVersionMatch, enabledOnly, true);
 
-            if (ad != null)
-                return ad;
+            if (bundle != null)
+                return bundle;
 
             if (domain != BundleDatabase.GlobalDomain)
                 return GetInstalledDomainBundle(BundleDatabase.GlobalDomain, id, exactVersionMatch, enabledOnly, true);
@@ -723,14 +718,14 @@ namespace Clamp.Data
 
         public void DisableBundle(string domain, string id, bool exactVersionMatch = false)
         {
-            Bundle ai = GetInstalledBundle(domain, id, true);
-            if (ai == null)
+            Bundle bundle = GetInstalledBundle(domain, id, true);
+            if (bundle == null)
                 throw new InvalidOperationException("Add-in '" + id + "' not installed.");
 
             if (!IsBundleEnabled(domain, id, exactVersionMatch))
                 return;
 
-            Configuration.SetEnabled(id, false, ai.BundleInfo.EnabledByDefault, exactVersionMatch);
+            Configuration.SetEnabled(id, false, bundle.BundleInfo.EnabledByDefault, exactVersionMatch);
             SaveConfiguration();
 
             // Disable all add-ins which depend on it
@@ -769,7 +764,7 @@ namespace Clamp.Data
             catch
             {
                 // If something goes wrong, enable the add-in again
-                Configuration.SetEnabled(id, true, ai.BundleInfo.EnabledByDefault, false);
+                Configuration.SetEnabled(id, true, bundle.BundleInfo.EnabledByDefault, false);
                 SaveConfiguration();
                 throw;
             }
@@ -809,8 +804,8 @@ namespace Clamp.Data
 
         internal void EnableBundle(string domain, string id, bool exactVersionMatch)
         {
-            Bundle ainfo = GetInstalledBundle(domain, id, exactVersionMatch, false);
-            if (ainfo == null)
+            Bundle binfo = GetInstalledBundle(domain, id, exactVersionMatch, false);
+            if (binfo == null)
                 // It may be an add-in root
                 return;
 
@@ -819,17 +814,17 @@ namespace Clamp.Data
 
             // Enable required add-ins
 
-            foreach (Dependency dep in ainfo.BundleInfo.Dependencies)
+            foreach (Dependency dep in binfo.BundleInfo.Dependencies)
             {
                 if (dep is BundleDependency)
                 {
                     BundleDependency adep = dep as BundleDependency;
-                    string adepid = Bundle.GetFullId(ainfo.BundleInfo.Namespace, adep.BundleId, adep.Version);
+                    string adepid = Bundle.GetFullId(binfo.BundleInfo.Namespace, adep.BundleId, adep.Version);
                     EnableBundle(domain, adepid, false);
                 }
             }
 
-            Configuration.SetEnabled(id, true, ainfo.BundleInfo.EnabledByDefault, true);
+            Configuration.SetEnabled(id, true, binfo.BundleInfo.EnabledByDefault, true);
             SaveConfiguration();
 
             if (this.clampBundle != null && this.clampBundle.IsInitialized)
@@ -904,9 +899,7 @@ namespace Clamp.Data
                 {
                     fileDatabase.Rename(file + "_" + dversion, newFile);
                 }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                 catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                 {
                 }
 
@@ -977,7 +970,7 @@ namespace Clamp.Data
         /// </summary>
         /// <param name="domain"></param>
         /// <returns></returns>
-        internal bool CheckFolders(string domain)
+        internal bool CheckHasChangedFolders(string domain)
         {
             using (fileDatabase.LockRead())
             {
@@ -1093,7 +1086,7 @@ namespace Clamp.Data
                 if (scanResult.CheckOnly && scanResult.ChangesFound)
                     return;
 
-                scanner.ScanFolderRec(dir, GlobalDomain, scanResult);
+                scanner.ScanFolderWithSubdirs(dir, GlobalDomain, scanResult);
             }
 
             if (scanResult.CheckOnly || !scanResult.ChangesFound)
@@ -1384,6 +1377,7 @@ namespace Clamp.Data
                     changesDone = true;
                 }
             }
+
             if (changesDone)
                 SaveConfiguration();
         }
@@ -1517,6 +1511,7 @@ namespace Clamp.Data
         private Assembly OnResolveBundleAssembly(object s, ResolveEventArgs args)
         {
             string file = currentScanResult != null ? currentScanResult.GetAssemblyLocation(args.Name) : null;
+
             if (file != null)
                 return Util.LoadAssemblyForReflection(file);
             else
@@ -1670,6 +1665,7 @@ namespace Clamp.Data
             ArrayList pparams = new ArrayList();
 
             bool retry = false;
+
             do
             {
                 try
@@ -1677,49 +1673,48 @@ namespace Clamp.Data
                     setup.Scan(registry, null, (string[])pparams.ToArray(typeof(string)));
                     retry = false;
                 }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
                 catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
                 {
-                    //ProcessFailedException pex = ex as ProcessFailedException;
+                    ProcessFailedException pex = ex as ProcessFailedException;
 
-                    //if (pex != null)
-                    //{
-                    //    // Get the last logged operation.
-                    //    if (pex.LastLog.StartsWith("scan:"))
-                    //    {
-                    //        // It crashed while scanning a file. Add the file to the ignore list and try again.
-                    //        string file = pex.LastLog.Substring(5);
-                    //        pparams.Add(file);
-                    //        monitor.ReportWarning("Could not scan file: " + file);
-                    //        retry = true;
-                    //        continue;
-                    //    }
-                    //}
+                    if (pex != null)
+                    {
+                        // Get the last logged operation.
+                        if (pex.LastLog.StartsWith("scan:"))
+                        {
+                            // It crashed while scanning a file. Add the file to the ignore list and try again.
+                            string file = pex.LastLog.Substring(5);
+                            pparams.Add(file);
+                            //monitor.ReportWarning("Could not scan file: " + file);
+                            retry = true;
+                            continue;
+                        }
+                    }
 
-                    //fatalDatabseError = true;
+                    fatalDatabseError = true;
+
                     //// If the process has crashed, try to do a new scan, this time using verbose log,
                     //// to give the user more information about the origin of the crash.
-                    //if (pex != null && !retry)
-                    //{
-                    //    monitor.ReportError("Add-in scan operation failed. The runtime may have encountered an error while trying to load an assembly.", null);
-                    //    if (monitor.LogLevel <= 1)
-                    //    {
-                    //        // Re-scan again using verbose log, to make it easy to find the origin of the error.
-                    //        retry = true;
-                    //        scanMonitor = new ConsoleProgressStatus(true);
-                    //    }
-                    //}
-                    //else
-                    //    retry = false;
+                    if (pex != null && !retry)
+                    {
+                        //monitor.ReportError("Add-in scan operation failed. The runtime may have encountered an error while trying to load an assembly.", null);
+                        //if (monitor.LogLevel <= 1)
+                        //{
+                        // Re-scan again using verbose log, to make it easy to find the origin of the error.
+                        retry = true;
+                        //    scanMonitor = new ConsoleProgressStatus(true);
+                        //}
+                    }
+                    else
+                        retry = false;
 
-                    //if (!retry)
-                    //{
-                    //    var pfex = ex as ProcessFailedException;
-                    //    monitor.ReportError("Add-in scan operation failed", pfex != null ? pfex.InnerException : ex);
-                    //    monitor.Cancel();
-                    //    return;
-                    //}
+                    if (!retry)
+                    {
+                        var pfex = ex as ProcessFailedException;
+                        //monitor.ReportError("Add-in scan operation failed", pfex != null ? pfex.InnerException : ex);
+                        //monitor.Cancel();
+                        return;
+                    }
                 }
             }
             while (retry);

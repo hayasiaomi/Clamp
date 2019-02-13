@@ -43,12 +43,12 @@ namespace Clamp.Data
                 return defaultValue;
         }
 
-        public void SetEnabled(string addinId, bool enabled, bool defaultValue, bool exactVersionMatch)
+        public void SetEnabled(string bundleId, bool enabled, bool defaultValue, bool exactVersionMatch)
         {
-            if (IsRegisteredForUninstall(addinId))
+            if (IsRegisteredForUninstall(bundleId))
                 return;
 
-            var bundleName = exactVersionMatch ? addinId : Bundle.GetIdName(addinId);
+            var bundleName = exactVersionMatch ? bundleId : Bundle.GetIdName(bundleId);
 
             BundleStatus s;
 
@@ -61,30 +61,31 @@ namespace Clamp.Data
 
             // If enabling a specific version of an add-in, make sure the add-in is enabled as a whole
             if (enabled && exactVersionMatch)
-                SetEnabled(addinId, true, defaultValue, false);
+                SetEnabled(bundleId, true, defaultValue, false);
         }
 
-        public void RegisterForUninstall(string addinId, IEnumerable<string> files)
+        public void RegisterForUninstall(string bundleId, IEnumerable<string> files)
         {
             BundleStatus s;
 
-            if (!bundleStatus.TryGetValue(addinId, out s))
-                s = bundleStatus[addinId] = new BundleStatus(addinId);
+            if (!bundleStatus.TryGetValue(bundleId, out s))
+                s = bundleStatus[bundleId] = new BundleStatus(bundleId);
 
             s.Enabled = false;
             s.Uninstalled = true;
             s.Files = new List<string>(files);
         }
 
-        public void UnregisterForUninstall(string addinId)
+        public void UnregisterForUninstall(string bundleId)
         {
-            bundleStatus.Remove(addinId);
+            bundleStatus.Remove(bundleId);
         }
 
-        public bool IsRegisteredForUninstall(string addinId)
+        public bool IsRegisteredForUninstall(string bundleId)
         {
             BundleStatus s;
-            if (bundleStatus.TryGetValue(addinId, out s))
+
+            if (bundleStatus.TryGetValue(bundleId, out s))
                 return s.Uninstalled;
             else
                 return false;
@@ -131,7 +132,9 @@ namespace Clamp.Data
         static DatabaseConfiguration ReadInternal(string file)
         {
             DatabaseConfiguration config = new DatabaseConfiguration();
+
             XmlDocument doc = new XmlDocument();
+
             doc.Load(file);
 
             XmlElement disabledElem = (XmlElement)doc.DocumentElement.SelectSingleNode("DisabledBundles");

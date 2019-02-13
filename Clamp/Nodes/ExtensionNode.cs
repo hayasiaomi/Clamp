@@ -122,12 +122,16 @@ namespace Clamp.Nodes
                 {
                     if (!clampBundle.IsBundleLoaded(bundleId))
                         clampBundle.LoadBundle(bundleId, true);
+
                     runtimeBundle = clampBundle.GetRuntimeBundle(bundleId);
+
                     if (runtimeBundle != null)
                         runtimeBundle = runtimeBundle.GetModule(module);
                 }
+
                 if (runtimeBundle == null)
-                    throw new InvalidOperationException($"$Bundle [{bundleId}] could not be loaded.");
+                    throw new InvalidOperationException($"Bundle [{bundleId}] 没有加载过");
+
                 return runtimeBundle;
             }
         }

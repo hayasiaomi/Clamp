@@ -38,16 +38,19 @@ namespace Clamp.Data
             string testFile = null;
             int n = 0;
             var random = new Random();
+
             do
             {
                 testFile = Path.Combine(path, random.Next().ToString());
                 n++;
             } while (File.Exists(testFile) && n < 100);
+
             if (n == 100)
                 throw new InvalidOperationException($"{path}目录非无法创建文件");
 
             StreamWriter w = new StreamWriter(testFile);
             w.Close();
+
             File.Delete(testFile);
         }
 
@@ -134,11 +137,18 @@ namespace Clamp.Data
             }
             return null;
         }
+
+        /// <summary>
+        /// 是否为托管的程序集
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         internal static bool IsManagedAssembly(string file)
         {
             try
             {
                 AssemblyName.GetAssemblyName(file);
+
                 return true;
             }
             catch (BadImageFormatException)

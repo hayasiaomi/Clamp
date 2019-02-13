@@ -30,7 +30,7 @@ namespace Clamp.Data
         #region public mehtod
 
         /// <summary>
-        /// 更新删除的Bundle
+        /// 更新已经删除的Bundle
         /// </summary>
         /// <param name="folderInfo"></param>
         /// <param name="scanResult"></param>
@@ -126,41 +126,43 @@ namespace Clamp.Data
             if (scanResult.Domain == BundleDatabase.UnknownDomain)
                 scanResult.Domain = domain;
 
-            // Discard folders not belonging to the required domain
+            //不属于当前的域
             if (scanResult.Domain != null && domain != scanResult.Domain && domain != BundleDatabase.GlobalDomain)
-            {
                 return;
-            }
 
             if (fs.DirectoryExists(path))
             {
-                IEnumerable<string> files = fs.GetFiles(path);
+                IEnumerable<string> files = fs.GetFiles(path)
+                    .Where(f =>
+                    f.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase)
+                    || f.EndsWith(".exe", StringComparison.CurrentCultureIgnoreCase)
+                    || f.EndsWith(".xml", StringComparison.CurrentCultureIgnoreCase)
+                    || f.EndsWith(".bundle", StringComparison.CurrentCultureIgnoreCase)
+                    || f.EndsWith(".bundles", StringComparison.CurrentCultureIgnoreCase))
+                    .ToList();
 
-                foreach (string file in files)
+                IEnumerable<string> fileWithBundle = files.Where(f => f.EndsWith(".bundle.xml", StringComparison.CurrentCultureIgnoreCase)
+                || f.EndsWith(".bundle", StringComparison.CurrentCultureIgnoreCase));
+
+                foreach (string file in fileWithBundle)
                 {
-                    if (file.EndsWith(".bundle.xml") || file.EndsWith(".bundle"))
-                    {
-                        RegisterFileToScan(file, scanResult, folderInfo);
-                    }
+                    RegisterFileToScan(file, scanResult, folderInfo);
                 }
 
-                foreach (string file in files)
-                {
-                    string ext = Path.GetExtension(file).ToLower();
+                IEnumerable<string> fileWithDllOrExe = files.Where(f => f.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase)
+             || f.EndsWith(".exe", StringComparison.CurrentCultureIgnoreCase));
 
-                    if (ext == ".dll" || ext == ".exe")
-                    {
-                        RegisterFileToScan(file, scanResult, folderInfo);
-                        scanResult.AddAssemblyLocation(file);
-                    }
+                foreach (string file in fileWithDllOrExe)
+                {
+                    RegisterFileToScan(file, scanResult, folderInfo);
+                    scanResult.AddAssemblyLocation(file);
                 }
 
-                foreach (string file in files)
+                IEnumerable<string> fileWithBundles = files.Where(f => f.EndsWith(".bundles", StringComparison.CurrentCultureIgnoreCase));
+
+                foreach (string file in fileWithBundles)
                 {
-                    if (Path.GetExtension(file).EndsWith(".bundles"))
-                    {
-                        ScanBundlesFile(file, domain, scanResult);
-                    }
+                    ScanBundlesFile(file, domain, scanResult);
                 }
             }
             else if (!scanResult.LocateAssembliesOnly)
@@ -177,7 +179,7 @@ namespace Clamp.Data
             if (scanResult.LocateAssembliesOnly)
                 return;
 
-            // 寻找删除的Bundle
+            // 寻找已经删除的Bundle
             UpdateDeletedBundles(folderInfo, scanResult);
         }
 
@@ -290,6 +292,7 @@ namespace Clamp.Data
                     else if (r.NodeType == XmlNodeType.Element && r.LocalName == "Exclude")
                     {
                         string path = r.ReadElementString().Trim();
+
                         if (path.Length > 0)
                         {
                             if (!Path.IsPathRooted(path))
@@ -304,9 +307,7 @@ namespace Clamp.Data
                     r.MoveToContent();
                 }
             }
-#pragma warning disable CS0168 // 声明了变量“ex”，但从未使用过
             catch (Exception ex)
-#pragma warning restore CS0168 // 声明了变量“ex”，但从未使用过
             {
                 return;
             }
@@ -322,25 +323,28 @@ namespace Clamp.Data
 
                 if (!Path.IsPathRooted(dir))
                     dir = Path.Combine(basePath, dir);
+
                 ScanFolder(dir, d[1], scanResult);
             }
 
             foreach (string[] d in directoriesWithSubdirs)
             {
                 string dir = d[0];
+
                 if (!Path.IsPathRooted(dir))
                     dir = Path.Combine(basePath, dir);
-                ScanFolderRec(dir, d[1], scanResult);
+
+                ScanFolderWithSubdirs(dir, d[1], scanResult);
             }
         }
 
         /// <summary>
-        /// 检查当前目录下的子目录
+        /// 检查当前目录。并且检查目录下的子目录
         /// </summary>
         /// <param name="dir"></param>
         /// <param name="domain"></param>
         /// <param name="scanResult"></param>
-        public void ScanFolderRec(string dir, string domain, BundleScanResult scanResult)
+        public void ScanFolderWithSubdirs(string dir, string domain, BundleScanResult scanResult)
         {
             ScanFolder(dir, domain, scanResult);
 
@@ -348,7 +352,7 @@ namespace Clamp.Data
                 return;
 
             foreach (string sd in fs.GetDirectories(dir))
-                ScanFolderRec(sd, domain, scanResult);
+                ScanFolderWithSubdirs(sd, domain, scanResult);
         }
 
         /// <summary>
@@ -406,11 +410,6 @@ namespace Clamp.Data
                     }
 
                     StringCollection errors = bdesc.Verify(fs);
-
-                    if (database.IsGlobalRegistry && bdesc.BundleId.IndexOf('.') == -1)
-                    {
-                        errors.Add("插件注册到公共域的时候，必须是有一个空间命名.");
-                    }
 
                     if (errors.Count > 0)
                     {

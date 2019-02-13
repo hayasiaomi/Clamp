@@ -9,6 +9,9 @@ using System.Text;
 
 namespace Clamp.Nodes
 {
+    /// <summary>
+    /// 扩展树
+    /// </summary>
     internal class ExtensionTree : TreeNode
     {
         internal const string AutoIdPrefix = "__nid_";
@@ -199,6 +202,7 @@ namespace Clamp.Nodes
                 return null;
             }
         }
+
         #region private mehtod
         bool InitializeNodeType(ExtensionNodeType ntype)
         {

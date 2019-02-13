@@ -49,9 +49,20 @@ namespace Clamp.Data
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public virtual System.Collections.Generic.IEnumerable<string> GetFiles(string path)
+        public virtual IEnumerable<string> GetFiles(string path)
         {
             return Directory.GetFiles(path);
+        }
+
+
+        /// <summary>
+        /// 获得目录下的所有文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<string> GetFiles(string path, string searchOption)
+        {
+            return Directory.GetFiles(path, searchOption, SearchOption.TopDirectoryOnly);
         }
 
         /// <summary>
@@ -89,28 +100,10 @@ namespace Clamp.Data
             if (reflector != null)
                 return reflector;
 
-            // If there is a local copy of the cecil reflector, use it instead of the one in the gac
-            Type t;
-            string asmFile = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "Mono.Bundles.CecilReflector.dll");
-            if (File.Exists(asmFile))
-            {
-                Assembly asm = Assembly.LoadFrom(asmFile);
-                t = asm.GetType("Mono.Bundles.CecilReflector.Reflector");
-            }
-            else
-            {
-                string refName = GetType().Assembly.FullName;
-                int i = refName.IndexOf(',');
-                refName = "Mono.Bundles.CecilReflector.Reflector, Mono.Bundles.CecilReflector" + refName.Substring(i);
-                t = Type.GetType(refName, false);
-            }
-
-            if (t != null)
-                reflector = (IAssemblyReflector)Activator.CreateInstance(t);
-            else
-                reflector = new DefaultAssemblyReflector();
+            reflector = new DefaultAssemblyReflector();
 
             reflector.Initialize(locator);
+
             return reflector;
         }
 
