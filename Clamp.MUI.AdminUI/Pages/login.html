@@ -95,7 +95,7 @@
                     </label>
                 </div>
             </div>
-            <a href="#" class="btn btn-primary btn-block" onclick="return login()">登录</a>
+            <a id="btnLogin" href="#" class="btn btn-primary btn-block" onclick="return login()">登录</a>
         </form>
         <div class="text-center" style="margin-top:10px;">
             <div id="lbl-errors" class="alert alert-danger" role="alert" style="display:none"></div>
@@ -104,5 +104,19 @@
     <script src="/admin/vendor/jquery/jquery.js"></script>
     <script src="/admin/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="/admin/vendor/jquery-easing/jquery.easing.js"></script>
-</body>
-</html>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#txt-username').keypress(function (e) {
+                if (e.keyCode == 13)
+                    $('#btnLogin').click();
+            });
+
+            $('#txt-password').keypress(function (e) {
+                if (e.keyCode == 13)
+                    $('#btnLogin').click();
+            });
+        });
+    </script>
+</body >
+</html >
