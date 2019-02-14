@@ -34,10 +34,15 @@ namespace Clamp.AppCenter.CFX
         /// <param name="BeforeChromiumInitialize"></param>
         /// <param name="BeforeCommandLineProcessing"></param>
         /// <returns></returns>
-        public static bool InitializeChromium(string localRuntimeDir = null, Action<OnBeforeCfxInitializeEventArgs> BeforeChromiumInitialize = null, Action<CfxOnBeforeCommandLineProcessingEventArgs> BeforeCommandLineProcessing = null)
+        public static bool InitializeChromium(string baseDir = null, string localRuntimeDir = null,
+            Action<OnBeforeCfxInitializeEventArgs> BeforeChromiumInitialize = null,
+            Action<CfxOnBeforeCommandLineProcessingEventArgs> BeforeCommandLineProcessing = null)
         {
             if (PrepareRuntime(localRuntimeDir))
             {
+                CfxRuntime.LibCefDirPath = ClampLibCefDirPath;
+                CfxRuntime.LibCfxDirPath = localRuntimeDir;
+
                 ChromiumWebBrowser.OnBeforeCfxInitialize += (e) =>
                 {
                     //if (!Directory.Exists(cachePath))
@@ -48,7 +53,7 @@ namespace Clamp.AppCenter.CFX
                     e.Settings.Locale = "zh-CN";
                     e.Settings.CachePath = Path.Combine(ApplicationDataDir, typeof(CFXLauncher).Assembly.GetName().Name, "Cache");
                     //e.Settings.LogSeverity = CfxLogSeverity.Disable;
-                    e.Settings.BrowserSubprocessPath = Path.Combine(localRuntimeDir, ClampBrowserSubprocessPath);
+                    e.Settings.BrowserSubprocessPath = Path.Combine(baseDir, ClampBrowserSubprocessPath);
                     e.Settings.NoSandbox = false;
                     //e.Settings.RemoteDebuggingPort = 8888;
                     //e.Settings.IgnoreCertificateErrors = true;

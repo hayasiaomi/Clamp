@@ -87,6 +87,7 @@
     <ProjectReference Include="..\Clamp.AppCenter\Clamp.AppCenter.csproj">
       <Project>{4b81748f-84ba-4118-992d-c7fd039a746c}</Project>
       <Name>Clamp.AppCenter</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

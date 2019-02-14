@@ -546,106 +546,42 @@
     <Compile Include="Xml\XmlSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Diagnostics\Resources\960.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\backbone-min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\diagnostics.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\handlebars.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\info.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\interactive-diagnostics.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\interactive.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\interactive.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\jquery-1.7.1.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\jsonreport.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\logo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\logs.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\main.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\Modules\interactive\methods.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\Modules\interactive\providers.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\Modules\interactive\results.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\Modules\tracing\sessions.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\Modules\tracing\traces.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\nancy-common.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\request-tracing.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\reset.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\settings.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\text.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Resources\underscore-min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Diagnostics\Resources\960.css" />
+    <EmbeddedResource Include="Diagnostics\Resources\backbone-min.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\diagnostics.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\handlebars.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\info.png" />
+    <EmbeddedResource Include="Diagnostics\Resources\interactive-diagnostics.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\interactive.css" />
+    <EmbeddedResource Include="Diagnostics\Resources\interactive.png" />
+    <EmbeddedResource Include="Diagnostics\Resources\jquery-1.7.1.min.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\jsonreport.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\logo.png" />
+    <EmbeddedResource Include="Diagnostics\Resources\logs.png" />
+    <EmbeddedResource Include="Diagnostics\Resources\main.css" />
+    <EmbeddedResource Include="Diagnostics\Resources\Modules\interactive\methods.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\Modules\interactive\providers.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\Modules\interactive\results.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\Modules\tracing\sessions.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\Modules\tracing\traces.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\nancy-common.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\request-tracing.js" />
+    <EmbeddedResource Include="Diagnostics\Resources\reset.css" />
+    <EmbeddedResource Include="Diagnostics\Resources\settings.png" />
+    <EmbeddedResource Include="Diagnostics\Resources\text.css" />
+    <EmbeddedResource Include="Diagnostics\Resources\underscore-min.js" />
     <Content Include="ErrorHandling\Resources\404.html" />
     <Content Include="ErrorHandling\Resources\500.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Diagnostics\Views\Dashboard.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\help.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\Info.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\InteractiveDiagnostics.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\login.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\RequestTracing.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\Settings.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagnostics\Views\_DiagnosticsMaster.sshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Diagnostics\Views\Dashboard.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\help.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\Info.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\InteractiveDiagnostics.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\login.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\RequestTracing.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\Settings.sshtml" />
+    <EmbeddedResource Include="Diagnostics\Views\_DiagnosticsMaster.sshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clamp\Clamp.csproj">

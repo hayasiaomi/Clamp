@@ -19,10 +19,17 @@ namespace Clamp.ChromiumRenderer
         [STAThread]
         static void Main()
         {
+            string assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+
+            string localRuntimeDir = Path.Combine(assemblyDir, "FX");
+
             if (CfxRuntime.PlatformArch == CfxPlatformArch.x64)
-                CfxRuntime.LibCefDirPath = @"cef64";
+                CfxRuntime.LibCefDirPath = Path.Combine(localRuntimeDir, "Cef64");
             else
-                CfxRuntime.LibCefDirPath = @"cef";
+                CfxRuntime.LibCefDirPath = Path.Combine(localRuntimeDir, "Cef");
+
+
+            CfxRuntime.LibCfxDirPath = localRuntimeDir;
 
             int retval = CfxRuntime.ExecuteProcess();
 

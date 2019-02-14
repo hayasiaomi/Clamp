@@ -54,9 +54,7 @@ namespace Clamp.MUI.WF
 
         public override void Run(params string[] commandLines)
         {
-            string assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-
-            if (CFXLauncher.InitializeChromium(assemblyDir, BeforeChromiumInitialize))
+            if (CFXLauncher.InitializeChromium(AppDomain.CurrentDomain.BaseDirectory, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FX"), BeforeChromiumInitialize))
             {
                 this.ConfigYEUXMaps = this.GetYEUXConfiguration();
 
