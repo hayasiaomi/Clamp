@@ -22,17 +22,13 @@ namespace Clamp.AppCenter
 
             string cfxResHandeEmbedded = appCenterConfigMaps[AppCenterConstant.CFX_RESOURCE_HANDLER_EMBEDDED];
 
-            string url = cfxResHandeEmbedded.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase) || cfxResHandeEmbedded.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase)
+            string url = cfxResHandeEmbedded.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase)
+                || cfxResHandeEmbedded.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase)
                 ? cfxResHandeEmbedded : $"http://{cfxResHandeEmbedded}";
 
-            ILinkerBootstrapper linkerBootstrapper = context.GetExtensionObjects<ILinkerBootstrapper>(true).FirstOrDefault();
+            HTMLAnalyzer.Initialize(new ClampLinkerBootstrapper(), new Uri(url));
 
-            if (linkerBootstrapper != null)
-            {
-                HTMLAnalyzer.Initialize(linkerBootstrapper, new Uri(url));
-            }
-
-            context.Register(typeof(Dictionary<string, string>), appCenterConfigMaps,"cfg.appcenter");
+            context.Register(typeof(Dictionary<string, string>), appCenterConfigMaps, AppCenterConstant.CFG_APPCENTER);
         }
 
         public void Stop(IBundleContext context)
@@ -44,7 +40,7 @@ namespace Clamp.AppCenter
         {
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
 
-            string clampConfFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppCenter.cfg");
+            string clampConfFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppCenterConstant.APPCENTER_CONFIG_FILE);
 
             if (File.Exists(clampConfFile))
             {

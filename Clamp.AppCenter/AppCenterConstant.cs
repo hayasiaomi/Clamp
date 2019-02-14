@@ -24,5 +24,7 @@ namespace Clamp.AppCenter
 
         public const string CFG_APPCENTER = "cfg.appcenter";
 
+        public const string APPCENTER_CONFIG_FILE = "AppCenter.cfg";
+
     }
 }

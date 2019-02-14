@@ -3,7 +3,6 @@
     using Clamp.Data.Annotation;
     using System;
 
-    [TypeExtensionPoint]
     public interface ILinkerBootstrapper : IDisposable
     {
         /// <summary>

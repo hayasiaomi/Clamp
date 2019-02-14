@@ -11,7 +11,6 @@ using Clamp.Linker.ViewEngines;
 
 namespace Clamp.AppCenter.MVC
 {
-    [Extension]
     public class ClampLinkerBootstrapper : DefaultLinkerBootstrapper
     {
         public ClampLinkerBootstrapper()
