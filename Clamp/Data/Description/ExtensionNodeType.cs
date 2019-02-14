@@ -85,7 +85,7 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Type of the object that the extension creates (only valid for TypeNodeExtension).
+        /// 类型的名称
         /// </summary>
         public string ObjectTypeName
         {
@@ -103,7 +103,7 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Long description of the node type
+        /// 说明
         /// </summary>
         public string Description
         {
@@ -112,7 +112,7 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Attributes supported by the extension node type.
+        /// 当前节点类型对应的属性集合
         /// </summary>
         public NodeTypeAttributeCollection Attributes
         {
@@ -166,16 +166,15 @@ namespace Clamp.Data.Description
                 description = de.InnerText;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ExtensionNodeType"/> class.
-        /// </summary>
+
         public ExtensionNodeType()
         {
         }
 
         /// <summary>
-        ///  Copies data from another node set 
+        /// 复制
         /// </summary>
+        /// <param name="ntype"></param>
         public void CopyFrom(ExtensionNodeType ntype)
         {
             base.CopyFrom(ntype);

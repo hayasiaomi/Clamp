@@ -7,7 +7,7 @@ using System.Text;
 namespace Clamp.Nodes
 {
     /// <summary>
-    /// 扩展节点集合
+    /// 树的扩展节点集合
     /// </summary>
     public class ExtensionNodeList : IEnumerable
     {

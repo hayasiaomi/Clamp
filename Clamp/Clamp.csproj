@@ -158,7 +158,6 @@
     <Compile Include="Data\FileDatabase.cs" />
     <Compile Include="Data\IAssemblyLocator.cs" />
     <Compile Include="Data\IAssemblyReflector.cs" />
-    <Compile Include="Data\PersistentObject.cs" />
     <Compile Include="Data\ProcessFailedException.cs" />
     <Compile Include="Data\Serialization\BinaryXmlReader.cs" />
     <Compile Include="Data\Serialization\BinaryXmlTypeMap.cs" />

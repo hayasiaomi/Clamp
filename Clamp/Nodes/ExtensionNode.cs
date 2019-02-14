@@ -82,7 +82,7 @@ namespace Clamp.Nodes
         }
 
         /// <summary>
-        /// 
+        /// 对应的BUNDLE的ID
         /// </summary>
         internal string BundleId
         {
@@ -203,87 +203,64 @@ namespace Clamp.Nodes
             }
         }
 
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <returns></returns>
+        /// <summary>
+        ///  获得子节点的所有对象
+        /// </summary>
+        /// <returns></returns>
         public object[] GetChildObjects()
         {
             return GetChildObjects(typeof(object), true);
         }
 
         /// <summary>
-        /// Returns the child objects of a node.
+        ///  获得子节点的所有对象
         /// </summary>
-        /// <param name="reuseCachedInstance">
-        /// True if the method can reuse instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node (or TypeExtensionNode.GetInstance() if reuseCachedInstance is set to true).
-        /// </remarks>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetChildObjects(bool reuseCachedInstance)
         {
             return GetChildObjects(typeof(object), reuseCachedInstance);
         }
 
         /// <summary>
-        /// Returns the child objects of a node (with type check).
+        ///  获得子节点中指定类型的所有对象
         /// </summary>
-        /// <param name="arrayElementType">
-        /// Type of the return array elements.
-        /// </param>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the
-        /// TypeExtensionNode.GetInstance(Type) method for each node.
-        /// 
-        /// An InvalidOperationException exception is thrown if one of the found child objects is not a
-        /// subclass of the provided type.
-        /// </remarks>
+        /// <param name="arrayElementType"></param>
+        /// <returns></returns>
         public object[] GetChildObjects(Type arrayElementType)
         {
             return GetChildObjects(arrayElementType, true);
         }
 
         /// <summary>
-        /// Returns the child objects of a node (with type check).
+        /// 获得子节点中指定类型的所有对象
         /// </summary>
-        /// <param name="arrayElementType">
-        /// Type of the return array elements.
-        /// </param>
-        /// <param name="reuseCachedInstance">
-        /// True if the method can reuse instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the TypeExtensionNode.CreateInstance(Type)
-        /// method for each node (or TypeExtensionNode.GetInstance(Type) if reuseCachedInstance is set to true).
-        /// 
-        /// An InvalidOperationException exception will be thrown if one of the found child objects is not a subclass
-        /// of the provided type.
-        /// </remarks>
+        /// <param name="arrayElementType"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetChildObjects(Type arrayElementType, bool reuseCachedInstance)
         {
             return (object[])GetChildObjectsInternal(arrayElementType, null, reuseCachedInstance);
         }
 
-
+        /// <summary>
+        /// 获得子节点中指定类型的所有对象
+        /// </summary>
+        /// <param name="arrayElementType"></param>
+        /// <param name="bid"></param>
+        /// <returns></returns>
         public object[] GetChildObjects(Type arrayElementType, string bid)
         {
             return (object[])GetChildObjectsInternal(arrayElementType, bid, false);
         }
 
+        /// <summary>
+        /// 获得子节点中指定类型的所有对象
+        /// </summary>
+        /// <param name="arrayElementType"></param>
+        /// <param name="bid"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetChildObjects(Type arrayElementType, string bid, bool reuseCachedInstance)
         {
             return (object[])GetChildObjectsInternal(arrayElementType, bid, reuseCachedInstance);
@@ -291,45 +268,44 @@ namespace Clamp.Nodes
 
 
         /// <summary>
-        /// Returns the child objects of a node (casting to the specified type)
+        /// 获得子节点中指定类型的所有对象
         /// </summary>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the
-        /// TypeExtensionNode.GetInstance() method for each node.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T[] GetChildObjects<T>()
         {
             return (T[])GetChildObjectsInternal(typeof(T), null, true);
         }
 
+        /// <summary>
+        /// 获得子节点中指定Bundle的对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="bid"></param>
+        /// <returns></returns>
         public T[] GetChildObjects<T>(string bid)
         {
             return (T[])GetChildObjectsInternal(typeof(T), bid, true);
         }
 
         /// <summary>
-        /// Returns the child objects of a node (casting to the specified type).
+        /// 获得子节点中指定类型的所有对象
         /// </summary>
-        /// <param name="reuseCachedInstance">
-        /// True if the method can reuse instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// An array of child objects.
-        /// </returns>
-        /// <remarks>
-        /// This method only works if all children of this node are of type Mono.Bundles.TypeExtensionNode.
-        /// The returned array is composed by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node (or TypeExtensionNode.GetInstance() if reuseCachedInstance is set to true).
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public T[] GetChildObjects<T>(bool reuseCachedInstance)
         {
             return (T[])GetChildObjectsInternal(typeof(T), null, reuseCachedInstance);
         }
 
+        /// <summary>
+        /// 获得子节点中指定类型的所有对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="bid"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public T[] GetChildObjects<T>(string bid, bool reuseCachedInstance)
         {
             return (T[])GetChildObjectsInternal(typeof(T), bid, reuseCachedInstance);
@@ -371,10 +347,10 @@ namespace Clamp.Nodes
             return list.ToArray(arrayElementType);
         }
 
-       /// <summary>
-       /// 读取节点
-       /// </summary>
-       /// <param name="elem"></param>
+        /// <summary>
+        /// 读取节点
+        /// </summary>
+        /// <param name="elem"></param>
         internal protected virtual void Read(NodeElement elem)
         {
             if (nodeType == null)
@@ -392,7 +368,7 @@ namespace Clamp.Nodes
             }
         }
 
-        void ReadObject(object ob, NodeAttribute[] attributes, Dictionary<string, ExtensionNodeType.FieldData> fields)
+        internal void ReadObject(object ob, NodeAttribute[] attributes, Dictionary<string, ExtensionNodeType.FieldData> fields)
         {
             if (fields == null)
                 return;
@@ -493,47 +469,25 @@ namespace Clamp.Nodes
             return changed;
         }
 
-        /// <summary>
-        /// Called when the add-in that defined this extension node is actually loaded in memory.
-        /// </summary>
         internal protected virtual void OnBundleLoaded()
         {
         }
 
-        /// <summary>
-        /// Called when the add-in that defined this extension node is being
-        /// unloaded from memory.
-        /// </summary>
+   
         internal protected virtual void OnBundleUnloaded()
         {
         }
 
-        /// <summary>
-        /// Called when the children list of this node has changed. It may be due to add-ins
-        /// being loaded/unloaded, or to conditions being changed.
-        /// </summary>
         protected virtual void OnChildrenChanged()
         {
         }
 
-        /// <summary>
-        /// Called when a child node is added
-        /// </summary>
-        /// <param name="node">
-        /// Added node.
-        /// </param>
         protected virtual void OnChildNodeAdded(ExtensionNode node)
         {
             if (extensionNodeChanged != null)
                 extensionNodeChanged(this, new ExtensionNodeEventArgs(ExtensionChange.Add, node));
         }
 
-        /// <summary>
-        /// Called when a child node is removed
-        /// </summary>
-        /// <param name="node">
-        /// Removed node.
-        /// </param>
         protected virtual void OnChildNodeRemoved(ExtensionNode node)
         {
             if (extensionNodeChanged != null)

@@ -18,6 +18,45 @@ namespace Clamp.Data.Description
         private ExtensionNodeDescriptionCollection nodes;
 
         /// <summary>
+        /// 路径
+        /// </summary>
+        public string Path
+        {
+            get { return path; }
+            set { path = value; }
+        }
+
+        /// <summary>
+        /// Gets the extension nodes.
+        /// </summary>
+        /// <value>
+        /// The extension nodes.
+        /// </value>
+        public ExtensionNodeDescriptionCollection ExtensionNodes
+        {
+            get
+            {
+                if (nodes == null)
+                {
+                    nodes = new ExtensionNodeDescriptionCollection(this);
+
+                    if (Element != null)
+                    {
+                        foreach (XmlNode node in Element.ChildNodes)
+                        {
+                            XmlElement e = node as XmlElement;
+
+                            if (e != null)
+                                nodes.Add(new ExtensionNodeDescription(e));
+                        }
+                    }
+                }
+                return nodes;
+            }
+        }
+
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Mono.Bundles.Description.Extension"/> class.
         /// </summary>
         public Extension()
@@ -35,6 +74,12 @@ namespace Clamp.Data.Description
             this.path = path;
         }
 
+        public Extension(XmlElement element)
+        {
+            Element = element;
+            path = element.GetAttribute("path");
+        }
+
         /// <summary>
         /// Gets the object extended by this extension
         /// </summary>
@@ -49,9 +94,12 @@ namespace Clamp.Data.Description
         public ObjectDescription GetExtendedObject()
         {
             BundleDescription desc = ParentBundleDescription;
+
             if (desc == null)
                 return null;
+
             ExtensionPoint ep = FindExtensionPoint(desc, path);
+
             if (ep == null && desc.OwnerDatabase != null)
             {
                 foreach (Dependency dep in desc.MainModule.Dependencies)
@@ -67,6 +115,7 @@ namespace Clamp.Data.Description
                     }
                 }
             }
+
             if (ep != null)
             {
                 string subp = path.Substring(ep.Path.Length).Trim('/');
@@ -77,6 +126,7 @@ namespace Clamp.Data.Description
 
                 return desc.FindExtensionNode(path, true);
             }
+
             return null;
         }
 
@@ -162,29 +212,8 @@ namespace Clamp.Data.Description
                 VerifyConditionNode(location, cnode, errors);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.Extension"/> class.
-        /// </summary>
-        /// <param name='element'>
-        /// XML that describes the extension.
-        /// </param>
-        public Extension(XmlElement element)
-        {
-            Element = element;
-            path = element.GetAttribute("path");
-        }
 
-        /// <summary>
-        /// Gets or sets the path that identifies the extension point being extended.
-        /// </summary>
-        /// <value>
-        /// The path.
-        /// </value>
-        public string Path
-        {
-            get { return path; }
-            set { path = value; }
-        }
+
 
         internal override void SaveXml(XmlElement parent)
         {
@@ -201,34 +230,6 @@ namespace Clamp.Data.Description
 
         }
 
-        /// <summary>
-        /// Gets the extension nodes.
-        /// </summary>
-        /// <value>
-        /// The extension nodes.
-        /// </value>
-        public ExtensionNodeDescriptionCollection ExtensionNodes
-        {
-            get
-            {
-                if (nodes == null)
-                {
-                    nodes = new ExtensionNodeDescriptionCollection(this);
-
-                    if (Element != null)
-                    {
-                        foreach (XmlNode node in Element.ChildNodes)
-                        {
-                            XmlElement e = node as XmlElement;
-
-                            if (e != null)
-                                nodes.Add(new ExtensionNodeDescription(e));
-                        }
-                    }
-                }
-                return nodes;
-            }
-        }
 
         int IComparable.CompareTo(object obj)
         {

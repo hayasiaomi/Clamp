@@ -5,11 +5,12 @@ using System.Text;
 
 namespace Clamp.Data.Description
 {
+    /// <summary>
+    /// 扩展集合
+    /// </summary>
     public class ExtensionCollection : ObjectDescriptionCollection<Extension>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ExtensionCollection"/> class.
-        /// </summary>
+
         public ExtensionCollection()
         {
         }
@@ -18,12 +19,6 @@ namespace Clamp.Data.Description
         {
         }
 
-        /// <summary>
-        /// Gets the <see cref="Mono.Bundles.Description.Extension"/> at the specified index.
-        /// </summary>
-        /// <param name='n'>
-        /// The index.
-        /// </param>
         public Extension this[int n]
         {
             get { return (Extension)List[n]; }

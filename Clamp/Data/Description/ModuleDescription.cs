@@ -8,6 +8,9 @@ using System.Xml;
 
 namespace Clamp.Data.Description
 {
+    /// <summary>
+    /// 模块详细
+    /// </summary>
     public class ModuleDescription : ObjectDescription
     {
         private StringCollection assemblies;
@@ -16,7 +19,6 @@ namespace Clamp.Data.Description
         private DependencyCollection dependencies;
         private ExtensionCollection extensions;
 
-        // Used only at run time
         internal RuntimeBundle RuntimeBundle;
 
         internal ModuleDescription(XmlElement element)
@@ -24,9 +26,6 @@ namespace Clamp.Data.Description
             this.Element = element;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.ModuleDescription"/> class.
-        /// </summary>
         public ModuleDescription()
         {
         }
@@ -37,33 +36,33 @@ namespace Clamp.Data.Description
             Extensions.AddRange(module.Extensions);
         }
 
-        /// <summary>
-        /// Checks if this module depends on the specified add-in.
-        /// </summary>
-        /// <returns>
-        /// <c>true</c> if there is a dependency.
-        /// </returns>
-        /// <param name='addinId'>
-        /// Identifier of the add-in
-        /// </param>
-        public bool DependsOnBundle(string addinId)
+       /// <summary>
+       /// 检测当前模块是否依赖于指定的Bundle
+       /// </summary>
+       /// <param name="bundleId"></param>
+       /// <returns></returns>
+        public bool DependsOnBundle(string bundleId)
         {
             BundleDescription desc = Parent as BundleDescription;
+
             if (desc == null)
                 throw new InvalidOperationException();
 
             foreach (Dependency dep in Dependencies)
             {
                 BundleDependency adep = dep as BundleDependency;
-                if (adep == null) continue;
-                if (Bundle.GetFullId(desc.Namespace, adep.BundleId, adep.Version) == addinId)
+
+                if (adep == null)
+                    continue;
+
+                if (Bundle.GetFullId(desc.Namespace, adep.BundleId, adep.Version) == bundleId)
                     return true;
             }
             return false;
         }
 
         /// <summary>
-        /// Gets the list of paths to be ignored by the add-in scanner.
+        /// 忽略的路径
         /// </summary>
         public StringCollection IgnorePaths
         {
@@ -76,14 +75,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets all external files
+        /// 模块所有的文件
         /// </summary>
-        /// <value>
-        /// All files.
-        /// </value>
-        /// <remarks>
-        /// External files are data files and assemblies explicitly referenced in the Runtime section of the add-in manifest.
-        /// </remarks>
         public StringCollection AllFiles
         {
             get
@@ -101,7 +94,7 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the list of external assemblies used by this module.
+        /// 模块的程序集集合
         /// </summary>
         public StringCollection Assemblies
         {
@@ -119,7 +112,7 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the list of external data files used by this module
+        /// 数据文件
         /// </summary>
         public StringCollection DataFiles
         {
@@ -137,7 +130,7 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the dependencies of this module
+        /// 模块相关的依赖
         /// </summary>
         public DependencyCollection Dependencies
         {
@@ -330,7 +323,7 @@ namespace Clamp.Data.Description
             return de;
         }
 
-        void InitCollections()
+        private void InitCollections()
         {
             dataFiles = new StringCollection();
             assemblies = new StringCollection();

@@ -11,7 +11,8 @@ namespace Clamp.Data.Description
     public class ObjectDescription : IBinaryXmlElement
     {
         internal XmlElement Element;
-        object parent;
+
+        private object parent;
 
         internal ObjectDescription(XmlElement elem)
         {

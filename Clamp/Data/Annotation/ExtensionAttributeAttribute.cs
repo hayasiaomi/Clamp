@@ -16,61 +16,29 @@ namespace Clamp.Data.Annotation
         private string val;
         private string path;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.ExtensionAttributeAttribute"/> class.
-        /// </summary>
-        /// <param name='name'>
-        /// Name of the attribute
-        /// </param>
-        /// <param name='value'>
-        /// Value of the attribute
-        /// </param>
         public ExtensionAttributeAttribute(string name, string value)
         {
-            Name = name;
-            Value = value;
+            this.name = name;
+            this.val = value;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.ExtensionAttributeAttribute"/> class.
-        /// </summary>
-        /// <param name='type'>
-        /// Type of the extension for which the attribute value is being set
-        /// </param>
-        /// <param name='name'>
-        /// Name of the attribute
-        /// </param>
-        /// <param name='value'>
-        /// Value of the attribute
-        /// </param>
         public ExtensionAttributeAttribute(Type type, string name, string value)
         {
-            Name = name;
-            Value = value;
-            Type = type;
+            this.name = name;
+            this.val = value;
+            this.targetType = type;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.ExtensionAttributeAttribute"/> class.
-        /// </summary>
-        /// <param name='path'>
-        /// Path of the extension for which the attribute value is being set
-        /// </param>
-        /// <param name='name'>
-        /// Name of the attribute
-        /// </param>
-        /// <param name='value'>
-        /// Value of the attribute
-        /// </param>
+      
         public ExtensionAttributeAttribute(string path, string name, string value)
         {
-            Name = name;
-            Value = value;
-            Path = path;
+            this.name = name;
+            this.val = value;
+            this.path = path;
         }
 
         /// <summary>
-        /// Name of the attribute
+        /// 名称
         /// </summary>
         public string Name
         {
@@ -79,7 +47,7 @@ namespace Clamp.Data.Annotation
         }
 
         /// <summary>
-        /// Value of the attribute
+        /// 值
         /// </summary>
         public string Value
         {
@@ -88,7 +56,7 @@ namespace Clamp.Data.Annotation
         }
 
         /// <summary>
-        /// Path of the extension for which the attribute value is being set
+        /// 路径
         /// </summary>
         public string Path
         {
@@ -97,7 +65,7 @@ namespace Clamp.Data.Annotation
         }
 
         /// <summary>
-        /// Type of the extension for which the attribute value is being set
+        /// 类型
         /// </summary>
         public Type Type
         {
@@ -105,6 +73,9 @@ namespace Clamp.Data.Annotation
             set { targetType = value; targetTypeName = targetType.FullName; }
         }
 
+        /// <summary>
+        /// 类型名
+        /// </summary>
         internal string TypeName
         {
             get { return targetTypeName ?? string.Empty; }

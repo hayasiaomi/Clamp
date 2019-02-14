@@ -17,12 +17,6 @@ namespace Clamp.Data.Description
         private string[] attributes;
         private string nodeName;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Addins.Description.ExtensionNodeDescription"/> class.
-        /// </summary>
-        /// <param name='nodeName'>
-        /// Node name.
-        /// </param>
         public ExtensionNodeDescription(string nodeName)
         {
             this.nodeName = nodeName;
@@ -39,21 +33,17 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the type of the node.
+        /// 获得当前节点的节点类型
         /// </summary>
-        /// <returns>
-        /// The node type.
-        /// </returns>
-        /// <remarks>
-        /// This method only works when the add-in description to which the node belongs has been
-        /// loaded from an add-in registry.
-        /// </remarks>
+        /// <returns></returns>
         public ExtensionNodeType GetNodeType()
         {
             if (Parent is Extension)
             {
                 Extension ext = (Extension)Parent;
+
                 object ob = ext.GetExtendedObject();
+
                 if (ob is ExtensionPoint)
                 {
                     ExtensionPoint ep = (ExtensionPoint)ob;
@@ -62,30 +52,29 @@ namespace Clamp.Data.Description
                 else if (ob is ExtensionNodeDescription)
                 {
                     ExtensionNodeDescription pn = (ExtensionNodeDescription)ob;
+
                     ExtensionNodeType pt = ((ExtensionNodeDescription)pn).GetNodeType();
+
                     if (pt != null)
                         return pt.GetAllowedNodeTypes()[NodeName];
                 }
+
             }
             else if (Parent is ExtensionNodeDescription)
             {
                 ExtensionNodeType pt = ((ExtensionNodeDescription)Parent).GetNodeType();
+
                 if (pt != null)
                     return pt.GetAllowedNodeTypes()[NodeName];
             }
+
             return null;
         }
 
         /// <summary>
-        /// Gets the extension path under which this node is registered
+        /// 获得父母的路径
         /// </summary>
-        /// <returns>
-        /// The parent path.
-        /// </returns>
-        /// <remarks>
-        /// For example, if the id of the node is 'ThisNode', and the node is a child of another node with id 'ParentNode', and
-        /// that parent node is defined in an extension with the path '/Core/MainExtension', then the parent path is 'Core/MainExtension/ParentNode'.
-        /// </remarks>
+        /// <returns></returns>
         public string GetParentPath()
         {
             if (Parent is Extension)
@@ -107,11 +96,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the name of the node.
+        /// 节点名
         /// </summary>
-        /// <value>
-        /// The name of the node.
-        /// </value>
         public string NodeName
         {
             get { return nodeName; }
@@ -123,24 +109,13 @@ namespace Clamp.Data.Description
             }
         }
 
-        /// <summary>
-        /// Gets or sets the identifier of the node.
-        /// </summary>
-        /// <value>
-        /// The identifier.
-        /// </value>
+
         public string Id
         {
             get { return GetAttribute("id"); }
             set { SetAttribute("id", value); }
         }
 
-        /// <summary>
-        /// Gets or sets the identifier of the node after which this node has to be inserted
-        /// </summary>
-        /// <value>
-        /// The identifier of the reference node
-        /// </value>
         public string InsertAfter
         {
             get { return GetAttribute("insertafter"); }
@@ -153,12 +128,7 @@ namespace Clamp.Data.Description
             }
         }
 
-        /// <summary>
-        /// Gets or sets the identifier of the node before which this node has to be inserted
-        /// </summary>
-        /// <value>
-        /// The identifier of the reference node
-        /// </value>
+
         public string InsertBefore
         {
             get { return GetAttribute("insertbefore"); }
@@ -172,11 +142,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets a value indicating whether this node is a condition.
+        /// 是否有条件
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this node is a condition; otherwise, <c>false</c>.
-        /// </value>
         public bool IsCondition
         {
             get { return nodeName == "Condition" || nodeName == "ComplexCondition"; }
@@ -198,14 +165,10 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the value of an attribute.
+        /// 获得对应的属性值
         /// </summary>
-        /// <returns>
-        /// The value of the attribute, or an empty string if the attribute is not defined.
-        /// </returns>
-        /// <param name='key'>
-        /// Name of the attribute.
-        /// </param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string GetAttribute(string key)
         {
             if (Element != null)
@@ -222,14 +185,10 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Sets the value of an attribute.
+        /// 设置属性值
         /// </summary>
-        /// <param name='key'>
-        /// Name of the attribute
-        /// </param>
-        /// <param name='value'>
-        /// The value.
-        /// </param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void SetAttribute(string key, string value)
         {
             if (Element != null)
@@ -258,6 +217,7 @@ namespace Clamp.Data.Description
                 }
             }
             string[] newList = new string[attributes.Length + 2];
+
             attributes.CopyTo(newList, 0);
             attributes = newList;
             attributes[attributes.Length - 2] = key;
@@ -265,11 +225,9 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Removes an attribute.
+        /// 移除指定的属性
         /// </summary>
-        /// <param name='name'>
-        /// Name of the attribute to remove.
-        /// </param>
+        /// <param name="name"></param>
         public void RemoveAttribute(string name)
         {
             if (Element != null)
@@ -295,37 +253,36 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the attributes of the node.
+        /// 节点的属性集合
         /// </summary>
-        /// <value>
-        /// The attributes.
-        /// </value>
         public NodeAttribute[] Attributes
         {
             get
             {
                 if (Element != null)
                     SaveXmlAttributes();
+
                 if (attributes == null)
                     return new NodeAttribute[0];
+
                 NodeAttribute[] ats = new NodeAttribute[attributes.Length / 2];
+
                 for (int n = 0; n < ats.Length; n++)
                 {
                     NodeAttribute at = new NodeAttribute();
+
                     at.name = attributes[n * 2];
                     at.value = attributes[n * 2 + 1];
                     ats[n] = at;
+
                 }
                 return ats;
             }
         }
 
         /// <summary>
-        /// Gets the child nodes.
+        /// 获得子节点
         /// </summary>
-        /// <value>
-        /// The child nodes.
-        /// </value>
         public ExtensionNodeDescriptionCollection ChildNodes
         {
             get

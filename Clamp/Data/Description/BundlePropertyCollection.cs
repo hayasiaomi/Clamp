@@ -5,90 +5,58 @@ using System.Text;
 
 namespace Clamp.Data.Description
 {
+    /// <summary>
+    /// Bundle的属性集合
+    /// </summary>
     public interface BundlePropertyCollection : IEnumerable<BundleProperty>
     {
         /// <summary>
-        /// Gets the value of a property
+        /// 获得属性的值，通过名称
         /// </summary>
-        /// <returns>
-        /// The property value.
-        /// </returns>
-        /// <param name='name'>
-        /// Name of the property.
-        /// </param>
-        /// <remarks>
-        /// If the property is localized, it will return the value for the current language if exists, or the
-        /// default value if it doesn't.
-        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
         string GetPropertyValue(string name);
-
         /// <summary>
-        /// Gets the value of a property
+        /// 获得属性的值，通过名称和本地化
         /// </summary>
-        /// <returns>
-        /// The property value.
-        /// </returns>
-        /// <param name='name'>
-        /// Name of the property.
-        /// </param>
-        /// <param name='locale'>
-        /// Locale for which the value must be returned.
-        /// </param>
+        /// <param name="name"></param>
+        /// <param name="locale"></param>
+        /// <returns></returns>
         string GetPropertyValue(string name, string locale);
 
         /// <summary>
-        /// Sets the value of a property
+        /// 设置属性的值 
         /// </summary>
-        /// <param name='name'>
-        /// Name of the property
-        /// </param>
-        /// <param name='value'>
-        /// New value.
-        /// </param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
         void SetPropertyValue(string name, string value);
 
         /// <summary>
-        /// Sets the value of a property for a specific locale
+        /// 设置属性的值 
         /// </summary>
-        /// <param name='name'>
-        /// Name of the property.
-        /// </param>
-        /// <param name='value'>
-        /// New value.
-        /// </param>
-        /// <param name='locale'>
-        /// Locale of the property to be set.
-        /// </param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="locale"></param>
         void SetPropertyValue(string name, string value, string locale);
 
         /// <summary>
-        /// Removes a property.
+        /// 移除属性值
         /// </summary>
-        /// <param name='name'>
-        /// Name of the property.
-        /// </param>
-        /// <remarks>
-        /// This method only removes properties which have no locale set.
-        /// </remarks>
+        /// <param name="name"></param>
         void RemoveProperty(string name);
 
         /// <summary>
-        /// Removes a property with a specified locale
+        ///  移除属性值
         /// </summary>
-        /// <param name='name'>
-        /// Name of the property
-        /// </param>
-        /// <param name='locale'>
-        /// Locale of the property
-        /// </param>
+        /// <param name="name"></param>
+        /// <param name="locale"></param>
         void RemoveProperty(string name, string locale);
 
-
         /// <summary>
-        /// Checks whether this collection contains a property
+        /// 是否存在指定的属性
         /// </summary>
-        /// <returns><c>true</c>, if the collection has the property, <c>false</c> otherwise.</returns>
-        /// <param name="name">Name of the property</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         bool HasProperty(string name);
     }
 

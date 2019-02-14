@@ -9,40 +9,25 @@ using System.Xml.Serialization;
 
 namespace Clamp.Data.Description
 {
+    /// <summary>
+    /// 表示所依赖的Bundle
+    /// </summary>
     [XmlType("BundleReference")]
     public class BundleDependency : Dependency
     {
         string id;
         string version;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.BundleDependency"/> class.
-        /// </summary>
         public BundleDependency()
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.BundleDependency"/> class.
-        /// </summary>
-        /// <param name='fullId'>
-        /// Full identifier of the add-in (includes version)
-        /// </param>
         public BundleDependency(string fullId)
         {
             Bundle.GetIdParts(fullId, out id, out version);
             id = "::" + id;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mono.Bundles.Description.BundleDependency"/> class.
-        /// </summary>
-        /// <param name='id'>
-        /// Identifier of the add-in.
-        /// </param>
-        /// <param name='version'>
-        /// Version of the add-in.
-        /// </param>
         public BundleDependency(string id, string version)
         {
             this.id = id;
@@ -68,15 +53,9 @@ namespace Clamp.Data.Description
             Element.SetAttribute("version", Version);
         }
 
-        /// <summary>
-        /// Gets the full addin identifier.
-        /// </summary>
-        /// <value>
-        /// The full addin identifier.
-        /// </value>
-        /// <remarks>
-        /// Includes namespace and version number. For example: MonoDevelop.TextEditor,1.0
-        /// </remarks>
+       /// <summary>
+       /// Bundle的全称ID
+       /// </summary>
         public string FullBundleId
         {
             get
@@ -89,12 +68,9 @@ namespace Clamp.Data.Description
             }
         }
 
-        /// <summary>
-        /// Gets or sets the addin identifier.
-        /// </summary>
-        /// <value>
-        /// The addin identifier.
-        /// </value>
+       /// <summary>
+       /// ID
+       /// </summary>
         public string BundleId
         {
             get { return id != null ? ParseString(id) : string.Empty; }
@@ -102,23 +78,17 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the version.
+        /// 版本号
         /// </summary>
-        /// <value>
-        /// The version.
-        /// </value>
         public string Version
         {
             get { return version != null ? ParseString(version) : string.Empty; }
             set { version = value; }
         }
 
-        /// <summary>
-        /// Display name of the dependency.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
+       /// <summary>
+       /// 名称
+       /// </summary>
         public override string Name
         {
             get { return BundleId + " v" + Version; }

@@ -7,22 +7,23 @@ using System.Xml.Serialization;
 
 namespace Clamp.Data.Description
 {
+    /// <summary>
+    /// 用于定义Bundle的属性
+    /// </summary>
     public class BundleProperty : IBinaryXmlElement
     {
         /// <summary>
-        /// Name of the property
+        /// 名称
         /// </summary>
         [XmlAttribute("name")]
         public string Name { get; set; }
-
         /// <summary>
-        /// Locale of the property. It is null if the property is not localized.
+        /// 本地化
         /// </summary>
         [XmlAttribute("locale")]
         public string Locale { get; set; }
-
         /// <summary>
-        /// Value of the property.
+        /// 值
         /// </summary>
         [XmlText]
         public string Value { get; set; }

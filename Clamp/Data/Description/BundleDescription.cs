@@ -96,11 +96,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the local identifier.
+        /// 本地ID
         /// </summary>
-        /// <value>
-        /// The local identifier.
-        /// </value>
         public string LocalId
         {
             get { return id != null ? ParseString(id) : string.Empty; }
@@ -370,11 +367,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets the main module.
+        /// 主模块信息
         /// </summary>
-        /// <value>
-        /// The main module.
-        /// </value>
         public ModuleDescription MainModule
         {
             get
@@ -414,11 +408,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets all modules (including the main module and all optional modules)
+        /// 所有模块信息
         /// </summary>
-        /// <value>
-        /// All modules.
-        /// </value>
         public ModuleCollection AllModules
         {
             get
@@ -496,17 +487,17 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the add-in localizer.
+        /// 本地化
         /// </summary>
-        /// <value>
-        /// The description of the add-in localizer for this add-in.
-        /// </value>
         public ExtensionNodeDescription Localizer
         {
             get { return localizer; }
             set { localizer = value; }
         }
 
+        /// <summary>
+        /// 激活类
+        /// </summary>
         public ExtensionNodeDescription Activator
         {
             get { return activator; }
@@ -527,14 +518,10 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Adds an extension point.
+        /// 增加一个扩展点
         /// </summary>
-        /// <returns>
-        /// The extension point.
-        /// </returns>
-        /// <param name='path'>
-        /// Path that identifies the new extension point.
-        /// </param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ExtensionPoint AddExtensionPoint(string path)
         {
             ExtensionPoint ep = new ExtensionPoint();
@@ -1183,12 +1170,9 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Verify this instance.
+        /// 验证有效性
         /// </summary>
-        /// <remarks>
-        /// This method checks all the definitions in the description and returns a list of errors.
-        /// If the returned list is empty, it means that the description is valid.
-        /// </remarks>
+        /// <returns></returns>
         public StringCollection Verify()
         {
             return Verify(new BundleFileSystemExtension());

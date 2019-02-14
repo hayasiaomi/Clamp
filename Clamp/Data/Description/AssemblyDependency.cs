@@ -9,6 +9,9 @@ using System.Xml.Serialization;
 
 namespace Clamp.Data.Description
 {
+    /// <summary>
+    /// 表示所依赖的程序集
+    /// </summary>
     [XmlType("AssemblyDependency")]
     public class AssemblyDependency : Dependency
     {

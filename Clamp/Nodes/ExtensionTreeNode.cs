@@ -46,6 +46,9 @@ namespace Clamp.Nodes
             get { return id; }
         }
 
+        /// <summary>
+        /// 树的扩展节点
+        /// </summary>
         public ExtensionNode ExtensionNode
         {
             get
@@ -56,7 +59,7 @@ namespace Clamp.Nodes
 
                     this.extensionNode.SetData(this.clampBundle, this.extensionPoint.RootBundle, null, null);
 
-                    AttachExtensionNode(this.extensionNode);
+                    this.AttachExtensionNode(this.extensionNode);
                 }
 
                 return this.extensionNode;
@@ -104,16 +107,25 @@ namespace Clamp.Nodes
             }
         }
 
+        /// <summary>
+        /// 是否加载过子节点
+        /// </summary>
         public bool ChildrenLoaded
         {
             get { return childrenLoaded; }
         }
 
+        /// <summary>
+        /// 子节点的数量
+        /// </summary>
         internal int ChildCount
         {
             get { return childrenList == null ? 0 : childrenList.Count; }
         }
 
+        /// <summary>
+        /// 子节点
+        /// </summary>
         public ExtensionTreeNodeCollection Children
         {
             get
@@ -139,7 +151,10 @@ namespace Clamp.Nodes
         #endregion
 
         #region internal method
-
+        /// <summary>
+        /// 配置当前树对应的扩展节点
+        /// </summary>
+        /// <param name="enode"></param>
         internal void AttachExtensionNode(ExtensionNode enode)
         {
             this.extensionNode = enode;
@@ -172,11 +187,22 @@ namespace Clamp.Nodes
                 return GetNode(path + "/" + childId);
         }
 
+        /// <summary>
+        /// 通过路径获得对应的树节点
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ExtensionTreeNode GetNode(string path)
         {
             return GetNode(path, false);
         }
 
+        /// <summary>
+        /// 通过路径获得对应的树节点 buildPath表示如果不存在是否要编译当前的路径
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="buildPath"></param>
+        /// <returns></returns>
         public ExtensionTreeNode GetNode(string path, bool buildPath)
         {
             if (path.StartsWith("/"))
@@ -208,11 +234,16 @@ namespace Clamp.Nodes
         }
 
 
-
+        /// <summary>
+        /// 获得当前树的路径
+        /// </summary>
+        /// <returns></returns>
         public string GetPath()
         {
             int num = 0;
+
             ExtensionTreeNode node = this;
+
             while (node != null)
             {
                 num++;
@@ -222,6 +253,7 @@ namespace Clamp.Nodes
             string[] ids = new string[num];
 
             node = this;
+
             while (node != null)
             {
                 ids[--num] = node.id;
@@ -234,6 +266,7 @@ namespace Clamp.Nodes
         {
             if (extensionNode != null && extensionNode.BundleId == ad.Bundle.Id)
                 extensionNode.OnBundleLoaded();
+
             if (recursive && childrenLoaded)
             {
                 foreach (ExtensionTreeNode node in Children.Clone())

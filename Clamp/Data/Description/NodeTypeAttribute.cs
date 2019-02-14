@@ -10,11 +10,11 @@ namespace Clamp.Data.Description
 {
     public sealed class NodeTypeAttribute : ObjectDescription
     {
-        string name;
-        string type;
-        bool required;
-        bool localizable;
-        string description;
+        private string name;
+        private string type;
+        private bool required;
+        private bool localizable;
+        private string description;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mono.Addins.Description.NodeTypeAttribute"/> class.
@@ -31,19 +31,15 @@ namespace Clamp.Data.Description
         /// </param>
         public void CopyFrom(NodeTypeAttribute att)
         {
-            name = att.name;
-            type = att.type;
-            required = att.required;
-            localizable = att.localizable;
-            description = att.description;
+            this.name = att.name;
+            this.type = att.type;
+            this.required = att.required;
+            this.localizable = att.localizable;
+            this.description = att.description;
         }
-
         /// <summary>
-        /// Gets or sets the name of the attribute.
+        /// 属性名
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public string Name
         {
             get { return name != null ? name : string.Empty; }
@@ -51,11 +47,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Mono.Addins.Description.NodeTypeAttribute"/> is required.
+        /// 是否为必需
         /// </summary>
-        /// <value>
-        /// <c>true</c> if required; otherwise, <c>false</c>.
-        /// </value>
         public bool Required
         {
             get { return required; }
@@ -63,11 +56,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Mono.Addins.Description.NodeTypeAttribute"/> is localizable.
+        ///是否可以本地化
         /// </summary>
-        /// <value>
-        /// <c>true</c> if localizable; otherwise, <c>false</c>.
-        /// </value>
         public bool Localizable
         {
             get { return localizable; }
@@ -75,11 +65,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the type of the attribute.
+        /// 属性的类型
         /// </summary>
-        /// <value>
-        /// The type.
-        /// </value>
         public string Type
         {
             get { return type != null ? type : string.Empty; }
@@ -87,11 +74,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the description of the attribute.
+        /// 属性的说明
         /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
         public string Description
         {
             get { return description != null ? description : string.Empty; }
@@ -99,13 +83,8 @@ namespace Clamp.Data.Description
         }
 
         /// <summary>
-        /// Gets or sets the type of the content.
+        /// 内容的类型
         /// </summary>
-        /// <remarks>
-        /// Allows specifying the type of the content of a string attribute.
-        /// The value of this property is only informative, and it doesn't
-        /// have any effect on how add-ins are packaged or loaded.
-        /// </remarks>
         public ContentType ContentType { get; set; }
 
         internal override void Verify(string location, StringCollection errors)

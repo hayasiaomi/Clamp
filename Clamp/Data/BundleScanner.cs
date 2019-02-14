@@ -685,7 +685,7 @@ namespace Clamp.Data
         }
 
         /// <summary>
-        /// 检测Bundle的信息
+        /// 检测Bundle的对应的详细信息
         /// </summary>
         /// <param name="reflector"></param>
         /// <param name="config"></param>
@@ -704,7 +704,9 @@ namespace Clamp.Data
                 {
                     ScanAssemblyBundleHeaders(reflector, config, rootAssembly, scanResult);
                     ScanAssemblyImports(reflector, config.MainModule, rootAssembly);
+
                     assemblies.Add(rootAssembly);
+
                     rootAsmFile = Path.GetFileName(config.BundleFile);
                 }
 
@@ -1212,6 +1214,7 @@ namespace Clamp.Data
                             else
                             {
                                 ep = config.AddExtensionPoint(GetDefaultTypeExtensionPath(config, typeFullName));
+
                                 nt.ObjectTypeName = typeFullName;
                             }
 
@@ -1518,6 +1521,7 @@ namespace Clamp.Data
                     }
                 }
             }
+
             return true;
         }
         #endregion
