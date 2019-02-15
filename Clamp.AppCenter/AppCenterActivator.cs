@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Clamp.Cfg;
+using Clamp.AppCenter.CFX;
+using Chromium.WebBrowser.Event;
 
 namespace Clamp.AppCenter
 {
@@ -17,6 +19,7 @@ namespace Clamp.AppCenter
         public void Start(IBundleContext context)
         {
             BundleContext = context;
+
 
             Dictionary<string, string> appCenterConfigMaps = this.GetClampAppCenterConfiguration();
 
@@ -29,12 +32,15 @@ namespace Clamp.AppCenter
             HTMLAnalyzer.Initialize(new ClampLinkerBootstrapper(), new Uri(url));
 
             context.Register(typeof(Dictionary<string, string>), appCenterConfigMaps, AppCenterConstant.CFG_APPCENTER);
+
         }
 
         public void Stop(IBundleContext context)
         {
             HTMLAnalyzer.Shutdown();
+          
         }
+     
 
         private Dictionary<string, string> GetClampAppCenterConfiguration()
         {

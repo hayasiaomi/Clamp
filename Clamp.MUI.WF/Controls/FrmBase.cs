@@ -626,13 +626,11 @@ namespace Clamp.MUI.WF.Controls
         {
             base.OnClosed(e);
 
-            this.ChromiumWebBrowser?.Dispose();
+            //this.ChromiumWebBrowser?.Dispose();
 
             this.chromeWidgetMessageInterceptor?.ReleaseHandle();
             this.chromeWidgetMessageInterceptor?.DestroyHandle();
             this.chromeWidgetMessageInterceptor = null;
-
-
         }
 
         #endregion

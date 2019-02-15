@@ -17,22 +17,21 @@ namespace Clamp.MUI.WF.Handlers
             this.frmMain = frmMain;
         }
 
-        public object Logout(string username, string password, bool remember)
+        public object Logout()
         {
+            Thread thread = new Thread(new ThreadStart(() =>
+             {
+                 FrmLogin frmLogin = new FrmLogin();
 
-            Thread mainThread = new Thread(new ThreadStart(() =>
-            {
-                FrmLogin frmLogin = new FrmLogin();
+                 frmLogin.FrmMain = this.frmMain;
 
-                frmLogin.FrmMain = this.frmMain;
+                 Application.Run(frmLogin);
+             }));
 
-                Application.Run(frmLogin);
-            }));
+            WFAppManager.Current.UIThreadStacks.Push(thread);
 
-            mainThread.SetApartmentState(ApartmentState.STA);
-            mainThread.Start();
-
-            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
 
             return null;
         }
@@ -43,8 +42,6 @@ namespace Clamp.MUI.WF.Handlers
             {
                 if (MessageBox.Show(this.frmMain, "确定退出?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    (WFAppManager.Current as WFAppManager).CurrentThread = null;
-
                     this.frmMain.Close();
                 }
             }));

@@ -20,15 +20,8 @@ namespace Clamp
         private ArrayList runTimeDisabledBundles;
 
         /// <summary>
-        /// Extension change event.
+        /// 扩展发生变化事件
         /// </summary>
-        /// <remarks>
-        /// This event is fired when any extension point in the add-in system changes.
-        /// The event args object provides the path of the changed extension, although
-        /// it does not provide information about what changed. Hosts subscribing to
-        /// this event should get the new list of nodes using a query method such as
-        /// BundleManager.GetExtensionNodes() and then update whatever needs to be updated.
-        /// </remarks>
         public event ExtensionEventHandler ExtensionChanged;
 
         internal bool FireEvents
@@ -36,31 +29,9 @@ namespace Clamp
             get { return fireEvents; }
         }
 
-        //internal TreeClampBundle(ClampBundle clampBundle, TreeClampBundle parent)
-        //{
-        //    this.fireEvents = false;
-        //    this.tree = new ExtensionTree(clampBundle, this);
-        //    this.parentContext = parent;
-        //}
-
-
         #region public mehtod
 
 
-        /// <summary>
-        /// Registers a new condition in the extension context.
-        /// </summary>
-        /// <param name="id">
-        /// Identifier of the condition.
-        /// </param>
-        /// <param name="type">
-        /// Condition evaluator.
-        /// </param>
-        /// <remarks>
-        /// The registered condition will be particular to this extension context.
-        /// Any event that might be fired as a result of changes in the condition will
-        /// only be fired in this context.
-        /// </remarks>
         public void RegisterCondition(string id, ConditionType type)
         {
             type.Id = id;
@@ -72,19 +43,7 @@ namespace Clamp
             type.Changed += new EventHandler(OnConditionChanged);
         }
 
-        /// <summary>
-        /// Registers a new condition in the extension context.
-        /// </summary>
-        /// <param name="id">
-        /// Identifier of the condition.
-        /// </param>
-        /// <param name="type">
-        /// Type of the condition evaluator. Must be a subclass of Mono.Bundles.ConditionType.
-        /// </param>
-        /// <remarks>
-        /// The registered condition will be particular to this extension context. Any event
-        /// that might be fired as a result of changes in the condition will only be fired in this context.
-        /// </remarks>
+
         public void RegisterCondition(string id, Type type)
         {
             // Allows delayed creation of condition types
@@ -96,14 +55,10 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Returns the extension node in a path
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="path">
-        /// Location of the node.
-        /// </param>
-        /// <returns>
-        /// The node, or null if not found.
-        /// </returns>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ExtensionNode GetExtensionNode(string path)
         {
             ExtensionTreeNode node = GetNode(path);
@@ -118,47 +73,32 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Returns the extension node in a path
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="path">
-        /// Location of the node.
-        /// </param>
-        /// <returns>
-        /// The node, or null if not found.
-        /// </returns>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public T GetExtensionNode<T>(string path) where T : ExtensionNode
         {
             return (T)GetExtensionNode(path);
         }
 
         /// <summary>
-        /// Gets extension nodes registered in a path.
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="path">
-        /// An extension path.>
-        /// </param>
-        /// <returns>
-        /// All nodes registered in the provided path.
-        /// </returns>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ExtensionNodeList GetExtensionNodes(string path)
         {
             return GetExtensionNodes(path, null);
         }
 
         /// <summary>
-        /// Gets extension nodes registered in a path.
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <returns>
-        /// A list of nodes
-        /// </returns>
-        /// <remarks>
-        /// This method returns all nodes registered under the provided path.
-        /// It will throw a InvalidOperationException if the type of one of
-        /// the registered nodes is not assignable to the provided type.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ExtensionNodeList<T> GetExtensionNodes<T>(string path) where T : ExtensionNode
         {
             ExtensionNodeList nodes = GetExtensionNodes(path, typeof(T));
@@ -166,39 +106,21 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets extension nodes for a type extension point
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <returns>
-        /// A list of nodes
-        /// </returns>
-        /// <remarks>
-        /// This method returns all extension nodes bound to the provided type.
-        /// </remarks>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
         public ExtensionNodeList GetExtensionNodes(Type instanceType)
         {
             return GetExtensionNodes(instanceType, typeof(ExtensionNode));
         }
 
         /// <summary>
-        /// Gets extension nodes for a type extension point
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <param name="expectedNodeType">
-        /// Expected extension node type
-        /// </param>
-        /// <returns>
-        /// A list of nodes
-        /// </returns>
-        /// <remarks>
-        /// This method returns all nodes registered for the provided type.
-        /// It will throw a InvalidOperationException if the type of one of
-        /// the registered nodes is not assignable to the provided node type.
-        /// </remarks>
+        /// <param name="instanceType"></param>
+        /// <param name="expectedNodeType"></param>
+        /// <returns></returns>
         public ExtensionNodeList GetExtensionNodes(Type instanceType, Type expectedNodeType)
         {
             string path = this.GetAutoTypeExtensionPoint(instanceType);
@@ -208,19 +130,11 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets extension nodes for a type extension point
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <returns>
-        /// A list of nodes
-        /// </returns>
-        /// <remarks>
-        /// This method returns all nodes registered for the provided type.
-        /// It will throw a InvalidOperationException if the type of one of
-        /// the registered nodes is not assignable to the specified node type argument.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
         public ExtensionNodeList<T> GetExtensionNodes<T>(Type instanceType) where T : ExtensionNode
         {
             string path = this.GetAutoTypeExtensionPoint(instanceType);
@@ -230,22 +144,11 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets extension nodes registered in a path.
+        /// 获得扩展节点
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <param name="expectedNodeType">
-        /// Expected node type.
-        /// </param>
-        /// <returns>
-        /// A list of nodes
-        /// </returns>
-        /// <remarks>
-        /// This method returns all nodes registered under the provided path.
-        /// It will throw a InvalidOperationException if the type of one of
-        /// the registered nodes is not assignable to the provided type.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="expectedNodeType"></param>
+        /// <returns></returns>
         public ExtensionNodeList GetExtensionNodes(string path, Type expectedNodeType)
         {
             ExtensionTreeNode node = GetNode(path);
@@ -281,19 +184,21 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets extension objects registered for a type extension point.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <returns>
-        /// A list of objects
-        /// </returns>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(Type instanceType)
         {
             return GetExtensionObjects(instanceType, true);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <param name="bid"></param>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjectsByBundleId(string bid, Type instanceType)
         {
             return GetExtensionObjects(bid, instanceType, true);
@@ -301,37 +206,32 @@ namespace Clamp
 
 
         /// <summary>
-        /// Gets extension objects registered for a type extension point.
+        /// 获得扩展对象
         /// </summary>
-        /// <returns>
-        /// A list of objects
-        /// </returns>
-        /// <remarks>
-        /// The type argument of this generic method is the type that defines
-        /// the extension point.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>()
         {
             return GetExtensionObjects<T>(true);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="bid"></param>
+        /// <returns></returns>
         public T[] GetExtensionObjectsByBundleId<T>(string bid)
         {
             return GetExtensionObjectsByBundleId<T>(bid, true);
         }
 
         /// <summary>
-        /// Gets extension objects registered for a type extension point.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <param name="reuseCachedInstance">
-        /// When set to True, it will return instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// A list of extension objects.
-        /// </returns>
+        /// <param name="instanceType"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(Type instanceType, bool reuseCachedInstance)
         {
             string path = this.GetAutoTypeExtensionPoint(instanceType);
@@ -342,6 +242,13 @@ namespace Clamp
             return GetExtensionObjects(path, null, instanceType, reuseCachedInstance);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <param name="bid"></param>
+        /// <param name="instanceType"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string bid, Type instanceType, bool reuseCachedInstance)
         {
             string path = this.GetAutoTypeExtensionPoint(instanceType);
@@ -353,18 +260,11 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets extension objects registered for a type extension point.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="reuseCachedInstance">
-        /// When set to True, it will return instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// A list of extension objects.
-        /// </returns>
-        /// <remarks>
-        /// The type argument of this generic method is the type that defines
-        /// the extension point.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>(bool reuseCachedInstance)
         {
             string path = this.GetAutoTypeExtensionPoint(typeof(T));
@@ -382,140 +282,101 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Gets extension objects registered in a path
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <returns>
-        /// An array of objects registered in the path.
-        /// </returns>
-        /// <remarks>
-        /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
-        /// by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path)
         {
             return GetExtensionObjects(path, null, typeof(object), true);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="bid"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path, string bid)
         {
             return GetExtensionObjects(path, bid, typeof(object), true);
         }
 
         /// <summary>
-        /// Gets extension objects registered in a path.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <param name="reuseCachedInstance">
-        /// When set to True, it will return instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// An array of objects registered in the path.
-        /// </returns>
-        /// <remarks>
-        /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
-        /// by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node (or TypeExtensionNode.GetInstance() if
-        /// reuseCachedInstance is set to true)
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path, bool reuseCachedInstance)
         {
             return GetExtensionObjects(path, null, typeof(object), reuseCachedInstance);
         }
-
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="bid"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path, string bid, bool reuseCachedInstance)
         {
             return GetExtensionObjects(path, bid, typeof(object), reuseCachedInstance);
         }
 
         /// <summary>
-        /// Gets extension objects registered in a path.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <param name="arrayElementType">
-        /// Type of the return array elements.
-        /// </param>
-        /// <returns>
-        /// An array of objects registered in the path.
-        /// </returns>
-        /// <remarks>
-        /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
-        /// by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node.
-        /// 
-        /// An InvalidOperationException exception is thrown if one of the found
-        /// objects is not a subclass of the provided type.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="arrayElementType"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path, Type arrayElementType)
         {
             return GetExtensionObjects(path, null, arrayElementType, true);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="bid"></param>
+        /// <param name="arrayElementType"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path, string bid, Type arrayElementType)
         {
             return GetExtensionObjects(path, bid, arrayElementType, true);
         }
 
         /// <summary>
-        /// Gets extension objects registered in a path.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <returns>
-        /// An array of objects registered in the path.
-        /// </returns>
-        /// <remarks>
-        /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
-        /// by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node.
-        /// 
-        /// An InvalidOperationException exception is thrown if one of the found
-        /// objects is not a subclass of the provided type.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>(string path)
         {
             return GetExtensionObjects<T>(path, true);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="bid"></param>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>(string path, string bid)
         {
             return GetExtensionObjects<T>(path, bid, true);
         }
 
         /// <summary>
-        /// Gets extension objects registered in a path.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <param name="reuseCachedInstance">
-        /// When set to True, it will return instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// An array of objects registered in the path.
-        /// </returns>
-        /// <remarks>
-        /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
-        /// by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node (or TypeExtensionNode.GetInstance() if
-        /// reuseCachedInstance is set to true).
-        /// 
-        /// An InvalidOperationException exception is thrown if one of the found
-        /// objects is not a subclass of the provided type.
-        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>(string path, bool reuseCachedInstance)
         {
             ExtensionNode node = GetExtensionNode(path);
@@ -524,6 +385,14 @@ namespace Clamp
             return node.GetChildObjects<T>(reuseCachedInstance);
         }
 
+        /// <summary>
+        /// 获得扩展对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="bid"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public T[] GetExtensionObjects<T>(string path, string bid, bool reuseCachedInstance)
         {
             ExtensionNode node = GetExtensionNode(path);
@@ -534,30 +403,13 @@ namespace Clamp
 
 
         /// <summary>
-        /// Gets extension objects registered in a path.
+        /// 获得扩展对象
         /// </summary>
-        /// <param name="path">
-        /// An extension path.
-        /// </param>
-        /// <param name="arrayElementType">
-        /// Type of the return array elements.
-        /// </param>
-        /// <param name="reuseCachedInstance">
-        /// When set to True, it will return instances created in previous calls.
-        /// </param>
-        /// <returns>
-        /// An array of objects registered in the path.
-        /// </returns>
-        /// <remarks>
-        /// This method can only be used if all nodes in the provided extension path
-        /// are of type Mono.Bundles.TypeExtensionNode. The returned array is composed
-        /// by all objects created by calling the TypeExtensionNode.CreateInstance()
-        /// method for each node (or TypeExtensionNode.GetInstance() if
-        /// reuseCachedInstance is set to true).
-        /// 
-        /// An InvalidOperationException exception is thrown if one of the found
-        /// objects is not a subclass of the provided type.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="bid"></param>
+        /// <param name="arrayElementType"></param>
+        /// <param name="reuseCachedInstance"></param>
+        /// <returns></returns>
         public object[] GetExtensionObjects(string path, string bid, Type arrayElementType, bool reuseCachedInstance)
         {
             ExtensionNode node = GetExtensionNode(path);
@@ -569,42 +421,25 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Register a listener of extension node changes.
+        /// 注册一个扩展树节点上的监听事件
         /// </summary>
-        /// <param name="path">
-        /// Path of the node.
-        /// </param>
-        /// <param name="handler">
-        /// A handler method.
-        /// </param>
-        /// <remarks>
-        /// Hosts can call this method to be subscribed to an extension change
-        /// event for a specific path. The event will be fired once for every
-        /// individual node change. The event arguments include the change type
-        /// (Add or Remove) and the extension node added or removed.
-        /// 
-        /// NOTE: The handler will be called for all nodes existing in the path at the moment of registration.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="handler"></param>
         public void AddExtensionNodeHandler(string path, ExtensionNodeEventHandler handler)
         {
             ExtensionNode node = GetExtensionNode(path);
+
             if (node == null)
                 throw new InvalidOperationException("Extension node not found in path: " + path);
+
             node.ExtensionNodeChanged += handler;
         }
 
         /// <summary>
-        /// Unregister a listener of extension node changes.
+        ///  删除一个扩展树节点上的监听事件
         /// </summary>
-        /// <param name="path">
-        /// Path of the node.
-        /// </param>
-        /// <param name="handler">
-        /// A handler method.
-        /// </param>
-        /// <remarks>
-        /// This method unregisters a delegate from the node change event of a path.
-        /// </remarks>
+        /// <param name="path"></param>
+        /// <param name="handler"></param>
         public void RemoveExtensionNodeHandler(string path, ExtensionNodeEventHandler handler)
         {
             ExtensionNode node = GetExtensionNode(path);
@@ -614,22 +449,10 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Register a listener of extension node changes.
+        /// 注册一个扩展树节点上的监听事件
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <param name="handler">
-        /// A handler method.
-        /// </param>
-        /// <remarks>
-        /// Hosts can call this method to be subscribed to an extension change
-        /// event for a specific type extension point. The event will be fired once for every
-        /// individual node change. The event arguments include the change type
-        /// (Add or Remove) and the extension node added or removed.
-        /// 
-        /// NOTE: The handler will be called for all nodes existing in the path at the moment of registration.
-        /// </remarks>
+        /// <param name="instanceType"></param>
+        /// <param name="handler"></param>
         public void AddExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
             string path = this.GetAutoTypeExtensionPoint(instanceType);
@@ -639,14 +462,10 @@ namespace Clamp
         }
 
         /// <summary>
-        /// Unregister a listener of extension node changes.
+        /// 删除一个扩展树节点上的监听事件
         /// </summary>
-        /// <param name="instanceType">
-        /// Type defining the extension point
-        /// </param>
-        /// <param name="handler">
-        /// A handler method.
-        /// </param>
+        /// <param name="instanceType"></param>
+        /// <param name="handler"></param>
         public void RemoveExtensionNodeHandler(Type instanceType, ExtensionNodeEventHandler handler)
         {
             string path = this.GetAutoTypeExtensionPoint(instanceType);
@@ -657,6 +476,7 @@ namespace Clamp
 
         public void Dispose()
         {
+            this.Stop();
         }
 
         #endregion
@@ -688,23 +508,6 @@ namespace Clamp
                 }
             }
         }
-
-        //internal TreeClampBundle CreateChildContext()
-        //{
-        //    lock (conditionTypes)
-        //    {
-        //        if (childContexts == null)
-        //            childContexts = new List<WeakReference>();
-        //        else
-        //            CleanDisposedChildContexts();
-
-        //        TreeClampBundle ctx = new TreeClampBundle(this.InternalClampBundle, this);
-
-        //        WeakReference wref = new WeakReference(ctx);
-        //        childContexts.Add(wref);
-        //        return ctx;
-        //    }
-        //}
 
         internal ConditionType GetCondition(string id)
         {
@@ -1077,7 +880,7 @@ namespace Clamp
             if (ep != null)
             {
 
-               //先收集相关的扩展信息
+                //先收集相关的扩展信息
 
                 ArrayList loadData = new ArrayList();
 
@@ -1304,6 +1107,11 @@ namespace Clamp
             return true;
         }
 
+        /// <summary>
+        /// 根据路径找到扩展树节点
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private ExtensionTreeNode GetNode(string path)
         {
             ExtensionTreeNode node = this.tree.GetNode(path);
@@ -1388,7 +1196,7 @@ namespace Clamp
     public delegate void ExtensionNodeEventHandler(object sender, ExtensionNodeEventArgs args);
 
     /// <summary>
-    /// Arguments for extension events.
+    /// 扩展事件参数
     /// </summary>
     public class ExtensionEventArgs : EventArgs
     {
@@ -1439,7 +1247,7 @@ namespace Clamp
     }
 
     /// <summary>
-    /// Arguments for extension node events.
+    /// 扩展节点事件参数
     /// </summary>
     public class ExtensionNodeEventArgs : ExtensionEventArgs
     {
@@ -1501,18 +1309,11 @@ namespace Clamp
     }
 
     /// <summary>
-    /// Type of change in an extension change event.
+    /// 事件类型
     /// </summary>
     public enum ExtensionChange
     {
-        /// <summary>
-        /// An extension node has been added.
-        /// </summary>
         Add,
-
-        /// <summary>
-        /// An extension node has been removed.
-        /// </summary>
         Remove
     }
 

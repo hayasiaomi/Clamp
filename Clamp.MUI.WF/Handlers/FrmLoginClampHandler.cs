@@ -34,19 +34,29 @@ namespace Clamp.MUI.WF.Handlers
                 return "用户或密码不正确！";
             }
 
-            Thread mainThread = new Thread(new ThreadStart(() =>
+            //Thread mainThread = new Thread(new ThreadStart(() =>
+            //{
+            //    FrmMain frmMain = new FrmMain();
+
+            //    frmMain.FrmLogin = this.frmLogin;
+
+            //    Application.Run(frmMain);
+            //}));
+
+            //WFAppManager.Current.UIThreadStacks.Push(mainThread);
+
+            //mainThread.SetApartmentState(ApartmentState.STA);
+            //mainThread.Start();
+
+            this.frmLogin.BeginInvoke(new Action(() =>
             {
                 FrmMain frmMain = new FrmMain();
 
                 frmMain.FrmLogin = this.frmLogin;
 
-                Application.Run(frmMain);
+                frmMain.Show();
+
             }));
-
-            (WFAppManager.Current as WFAppManager).CurrentThread = mainThread;
-
-            mainThread.SetApartmentState(ApartmentState.STA);
-            mainThread.Start();
 
             return null;
         }

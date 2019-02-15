@@ -6,6 +6,7 @@ using Clamp.Cfg;
 using Clamp.Data.Annotation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -30,8 +31,20 @@ namespace Clamp.MUI.WF
 
         public Thread CurrentThread { set; get; }
 
+        public Stack<Thread> UIThreadStacks { private set; get; }
 
         public Dictionary<string, string> ConfigYEUXMaps { private set; get; }
+
+        public WFAppManager()
+        {
+            this.UIThreadStacks = new Stack<Thread>();
+        }
+
+        public void AttachUIThead(Thread thread)
+        {
+            this.CurrentThread.SetApartmentState(ApartmentState.STA);
+            this.CurrentThread.Start();
+        }
 
         public override void Initialize()
         {
@@ -42,15 +55,13 @@ namespace Clamp.MUI.WF
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Idle += Application_Idle;
-
+            //Application.Idle += Application_Idle;
         }
 
         private void Application_Idle(object sender, EventArgs e)
         {
             CfxRuntime.DoMessageLoopWork();
         }
-
 
         public override void Run(params string[] commandLines)
         {
@@ -88,33 +99,16 @@ namespace Clamp.MUI.WF
                 else
                     CFXLauncher.RegisterClampScheme("http", "res.clamp.mui");
 
-                Thread loginThread = new Thread(new ThreadStart(() =>
-                {
-                    Application.Run(new FrmLogin());
-
-                }));
-
-                loginThread.SetApartmentState(ApartmentState.STA);
-                loginThread.Start();
-
-                CurrentThread = loginThread;
-
-                do
-                {
-                    CurrentThread.Join();
-                }
-                while (CurrentThread != null);
-
-                CFXLauncher.Exit();
+                Application.Run(new WFApplicationContext(new FrmLogin()));
             }
-        }
 
+            CFXLauncher.Exit();
+        }
         private void BeforeChromiumInitialize(OnBeforeCfxInitializeEventArgs e)
         {
             e.Settings.LogSeverity = global::Chromium.CfxLogSeverity.Default;
             e.Settings.SingleProcess = false;
         }
-
 
         private Dictionary<string, string> GetYEUXConfiguration()
         {

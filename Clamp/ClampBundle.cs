@@ -147,97 +147,113 @@ namespace Clamp
 
         #region 注册功能
 
-
         /// <summary>
-        /// Creates/replaces a container class registration with a specific, strong referenced, instance.
+        /// 注册服务
         /// </summary>
-        /// <param name="registerType">Type to register</param>
-        /// <param name="instance">Instance of RegisterType to register</param>
-        /// <returns>RegisterOptions for fluent API</returns>
+        /// <param name="registerType"></param>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public RegisterOptions Register(Type registerType, object instance)
         {
             return this.clampObjectContainer.Register(registerType, instance);
         }
 
         /// <summary>
-        /// Creates/replaces a named container class registration with a specific, strong referenced, instance.
+        /// 注册服务
         /// </summary>
-        /// <param name="registerType">Type to register</param>
-        /// <param name="instance">Instance of RegisterType to register</param>
-        /// <param name="name">Name of registration</param>
-        /// <returns>RegisterOptions for fluent API</returns>
+        /// <param name="registerType"></param>
+        /// <param name="instance"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public RegisterOptions Register(Type registerType, object instance, string name)
         {
             return this.clampObjectContainer.Register(registerType, instance, name);
         }
 
         /// <summary>
-        /// Creates/replaces a container class registration with a specific, strong referenced, instance.
+        /// 注册服务
         /// </summary>
-        /// <param name="registerType">Type to register</param>
-        /// <param name="registerImplementation">Type of instance to register that implements RegisterType</param>
-        /// <param name="instance">Instance of RegisterImplementation to register</param>
-        /// <returns>RegisterOptions for fluent API</returns>
+        /// <param name="registerType"></param>
+        /// <param name="registerImplementation"></param>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public RegisterOptions Register(Type registerType, Type registerImplementation, object instance)
         {
             return this.clampObjectContainer.Register(registerType, registerImplementation, instance);
         }
 
         /// <summary>
-        /// Creates/replaces a named container class registration with a specific, strong referenced, instance.
+        /// 注册服务
         /// </summary>
-        /// <param name="registerType">Type to register</param>
-        /// <param name="registerImplementation">Type of instance to register that implements RegisterType</param>
-        /// <param name="instance">Instance of RegisterImplementation to register</param>
-        /// <param name="name">Name of registration</param>
-        /// <returns>RegisterOptions for fluent API</returns>
+        /// <param name="registerType"></param>
+        /// <param name="registerImplementation"></param>
+        /// <param name="instance"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public RegisterOptions Register(Type registerType, Type registerImplementation, object instance, string name)
         {
             return this.clampObjectContainer.Register(registerType, registerImplementation, instance, name);
         }
 
+        /// <summary>
+        /// 解析服务
+        /// </summary>
+        /// <param name="resolveType"></param>
+        /// <returns></returns>
         public object Resolve(Type resolveType)
         {
             return this.clampObjectContainer.Resolve(resolveType);
         }
 
         /// <summary>
-        /// Attempts to resolve a type using specified options.
+        /// 解析服务
         /// </summary>
-        /// <param name="resolveType">Type to resolve</param>
-        /// <param name="options">Resolution options</param>
-        /// <returns>Instance of type</returns>
-        /// <exception cref="ResolutionException">Unable to resolve the type.</exception>
+        /// <param name="resolveType"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public object Resolve(Type resolveType, ResolveOptions options)
         {
             return this.clampObjectContainer.Resolve(resolveType, options);
         }
 
         /// <summary>
-        /// Attempts to resolve a type using default options and the supplied name.
-        ///
-        /// Parameters are used in conjunction with normal container resolution to find the most suitable constructor (if one exists).
-        /// All user supplied parameters must exist in at least one resolvable constructor of RegisterType or resolution will fail.
+        /// 解析服务
         /// </summary>
-        /// <param name="resolveType">Type to resolve</param>
-        /// <param name="name">Name of registration</param>
-        /// <returns>Instance of type</returns>
-        /// <exception cref="ResolutionException">Unable to resolve the type.</exception>
+        /// <param name="resolveType"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public object Resolve(Type resolveType, string name)
         {
             return this.clampObjectContainer.Resolve(resolveType, name);
         }
 
+        /// <summary>
+        /// 解析服务
+        /// </summary>
+        /// <typeparam name="ResolveType"></typeparam>
+        /// <returns></returns>
         public ResolveType Resolve<ResolveType>() where ResolveType : class
         {
             return (ResolveType)Resolve(typeof(ResolveType));
         }
 
+        /// <summary>
+        /// 解析服务
+        /// </summary>
+        /// <typeparam name="ResolveType"></typeparam>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public ResolveType Resolve<ResolveType>(ResolveOptions options) where ResolveType : class
         {
             return (ResolveType)Resolve(typeof(ResolveType), options);
         }
 
+        /// <summary>
+        /// 解析服务
+        /// </summary>
+        /// <typeparam name="ResolveType"></typeparam>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ResolveType Resolve<ResolveType>(string name) where ResolveType : class
         {
             return (ResolveType)Resolve(typeof(ResolveType), name);
@@ -252,7 +268,6 @@ namespace Clamp
         public override void Start()
         {
 
-
             ActivateBundles();
 
             OnAssemblyLoaded(null, null);
@@ -262,14 +277,12 @@ namespace Clamp
 
             this.registry.Update();
 
-
         }
 
         public override void Stop()
         {
             lock (this.LocalLock)
             {
-                initialized = false;
                 AppDomain.CurrentDomain.AssemblyLoad -= new AssemblyLoadEventHandler(OnAssemblyLoaded);
                 AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomainAssemblyResolve;
                 loadedBundles = new Dictionary<string, RuntimeBundle>();
@@ -278,6 +291,8 @@ namespace Clamp
                 registry = null;
                 startupDirectory = null;
                 ClearContext();
+
+                initialized = false;
             }
         }
 
